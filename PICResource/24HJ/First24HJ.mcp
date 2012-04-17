@@ -1,0 +1,142 @@
+[HEADER]
+magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
+file_version=1.0
+device=PIC24HJ64GP202
+[PATH_INFO]
+BuildDirPolicy=BuildDirIsProjectDir
+dir_src=
+dir_bin=
+dir_tmp=
+dir_sin=
+dir_inc=M:\Robotics\Source\FuncLib\Other;D:\Microchip\MPLAB C30\include;M:\Robotics\Source\PICResource\Peripherals
+dir_lib=
+dir_lkr=
+[CAT_FILTERS]
+filter_src=*.s;*.c
+filter_inc=*.h;*.inc
+filter_obj=*.o
+filter_lib=*.a
+filter_lkr=*.gld
+[CAT_SUBFOLDERS]
+subfolder_src=
+subfolder_inc=
+subfolder_obj=
+subfolder_lib=
+subfolder_lkr=
+[FILE_SUBFOLDERS]
+file_000=.
+file_001=.
+file_002=.
+file_003=.
+file_004=.
+file_005=.
+file_006=.
+file_007=.
+file_008=.
+file_009=.
+file_010=.
+file_011=.
+file_012=.
+file_013=.
+file_014=.
+file_015=.
+file_016=.
+file_017=.
+file_018=.
+file_019=.
+file_020=.
+file_021=.
+file_022=.
+file_023=.
+[GENERATED_FILES]
+file_000=no
+file_001=no
+file_002=no
+file_003=no
+file_004=no
+file_005=no
+file_006=no
+file_007=no
+file_008=no
+file_009=no
+file_010=no
+file_011=no
+file_012=no
+file_013=no
+file_014=no
+file_015=no
+file_016=no
+file_017=no
+file_018=no
+file_019=no
+file_020=no
+file_021=no
+file_022=no
+file_023=no
+[OTHER_FILES]
+file_000=no
+file_001=no
+file_002=no
+file_003=no
+file_004=no
+file_005=no
+file_006=no
+file_007=no
+file_008=no
+file_009=no
+file_010=no
+file_011=no
+file_012=no
+file_013=no
+file_014=no
+file_015=no
+file_016=no
+file_017=no
+file_018=no
+file_019=no
+file_020=no
+file_021=no
+file_022=no
+file_023=no
+[FILE_INFO]
+file_000=main.c
+file_001=M:\Robotics\Source\PICResource\Peripherals\hardUART24H\hardUart.c
+file_002=M:\Robotics\Source\FuncLib\Other\RingBuffer\ringbuffer.c
+file_003=M:\Robotics\Source\PICResource\delay.c
+file_004=M:\Robotics\Source\FuncLib\Other\linkedlist\linkedlist.c
+file_005=M:\Robotics\Source\FuncLib\Other\stack\stack.c
+file_006=M:\Robotics\Source\PICResource\pgm.h
+file_007=M:\Robotics\Source\PICResource\Peripherals\hardUART24H\hardUart.h
+file_008=D:\Microchip\MPLAB C30\support\PIC24H\h\p24HJ64GP202.h
+file_009=M:\Robotics\Source\FuncLib\Other\RingBuffer\ringbuffer.h
+file_010=D:\Microchip\MPLAB C30\support\peripheral_24F\PIC24F_periph_features.h
+file_011=D:\Microchip\MPLAB C30\support\PIC24H\h\p24Hxxxx.h
+file_012=D:\Microchip\MPLAB C30\support\peripheral_24F\GenericTypeDefs.h
+file_013=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\pps.h
+file_014=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\delay.h
+file_015=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\Generic.h
+file_016=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\peripheralversion.h
+file_017=M:\Robotics\Source\PICResource\stdint.h
+file_018=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\dma.h
+file_019=D:\Microchip\MPLAB C30\support\peripheral_30F_24H_33F\uart.h
+file_020=M:\Robotics\Source\FuncLib\Other\linkedlist\linkedlist.h
+file_021=D:\Microchip\MPLAB C30\include\stdlib.h
+file_022=D:\Microchip\MPLAB C30\include\string.h
+file_023=M:\Robotics\Source\FuncLib\Other\stack\stack.h
+[SUITE_INFO]
+suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
+suite_state=
+[TOOL_SETTINGS]
+TS{7D9C6ECE-785D-44CB-BA22-17BF2E119622}=-g -ahmlsi="$(BINDIR_)$(INFILEBASE).lst"
+TS{25AC22BD-2378-4FDB-BFB6-7345A15512D3}=-g -Wall -D__PIC24H__ -DFcy=40000000 -O3 -fomit-frame-pointer
+TS{7DAC9A1D-4C45-45D6-B25A-D117C74E8F5A}=--heap=1024 -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TS{509E5861-1E2A-483B-8B6B-CA8DB7F2DD78}=
+[INSTRUMENTED_TRACE]
+enable=0
+transport=0
+format=0
+[CUSTOM_BUILD]
+Pre-Build=
+Pre-BuildEnabled=1
+Post-Build=
+Post-BuildEnabled=1
