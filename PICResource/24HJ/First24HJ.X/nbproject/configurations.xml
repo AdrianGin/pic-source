@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="dmaUART" displayName="dmaUART" projectFiles="true">
+      <itemPath>../../Peripherals/dmaUART/dmaUart.c</itemPath>
+      <itemPath>../../Peripherals/dmaUART/dmaUart.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../pgm.h</itemPath>
+      <itemPath>../../Peripherals/hardUART24H/hardUart.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/PIC24H/h/p24HJ64GP202.h</itemPath>
+      <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_24F/PIC24F_periph_features.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/PIC24H/h/p24Hxxxx.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_24F/GenericTypeDefs.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F/delay.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F/Generic.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F/peripheralversion.h</itemPath>
+      <itemPath>../../stdint.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F/dma.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F/uart.h</itemPath>
+      <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/include/stdlib.h</itemPath>
+      <itemPath>/D:/Microchip/MPLAB C30/include/string.h</itemPath>
+      <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
+      <itemPath>D:/Microchip/MPLAB C30/src/peripheral_30F_24H_33F/include/pps.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="mmculib" displayName="mmculib" projectFiles="true">
+      <itemPath>../../../FuncLib/Other/mmculib/uint16toa.h</itemPath>
+      <itemPath>../../../FuncLib/Other/mmculib/log2.h</itemPath>
+      <itemPath>../../../FuncLib/Other/mmculib/uint16toa.c</itemPath>
+      <itemPath>../../../FuncLib/Other/mmculib/uint8toa.c</itemPath>
+      <itemPath>../../../FuncLib/Other/mmculib/uint8toa.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../main.c</itemPath>
+      <itemPath>../../Peripherals/hardUART24H/hardUart.c</itemPath>
+      <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.c</itemPath>
+      <itemPath>../../delay.c</itemPath>
+      <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.c</itemPath>
+      <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../</Elem>
+    <Elem>../../Peripherals/dmaUART24H</Elem>
+    <Elem>../../Peripherals/dmaUART</Elem>
+    <Elem>../../../FuncLib/Other/mmculib</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="default" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC24HJ64GP202</targetDevice>
+        <targetHeader></targetHeader>
+        <platformTool>PICkit2PlatformTool</platformTool>
+        <languageToolchain>C30</languageToolchain>
+        <languageToolchainVersion>3_25</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibFileItem>D:/Microchip/MPLAB C30/lib/PIC24H/libp24HJ64GP202-coff.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Microchip/MPLAB C30/lib/PIC24H/libp24HJ64GP202-elf.a</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationAlternativeFileToLoadEnabled>false</makeCustomizationAlternativeFileToLoadEnabled>
+        <makeCustomizationAlternativeFileToLoad></makeCustomizationAlternativeFileToLoad>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+      </makeCustomizationType>
+      <C30>
+        <property key="code-model" value="default"/>
+        <property key="const-model" value="default"/>
+        <property key="data-model" value="default"/>
+        <property key="enable-all-warnings" value="true"/>
+        <property key="enable-ansi-std" value="false"/>
+        <property key="enable-ansi-warnings" value="false"/>
+        <property key="enable-fatal-warnings" value="false"/>
+        <property key="enable-large-arrays" value="false"/>
+        <property key="enable-omit-frame-pointer" value="true"/>
+        <property key="enable-procedural-abstraction" value="false"/>
+        <property key="enable-short-double" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="extra-include-directories"
+                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist"/>
+        <property key="isolate-each-function" value="false"/>
+        <property key="optimization-level" value="s"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value="__PIC24H__;Fcy=40000000"/>
+        <property key="scalar-model" value="default"/>
+      </C30>
+      <C30-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="expand-macros" value="true"/>
+        <property key="extra-include-directories-for-assembler" value=".."/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="true"/>
+        <property key="list-file" value="&quot;$(BINDIR_)$(INFILEBASE).lst&quot;"/>
+        <property key="list-section-info" value="true"/>
+        <property key="list-source" value="true"/>
+        <property key="list-symbols" value="true"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="relax" value="false"/>
+        <property key="warning-level" value="emit-warnings"/>
+        <appendMe value="-g "/>
+      </C30-AS>
+      <C30-LD>
+        <property key="boot-eeprom" value="no_eeprom"/>
+        <property key="boot-flash" value="no_flash"/>
+        <property key="boot-ram" value="no_ram"/>
+        <property key="boot-write-protect" value="no_write_protect"/>
+        <property key="enable-check-sections" value="false"/>
+        <property key="enable-data-init" value="true"/>
+        <property key="enable-default-isr" value="true"/>
+        <property key="enable-handles" value="true"/>
+        <property key="enable-pack-data" value="true"/>
+        <property key="extra-lib-directories" value="..;"/>
+        <property key="general-code-protect" value="no_code_protect"/>
+        <property key="general-write-protect" value="no_write_protect"/>
+        <property key="generate-cross-reference-file" value="false"/>
+        <property key="heap-size" value="1024"/>
+        <property key="input-libraries" value=""/>
+        <property key="linker-symbols" value=""/>
+        <property key="map-file" value="&quot;${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map&quot;"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="remove-unused-sections" value="false"/>
+        <property key="report-memory-usage" value="true"/>
+        <property key="secure-eeprom" value="no_eeprom"/>
+        <property key="secure-flash" value="no_flash"/>
+        <property key="secure-ram" value="no_ram"/>
+        <property key="secure-write-protect" value="no_write_protect"/>
+        <property key="stack-size" value=""/>
+        <property key="symbol-stripping" value=""/>
+        <property key="trace-symbols" value=""/>
+        <property key="warn-section-align" value="false"/>
+      </C30-LD>
+      <C30Global>
+        <property key="fast-math" value="false"/>
+        <property key="legacy-libc" value="false"/>
+        <property key="output-file-format" value="elf"/>
+      </C30Global>
+      <PICkit2PlatformTool>
+        <property key="pk2settings.3state" value="false"/>
+        <property key="pk2settings.preserveee" value="false"/>
+        <property key="pk2settings.setvddvoltage" value="3"/>
+        <property key="pk2settings.userpgmexec" value="true"/>
+        <property key="pk2settings.usetargetpower" value="true"/>
+      </PICkit2PlatformTool>
+    </conf>
+  </confs>
+</configurationDescriptor>
