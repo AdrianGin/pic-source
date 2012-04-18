@@ -94,8 +94,12 @@ int main(void)
     PPSOutput(PPS_U2TX, PPS_RP8);
     PPSOutput(PPS_U1TX, PPS_RP9);
     PPSInput(PPS_U1RX, PPS_RP10);
-
     PPSOutput(PPS_OC1, PPS_RP15);
+
+    
+    PPSOutput(PPS_SCK1, PPS_RP5);
+    PPSOutput(PPS_SDO1, PPS_RP6);
+    PPSInput(PPS_SDI1,  PPS_RP7);
 
     PPSLock;
 
