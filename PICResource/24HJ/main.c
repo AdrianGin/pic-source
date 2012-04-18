@@ -16,6 +16,7 @@
 #include "dmaUart/dmaUart.h"
 
 #include "mmculib/uint16toa.h"
+#include "adc/adc.h"
 
 void InterruptHandlerLow();
 
@@ -69,34 +70,6 @@ void TimerInit(void)
     IEC0bits.T1IE = 0x01;
     T1CONbits.TON = 0x01;
 }
-
-
-void ADCInit(uint16_t inputBitmap)
-{
-    AD1PCFGL &= ~((1<<inputBitmap) | (1<<0));
-    AD1CHS0 = 0x0101;
-    //AD1CHS0bits.CH0SB = 0x01;
-
-
-    AD1CON1bits.SSRC = 0x00;
-    AD1CON1bits.ASAM = 0x01;
-    AD1CON1bits.SAMP = 0x01;
-
-    AD1CON2bits.VCFG = 0x00;
-    AD1CON2bits.SMPI = 0;
-
-    AD1CON3bits.ADRC = 0x01;
-    AD1CON3bits.SAMC = 0;
-    AD1CON3bits.ADCS = 0;
-
-    //Enable Interrupts
-    IPC3bits.AD1IP = 0x07;
-    IFS0bits.AD1IF = 0x00;
-    IEC0bits.AD1IE = 0x01;
-
-    AD1CON1bits.ADON = 1;
-}
-
 
 
 int main(void)
@@ -157,7 +130,10 @@ int main(void)
     PWMInit();
     //TimerInit();
 
-    ADCInit(1);
+    ADC_Init();
+    ADC_Set10bit();
+    ADC_SetClockSpeed(5, 2);
+    ADC_SetPin(10);
     //ADCStart();
     uartTx(&U2, 0xAA);
     uartTx(&U2, 0xAB);
@@ -169,22 +145,9 @@ int main(void)
 
     while (1)
     {
-        AD1CON1bits.SAMP = 1;
-        AD1CON1bits.DONE = 0;
+        //ADCValue = ADC_Sample();
 
-        Delay_Us(5);
-        AD1CON1bits.SAMP = 0;
-        while( !AD1CON1bits.DONE )
-        {
-        }
-        ADCValue = ADC1BUF0;
 
-        uint16toa(ADCValue, outputString, 0);
-
-        //uartTx(&U2, ((ADCValue & 0xFF00) >> 8) );
-        //uartTx(&U2, ((ADCValue & 0x00FF)) );
-        uartTxString(&U2, outputString);
-        uartTx(&U2, '\n' );
     }
    
     return 0;
@@ -231,11 +194,13 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 
 void __attribute__((__interrupt__, no_auto_psv)) _ADC1Interrupt(void)
 {
-    uint16_t ADCValue;
     IFS0bits.AD1IF = 0x00;
-
     LATA ^= 1;
-    
+    uint16_t ADCValue = ADC1BUF0;
+    char outputString[10];
+    uint16toa(ADCValue, outputString, 0);
+    uartTxString(&U2, outputString);
+    uartTx(&U2, '\n' );
 //    ADCValue = ADC1BUF0;
 //    uartTx(&U2, ((ADCValue & 0xFF00) >> 8) );
 //    uartTx(&U2, ((ADCValue & 0x00FF)) );

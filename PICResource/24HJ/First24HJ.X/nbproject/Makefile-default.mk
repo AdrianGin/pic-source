@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/178018670/dmaUart.o.d ${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/481915157/hardUart.o.d ${OBJECTDIR}/_ext/1532717492/ringbuffer.o.d ${OBJECTDIR}/_ext/43898991/delay.o.d ${OBJECTDIR}/_ext/2105551405/linkedlist.o.d ${OBJECTDIR}/_ext/1218362732/stack.o.d ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1539374888/adc.o.d ${OBJECTDIR}/_ext/178018670/dmaUart.o.d ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d ${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/481915157/hardUart.o.d ${OBJECTDIR}/_ext/1532717492/ringbuffer.o.d ${OBJECTDIR}/_ext/43898991/delay.o.d ${OBJECTDIR}/_ext/2105551405/linkedlist.o.d ${OBJECTDIR}/_ext/1218362732/stack.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o
+OBJECTFILES=${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o
 
 
 CFLAGS=
@@ -93,11 +93,29 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/_ext/1539374888/adc.o: ../../Peripherals/ADC/adc.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1539374888 
+	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.ok ${OBJECTDIR}/_ext/1539374888/adc.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1539374888/adc.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539374888/adc.o.d" -o ${OBJECTDIR}/_ext/1539374888/adc.o ../../Peripherals/ADC/adc.c  
+	
 ${OBJECTDIR}/_ext/178018670/dmaUart.o: ../../Peripherals/dmaUART/dmaUart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/178018670 
 	@${RM} ${OBJECTDIR}/_ext/178018670/dmaUart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/178018670/dmaUart.o.ok ${OBJECTDIR}/_ext/178018670/dmaUart.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/178018670/dmaUart.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/178018670/dmaUart.o.d" -o ${OBJECTDIR}/_ext/178018670/dmaUart.o ../../Peripherals/dmaUART/dmaUart.c  
+	
+${OBJECTDIR}/_ext/1387409687/uint16toa.o: ../../../FuncLib/Other/mmculib/uint16toa.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint16toa.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ../../../FuncLib/Other/mmculib/uint16toa.c  
+	
+${OBJECTDIR}/_ext/1387409687/uint8toa.o: ../../../FuncLib/Other/mmculib/uint8toa.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint8toa.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ../../../FuncLib/Other/mmculib/uint8toa.c  
 	
 ${OBJECTDIR}/_ext/1472/main.o: ../main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
@@ -135,24 +153,30 @@ ${OBJECTDIR}/_ext/1218362732/stack.o: ../../../FuncLib/Other/stack/stack.c  nbpr
 	@${RM} ${OBJECTDIR}/_ext/1218362732/stack.o.ok ${OBJECTDIR}/_ext/1218362732/stack.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1218362732/stack.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1218362732/stack.o.d" -o ${OBJECTDIR}/_ext/1218362732/stack.o ../../../FuncLib/Other/stack/stack.c  
 	
-${OBJECTDIR}/_ext/1387409687/uint16toa.o: ../../../FuncLib/Other/mmculib/uint16toa.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint16toa.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ../../../FuncLib/Other/mmculib/uint16toa.c  
-	
-${OBJECTDIR}/_ext/1387409687/uint8toa.o: ../../../FuncLib/Other/mmculib/uint8toa.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint8toa.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ../../../FuncLib/Other/mmculib/uint8toa.c  
-	
 else
+${OBJECTDIR}/_ext/1539374888/adc.o: ../../Peripherals/ADC/adc.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1539374888 
+	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.ok ${OBJECTDIR}/_ext/1539374888/adc.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1539374888/adc.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539374888/adc.o.d" -o ${OBJECTDIR}/_ext/1539374888/adc.o ../../Peripherals/ADC/adc.c  
+	
 ${OBJECTDIR}/_ext/178018670/dmaUart.o: ../../Peripherals/dmaUART/dmaUart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/178018670 
 	@${RM} ${OBJECTDIR}/_ext/178018670/dmaUart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/178018670/dmaUart.o.ok ${OBJECTDIR}/_ext/178018670/dmaUart.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/178018670/dmaUart.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/178018670/dmaUart.o.d" -o ${OBJECTDIR}/_ext/178018670/dmaUart.o ../../Peripherals/dmaUART/dmaUart.c  
+	
+${OBJECTDIR}/_ext/1387409687/uint16toa.o: ../../../FuncLib/Other/mmculib/uint16toa.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint16toa.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ../../../FuncLib/Other/mmculib/uint16toa.c  
+	
+${OBJECTDIR}/_ext/1387409687/uint8toa.o: ../../../FuncLib/Other/mmculib/uint8toa.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint8toa.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ../../../FuncLib/Other/mmculib/uint8toa.c  
 	
 ${OBJECTDIR}/_ext/1472/main.o: ../main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1472 
@@ -189,18 +213,6 @@ ${OBJECTDIR}/_ext/1218362732/stack.o: ../../../FuncLib/Other/stack/stack.c  nbpr
 	@${RM} ${OBJECTDIR}/_ext/1218362732/stack.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1218362732/stack.o.ok ${OBJECTDIR}/_ext/1218362732/stack.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1218362732/stack.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1218362732/stack.o.d" -o ${OBJECTDIR}/_ext/1218362732/stack.o ../../../FuncLib/Other/stack/stack.c  
-	
-${OBJECTDIR}/_ext/1387409687/uint16toa.o: ../../../FuncLib/Other/mmculib/uint16toa.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint16toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint16toa.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint16toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint16toa.o ../../../FuncLib/Other/mmculib/uint16toa.c  
-	
-${OBJECTDIR}/_ext/1387409687/uint8toa.o: ../../../FuncLib/Other/mmculib/uint8toa.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1387409687/uint8toa.o.ok ${OBJECTDIR}/_ext/1387409687/uint8toa.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1387409687/uint8toa.o.d" -o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ../../../FuncLib/Other/mmculib/uint8toa.c  
 	
 endif
 

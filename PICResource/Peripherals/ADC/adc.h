@@ -25,21 +25,31 @@ THE SOFTWARE.
 #ifndef _ADC_H
 #define _ADC_H
 
-void ADC_Initialise(void);
+//For Reference
+#define ADC_REF_VDD_VSS (0x00)
+#define ADC_REF_EXT_VSS (0x01)
+#define ADC_REF_VDD_EXT (0x02)
+#define ADC_REF_EXT_EXT (0x03)
+
+#define ADC_AUTOSAMPLE  (0x07)
+
+void ADC_Init(void);
 void ADC_SetPin(uint8_t ADCPin);
 
 void ADC_Off(void);
 void ADC_On(void);
 
 
-void ADC_SetPrescale(uint8_t prescale);
+void ADC_SetClockSpeed(uint8_t sampletime, uint8_t clockprescale);
 void ADC_SetReference(uint8_t reference);
+void ADC_Set12bit(void);
+void ADC_Set10bit(void);
 
-void ADC_StartConversion(void);
+uint16_t ADC_Sample(void);
 
-uint16_t ADC_10(void);
-uint16_t ADC_12(void);
 
 
 
 #endif
+
+
