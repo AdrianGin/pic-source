@@ -41,6 +41,11 @@
 ///	    6 - VSS  (ground)               - wire to ground
 ///	    7 - DOUT (data out, card->host) - wire to SPI MISO pin
 ///
+/// Common Problems:
+///
+/// Some SD Cards are really fussy, sometimes try removing the power.
+/// Power needs to be applied usually to get a initialisation.
+///
 ///	    (*) you must define this chip select I/O pin in SDconf.h
 /// </pre>
 /// \note This code is currently below version 1.0, and therefore is considered
@@ -56,7 +61,10 @@
 #ifndef SD_H
 #define SD_H
 
+#include "hardwareSpecific.h"
 #include "PetitFS/diskio.h"
+#include "PetitFS/pff.h"
+#include <stdint.h>
 
 #define SD_ERROR 		0
 #define SD_SUCCESS 	1
@@ -71,12 +79,13 @@
 #define SD_PWR_PORT PORTB
 #define SD_PWR_PIN  PB0 */
 
-#define SD_MAX_RETRIES 100
-#define SD_TIMEOUT   (65000)
+#define SD_MAX_RETRIES 20
+#define SD_TIMEOUT   (1000)
 
 #define SD_SELECT()    SD_CS_PORT &= ~(1 << SD_CS_PIN); 
 #define SD_RELEASE()   SD_CS_PORT |= (1 << SD_CS_PIN);
 
+//#define FORWARD(x)
 #define FORWARD(x)      wavePutByte(x)
 
 // constants/macros/typdefs
@@ -144,13 +153,19 @@
 #define CT_SDC				(CT_SD1|CT_SD2)	/* SD */
 #define CT_BLOCK			0x08	/* Block addressing */
 
+//General delay must be defined in hardwareSpecific.h
+///Following definitions must be defined in hardwareSpecific.h
+#define SD_DELAY_MS(x)      DELAY_MS(x)
+//#define SD_RXBYTE()
+//#define SD_TXBYTE(x)
+#define SD_DEBUG_STRING(string)    DEBUG(string)
+//#define SD_STARTUP()               SD_Startup()
+//#define SD_SETMAXSPEED()           SD_SetMaxSpeed()
 
-void SD_SetMaxSpeed(void);
 uint8_t SD_WaitUntilReady(void);
-
 uint8_t SD_Init(void);
-void SD_Startup(void);
-void SD_Shutdown(void);
+
+void SD_GetCardSize(void);
 
 uint8_t SD_disk_Init(void);
 uint8_t SD_ReadBlock(uint8_t* buffer, uint16_t byteCount);

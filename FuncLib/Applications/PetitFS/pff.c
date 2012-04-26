@@ -23,9 +23,9 @@
 
 #include "pff.h"		/* Petit FatFs configurations and declarations */
 #include "diskio.h"		/* Declarations of low level disk I/O functions */
-#include "hardwareSpecific.h"
-#include "mmculib/uint8toa.h"
-
+//#include "hardwareSpecific.h"
+//#include "mmculib/uint8toa.h"
+//#include "SD_MMC/sd.h"
 
 /*--------------------------------------------------------------------------
 

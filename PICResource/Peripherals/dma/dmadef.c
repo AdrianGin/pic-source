@@ -22,41 +22,10 @@ THE SOFTWARE.
 
  */
 
-#ifndef _DMA_UART_H
-#define _DMA_UART_H
 
 #include <stdint.h>
-#include "dma/dmadef.h"
-#include "stack/stack.h"
-#include "hardUart24H/hardUart.h"
+#include "dmadef.h"
 
-
-//Must be a power of 2, number of queued DMA items.
-#define DMA_UART_STACK_SIZE (16)
-
-extern STACK_t DMAUARTStack;
-
-typedef struct
-{
-    volatile uint16_t* DMACON;
-    volatile uint16_t* DMAREQ;
-    volatile uint16_t* DMASTA;
-    volatile uint16_t* DMAPAD;
-    volatile uint16_t* DMACNT;
-    STACK_t* Stack;
-    uint8_t* DMABuffer;
-    volatile PIC_USART_t* attachedUART;
-
-    volatile uint8_t DMAFlag;
-} PIC_DMA_UART_t;
-
-void DMA_UART_Init(PIC_DMA_UART_t* DMAUART, uint16_t uartModule);
-void DMA_UART_Enable(void);
-void DMA_SendUARTString(PIC_DMA_UART_t* DMAUART, char* string);
-void DMA_SendUARTString_NoStart(PIC_DMA_UART_t* DMAUART, char* string);
-uint8_t DMA_StartUART(PIC_DMA_UART_t* DMAUART);
-
-
-#endif
-
-
+uint8_t DMABuffer[DMA_MEM_SIZE] __attribute__((space(dma)));
+uint8_t* DMATxBuffer = &DMABuffer[0];
+uint8_t* DMARxBuffer = &DMABuffer[DMA_TX_SIZE];

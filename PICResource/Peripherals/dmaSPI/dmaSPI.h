@@ -22,19 +22,15 @@ THE SOFTWARE.
 
  */
 
-#ifndef _DMA_UART_H
-#define _DMA_UART_H
+#ifndef _DMA_SPI_H
+#define _DMA_SPI_H
 
 #include <stdint.h>
 #include "dma/dmadef.h"
+#include "spi/spi.h"
+#include "hardUART24H/hardUart.h"
 #include "stack/stack.h"
-#include "hardUart24H/hardUart.h"
 
-
-//Must be a power of 2, number of queued DMA items.
-#define DMA_UART_STACK_SIZE (16)
-
-extern STACK_t DMAUARTStack;
 
 typedef struct
 {
@@ -45,17 +41,19 @@ typedef struct
     volatile uint16_t* DMACNT;
     STACK_t* Stack;
     uint8_t* DMABuffer;
-    volatile PIC_USART_t* attachedUART;
+    volatile PIC_SPI_t* attachedSPI;
 
     volatile uint8_t DMAFlag;
-} PIC_DMA_UART_t;
+} PIC_DMA_SPI_t;
 
-void DMA_UART_Init(PIC_DMA_UART_t* DMAUART, uint16_t uartModule);
-void DMA_UART_Enable(void);
-void DMA_SendUARTString(PIC_DMA_UART_t* DMAUART, char* string);
-void DMA_SendUARTString_NoStart(PIC_DMA_UART_t* DMAUART, char* string);
-uint8_t DMA_StartUART(PIC_DMA_UART_t* DMAUART);
 
+void DMA_SPI_Init(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t spiModule);
+void DMA_SPI_Enable(void);
+void DMA_SendSPIString(PIC_DMA_SPI_t* DMASPI, char* string);
+void DMA_SendSPIString_NoStart(PIC_DMA_SPI_t* DMASPI, char* string);
+uint8_t DMA_StartSPI(PIC_DMA_SPI_t* DMASPI);
+void DMA_SPI_ReceiveBytes(volatile PIC_DMA_SPI_t* DMASPI, volatile PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount);
+void DMA_SPI_ReceiveBlock(volatile PIC_DMA_SPI_t* DMASPI, volatile PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount);
 
 #endif
 

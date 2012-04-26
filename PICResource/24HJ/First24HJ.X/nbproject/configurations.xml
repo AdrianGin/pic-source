@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
-    <logicalFolder name="ADC" displayName="ADC" projectFiles="true">
-      <itemPath>../../Peripherals/ADC/adc.c</itemPath>
-      <itemPath>../../Peripherals/ADC/adc.h</itemPath>
-    </logicalFolder>
-    <logicalFolder name="dmaUART" displayName="dmaUART" projectFiles="true">
-      <itemPath>../../Peripherals/dmaUART/dmaUart.c</itemPath>
-      <itemPath>../../Peripherals/dmaUART/dmaUart.h</itemPath>
-    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>../../pgm.h</itemPath>
-      <itemPath>../../Peripherals/hardUART24H/hardUart.h</itemPath>
       <itemPath>/D:/Microchip/MPLAB C30/support/PIC24H/h/p24HJ64GP202.h</itemPath>
       <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.h</itemPath>
       <itemPath>/D:/Microchip/MPLAB C30/support/peripheral_24F/PIC24F_periph_features.h</itemPath>
@@ -42,28 +33,72 @@
       <itemPath>../../../FuncLib/Other/mmculib/uint8toa.c</itemPath>
       <itemPath>../../../FuncLib/Other/mmculib/uint8toa.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="Peripherals" displayName="Peripherals" projectFiles="true">
+      <logicalFolder name="ADC" displayName="ADC" projectFiles="true">
+        <itemPath>../../Peripherals/ADC/adc.c</itemPath>
+        <itemPath>../../Peripherals/ADC/adc.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="dma" displayName="dma" projectFiles="true">
+        <itemPath>../../Peripherals/dma/dmadef.c</itemPath>
+        <itemPath>../../Peripherals/dma/dmadef.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="dmaSPI" displayName="dmaSPI" projectFiles="true">
+        <itemPath>../../Peripherals/dmaSPI/dmaSPI.c</itemPath>
+        <itemPath>../../Peripherals/dmaSPI/dmaSPI.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="dmaUART" displayName="dmaUART" projectFiles="true">
+        <itemPath>../../Peripherals/dmaUART/dmaUart.c</itemPath>
+        <itemPath>../../Peripherals/dmaUART/dmaUart.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="hardUART24H" displayName="hardUART24H" projectFiles="true">
+        <itemPath>../../Peripherals/hardUART24H/hardUart.c</itemPath>
+        <itemPath>../../Peripherals/hardUART24H/hardUart.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="SPI" displayName="SPI" projectFiles="true">
+        <itemPath>../../Peripherals/SPI/spi.c</itemPath>
+        <itemPath>../../Peripherals/SPI/spi.h</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="PetitFS" displayName="PetitFS" projectFiles="true">
+      <itemPath>../../../FuncLib/Applications/PetitFS/pff.h</itemPath>
+      <itemPath>../../../FuncLib/Applications/PetitFS/integer.h</itemPath>
+      <itemPath>../../../FuncLib/Applications/PetitFS/diskio.h</itemPath>
+      <itemPath>../../../FuncLib/Applications/PetitFS/pff.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SD_MMC" displayName="SD_MMC" projectFiles="true">
+      <itemPath>../../../FuncLib/External/SD_MMC/sd.h</itemPath>
+      <itemPath>../../../FuncLib/External/SD_MMC/sd.c</itemPath>
+      <itemPath>../../../FuncLib/External/SD_MMC/picsd.c</itemPath>
+      <itemPath>../../../FuncLib/External/SD_MMC/sddriver.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>../main.c</itemPath>
-      <itemPath>../../Peripherals/hardUART24H/hardUart.c</itemPath>
       <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.c</itemPath>
       <itemPath>../../delay.c</itemPath>
       <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.c</itemPath>
       <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
+      <itemPath>../hardwareSpecific.h</itemPath>
+      <itemPath>../hardwareSpecific.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f1" displayName="wavPlayer" projectFiles="true">
+      <itemPath>../../../WavPlayer/waveplayer.h</itemPath>
+      <itemPath>../../../FuncLib/External/WavePlayer/waveplayer.c</itemPath>
+      <itemPath>../../../FuncLib/External/WavePlayer/picdriverwav.c</itemPath>
+      <itemPath>../../../FuncLib/External/WavePlayer/wavedriver.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
-      <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
     <Elem>../</Elem>
-    <Elem>../../Peripherals/dmaUART24H</Elem>
-    <Elem>../../Peripherals/dmaUART</Elem>
     <Elem>../../../FuncLib/Other/mmculib</Elem>
-    <Elem>../../Peripherals/ADC</Elem>
+    <Elem>../../../FuncLib/Applications</Elem>
+    <Elem>../../../FuncLib/External</Elem>
+    <Elem>../../Peripherals</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -109,7 +144,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist"/>
+                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ;../../../FuncLib/External;../../../FuncLib/Applications"/>
         <property key="isolate-each-function" value="false"/>
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>
@@ -146,11 +181,11 @@
         <property key="enable-default-isr" value="true"/>
         <property key="enable-handles" value="true"/>
         <property key="enable-pack-data" value="true"/>
-        <property key="extra-lib-directories" value="..;"/>
+        <property key="extra-lib-directories" value=".."/>
         <property key="general-code-protect" value="no_code_protect"/>
         <property key="general-write-protect" value="no_write_protect"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value="1024"/>
+        <property key="heap-size" value="0"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value="&quot;${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map&quot;"/>

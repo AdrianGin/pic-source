@@ -130,13 +130,24 @@ THE SOFTWARE.
 
 #ifdef __PIC24H__
 //UXSTA
+#define TXISEL1     15
+#define TXISEL0     13
 #define UTXEN       10
 #define UTXBF       9
 #define TXMT        8
+#define URXDA       0
 
 //U1MODE
 #define UARTEN    15
 #define BGRH        3
+
+//IEC0, IFS0
+#define TX1IE       12
+#define TX1IF       12
+
+//IFS1, IEC1
+#define TX2IE       15
+#define TX2IF       15
 
 #endif
 
@@ -168,8 +179,10 @@ typedef struct
    volatile uint16_t* UXSTA;
    volatile uint16_t* UXMODE;
    volatile uint16_t* UXBRG;
-   volatile uint8_t* UXTXREG;
-   volatile uint8_t* UXRXREG;
+   volatile uint16_t* UXTXREG;
+   volatile uint16_t* UXRXREG;
+   volatile uint16_t* UXIFSREG;
+   uint8_t  IFSBit;
    volatile RINGBUFFER_T* TransmitBuffer;
    volatile RINGBUFFER_T* ReceiveBuffer;
 

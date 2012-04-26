@@ -22,40 +22,31 @@ THE SOFTWARE.
 
  */
 
-#ifndef _DMA_UART_H
-#define _DMA_UART_H
+#ifndef _DMA_H
+#define _DMA_H
 
-#include <stdint.h>
-#include "dma/dmadef.h"
-#include "stack/stack.h"
-#include "hardUart24H/hardUart.h"
+#define DMA_CHEN (1<<15)
+#define DMA_SIZE (1<<14)
+#define DMA_DIR  (1<<13)
+#define DMA_FORCE (1<<15)
+#define DMA_NULLW  (1<<11)
+
+#define DMA_UART1   (0x000C)
+#define DMA_UART2   (0x001F)
+#define DMA_SPI1    (0x000A)
+
+//The largest block of data to be sent at once.
+#define DMA_MEM_SIZE (2048)
+#define DMA_TX_SIZE  (64)
+#define DMA_RX_SIZE  (DMA_MEM_SIZE-DMA_TX_SIZE)
+
+#define DMA_NOT_STARTING (0)
+#define DMA_STARTING     (1)
 
 
-//Must be a power of 2, number of queued DMA items.
-#define DMA_UART_STACK_SIZE (16)
-
-extern STACK_t DMAUARTStack;
-
-typedef struct
-{
-    volatile uint16_t* DMACON;
-    volatile uint16_t* DMAREQ;
-    volatile uint16_t* DMASTA;
-    volatile uint16_t* DMAPAD;
-    volatile uint16_t* DMACNT;
-    STACK_t* Stack;
-    uint8_t* DMABuffer;
-    volatile PIC_USART_t* attachedUART;
-
-    volatile uint8_t DMAFlag;
-} PIC_DMA_UART_t;
-
-void DMA_UART_Init(PIC_DMA_UART_t* DMAUART, uint16_t uartModule);
-void DMA_UART_Enable(void);
-void DMA_SendUARTString(PIC_DMA_UART_t* DMAUART, char* string);
-void DMA_SendUARTString_NoStart(PIC_DMA_UART_t* DMAUART, char* string);
-uint8_t DMA_StartUART(PIC_DMA_UART_t* DMAUART);
-
+extern uint8_t DMABuffer[];
+extern uint8_t* DMATxBuffer;
+extern uint8_t* DMARxBuffer;
 
 #endif
 

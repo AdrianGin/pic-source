@@ -52,20 +52,23 @@ static char rxbuffer2[RXBUFFER_SIZE];
 volatile RINGBUFFER_T ReceiveBuffer2 = {rxbuffer2, sizeof (rxbuffer2)};
 
 
-volatile uint8_t transmitState;
-
 /* Example
-volatile PIC_USART_t PrimaryUART = {
-   &UCSR1A,
-   &UCSR1B,
-   &UCSR1C,
-   &UBRR1H,
-   &UBRR1L,
-   &UDR1,
-
-   &ReceiveBuffer,
-   &TransmitBuffer
-};
+volatile PIC_USART_t U1 = {&U1STA, &U1MODE, &U1BRG, &U1TXREG, &U1RXREG, &IFS0, TX1IF, &TransmitBuffer, &ReceiveBuffer};
+volatile PIC_USART_t U2 = {&U2STA, &U2MODE, &U2BRG, &U2TXREG, &U2RXREG, &IFS1, TX2IF, &TransmitBuffer2, &TransmitBuffer2};
+ *
+ *
+ *
+ *
+ *
+void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
+{
+    IFS0bits.U1TXIF = 0;
+    //Send the next byte
+    if( !ringbuffer_isEmpty((RINGBUFFER_T*) U1.TransmitBuffer))
+    {
+        *U1.UXTXREG = ringbuffer_get((RINGBUFFER_T*) U1.TransmitBuffer);
+    }
+}
  */
 
 /* uartInit:
@@ -77,11 +80,17 @@ volatile PIC_USART_t PrimaryUART = {
  */
 void uartInit(PIC_USART_t* port)
 {
+    uint16_t i;
     /*Setup the U2X Bit*/
     *port->UXMODE |= ((1 << UARTEN) | (1 << BGRH)); /*Enable Rx and Tx modules*/
-    *port->UXSTA |= ((1 << UTXEN)); /*Enable Rx and Tx modules*/
+    *port->UXSTA |= ((1 << UTXEN) | (1 << TXISEL0)); /*Enable Rx and Tx modules*/
 
     //Enable Interrupts & Set Priority
+    IFS0bits.U1TXIF = 0;
+    IFS0bits.U1RXIF = 0;
+    IFS1bits.U2TXIF = 0;
+    IFS1bits.U2RXIF = 0;
+
     IPC3bits.U1TXIP = 5;
     IPC2bits.U1RXIP = 3;
     IEC0bits.U1TXIE = 1;
@@ -89,13 +98,9 @@ void uartInit(PIC_USART_t* port)
 
     IPC7bits.U2TXIP = 5;
     IPC7bits.U2RXIP = 4;
+
     IEC1bits.U2TXIE = 1;
     IEC1bits.U2RXIE = 1;
-
-    IFS0bits.U1TXIF = 0;
-    IFS1bits.U2TXIF = 0;
-
-
 }
 
 /* uartSetBaud:
@@ -136,27 +141,28 @@ void uartDisable(PIC_USART_t* port)
 //}
 //
 
+//Total interrupt immersion.
 void _internalTx(PIC_USART_t* port, uint8_t byte)
 {
-    if ( !(*port->UXSTA & (1 << UTXBF)) && !ringbuffer_isEmpty((RINGBUFFER_T*) port->TransmitBuffer))
+    if ( (*port->UXSTA & (1 << TXMT)) && !ringbuffer_isEmpty((RINGBUFFER_T*) port->TransmitBuffer))
     {
-        *port->UXTXREG = ringbuffer_get((RINGBUFFER_T*) port->TransmitBuffer);
+        *port->UXIFSREG |= (1<<(port->IFSBit));
+        //*port->UXTXREG = ringbuffer_get((RINGBUFFER_T*) port->TransmitBuffer);
     }
+
 }
 
 void uartTx(PIC_USART_t* port, uint8_t byte)
 {
+    //IEC0bits.U1TXIE = 1;
     //*port->IEREG |= ((1<<TXIE));
     //* If the buffer is full, then we have to wait until we have to send the data
     // * to prevent data loss
     while (ringbuffer_put((RINGBUFFER_T*) port->TransmitBuffer, byte) == BUFFER_OVERFLOW)
     {
-        //_internalTx(port, byte);
+        _internalTx(port, byte);
     }
-
     _internalTx(port, byte);
-
-
 }
 
 /** Writes nbytes of buffer to the UART */

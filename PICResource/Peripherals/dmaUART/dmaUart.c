@@ -32,7 +32,6 @@ THE SOFTWARE.
 
 void* StackArray[sizeof(void*) * DMA_UART_STACK_SIZE];
 STACK_t DMAUARTStack = {StackArray, 0, 0, DMA_UART_STACK_SIZE};
-uint8_t DMAUARTBuffer[DMA_MEM_SIZE] __attribute__((space(dma)));
 
 
 void DMA_UART_Init(PIC_DMA_UART_t* DMAUART, uint16_t uartModule)
@@ -40,31 +39,35 @@ void DMA_UART_Init(PIC_DMA_UART_t* DMAUART, uint16_t uartModule)
     // One-Shot, Post-Increment, RAM-to-Perip
     *DMAUART->DMACON = 0x6001;
     *DMAUART->DMAREQ = uartModule;
-    *DMAUART->DMAPAD = DMAUART->attachedUART->UXTXREG;
-    *DMAUART->DMASTA = DMAUART->DMABuffer;
+    *DMAUART->DMAPAD = (uint16_t)DMAUART->attachedUART->UXTXREG;
+    *DMAUART->DMASTA = (uint16_t)DMAUART->DMABuffer;
     DMAUART->DMAFlag = 0;
 }
 
 /* Quick fix for enabling the interrupts and priorities */
 void DMA_UART_Enable(void)
 {
-    IPC1bits.DMA0IP = 3;
+    IPC1bits.DMA0IP = 2;
     IEC0bits.DMA0IE = 1; // Enable DMA interrupt
     IEC0bits.U1TXIE = 0; //The UART Interrupt should be disabled.
 }
 
 void DMA_SendUARTString(PIC_DMA_UART_t* DMAUART, char* string)
 {
+    DMA_SendUARTString_NoStart(DMAUART, string);
+    DMA_StartUART(DMAUART);
+}
+
+void DMA_SendUARTString_NoStart(PIC_DMA_UART_t* DMAUART, char* string)
+{
     uint8_t res = STACK_PushData(DMAUART->Stack, string);
     while(res == STACK_OVERFLOW)
     {
         res = STACK_PushData(DMAUART->Stack, string);
     }
-    DMA_StartUART(DMAUART);
 }
 
-
-void DMA_StartUART(PIC_DMA_UART_t* DMAUART)
+uint8_t DMA_StartUART(PIC_DMA_UART_t* DMAUART)
 {
     if (DMAUART->DMAFlag == 0)
     {
@@ -84,10 +87,13 @@ void DMA_StartUART(PIC_DMA_UART_t* DMAUART)
                 if ((*(DMAUART->attachedUART->UXSTA) & (1 << TXMT)))
                 {
                     *DMAUART->DMAREQ |= DMA_FORCE;
+                    
                 }
             }
+            return DMA_STARTING;
         }
     }
+    return DMA_NOT_STARTING;
 }
 
 
