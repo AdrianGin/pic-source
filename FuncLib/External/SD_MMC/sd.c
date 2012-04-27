@@ -6,7 +6,6 @@
 #include "SPI/spi.h"
 #include "dmaSPI/dmaSPI.h"
 //#include "mmculib/uint8toa.h"
-#include "PetitFS/diskio.h"
 
 //include "waveplayer.h"
 
@@ -305,10 +304,7 @@ uint8_t SD_ReadBlock(uint8_t* buffer, uint16_t byteCount)
         }
     }
     /* read in data */
-    for (i = 0; i < byteCount; i++)
-    {
-        *buffer++ = SD_RXBYTE();
-    }
+    SD_RXBLOCK(buffer, byteCount);
     SD_RXBYTE(); /// read 16-bit CRC
     SD_RXBYTE();
 
@@ -517,31 +513,31 @@ DRESULT SD_disk_ioctl(uint8_t ctrl, void *buff)
             while (!SD_RXBYTE());
             res = RES_OK;
             break;
-
-        case SD_GET_CSD: /* Receive CSD as a data block (16 uint8_ts) */
-            if (SD_Command(SD_SEND_CSD, 0) == 0 /* READ_CSD */
-                    && SD_ReadBlock(ptr, 16))
-                res = RES_OK;
-            break;
-
-        case SD_GET_CID: /* Receive CID as a data block (16 uint8_ts) */
-            if (SD_Command(SD_SEND_CID, 0) == 0 /* READ_CID */
-                    && SD_ReadBlock(ptr, 16))
-                res = RES_OK;
-            break;
-
-        case SD_GET_OCR: /* Receive OCR as an R3 resp (4 uint8_ts) */
-            if (SD_Command(SD_READ_OCR, 0) == 0)
-            { /* READ_OCR */
-                for (n = 0; n < 4; n++)
-                    *ptr++ = SD_RXBYTE();
-                res = RES_OK;
-            }
-
-        case SD_GET_TYPE: /* Get card type flags (1 uint8_t) */
-            *ptr = 0;
-            res = RES_OK;
-            break;
+//
+//        case SD_GET_CSD: /* Receive CSD as a data block (16 uint8_ts) */
+//            if (SD_Command(SD_SEND_CSD, 0) == 0 /* READ_CSD */
+//                    && SD_ReadBlock(ptr, 16))
+//                res = RES_OK;
+//            break;
+//
+//        case SD_GET_CID: /* Receive CID as a data block (16 uint8_ts) */
+//            if (SD_Command(SD_SEND_CID, 0) == 0 /* READ_CID */
+//                    && SD_ReadBlock(ptr, 16))
+//                res = RES_OK;
+//            break;
+//
+//        case SD_GET_OCR: /* Receive OCR as an R3 resp (4 uint8_ts) */
+//            if (SD_Command(SD_READ_OCR, 0) == 0)
+//            { /* READ_OCR */
+//                for (n = 0; n < 4; n++)
+//                    *ptr++ = SD_RXBYTE();
+//                res = RES_OK;
+//            }
+//
+//        case SD_GET_TYPE: /* Get card type flags (1 uint8_t) */
+//            *ptr = 0;
+//            res = RES_OK;
+//            break;
 
         default:
             res = RES_PARERR;

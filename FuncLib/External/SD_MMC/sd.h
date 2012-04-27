@@ -62,8 +62,14 @@
 #define SD_H
 
 #include "hardwareSpecific.h"
+
+#if USE_FAT_FS==1
+#include "FatFS/diskio.h"
+#include "FatFS/ff.h"
+#else
 #include "PetitFS/diskio.h"
 #include "PetitFS/pff.h"
+#endif
 #include <stdint.h>
 
 #define SD_ERROR 		0
