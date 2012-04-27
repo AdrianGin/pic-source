@@ -26,12 +26,12 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
 OUTPUT_SUFFIX=elf
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
 # Object Directory
@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1539392564/spi.o ${OBJECTDIR}/_ext/1237177208/pff.o ${OBJECTDIR}/_ext/1777254300/sd.o ${OBJECTDIR}/_ext/1777254300/picsd.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1472/hardwareSpecific.o ${OBJECTDIR}/_ext/1045608385/waveplayer.o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ${OBJECTDIR}/_ext/1539409824/dmadef.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1387409687/uint16toa.o.d ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d ${OBJECTDIR}/_ext/1539374888/adc.o.d ${OBJECTDIR}/_ext/178018670/dmaUart.o.d ${OBJECTDIR}/_ext/481915157/hardUart.o.d ${OBJECTDIR}/_ext/1539392564/spi.o.d ${OBJECTDIR}/_ext/1237177208/pff.o.d ${OBJECTDIR}/_ext/1777254300/sd.o.d ${OBJECTDIR}/_ext/1777254300/picsd.o.d ${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/1532717492/ringbuffer.o.d ${OBJECTDIR}/_ext/43898991/delay.o.d ${OBJECTDIR}/_ext/2105551405/linkedlist.o.d ${OBJECTDIR}/_ext/1218362732/stack.o.d ${OBJECTDIR}/_ext/1472/hardwareSpecific.o.d ${OBJECTDIR}/_ext/1045608385/waveplayer.o.d ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d ${OBJECTDIR}/_ext/1539409824/dmadef.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/1539409824/dmadef.o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1539392564/spi.o ${OBJECTDIR}/_ext/1237177208/pff.o ${OBJECTDIR}/_ext/1777254300/sd.o ${OBJECTDIR}/_ext/1777254300/picsd.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1472/hardwareSpecific.o ${OBJECTDIR}/_ext/1045608385/waveplayer.o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1387409687/uint16toa.o.d ${OBJECTDIR}/_ext/1387409687/uint8toa.o.d ${OBJECTDIR}/_ext/1539374888/adc.o.d ${OBJECTDIR}/_ext/1539409824/dmadef.o.d ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d ${OBJECTDIR}/_ext/178018670/dmaUart.o.d ${OBJECTDIR}/_ext/481915157/hardUart.o.d ${OBJECTDIR}/_ext/1539392564/spi.o.d ${OBJECTDIR}/_ext/1237177208/pff.o.d ${OBJECTDIR}/_ext/1777254300/sd.o.d ${OBJECTDIR}/_ext/1777254300/picsd.o.d ${OBJECTDIR}/_ext/1472/main.o.d ${OBJECTDIR}/_ext/1532717492/ringbuffer.o.d ${OBJECTDIR}/_ext/43898991/delay.o.d ${OBJECTDIR}/_ext/2105551405/linkedlist.o.d ${OBJECTDIR}/_ext/1218362732/stack.o.d ${OBJECTDIR}/_ext/1472/hardwareSpecific.o.d ${OBJECTDIR}/_ext/1045608385/waveplayer.o.d ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1539392564/spi.o ${OBJECTDIR}/_ext/1237177208/pff.o ${OBJECTDIR}/_ext/1777254300/sd.o ${OBJECTDIR}/_ext/1777254300/picsd.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1472/hardwareSpecific.o ${OBJECTDIR}/_ext/1045608385/waveplayer.o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ${OBJECTDIR}/_ext/1539409824/dmadef.o
+OBJECTFILES=${OBJECTDIR}/_ext/1387409687/uint16toa.o ${OBJECTDIR}/_ext/1387409687/uint8toa.o ${OBJECTDIR}/_ext/1539374888/adc.o ${OBJECTDIR}/_ext/1539409824/dmadef.o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ${OBJECTDIR}/_ext/178018670/dmaUart.o ${OBJECTDIR}/_ext/481915157/hardUart.o ${OBJECTDIR}/_ext/1539392564/spi.o ${OBJECTDIR}/_ext/1237177208/pff.o ${OBJECTDIR}/_ext/1777254300/sd.o ${OBJECTDIR}/_ext/1777254300/picsd.o ${OBJECTDIR}/_ext/1472/main.o ${OBJECTDIR}/_ext/1532717492/ringbuffer.o ${OBJECTDIR}/_ext/43898991/delay.o ${OBJECTDIR}/_ext/2105551405/linkedlist.o ${OBJECTDIR}/_ext/1218362732/stack.o ${OBJECTDIR}/_ext/1472/hardwareSpecific.o ${OBJECTDIR}/_ext/1045608385/waveplayer.o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o
 
 
 CFLAGS=
@@ -63,14 +63,14 @@ FIXDEPS=fixDeps
 
 # The following macros may be used in the pre and post step lines
 Device=PIC24HJ64GP202
-ProjectDir="M:\Robotics\Source\PICResource\24HJ\First24HJ.X"
+ProjectDir="M:\Robotics\Source\PICResource\24HJ\WaveplayerPFS"
 ConfName=default
-ImagePath="dist\default\${IMAGE_TYPE}\First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImagePath="dist\default\${IMAGE_TYPE}\WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ImageDir="dist\default\${IMAGE_TYPE}"
-ImageName="First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImageName="WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 
 .build-conf:  .pre ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
 	@echo "User defined post-build step: []"
 	@
@@ -110,6 +110,18 @@ ${OBJECTDIR}/_ext/1539374888/adc.o: ../../Peripherals/ADC/adc.c  nbproject/Makef
 	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.ok ${OBJECTDIR}/_ext/1539374888/adc.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1539374888/adc.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539374888/adc.o.d" -o ${OBJECTDIR}/_ext/1539374888/adc.o ../../Peripherals/ADC/adc.c  
+	
+${OBJECTDIR}/_ext/1539409824/dmadef.o: ../../Peripherals/dma/dmadef.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1539409824 
+	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.ok ${OBJECTDIR}/_ext/1539409824/dmadef.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" -o ${OBJECTDIR}/_ext/1539409824/dmadef.o ../../Peripherals/dma/dmadef.c  
+	
+${OBJECTDIR}/_ext/1102637588/dmaSPI.o: ../../Peripherals/dmaSPI/dmaSPI.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1102637588 
+	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.ok ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" -o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ../../Peripherals/dmaSPI/dmaSPI.c  
 	
 ${OBJECTDIR}/_ext/178018670/dmaUart.o: ../../Peripherals/dmaUART/dmaUart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/178018670 
@@ -195,18 +207,6 @@ ${OBJECTDIR}/_ext/1045608385/picdriverwav.o: ../../../FuncLib/External/WavePlaye
 	@${RM} ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.ok ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d" -o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o ../../../FuncLib/External/WavePlayer/picdriverwav.c  
 	
-${OBJECTDIR}/_ext/1102637588/dmaSPI.o: ../../Peripherals/dmaSPI/dmaSPI.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1102637588 
-	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.ok ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" -o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ../../Peripherals/dmaSPI/dmaSPI.c  
-	
-${OBJECTDIR}/_ext/1539409824/dmadef.o: ../../Peripherals/dma/dmadef.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1539409824 
-	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.ok ${OBJECTDIR}/_ext/1539409824/dmadef.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" -o ${OBJECTDIR}/_ext/1539409824/dmadef.o ../../Peripherals/dma/dmadef.c  
-	
 else
 ${OBJECTDIR}/_ext/1387409687/uint16toa.o: ../../../FuncLib/Other/mmculib/uint16toa.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1387409687 
@@ -225,6 +225,18 @@ ${OBJECTDIR}/_ext/1539374888/adc.o: ../../Peripherals/ADC/adc.c  nbproject/Makef
 	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1539374888/adc.o.ok ${OBJECTDIR}/_ext/1539374888/adc.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1539374888/adc.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539374888/adc.o.d" -o ${OBJECTDIR}/_ext/1539374888/adc.o ../../Peripherals/ADC/adc.c  
+	
+${OBJECTDIR}/_ext/1539409824/dmadef.o: ../../Peripherals/dma/dmadef.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1539409824 
+	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.ok ${OBJECTDIR}/_ext/1539409824/dmadef.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" -o ${OBJECTDIR}/_ext/1539409824/dmadef.o ../../Peripherals/dma/dmadef.c  
+	
+${OBJECTDIR}/_ext/1102637588/dmaSPI.o: ../../Peripherals/dmaSPI/dmaSPI.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1102637588 
+	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.ok ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" -o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ../../Peripherals/dmaSPI/dmaSPI.c  
 	
 ${OBJECTDIR}/_ext/178018670/dmaUart.o: ../../Peripherals/dmaUART/dmaUart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/178018670 
@@ -310,31 +322,19 @@ ${OBJECTDIR}/_ext/1045608385/picdriverwav.o: ../../../FuncLib/External/WavePlaye
 	@${RM} ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.ok ${OBJECTDIR}/_ext/1045608385/picdriverwav.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1045608385/picdriverwav.o.d" -o ${OBJECTDIR}/_ext/1045608385/picdriverwav.o ../../../FuncLib/External/WavePlayer/picdriverwav.c  
 	
-${OBJECTDIR}/_ext/1102637588/dmaSPI.o: ../../Peripherals/dmaSPI/dmaSPI.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1102637588 
-	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.ok ${OBJECTDIR}/_ext/1102637588/dmaSPI.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1102637588/dmaSPI.o.d" -o ${OBJECTDIR}/_ext/1102637588/dmaSPI.o ../../Peripherals/dmaSPI/dmaSPI.c  
-	
-${OBJECTDIR}/_ext/1539409824/dmadef.o: ../../Peripherals/dma/dmadef.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1539409824 
-	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1539409824/dmadef.o.ok ${OBJECTDIR}/_ext/1539409824/dmadef.o.err 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -Wall -D__PIC24H__ -DFcy=40000000 -I"../../../FuncLib/Other" -I"/D:/Microchip/MPLAB C30/include" -I"../../Peripherals" -I"../.." -I"../../Peripherals/hardUART24H" -I"/D:/Microchip/MPLAB C30/support/PIC24H/h" -I"../../../FuncLib/Other/RingBuffer" -I"/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F" -I"../../../FuncLib/Other/linkedlist" -I"M:/Robotics/Source/PICResource/24HJ" -I"../../../FuncLib/External" -I"../../../FuncLib/Applications" -Os -fomit-frame-pointer -MMD -MF "${OBJECTDIR}/_ext/1539409824/dmadef.o.d" -o ${OBJECTDIR}/_ext/1539409824/dmadef.o ../../Peripherals/dma/dmadef.c  
-	
 endif
 
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
+dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -omf=elf -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -o dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}   "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-coff.a" "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-elf.a"     -Wl,--defsym=__MPLAB_BUILD=1,--heap=0,-L"..",-Map="${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map",--report-mem$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__ICD2RAM=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PICKIT2=1
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -omf=elf -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1 -o dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}   "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-coff.a" "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-elf.a"     -Wl,--defsym=__MPLAB_BUILD=1,--heap=0,-L"..",-Map="${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map",--report-mem$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__ICD2RAM=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PICKIT2=1
 else
-dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
+dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -omf=elf -mcpu=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}   "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-coff.a" "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-elf.a"     -Wl,--defsym=__MPLAB_BUILD=1,--heap=0,-L"..",-Map="${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map",--report-mem$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION)
-	${MP_CC_DIR}\\pic30-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} -omf=elf
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -omf=elf -mcpu=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}   "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-coff.a" "D:\Microchip\MPLAB C30\lib\PIC24H\libp24HJ64GP202-elf.a"     -Wl,--defsym=__MPLAB_BUILD=1,--heap=0,-L"..",-Map="${DISTDIR}/First24HJ.X.${IMAGE_TYPE}.map",--report-mem$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION)
+	${MP_CC_DIR}\\pic30-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} -omf=elf
 endif
 
 .pre:

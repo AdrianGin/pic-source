@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=First24HJ.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=first24hj.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=WaveplayerPFS.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=waveplayerpfs/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/first24hj.x/bin
+makeDirectory ${TMPDIR}/waveplayerpfs/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/first24hj.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/waveplayerpfs.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/first24hj.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/waveplayerpfs.tar *
 checkReturnCode
 
 # Cleanup
