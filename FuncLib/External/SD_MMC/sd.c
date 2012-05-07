@@ -294,17 +294,28 @@ uint8_t SD_Command(uint8_t cmd, uint32_t arg)
 uint8_t SD_ReadBlock(uint8_t* buffer, uint16_t byteCount)
 {
     uint16_t i;
-    uint8_t retry = 0;
+    uint16_t retry = 0;
     /** Wait for start block */
     while (SD_RXBYTE() != SD_STARTBLOCK_READ)
     {
-        if (retry++ > SD_MAX_RETRIES)
+        if (retry++ > SD_TIMEOUT)
         {
             return SD_ERROR;
         }
     }
     /* read in data */
-    SD_RXBLOCK(buffer, byteCount);
+    if( buffer )
+    {
+        SD_RXBLOCK(buffer, byteCount);
+    }
+    else
+    {
+        while (byteCount--)
+        {
+            uint8_t byte = SD_RXBYTE();
+            //FORWARD(byte);
+        }
+    }
     SD_RXBYTE(); /// read 16-bit CRC
     SD_RXBYTE();
 
@@ -366,7 +377,7 @@ uint8_t SD_WriteSector(uint8_t* buffer, uint8_t token)
  *
  *
  */
-uint8_t SD_disk_Init(void)
+uint8_t disk_initialize(BYTE drive)
 {
     if (SD_Init() == SD_SUCCESS)
     {
@@ -382,13 +393,17 @@ uint8_t SD_disk_Init(void)
 /* Used by SD_DISKREAD */
 
 /** Writes the buffer to the sector. secCount is the number of sectors to write */
-uint8_t SD_Read(uint8_t* buffer, uint32_t sector, uint8_t secCount)
+DRESULT disk_read(BYTE drive, BYTE* buffer, DWORD sector, BYTE secCount)
 {
     // assert chip select
-    SD_CS_PORT &= ~(1 << SD_CS_PIN);
+    //SD_CS_PORT &= ~(1 << SD_CS_PIN);
 
+    /* Convert sectors to bytes, if it is NOT an SDHC card */
+    if (!(SDVersion & CT_BLOCK))
+    {
+        sector = sector << 9;
+    }
 
-    sector = sector << 9;
 
     if (secCount == 1)
     { // Single block read
@@ -403,7 +418,10 @@ uint8_t SD_Read(uint8_t* buffer, uint32_t sector, uint8_t secCount)
             do
             {
                 if (!SD_ReadBlock(buffer, 512)) break;
-                buffer += 512;
+                if( buffer )
+                {
+                    buffer += 512;
+                }
             }
             while (--secCount);
             SD_Command(SD_STOP_READ_TRANS, 0); // STOP_TRANSMISSION
@@ -411,17 +429,17 @@ uint8_t SD_Read(uint8_t* buffer, uint32_t sector, uint8_t secCount)
     }
 
     // wait until card not busy
-    while (!SD_RXBYTE());
+    //while (!SD_RXBYTE());
 
     /* Release and return clock phase and speed back to default */
-    SD_CS_PORT |= (1 << SD_CS_PIN);
+    SD_RELEASE();
 
     // return success
     return secCount ? RES_ERROR : RES_OK;
 }
 
 /* Writes 'secCount' sectors of buffer to the address sector */
-uint8_t SD_Write(const uint8_t* buffer, uint32_t sector, uint8_t secCount)
+DRESULT disk_write(BYTE drive, const BYTE* buffer, DWORD sector, BYTE secCount)
 {
     // assert chip select
     SD_CS_PORT &= ~(1 << SD_CS_PIN);
@@ -459,7 +477,7 @@ uint8_t SD_Write(const uint8_t* buffer, uint32_t sector, uint8_t secCount)
 }
 
 /** Disk IO Functions */
-DSTATUS SD_disk_status(void)
+DSTATUS disk_status(BYTE drive)
 {
     return 0;
 }
@@ -470,7 +488,7 @@ DSTATUS SD_disk_status(void)
 /** Ctrl is the control command to send */
 
 /** buff is the memory to read or write the control data to */
-DRESULT SD_disk_ioctl(uint8_t ctrl, void *buff)
+DRESULT disk_ioctl(BYTE drive, BYTE ctrl, void *buff)
 {
     DRESULT res;
     uint8_t n, csd[16], *ptr = buff;
@@ -513,31 +531,31 @@ DRESULT SD_disk_ioctl(uint8_t ctrl, void *buff)
             while (!SD_RXBYTE());
             res = RES_OK;
             break;
-//
-//        case SD_GET_CSD: /* Receive CSD as a data block (16 uint8_ts) */
-//            if (SD_Command(SD_SEND_CSD, 0) == 0 /* READ_CSD */
-//                    && SD_ReadBlock(ptr, 16))
-//                res = RES_OK;
-//            break;
-//
-//        case SD_GET_CID: /* Receive CID as a data block (16 uint8_ts) */
-//            if (SD_Command(SD_SEND_CID, 0) == 0 /* READ_CID */
-//                    && SD_ReadBlock(ptr, 16))
-//                res = RES_OK;
-//            break;
-//
-//        case SD_GET_OCR: /* Receive OCR as an R3 resp (4 uint8_ts) */
-//            if (SD_Command(SD_READ_OCR, 0) == 0)
-//            { /* READ_OCR */
-//                for (n = 0; n < 4; n++)
-//                    *ptr++ = SD_RXBYTE();
-//                res = RES_OK;
-//            }
-//
-//        case SD_GET_TYPE: /* Get card type flags (1 uint8_t) */
-//            *ptr = 0;
-//            res = RES_OK;
-//            break;
+
+        case MMC_GET_CSD: /* Receive CSD as a data block (16 uint8_ts) */
+            if (SD_Command(SD_SEND_CSD, 0) == 0 /* READ_CSD */
+                    && SD_ReadBlock(ptr, 16))
+                res = RES_OK;
+            break;
+
+        case MMC_GET_CID: /* Receive CID as a data block (16 uint8_ts) */
+            if (SD_Command(SD_SEND_CID, 0) == 0 /* READ_CID */
+                    && SD_ReadBlock(ptr, 16))
+                res = RES_OK;
+            break;
+
+        case MMC_GET_OCR: /* Receive OCR as an R3 resp (4 uint8_ts) */
+            if (SD_Command(SD_READ_OCR, 0) == 0)
+            { /* READ_OCR */
+                for (n = 0; n < 4; n++)
+                    *ptr++ = SD_RXBYTE();
+                res = RES_OK;
+            }
+
+        case MMC_GET_TYPE: /* Get card type flags (1 uint8_t) */
+            *ptr = 0;
+            res = RES_OK;
+            break;
 
         default:
             res = RES_PARERR;
@@ -550,6 +568,13 @@ DRESULT SD_disk_ioctl(uint8_t ctrl, void *buff)
 
     return res;
 }
+
+
+DWORD get_fattime (void)
+{
+    return 0;
+}
+
 
 #endif
 

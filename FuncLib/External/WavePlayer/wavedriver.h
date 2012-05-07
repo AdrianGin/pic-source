@@ -2,11 +2,11 @@
 #define _WAVE_DRIVER_H
 
 #include <stdint.h>
-#include "waveplayer.h"
+#include "waveplayerFS.h"
 
-void waveAudioSetup(void);
-void waveAudioOn(void);
-void waveAudioOff(void);
+void waveAudioSetup(waveFile_t* wavefile);
+void waveAudioOn(waveFile_t* wavefile);
+void waveAudioOff(waveFile_t* wavefile);
 void waveProcessBuffer(waveHeader_t* wavefile);
 void waveSetSampleRate(uint16_t sampleRate);
 

@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>WaveplayerPFS</name>
+            <name>WaveplayerFS</name>
             <creation-uuid>54b88ff3-7380-4bc6-bda0-f3ed27322731</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>

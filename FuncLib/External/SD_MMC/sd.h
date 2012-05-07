@@ -181,10 +181,11 @@ uint8_t SD_Command(uint8_t cmd, uint32_t arg);
 
 /** SD DISK IO Functions */
 #ifdef _FATFS
-uint8_t SD_Write(const uint8_t* buffer, uint32_t sector, uint8_t secCount );
-uint8_t SD_Read(uint8_t* buffer, uint32_t sector, uint8_t secCount );
-DSTATUS SD_disk_status(void);
-DRESULT SD_disk_ioctl(uint8_t ctrl,	void *buff);
+//Should be defined under diskio.h
+//uint8_t SD_Write(const uint8_t* buffer, uint32_t sector, uint8_t secCount );
+//uint8_t SD_Read(uint8_t* buffer, uint32_t sector, uint8_t secCount );
+//DSTATUS SD_disk_status(void);
+//DRESULT SD_disk_ioctl(uint8_t ctrl,	void *buff);
 #endif
 
 

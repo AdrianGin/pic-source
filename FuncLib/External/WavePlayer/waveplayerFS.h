@@ -1,5 +1,7 @@
-#ifndef _WAVE_PLAYER_H
-#define _WAVE_PLAYER_H
+#ifndef _WAVE_PLAYER_FS_H
+#define _WAVE_PLAYER_FS_H
+
+#include "FatFS/ff.h"
 
 /* Four Bytes to a Long */
 #define FCC(b1,b2,b3,b4)	(((uint32_t)b4<<24)+((uint32_t)b3<<16)+((uint16_t)b2<<8)+(uint8_t)b1)	/* FourCC */
@@ -26,8 +28,17 @@
 
 #define WAVE_OUTBLOCK_SIZE   (WAVE_MINIMUM_SAMPLES)
 
-#define WAVE_OUTBUFFER_SIZE   (512)
+#define WAVE_OUTBUFFER_SIZE   (1024)
 #define WAVE_OUTMASK         (WAVE_OUTBUFFER_SIZE-1)
+
+#define WAVE_TRANSFER_BYTE_SIZE (512)
+
+#define WAVE_BYTE_COMPLETE    (0)
+#define WAVE_BUFFER_INCOMPLETE  (WAVE_AUDIO_STATUS_REENTRY)
+
+#define WAVE_AUDIO_STATUS_PLAYING (1<<0)
+#define WAVE_AUDIO_STATUS_HIGHBYTE (1<<1)
+#define WAVE_AUDIO_STATUS_REENTRY (1<<2)
 
 typedef struct waveHeader
 {
@@ -35,32 +46,27 @@ typedef struct waveHeader
    uint8_t resolution;
    uint16_t sampleRate;
    uint32_t dataSize;
-
-   /* Here we should determine whether the wave we are playing
-    * is a 8/16bit */
-   uint8_t byteOffset;
-   uint8_t valueOffset;
-
-   /* For Mono / Stereo */
-   uint8_t offsetMultiplier;
 } waveHeader_t;
 
+typedef struct wavefile
+{
+   uint8_t Buffer[WAVE_OUTBUFFER_SIZE];
+   volatile uint16_t audioReadptr;
+   volatile uint16_t audioWriteptr;
+   uint8_t audioStatus;
+    
+   waveHeader_t waveHeader;
+   FIL fileptr;
+} waveFile_t;
 
-extern volatile uint8_t audioReadptr;
-extern volatile uint8_t audioWriteptr;
-extern volatile uint8_t audioState;
+uint16_t waveBufferedBytes(waveFile_t* waveFile);
 
-extern uint8_t Buff[];
-extern uint8_t fastMode;
-extern uint8_t isStereo;
-
-
-uint8_t waveIsPlaying(void);
+uint8_t waveIsPlaying(waveFile_t* waveFile);
 /* Puts the byte on the buffer */
-void wavePutByte(uint8_t byte);
+uint8_t wavePutByte(waveFile_t* waveFile, uint8_t byte);
 
-uint8_t wavePlayFile(waveHeader_t* wavefile, uint8_t* filename);
-uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename);
-uint8_t waveContinuePlaying(waveHeader_t* wavefile);
+uint8_t wavePlayFile(waveFile_t* wavefile, uint8_t* filename);
+uint32_t waveParseHeader(waveFile_t* wavefile, uint8_t* filename);
+uint8_t waveContinuePlaying(waveFile_t* waveFile);
 
 #endif

@@ -20,9 +20,10 @@
 #include "SD_MMC/sd.h"
 
 #include "mmculib/uint16toa.h"
+#include "mmculib/root.h"
 #include "adc/adc.h"
 
-#include "Waveplayer/waveplayer.h"
+#include "Waveplayer/waveplayerFS.h"
 
 void InterruptHandlerLow();
 
@@ -31,7 +32,8 @@ volatile PIC_USART_t U2 = {&U2STA, &U2MODE, &U2BRG, &U2TXREG, &U2RXREG, &IFS1, T
 PIC_USART_t* PrimaryUART;
 LINKED_LIST_t PrimaryList;
 
-volatile PIC_SPI_t S1 = {&SPI1STAT, &SPI1CON1, &SPI1CON2, &SPI1BUF};
+PIC_SPI_t S1 = {&SPI1STAT, &SPI1CON1, &SPI1CON2, &SPI1BUF};
+
 
 
 PIC_DMA_UART_t DMAUART1 = {&DMA0CON,
@@ -43,7 +45,7 @@ PIC_DMA_UART_t DMAUART1 = {&DMA0CON,
     (uint8_t*)&DMABuffer,
     &U1};
 
-volatile PIC_DMA_SPI_t DMASPI1 = {&DMA1CON,
+PIC_DMA_SPI_t DMASPI1 = {&DMA1CON,
     &DMA1REQ,
     &DMA1STA,
     &DMA1PAD,
@@ -52,7 +54,7 @@ volatile PIC_DMA_SPI_t DMASPI1 = {&DMA1CON,
     (uint8_t*)&DMABuffer[DMA_TX_SIZE],
     &S1};
 
-volatile PIC_DMA_SPI_t DMASPI1T = {&DMA2CON,
+PIC_DMA_SPI_t DMASPI1T = {&DMA2CON,
     &DMA2REQ,
     &DMA2STA,
     &DMA2PAD,
@@ -67,8 +69,9 @@ char RAMSTRING[] = "RAM STRING\n";
 
 
 
-volatile waveHeader_t wavefile;
+waveFile_t wav[2];
 volatile uint8_t newSongFlag = 0;
+volatile uint8_t songIndex = 0;
 volatile uint8_t ProcessBufferFlag;
 //volatile uint8_t ProcessBufferFlag;
 
@@ -76,7 +79,7 @@ volatile char inputString[20];
 
 FATFS filesys;
 
-void LoadWaveFile(char* filename);
+void LoadWaveFile(waveFile_t* waveFile, char* filename);
 
 //static char BufferB[20] __attribute__((space(dma)));
 
@@ -160,10 +163,9 @@ int main(void)
 
     ADC_Init();
     ADC_Set10bit();
-    ADC_SetClockSpeed(5, 2);
+    ADC_SetClockSpeed(5, 4);
     ADC_SetPin(11);
-    ADC_Off();
-    //ADCStart();
+    //ADC_Off();
 
     Delay(10);
     uint16_t ADCValue;
@@ -175,34 +177,57 @@ int main(void)
     DMA_SPI_Init(&DMASPI1, &DMASPI1T, DMA_SPI1);
     DMA_SPI_Enable();
 
-    ret = pf_mount(&filesys);
+    ret = f_mount(0, &filesys);
     uartTx(PrimaryUART, ret);
-    uartTx(PrimaryUART, 'A');
-    uartTx(PrimaryUART, 'B');
-    uartTx(PrimaryUART, 'C');
-    uartTx(PrimaryUART, 'D');
+
+//    FIL testFIL;
+//
+//    ret = f_open(&testFIL, "hello.txt", FA_OPEN_EXISTING | FA_READ);
+//    uartTx(PrimaryUART, ret);
+//
+//    uint16_t br;
+//    uint8_t buffer[30];
+//    memset(buffer, 0, 30);
+//    ret = f_read(&testFIL, buffer, 20, &br);
+//
+//    DEBUG(buffer);
+
+    //while(1);
 
     strcpy(outputString, "4816s.wav");
     //ret = pf_open("1.wav");
     //SPI_TxByte(&S1, 'A');
     while (1)
     {
-        //ADCValue = ADC_Sample();
-        ProcessBufferFlag = 1;
-        if ((waveIsPlaying())&&(waveContinuePlaying((waveHeader_t*)&wavefile)==0))
-        {
-            waveAudioOff();
-            DEBUG(("\nWave Finished!"));
-            newSongFlag = 1;
-        }
-        ProcessBufferFlag = 0;
 
 
         if (newSongFlag)
         {
-            LoadWaveFile(inputString);
+            LoadWaveFile(&wav[songIndex], inputString);
+            songIndex = (songIndex + 1) % 2;
             newSongFlag = 0;
+
+            //waveSetSampleRate(wavefile[songIndex].waveHeader.sampleRate);
         }
+        
+
+        ProcessBufferFlag = 1;
+
+
+        if ((waveIsPlaying(&wav[0]) & WAVE_AUDIO_STATUS_PLAYING)&&(waveContinuePlaying(&wav[0])==0))
+        {
+            //waveAudioOff(&wavefile[0]);
+            DEBUG(("\nWave Finished! 1"));
+            newSongFlag = 1;
+        }
+
+        if ((waveIsPlaying(&wav[1])& WAVE_AUDIO_STATUS_PLAYING)&&(waveContinuePlaying(&wav[1])==0))
+        {
+            //waveAudioOff();
+            DEBUG(("\nWave Finished! 2 "));
+            //newSongFlag = 1;
+        }
+        ProcessBufferFlag = 0;
     }
 
     return 0;
@@ -235,22 +260,101 @@ void __attribute__((__interrupt__, no_auto_psv)) _DMACError(void)
 void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 {
     IFS0bits.T1IF = 0; //clear interrupt flag
-    WAVE_LEFT_REG = Buff[(audioReadptr)];
+    
+    int16_t Z, Y, A, B;
+    uint16_t X, G;
+    uint8_t a,b;
+    
+    a = wav[0].Buffer[(wav[0].audioReadptr)];
+    b = wav[1].Buffer[(wav[1].audioReadptr)];
+
+    //b = 128;
+
+    //Y = ((a*b)/128);
+    //Z = ((2*(a+b)) - ((a*b)/128)) - 256;
+//    Z = (a - 128);
+//    B = b - 128;
+//
+//    B = (B * 5) / 20;
+//
+//    //Z = (Z * 8) / 10;
+//    Y = (ADC_Sample()/50);
+//    Y = Z * Y / 20;
+//    Z = Y + B;
+//    Z += 128;
+
+    A = a - 128;
+    B = b - 128;
+    X = (A*A) + (B*B);
+    X = X << 1;
+
+    if( X < 127)
+    {
+        X = 127;
+    }
+    else
+    {
+        X = root(X);
+    }
+    
+    A  = (A * A) / X;
+    if( a < 128 )
+    {
+        A = -A;
+    }
+    B  = (B * B) / X;
+    if( b < 128 )
+    {
+        B = -B;
+    }
+    Z = (A + B) + 128;
+    if ( Z > 255)
+    {
+        LATA ^= 1;
+    }
+
+    WAVE_LEFT_REG = Z;
+    //WAVE_LEFT_REG = wav[0].Buffer[(wav[0].audioReadptr)];
+
     /* Right is second */
     /* This will not do anything if WAVE_STEREO_ENABLED is not set to 1 */
-    WAVE_RIGHT_REG = Buff[(audioReadptr+isStereo)];
-    audioReadptr = (audioReadptr+1+isStereo)&WAVE_OUTMASK;
-    //LATA ^= 1;
+    WAVE_RIGHT_REG = wav[1].Buffer[(wav[1].audioReadptr)];// + ((wav[1].waveHeader.channelCount) >> 1)];
+    //WAVE_RIGHT_REG = Buff[(audioReadptr+isStereo)];
+    //WAVE_RIGHT_REG = wavefile[1].Buffer[(wavefile[1].audioReadptr)];
+    if( waveBufferedBytes(&wav[0]) >= 0x10)
+    {
+        wav[0].audioReadptr = (wav[0].audioReadptr + (wav[0].waveHeader.channelCount))&WAVE_OUTMASK;
+    }
+
+    if( waveBufferedBytes(&wav[1]) >= 0x10)
+    {
+        wav[1].audioReadptr = (wav[1].audioReadptr + (wav[1].waveHeader.channelCount))&WAVE_OUTMASK;
+    }
+
+
+
+
+
+    //ADCValue = ;
+    //waveSetSampleRate((ADC_Sample()*86)+8000);
+    //wavefile[0].audioReadptr++;
+    //uartTx(PrimaryUART, wavefile[0].audioReadptr);
+
+    //wavefile[1].audioReadptr = (wavefile[1].audioReadptr + (wavefile[1].waveHeader.channelCount))&WAVE_OUTMASK;
+    
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _ADC1Interrupt(void)
 {
     IFS0bits.AD1IF = 0x00;
     uint16_t ADCValue = ADC1BUF0;
-    char outputString[10];
-    uint16toa(ADCValue, outputString, 0);
-    uartTx((PIC_USART_t*)&U2, 'A');
-    LATA = 1;
+
+    
+
+//    char outputString[10];
+//    uint16toa(ADCValue, outputString, 0);
+//    uartTx((PIC_USART_t*)&U2, 'A');
+//    LATA = 1;
     //    ADCValue = ADC1BUF0;
     //    uartTx(&U2, ((ADCValue & 0xFF00) >> 8) );
     //    uartTx(&U2, ((ADCValue & 0x00FF)) );
@@ -310,7 +414,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
 void __attribute__((__interrupt__, no_auto_psv)) _U2TXInterrupt(void)
 {
     IFS1bits.U2TXIF = 0; //clear interrupt flag
-    if (!ringbuffer_isEmpty((RINGBUFFER_T*)U2.TransmitBuffer))
+    while( !(*U2.UXSTA & (1<<UTXBF)) && !ringbuffer_isEmpty((RINGBUFFER_T*)U2.TransmitBuffer) )
     {
         *U2.UXTXREG = ringbuffer_get((RINGBUFFER_T*)U2.TransmitBuffer);
     }
@@ -325,9 +429,11 @@ void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void)
 
 }
 
-void LoadWaveFile(char* filename)
+void LoadWaveFile(waveFile_t* waveFile, char* filename)
 {
     char outputString[20];
+    waveHeader_t* waveheader = &waveFile->waveHeader;
+    
     strncpy(outputString, filename, strlen(filename));
 
     strncpy(&outputString[strlen(filename)], ".wav", 5);
@@ -336,25 +442,25 @@ void LoadWaveFile(char* filename)
     DEBUG(outputString);
 
     while( ProcessBufferFlag == 1);
+    
+    wavePlayFile(waveFile, outputString);
 
-    wavePlayFile((waveHeader_t*)&wavefile, outputString);
-
-    uint16toa(wavefile.channelCount, outputString, 0);
+    uint16toa(waveheader->channelCount, outputString, 0);
     DEBUG(("\nChannel Count: "));
     DEBUG(outputString);
 
-    uint16toa(wavefile.resolution, outputString, 0);
+    uint16toa(waveheader->resolution, outputString, 0);
     DEBUG(("\nRes: "));
     DEBUG(outputString);
 
-    uint16toa(wavefile.sampleRate, outputString, 0);
+    uint16toa(waveheader->sampleRate, outputString, 0);
     DEBUG(("\nSampleRate: "));
     DEBUG(outputString);
 
     DEBUG(("\nDataSize: "));
-    uint16toa(((uint32_t)(wavefile.dataSize)>>16), outputString, 0);
+    uint16toa(((uint32_t)(waveheader->dataSize)>>16), outputString, 0);
     DEBUG(outputString);
-    uint16toa(wavefile.dataSize, outputString, 0);
+    uint16toa(waveheader->dataSize, outputString, 0);
     DEBUG(outputString);
 }
 
@@ -376,7 +482,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
         inputString[byteCount] = '\0';
         byteCount = 0;
         newSongFlag = 1;
-        
+        //songIndex = (songIndex) % 2;
     }
 
 }

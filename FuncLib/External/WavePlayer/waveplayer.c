@@ -14,7 +14,6 @@ uint8_t fastMode;
 uint8_t is16Bit;
 uint8_t isStereo;
 
-FIL waveFile;
 
 uint8_t waveIsPlaying(void)
 {
@@ -102,7 +101,7 @@ uint8_t waveContinuePlaying(waveHeader_t* wavefile)
         bytesToPlay = wavefile->dataSize;
     }
 
-    f_read(&waveFile, 0, bytesToPlay, &bytesWritten);
+    pf_read(0, bytesToPlay, &bytesWritten);
     wavefile->dataSize = wavefile->dataSize - bytesToPlay;
 
     if (bytesWritten != bytesToPlay)
@@ -135,11 +134,11 @@ uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename)
     is16Bit = 0;
     isStereo = 0;
 
-    if (f_open(&waveFile, filename, FA_READ) != FR_OK) return WAVE_IO_ERROR + 1;
-    if (f_lseek(&waveFile, 0) != FR_OK) return WAVE_IO_ERROR + 2;
+    if (pf_open(filename) != FR_OK) return WAVE_IO_ERROR + 1;
+    if (pf_lseek(0) != FR_OK) return WAVE_IO_ERROR + 2;
 
     /* Check RIFF-WAVE file header */
-    if (f_read(&waveFile, Buff, 12, &bytesRead)) return WAVE_IO_ERROR + 3;
+    if (pf_read(Buff, 12, &bytesRead)) return WAVE_IO_ERROR + 3;
 
     /* Make sure it is a WAVE file */
     if (bytesRead != 12 || LD_DWORD(Buff + 8) != FCC('W', 'A', 'V', 'E')) return WAVE_INVALID_FILE;
@@ -205,7 +204,7 @@ uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename)
             case FCC('f', 'a', 'c', 't'): /* 'fact' chunk (skip) */
             case FCC('L', 'I', 'S', 'T'): /* 'LIST' chunk (skip) */
                 if (chunkSize & 1) chunkSize++;
-                if (f_lseek(&waveFile, waveFile.fptr + chunkSize)) return WAVE_IO_ERROR + 6;
+                if (pf_lseek(filesys.fptr + chunkSize)) return WAVE_IO_ERROR + 6;
                 break;
 
             default: /* Unknown chunk */

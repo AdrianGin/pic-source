@@ -16,7 +16,7 @@
 #define F_CPU   39469000
 #endif
 
-#define USE_FAT_FS  (0)
+#define USE_FAT_FS  (1)
 
 #if USE_FAT_FS==1
 #include "FatFS/diskio.h"
@@ -61,11 +61,11 @@
 //#define SD_PWR_PORT PORTB
 //#define SD_PWR_PIN  PB0
 
-extern volatile PIC_SPI_t S1;
+extern PIC_SPI_t S1;
 extern PIC_USART_t* PrimaryUART;
 
-extern volatile PIC_DMA_SPI_t DMASPI1;
-extern volatile PIC_DMA_SPI_t DMASPI1T;
+extern PIC_DMA_SPI_t DMASPI1;
+extern PIC_DMA_SPI_t DMASPI1T;
 
 extern FATFS filesys;
 

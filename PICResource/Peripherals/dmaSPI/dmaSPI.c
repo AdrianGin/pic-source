@@ -67,7 +67,7 @@ void DMA_SPI_Enable(void)
     IEC2bits.SPI2IE = 0x00;
 }
 
-void DMA_SPI_ReceiveBytes(volatile PIC_DMA_SPI_t* DMASPI, volatile PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount)
+void DMA_SPI_ReceiveBytes(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount)
 {
     if( DMASPI->DMAFlag == 0)
     {
@@ -91,7 +91,7 @@ void DMA_SPI_ReceiveBytes(volatile PIC_DMA_SPI_t* DMASPI, volatile PIC_DMA_SPI_t
     }
 }
 
-void DMA_SPI_ReceiveBlock(volatile PIC_DMA_SPI_t* DMASPI, volatile PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount)
+void DMA_SPI_ReceiveBlock(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount)
 {
     if( byteCount != 0 )
     {

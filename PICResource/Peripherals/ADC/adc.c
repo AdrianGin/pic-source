@@ -55,7 +55,7 @@ void ADC_Init(void)
 void ADC_On(void)
 {
     IFS0bits.AD1IF = 0x00;
-    IEC0bits.AD1IE = 0x01;
+    //IEC0bits.AD1IE = 0x01;
     AD1CON1bits.ADON = 1;
 }
 
