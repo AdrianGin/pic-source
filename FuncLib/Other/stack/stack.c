@@ -33,36 +33,46 @@ THE SOFTWARE.
 #include "stack.h"
 
 
-/* Critical means disable interrupts on entry and restore interrupt
- * state on exit */
-
-void* FIFO_PopData(STACK_t* stack)
+//Retrieves the data but doesn't remove it from the queue.
+void* FIFO_PeekData(STACK_t* stack)
 {
     //buffer not empty?
     if (stack->readPtr != stack->writePtr)
     {
-        //wrap around read position
-        stack->readPtr &= (stack->size - 1);
         //get byte from buffer, update read position and return
-        return stack->memPtrArray[stack->readPtr++];
+        return stack->memPtrArray[stack->readPtr];
     } else
     {
         return STACK_OVERFLOW; /* This is really trying to get a nonexistant byte */
     }
+
+}
+
+
+/* Critical means disable interrupts on entry and restore interrupt
+ * state on exit */
+void* FIFO_PopData(STACK_t* stack)
+{
+
+    void* ptr = FIFO_PeekData(stack);
+    stack->readPtr = (stack->readPtr + 1) & (stack->size - 1);
+    return ptr;
 }
 
 
 // LIFO is like reading from the writePtr
 void* LIFO_PopData(STACK_t* stack)
 {
+    uint8_t bufferMask = (stack->size - 1);
+
     //buffer not empty?
     if (stack->writePtr != stack->readPtr)
     {
-        //wrap around read position
-        stack->writePtr--;
-        stack->writePtr &= (stack->size - 1);
+        void* ptr;
+        ptr = stack->memPtrArray[(stack->writePtr - 1) & bufferMask];
         //get byte from buffer, update read position and return
-        return stack->memPtrArray[stack->writePtr];
+        stack->writePtr = (stack->writePtr - 1) & bufferMask;
+        return ptr;
     } else
     {
         return STACK_OVERFLOW; /* This is really trying to get a nonexistant byte */
@@ -73,17 +83,15 @@ void* LIFO_PopData(STACK_t* stack)
 uint8_t STACK_PushData(STACK_t* stack, void* data)
 {
     //is there space in the buffer?
-    int bufferMask = (stack->size - 1);
+    uint8_t bufferMask = (stack->size - 1);
 
     if ( ((stack->writePtr + 1) & bufferMask) != (stack->readPtr & bufferMask))
     {
         //wrap around write position
-        stack->writePtr &= bufferMask;
-
         //write the character
-        stack->memPtrArray[stack->writePtr++] = data;
+        stack->memPtrArray[stack->writePtr] = data;
         //update size info
-
+        stack->writePtr = (stack->writePtr + 1) & bufferMask;
         return STACK_Len(stack);
     } 
 

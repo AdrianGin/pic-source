@@ -16,7 +16,7 @@ typedef struct
     volatile uint8_t size;
 } STACK_t;
 
-
+void* FIFO_PeekData(STACK_t* stack);
 void* LIFO_PopData(STACK_t* stack);
 void* FIFO_PopData(STACK_t* stack);
 uint8_t STACK_PushData(STACK_t* stack, void* data);

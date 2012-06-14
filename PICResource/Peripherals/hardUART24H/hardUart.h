@@ -164,7 +164,7 @@ THE SOFTWARE.
 #define FAST 1
 #define SLOW 0
 
-#define  TXBUFFER_SIZE   (8)
+#define  TXBUFFER_SIZE   (64)
 #define  RXBUFFER_SIZE   (64)
 
 

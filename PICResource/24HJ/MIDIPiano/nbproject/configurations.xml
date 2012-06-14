@@ -28,7 +28,6 @@
       <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.h</itemPath>
       <itemPath>/D:/Microchip/MPLAB C30/include/stdlib.h</itemPath>
       <itemPath>/D:/Microchip/MPLAB C30/include/string.h</itemPath>
-      <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
       <itemPath>D:/Microchip/MPLAB C30/src/peripheral_30F_24H_33F/include/pps.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -38,6 +37,13 @@
     <logicalFolder name="MIDIParser" displayName="MIDIParser" projectFiles="true">
       <itemPath>../../../FuncLib/Applications/MIDIParser/midiparser.c</itemPath>
       <itemPath>../../../FuncLib/Applications/MIDIParser/midiparser.h</itemPath>
+      <itemPath>../../../FuncLib/Other/MIDICodes/MIDICodes.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="MIDIPlayback"
+                   displayName="MIDIPlayback"
+                   projectFiles="true">
+      <itemPath>../../../FuncLib/Other/MIDIPlayback/midiplayback.c</itemPath>
+      <itemPath>../../../FuncLib/Other/MIDIPlayback/midiplayback.h</itemPath>
     </logicalFolder>
     <logicalFolder name="mmculib" displayName="mmculib" projectFiles="true">
       <itemPath>../../../FuncLib/Other/mmculib/uint16toa.h</itemPath>
@@ -91,16 +97,13 @@
       <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.c</itemPath>
       <itemPath>../../delay.c</itemPath>
       <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.c</itemPath>
-      <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
       <itemPath>hardwareSpecific.c</itemPath>
       <itemPath>hardwareSpecific.h</itemPath>
       <itemPath>main.c</itemPath>
     </logicalFolder>
-    <logicalFolder name="f1" displayName="wavPlayer" projectFiles="true">
-      <itemPath>../../../FuncLib/External/WavePlayer/picdriverwav.c</itemPath>
-      <itemPath>../../../FuncLib/External/WavePlayer/wavedriver.h</itemPath>
-      <itemPath>../../../FuncLib/External/WavePlayer/waveplayerFS.c</itemPath>
-      <itemPath>../../../FuncLib/External/WavePlayer/waveplayerFS.h</itemPath>
+    <logicalFolder name="stack" displayName="stack" projectFiles="true">
+      <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
+      <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -113,10 +116,12 @@
     <Elem>../../../FuncLib/Applications</Elem>
     <Elem>../../../FuncLib/External</Elem>
     <Elem>../../Peripherals</Elem>
+    <Elem>../../../FuncLib/Other/MIDIPlayback</Elem>
+    <Elem>../../../FuncLib/Other/stack</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="default" type="2">
+    <conf name="defaultx" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC24HJ64GP202</targetDevice>
@@ -158,7 +163,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\WaveplayerFS;../../../FuncLib/External;../../../FuncLib/Applications;./"/>
+                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\MIDIPiano;../../../FuncLib/External;../../../FuncLib/Applications;./"/>
         <property key="isolate-each-function" value="false"/>
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>

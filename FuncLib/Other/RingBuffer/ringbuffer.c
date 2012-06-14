@@ -25,50 +25,6 @@ THE SOFTWARE.
 /* Ring buffer implementation */
 
 #include "ringbuffer.h"
-#include "p24Hxxxx.h"
-
-
-int atomic_ringbuffer_get(RINGBUFFER_T *buffer)
-{
-    int ret;
-    int oldipl;
-    SET_AND_SAVE_CPU_IPL(oldipl, 7);
-    ret = ringbuffer_get(buffer);
-    RESTORE_CPU_IPL(oldipl);
-    return ret;
-}
-
-int atomic_ringbuffer_put(RINGBUFFER_T *buffer, char character)
-{
-    int ret;
-    int oldipl;
-    SET_AND_SAVE_CPU_IPL(oldipl, 7);
-    ret = ringbuffer_put(buffer, character);
-    RESTORE_CPU_IPL(oldipl);
-    return ret;
-}
-
-
-unsigned int atomic_ringbuffer_len(RINGBUFFER_T *buffer)
-{
-    int ret;
-    int oldipl;
-    SET_AND_SAVE_CPU_IPL(oldipl, 7);
-    ret = ringbuffer_len(buffer);
-    RESTORE_CPU_IPL(oldipl);
-    return ret;
-}
-
-unsigned int atomic_ringbuffer_isEmpty(RINGBUFFER_T *buffer)
-{
-    int ret;
-    int oldipl;
-    SET_AND_SAVE_CPU_IPL(oldipl, 7);
-    ret = ringbuffer_isEmpty(buffer);
-    RESTORE_CPU_IPL(oldipl);
-    return ret;
-}
-
 
 /* Critical means disable interrupts on entry and restore interrupt 
  * state on exit */
