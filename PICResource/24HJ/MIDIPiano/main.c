@@ -72,11 +72,10 @@ char RAMSTRING[] = "RAM STRING\n";
 
 
 
-FIL midifile;
 
-FIL testFIL;
-uint16_t br;
-uint8_t buffer[BUFFER_READ_SIZE];
+//FIL testFIL;
+//uint16_t br;
+//uint8_t buffer[BUFFER_READ_SIZE];
 
 
 volatile uint8_t newSongFlag = 0;
@@ -85,6 +84,8 @@ volatile uint8_t ProcessBufferFlag;
 //volatile uint8_t ProcessBufferFlag;
 
 volatile char inputString[20];
+char filename[20];
+
 
 FATFS filesys;
 
@@ -93,20 +94,7 @@ void LoadMIDIFile(FIL* waveFile, char* filename);
 void LoadMIDIFile(FIL* waveFile, char* filename)
 {
     char outputString[20];
-}
-
-void* locall_read(uint32_t position)
-{
-    f_lseek(&testFIL, position);
-    f_read(&testFIL, buffer, BUFFER_READ_SIZE, &br);
-    return &buffer[0];
-}
-
-void* local_readbuf(uint32_t position, uint8_t* buf, uint16_t size)
-{
-    f_lseek(&testFIL, position);
-    f_read(&testFIL, buf, size, &br);
-    return &buf[0];
+    strcpy(outputString, filename);
 }
 
 
@@ -153,7 +141,7 @@ void TimerInit(void)
     IPC0bits.T1IP = 0x01;
     IFS0bits.T1IF = 0x00;
     IEC0bits.T1IE = 0x01;
-    T1CONbits.TON = 0x01;
+    T1CONbits.TON = 0x00;
 }
 
 void TimerStart(void)
@@ -233,65 +221,89 @@ int main(void)
     DMA_SPI_Enable();
 
     ret = f_mount(0, &filesys);
-    //uartTx(PrimaryUART, ret);
 
-
-    ret = f_open(&testFIL, "hnc.mid", FA_OPEN_EXISTING|FA_READ);
-    //uartTx(PrimaryUART, ret);
-
-
-    memset(buffer, 0, BUFFER_READ_SIZE);
-    ret = f_read(&testFIL, buffer, BUFFER_READ_SIZE, &br);
-
-    //DEBUG(buffer);
-
-    //strcpy(outputString, "4816s.wav");
-
-
-    uint32_t position = 0;
-    uint32_t oldPosition = 0;
-    uint8_t* temp;
-    uint8_t i;
-    uint16_t j;
     MIDI_HEADER_CHUNK_t MIDIHdr;
-    MIDI_TRACK_CHUNK_t MIDITrk;
-    position = MIDIParse_Header(&MIDIHdr, &buffer[0], BUFFER_READ_SIZE);
+    uint32_t tickPosition = 0;
 
-    myprintf("Info1: ", MIDIHdr.format);
-    myprintf("Info2: ", MIDIHdr.trackCount);
-    myprintf("Info3: ", MIDIHdr.PPQ);
-    
-
-    ADCValue = ADC_Sample();
-    position = position + MIDI_HEADER_SIZE;
-    myprintf("Info4: ", position);
-    for (i = 0; i<MIDIHdr.trackCount; i++)
-    {
-        f_lseek(&testFIL, position);
-        f_read(&testFIL, buffer, BUFFER_READ_SIZE, &br);
-        position = MIDIPopulate_HeaderTrack(&MIDIHdr, i, position, &buffer[0], BUFFER_READ_SIZE);
-    }
-
-    MPB_SetTickRate(250, MIDIHdr.PPQ);
-
-    for (i = 0; i<MIDIHdr.trackCount; i++)
-    {
-        MIDIHdr.Track[i].eventCount = MPB_NEW_DATA;
-    }
-    //MPB_PlayTrack(&MIDIHdr, &MIDIHdr.Track[3]);
-    TimerStart();
     while(1)
     {
+
+        switch( newSongFlag )
+        {
+            case 1:
+            {
+                strcpy(filename, inputString);
+                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                TimerStart();
+                newSongFlag = 0;
+                break;
+            }
+
+            case 2:
+            {
+                MPB_SetTickRate(ADC_Sample(), MIDIHdr.PPQ);
+                newSongFlag = 0;
+                break;
+            }
+
+            case 3:
+            {
+                uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
+                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                MIDIHdr.masterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
+                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                newSongFlag = 0;
+                break;
+            }
+
+            case 4:
+            {
+                uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
+                if( tmasterClock == 0)
+                {
+                    tmasterClock = 1;
+                }
+                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                MIDIHdr.masterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
+                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                newSongFlag = 0;
+                break;
+            }
+
+            case 5:
+            {
+                uint32_t tmasterClock = MIDIHdr.masterClock / MIDIHdr.PPQ;
+                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                MIDIHdr.masterClock = (tmasterClock + 1) * MIDIHdr.PPQ;
+                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                newSongFlag = 0;
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        //if(0)
         if (globalFlag)
         {
-            for (i = 0; i<MIDIHdr.trackCount; i++)
-            {
-                MPB_PlayTrack(&MIDIHdr, &MIDIHdr.Track[i]);
-            }
+            MIDIHdr.masterClock++;
+            tickPosition++;
             globalFlag = 0;
-       }
+            if( MPB_ContinuePlay(&MIDIHdr, 0xFFFF) == MPB_FILE_FINISHED )
+            {
+                myprintf("End of MIDI File: ", 1);
+                myprintf("", tickPosition>>24 );
+                myprintf("", tickPosition>>16);
+                myprintf("", tickPosition);
+                tickPosition = 0;
+                MIDIHdr.masterClock = 0;
+                T1CONbits.TON = 0x00;
+            }
+        }
+
     }
-    myprintf("End of Track: ", 1);
+
     //MPB_PlayTrack(&MIDIHdr, &MIDIHdr.Track[11]);
     while(1);
     
@@ -325,49 +337,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _DMACError(void)
 
 void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 {
-
-    MIDI_EVENT_t* event = 0;
-    //    event = MPB_ConfirmEventTx();
-    //    if(event)
-    //    {
-    //        MPB_PlayEvent(event);
-    //    }
-    //    return;
-    //if( tck++ == 2 )
     globalFlag = 1;
     IFS0bits.T1IF = 0; //clear interrupt flag
-    return;
-    {
-
-        //while (1)
-        {
-            {
-                event = MPB_GetNextEvent();
-            }
-            if (event)
-            {
-                if (event->deltaTime)
-                {
-                    event->deltaTime--;
-                    //break;
-                }
-                else
-                {
-                    globalFlag = 1;
-                    //break;
-                    //event = 0;
-                }
-            }
-            else
-            {
-                //break;
-            }
-        }
-        //(PrimaryUART, 'T');
-    }
-
-    
-
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _ADC1Interrupt(void)
@@ -376,8 +347,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _ADC1Interrupt(void)
     uint16_t ADCValue = ADC1BUF0;
 
     LATA ^= 1;
-    
-
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _SPI1Interrupt(void)
@@ -450,7 +419,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
     uint8_t i = *U1.UXRXREG;
     IFS0bits.U1RXIF = 0;
     //i = SPI_TxByte(&S1, i);
-    uartTx((PIC_USART_t*)&U1, i);
+    //uartTx((PIC_USART_t*)&U1, i);
     static uint8_t byteCount = 0;
 
 
@@ -461,8 +430,33 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
     else
     {
         inputString[byteCount] = '\0';
-        byteCount = 0;
-        newSongFlag = 1;
+        
+
+        if( byteCount == 1)
+        {
+            switch(inputString[0])
+            {
+                case 'T':
+                    newSongFlag = 2;
+                    break;
+                case 'F':
+                    newSongFlag = 3;
+                    break;
+                case 'R':
+                    newSongFlag = 4;
+                    break;
+                case 'O':
+                    newSongFlag = 5;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            newSongFlag = 1;
+        }
+        byteCount = 0;    
         //songIndex = (songIndex) % 2;
     }
 

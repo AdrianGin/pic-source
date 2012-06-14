@@ -77,7 +77,6 @@ extern uint8_t buffer[];
 
 void myprintf(char* string, uint32_t num);
 void myprintfd(char* string, uint32_t num);
-void* locall_read(uint32_t position);
 void* local_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 void TimerStart(void);
 

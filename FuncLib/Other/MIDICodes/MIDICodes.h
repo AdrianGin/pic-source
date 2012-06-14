@@ -11,6 +11,7 @@
 #define UNKNOWN_VOICE_MSG (0xFE)
 
 /* In 100us resolution */
+#define MIDI_MAX_CHANNELS (16)
 #define MIDI_MAX_DATA   (127)
 #define MIDI_MAX_KEY    (127)
 #define MAX_MIDI_CHANNEL (0x0F)

@@ -58,7 +58,8 @@ const MidiLookup_t MidiLookUpTable[] PROGRAM_SPACE = {
 
 uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size)
 {
-    char* ptr = findSubString(data, MIDI_HEADER_STRING, size);
+    char* ptr = (char*)data;
+
     if (ptr)
     {
         uint16_t* tmp;

@@ -39,8 +39,11 @@
 #define US_PER_MINUTE            (60000000)
 #define BPM(x)                   (US_PER_MINUTE/(x))
 
-#define BUFFER_READ_SIZE         (512)
+#define MIDI_TRACK_BUFFER_SIZE   (32)
+#define BUFFER_READ_SIZE         (32)
 #define MAX_MIDI_TRACKS          (16)
+
+
 
 #define TRACK_EVENT_BUFFER_SIZE  (2)
 
@@ -88,11 +91,10 @@ typedef struct
        MIDI_CHAN_EVENT_t  chanEvent;
        MIDI_SYSEX_EVENT_t sysExEvent;
        MIDI_META_EVENT_t  metaEvent;
-    };    
+    } ;
     
 } MIDI_EVENT_t;
 
-#define MIDI_TRACK_BUFFER_SIZE  (32)
 
 typedef struct
 {
@@ -100,16 +102,22 @@ typedef struct
     uint32_t length;
     uint32_t position;
     uint8_t  eventCount;
+    uint32_t trackClock;
     MIDI_EVENT_t trackEvent;
     uint8_t  buffer[MIDI_TRACK_BUFFER_SIZE];
     uint8_t  bufferOffset;
 } MIDI_TRACK_CHUNK_t;
+
+#define MIDI_MAX_FILENAME (32)
 
 typedef struct
 {
     uint16_t format;
     uint16_t trackCount;
     uint16_t PPQ;
+    uint8_t TrackFlags;
+    uint32_t masterClock;
+    uint8_t  fileName[MIDI_MAX_FILENAME];
     MIDI_TRACK_CHUNK_t Track[MAX_MIDI_TRACKS];
 } MIDI_HEADER_CHUNK_t;
 
