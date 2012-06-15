@@ -56,9 +56,69 @@ const MidiLookup_t MidiLookUpTable[] PROGRAM_SPACE = {
     {0, 0}
 };
 
+PROGRAM_CHAR MIDI_CIRCLE5TH0[] PROGRAM_SPACE = "F";
+PROGRAM_CHAR MIDI_CIRCLE5TH1[] PROGRAM_SPACE = "C";
+PROGRAM_CHAR MIDI_CIRCLE5TH2[] PROGRAM_SPACE = "G";
+PROGRAM_CHAR MIDI_CIRCLE5TH3[] PROGRAM_SPACE = "D";
+PROGRAM_CHAR MIDI_CIRCLE5TH4[] PROGRAM_SPACE = "A";
+PROGRAM_CHAR MIDI_CIRCLE5TH5[] PROGRAM_SPACE = "E";
+PROGRAM_CHAR MIDI_CIRCLE5TH6[] PROGRAM_SPACE = "B";
+
+const char* MIDI_CIRCLE5TH[] PROGRAM_SPACE = {
+    MIDI_CIRCLE5TH0,
+    MIDI_CIRCLE5TH1,
+    MIDI_CIRCLE5TH2,
+    MIDI_CIRCLE5TH3,
+    MIDI_CIRCLE5TH4,
+    MIDI_CIRCLE5TH5,
+    MIDI_CIRCLE5TH6,
+};
+
+PROGRAM_CHAR MIDI_ACCIDENT0[] PROGRAM_SPACE = "b";
+PROGRAM_CHAR MIDI_ACCIDENT1[] PROGRAM_SPACE = "#";
+
+const char* MIDI_ACCIDENT[] PROGRAM_SPACE = {
+    MIDI_ACCIDENT0,
+    MIDI_ACCIDENT1,
+};
+
+
+
+char* MIDIParse_KeySignature(int8_t keySig, uint8_t keyScale)
+{
+    static char returnValue[4];
+    uint8_t uKeySig = MIDI_MAJOR_SCALE_OFFSET;
+    switch(keyScale)
+    {
+        case MINOR_KEY:
+            uKeySig = MIDI_MINOR_SCALE_OFFSET;
+        case MAJOR_KEY:
+            uKeySig = uKeySig + MIDI_CIRCLE_ELEMENTS + keySig;
+            if( uKeySig < MIDI_CIRCLE_ELEMENTS)
+            {
+                strcpy(returnValue, MIDI_CIRCLE5TH[uKeySig]);
+                strcat(returnValue, MIDI_ACCIDENT[0]);
+            }
+            else if( uKeySig >= 2*MIDI_CIRCLE_ELEMENTS)
+            {
+                strcpy(returnValue, MIDI_CIRCLE5TH[uKeySig%MIDI_CIRCLE_ELEMENTS]);
+                strcat(returnValue, MIDI_ACCIDENT[1]);
+            }
+            else
+            {
+                strcpy(returnValue, MIDI_CIRCLE5TH[uKeySig-MIDI_CIRCLE_ELEMENTS]);
+            }
+            break;            
+        default:
+            break;
+    }
+    return returnValue;
+}
+
 uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size)
 {
     char* ptr = (char*)data;
+    ptr = findSubString(data, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
 
     if (ptr)
     {
@@ -119,10 +179,10 @@ void* MIDIParse_Track(MIDI_TRACK_CHUNK_t* track, void* data, uint32_t size)
 void* MIDIParse_Event(MIDI_EVENT_t* event, uint8_t* data)
 {
     uint32_t byteOffset = 0;
-    static uint8_t runningStatus;
+
+    uint8_t runningStatus = event->eventType;
 
     byteOffset = midiparse_variableLength(data, &event->deltaTime);
-
     event->eventType = data[byteOffset];
     //for running status
     if (event->eventType<MIDI_NOTE_OFF)
@@ -130,7 +190,6 @@ void* MIDIParse_Event(MIDI_EVENT_t* event, uint8_t* data)
         event->eventType = runningStatus;
         byteOffset--;
     }
-
 
     if (event->eventType==MIDI_SYSEX_START)
     {
@@ -153,10 +212,14 @@ void* MIDIParse_Event(MIDI_EVENT_t* event, uint8_t* data)
         return &data[byteOffset+3+event->metaEvent.length];
     }
 
+
+
+
     uint8_t bytesToSend = MIDI_CommandSize(event->eventType&0xF0);
     if (bytesToSend>1)
     {
-        runningStatus = event->eventType;
+        //runningStatus = event->eventType;
+
         event->chanEvent.parameter1 = data[byteOffset+1];
         if (bytesToSend>2)
         {
@@ -182,6 +245,9 @@ void MIDI_PrintEventInfo(MIDI_EVENT_t* event)
         case MIDI_META_MSG:
             myprintf("TYPE: ", event->metaEvent.type);
             myprintf("LEN: ", event->metaEvent.length);
+            myprintf("DATA0: ", event->metaEvent.data[0]);
+            myprintf("DATA1: ", event->metaEvent.data[1]);
+            myprintf("DATA2: ", event->metaEvent.data[2]);
             break;
 
         default:
@@ -205,28 +271,6 @@ uint8_t MIDI_CommandSize(uint8_t command)
     return 1;
 }
 
-void rawDumpStr(uint8_t* data, uint16_t len)
-{
-    uint16_t i;
-    printf("Data:");
-    for (i = 0; i<len; i++)
-    {
-        printf("%c", data[i]);
-    }
-    printf("\n");
-}
-
-void rawDump(uint8_t* data, uint16_t len)
-{
-    uint16_t i;
-    printf("Data:");
-    for (i = 0; i<len; i++)
-    {
-        printf("%X", data[i]);
-    }
-    printf("\n");
-
-}
 
 //Returns the length of the variable length field
 

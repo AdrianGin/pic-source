@@ -40,16 +40,30 @@
 #define BPM(x)                   (US_PER_MINUTE/(x))
 
 #define MIDI_TRACK_BUFFER_SIZE   (32)
-#define BUFFER_READ_SIZE         (32)
-#define MAX_MIDI_TRACKS          (16)
+#define MAX_MIDI_TRACKS          (20)
 
-
-
+#define TRACK_MAX_NAME_LENGTH    (16)
 #define TRACK_EVENT_BUFFER_SIZE  (2)
 
 #define PROGRAM_CHAR const char
 #define PROGRAM_SPACE
 #define FLASH_GET_PGM_BYTE
+
+enum
+{
+    TRACK_STATE_INACTIVE = 0,
+    TRACK_STATE_ACTIVE = 0,
+};
+
+enum
+{
+    MAJOR_KEY = 0,
+    MINOR_KEY,
+};
+
+#define MIDI_MAJOR_SCALE_OFFSET (1)
+#define MIDI_MINOR_SCALE_OFFSET (4)
+#define MIDI_CIRCLE_ELEMENTS    (7)
 
 typedef struct {
 
@@ -58,8 +72,6 @@ typedef struct {
    uint8_t MIDI_MsgSize;
 
 } MidiLookup_t;
-
-
 
 
 typedef struct
@@ -104,26 +116,44 @@ typedef struct
     uint8_t  eventCount;
     uint32_t trackClock;
     MIDI_EVENT_t trackEvent;
+    uint8_t  trackIndex;
+    uint8_t  name[TRACK_MAX_NAME_LENGTH];
     uint8_t  buffer[MIDI_TRACK_BUFFER_SIZE];
     uint8_t  bufferOffset;
 } MIDI_TRACK_CHUNK_t;
 
-#define MIDI_MAX_FILENAME (32)
+typedef struct
+{
+    uint32_t BPM;
+    uint16_t trackLengthSecs;
+    uint16_t trackState; //represents which tracks are active
+    uint8_t  timeSignature; //BCD 4bit. (high4=numerator)
+    int8_t   keySignature; //BCD 4bit. high4=major/minor, low4=-7 -> +7
+    uint8_t  keyScale;
+} MIDI_CURRENT_TRACK_STATE_t;
 
+
+#define MIDI_MAX_FILENAME (32)
 typedef struct
 {
     uint16_t format;
     uint16_t trackCount;
     uint16_t PPQ;
-    uint8_t TrackFlags;
     uint32_t masterClock;
+    //uint32_t maxLength;
     uint8_t  fileName[MIDI_MAX_FILENAME];
     MIDI_TRACK_CHUNK_t Track[MAX_MIDI_TRACKS];
+    MIDI_CURRENT_TRACK_STATE_t currentState;
 } MIDI_HEADER_CHUNK_t;
+
+
 
 
 void rawDump(uint8_t* data, uint16_t len);
 void rawDumpStr(uint8_t* data, uint16_t len);
+
+
+char* MIDIParse_KeySignature(int8_t keySig, uint8_t keyScale);
 
 uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size);
 uint32_t MIDIPopulate_HeaderTrack(MIDI_HEADER_CHUNK_t* header, uint8_t trackNo, uint32_t filePos, void* data, uint32_t size);

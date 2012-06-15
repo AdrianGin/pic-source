@@ -70,9 +70,6 @@ PIC_DMA_SPI_t DMASPI1T = {&DMA2CON,
 PGM_P ROMSTRING = "ROM STRING\n";
 char RAMSTRING[] = "RAM STRING\n";
 
-
-
-
 //FIL testFIL;
 //uint16_t br;
 //uint8_t buffer[BUFFER_READ_SIZE];
@@ -86,7 +83,7 @@ volatile uint8_t ProcessBufferFlag;
 volatile char inputString[20];
 char filename[20];
 
-
+MIDI_HEADER_CHUNK_t MIDIHdr;
 FATFS filesys;
 
 void LoadMIDIFile(FIL* waveFile, char* filename);
@@ -212,7 +209,6 @@ int main(void)
 
     Delay(10);
     uint16_t ADCValue;
-    char outputString[10];
 
     SPI_Init(&S1);
     uint8_t ret;
@@ -222,9 +218,7 @@ int main(void)
 
     ret = f_mount(0, &filesys);
 
-    MIDI_HEADER_CHUNK_t MIDIHdr;
-    uint32_t tickPosition = 0;
-
+    MPB_SetTickRate(32, 480);
     while(1)
     {
 
@@ -234,29 +228,31 @@ int main(void)
             {
                 strcpy(filename, inputString);
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
+                MPB_DetermineLength(&MIDIHdr);
+                MPB_PlayMIDIFile(&MIDIHdr, filename);
                 TimerStart();
                 newSongFlag = 0;
                 break;
             }
 
-            case 2:
+            case 'T':
             {
                 MPB_SetTickRate(ADC_Sample(), MIDIHdr.PPQ);
                 newSongFlag = 0;
                 break;
             }
 
-            case 3:
+            case 'F':
             {
                 uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
                 MIDIHdr.masterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
-                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
                 break;
             }
 
-            case 4:
+            case 'R':
             {
                 uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
                 if( tmasterClock == 0)
@@ -265,38 +261,42 @@ int main(void)
                 }
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
                 MIDIHdr.masterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
-                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
                 break;
             }
 
-            case 5:
+            case 'O':
             {
                 uint32_t tmasterClock = MIDIHdr.masterClock / MIDIHdr.PPQ;
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
                 MIDIHdr.masterClock = (tmasterClock + 1) * MIDIHdr.PPQ;
-                MPB_RePosition(&MIDIHdr, 0xFFFF);
+                MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
+                newSongFlag = 0;
+                break;
+            }
+
+            case 'L':
+            {
+                //MPB_PlayMIDIFile(&MIDIHdr, filename);
+                MPB_DetermineLength(&MIDIHdr);
                 newSongFlag = 0;
                 break;
             }
 
             default:
                 break;
+
         }
 
         //if(0)
         if (globalFlag)
         {
             MIDIHdr.masterClock++;
-            tickPosition++;
             globalFlag = 0;
-            if( MPB_ContinuePlay(&MIDIHdr, 0xFFFF) == MPB_FILE_FINISHED )
+            if( MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
             {
                 myprintf("End of MIDI File: ", 1);
-                myprintf("", tickPosition>>24 );
-                myprintf("", tickPosition>>16);
-                myprintf("", tickPosition);
-                tickPosition = 0;
                 MIDIHdr.masterClock = 0;
                 T1CONbits.TON = 0x00;
             }
@@ -434,23 +434,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
 
         if( byteCount == 1)
         {
-            switch(inputString[0])
-            {
-                case 'T':
-                    newSongFlag = 2;
-                    break;
-                case 'F':
-                    newSongFlag = 3;
-                    break;
-                case 'R':
-                    newSongFlag = 4;
-                    break;
-                case 'O':
-                    newSongFlag = 5;
-                    break;
-                default:
-                    break;
-            }
+            newSongFlag = inputString[0];
         }
         else
         {

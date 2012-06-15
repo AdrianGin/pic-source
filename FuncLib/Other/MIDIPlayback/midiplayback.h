@@ -6,7 +6,8 @@
 #include <stdint.h>
 
 #define MPB_EVENT_STACK_SIZE (16)
-
+#define MPB_DEFAULT_TEMPO (120)
+#define MPB_DEFAULT_PPQ (96)
 //Continue Playing Status
 enum
 {
@@ -38,11 +39,14 @@ enum
 void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename);
 uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, uint8_t mode);
 uint8_t MPB_AddEvent(MIDI_EVENT_t* event);
+void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event);
 void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode);
 void MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
 void MPB_ResetMIDI(void);
 
-uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap);
+void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
+
+uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode);
 uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap);
 void*   _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 uint8_t _MIDI_fileopen(uint8_t* filename);

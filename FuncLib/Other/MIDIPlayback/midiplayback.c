@@ -28,6 +28,41 @@ void MPB_ResetMIDI(void)
     }
 }
 
+void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+    uint8_t i;
+
+    while(MPB_RePosition(MIDIHdr, 0xFFFFFFFF, MPB_PB_ALL_OFF) != MPB_FILE_FINISHED)
+    {
+        if(MIDIHdr->trackCount == 0)
+        {
+            break;
+        }
+    }
+    uint32_t maxLength = 0;
+    for (i = 0; i<MIDIHdr->trackCount; i++)
+    {
+        if( MIDIHdr->Track[i].trackClock > maxLength )
+        {
+            maxLength = MIDIHdr->Track[i].trackClock;
+        }
+    }
+    
+    if( MIDIHdr->currentState.BPM == 0 )
+    {
+        MIDIHdr->currentState.BPM = MPB_DEFAULT_TEMPO;
+    }
+
+    if( MIDIHdr->PPQ == 0 )
+    {
+        MIDIHdr->PPQ = MPB_DEFAULT_PPQ;
+    }
+
+    MIDIHdr->currentState.trackLengthSecs = (((uint32_t)maxLength*60 / (MIDIHdr->currentState.BPM)) / MIDIHdr->PPQ);
+    myprintfd("Min: ", MIDIHdr->currentState.trackLengthSecs/60);
+    myprintfd("Sec: ", MIDIHdr->currentState.trackLengthSecs%60);
+}
+
 void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
 {
     uint8_t i;
@@ -37,13 +72,12 @@ void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
     uint8_t ret;
 
     MPB_ResetMIDI();
-
     ret = MPB_OpenFile(filename);
     memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
-
     if( ret != FR_OK)
     {
-        return ret;
+        return;
+        //return ret;
     }
     MPB_ReadToBuffer(position, buf);
     ptr = findSubString(buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
@@ -53,77 +87,65 @@ void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
         {
             MPB_ReadToBuffer(ptr-buf, buf);
             position = ptr-buf;
+            ptr = buf;
         }
     }
 
-    position = position + MIDIParse_Header(MIDIHdr, buf, BUFFER_READ_SIZE);
+    position = position + MIDIParse_Header(MIDIHdr, buf, MIDI_TRACK_BUFFER_SIZE);
     position = position+MIDI_HEADER_SIZE;
     for (i = 0; i<MIDIHdr->trackCount; i++)
     {
         MPB_ReadToBuffer(position, buf);
-        position = MIDIPopulate_HeaderTrack(MIDIHdr, i, position, buf, BUFFER_READ_SIZE);
-    }
-
-    for (i = 0; i<MIDIHdr->trackCount; i++)
-    {
+        position = MIDIPopulate_HeaderTrack(MIDIHdr, i, position, buf, MIDI_TRACK_BUFFER_SIZE);
         MIDIHdr->Track[i].eventCount = MPB_NEW_DATA;
+        MIDIHdr->Track[i].trackIndex = i;
     }
+
+
 }
 
-uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap)
-{
-    uint8_t i;
-    for (i = 0; i<MIDIHdr->trackCount; i++)
-    {
-        if( ((1<<i)&trackBitmap) && (MIDIHdr->Track[i].eventCount != MPB_TRACK_STOPPED) )
-        {
-            if( MPB_PlayTrack(MIDIHdr, &MIDIHdr->Track[i], MPB_PB_ALL_ON) == MPB_TRACK_STOPPED)
-            {
-                MIDIHdr->TrackFlags++;
-                myprintfd("TrackFinish: ", MIDIHdr->TrackFlags);
-                if(MIDIHdr->TrackFlags == MIDIHdr->trackCount)
-                {
-                    return MPB_FILE_FINISHED;
-                }
-
-            }
-        }
-    }
-    return MPB_FILE_STILL_PLAYING;
-}
-
-uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap)
+uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode)
 {
     uint8_t i;
     uint8_t ret = 0;
+
+    MIDIHdr->masterClock = position;
+
     for (i = 0; i<MIDIHdr->trackCount; i++)
     {
         ret = 0;
-        if( ((1<<i)&trackBitmap) && (MIDIHdr->Track[i].eventCount != MPB_TRACK_STOPPED) )
+        if((MIDIHdr->Track[i].eventCount != MPB_TRACK_STOPPED) )
         {
-            while( ret == 0 )
+            while( 1 )
             {
-                ret = MPB_PlayTrack(MIDIHdr, &MIDIHdr->Track[i], MPB_PB_NO_NOTES);
+                ret = MPB_PlayTrack(MIDIHdr, &MIDIHdr->Track[i], mode);
                 if((ret == MPB_REPOSITION_EVENT))
                 {
-                    ret = 1;
+                    break;
+                }
+                else if(ret == MPB_TRACK_STOPPED)
+                {
+                    MIDIHdr->currentState.trackState++;
+                    myprintfd("TrackFinish: ", MIDIHdr->currentState.trackState);
+                    if(MIDIHdr->currentState.trackState == MIDIHdr->trackCount)
+                    {
+                        return MPB_FILE_FINISHED;
+                    }
+                    break;
                 }
                 else
                 {
-                    if(ret == MPB_TRACK_STOPPED)
-                    {
-                        MIDIHdr->TrackFlags++;
-                        myprintfd("TrackFinish: ", MIDIHdr->TrackFlags);
-                        ret = 1;
-                    }
-                    else
-                    {
-                        ret = 0;
-                    }
+                    
                 }
             }
         }
     }
+
+    if(MIDIHdr->trackCount == 0)
+    {
+        return MPB_FILE_FINISHED;
+    }
+
     return MPB_FILE_STILL_PLAYING;
 }
 
@@ -131,12 +153,13 @@ uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap)
 
 uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, uint8_t mode)
 {
-    uint32_t position = 0;
-    uint32_t oldPosition = 0;
-    uint8_t* readPtr;
-    uint8_t* originPtr;
+    uint32_t position = (uint32_t)track->startPtr;
+    uint32_t oldPosition;
+    uint8_t* readPtr = &track->buffer[0] + track->bufferOffset;
+    uint8_t* originPtr = &track->buffer[0];
     MIDI_EVENT_t* event = &track->trackEvent;
 
+    
     if (track->eventCount==MPB_TRACK_STOPPED)
     {
         return MPB_TRACK_STOPPED;
@@ -153,6 +176,10 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
         {
             MPB_PlayEvent(event, mode);
             track->eventCount = MPB_PLAY_NEXT_EVENT;
+            if (event->eventType==MIDI_META_MSG)
+            {
+                MPB_ProcessMetaEvent(MIDIHdr, track, event);
+            }
             event->deltaTime = 0;
         }
         else
@@ -165,23 +192,16 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
 
     while ((event->deltaTime==0) && (track->eventCount != MPB_TRACK_STOPPED))
     {
-        if (track->eventCount==MPB_NEW_DATA)
+        //If the buffer doesn't contain enough information for a full parse
+        //Or if we are requested for new data.
+        if( (track->eventCount==MPB_NEW_DATA) || ((track->bufferOffset+6)>MIDI_TRACK_BUFFER_SIZE) )
         {
             originPtr = MPB_ReadToBuffer(track->startPtr, &track->buffer[0]);
             readPtr = originPtr;
-            oldPosition = readPtr;
-            position = track->startPtr;
             track->bufferOffset = 0;
         }
-
-        //If the buffer doesn't contain enough information for a full parse
-        if ((track->bufferOffset+6)>MIDI_TRACK_BUFFER_SIZE)
-        {
-            track->eventCount = MPB_NEW_DATA;
-            continue;
-        }
-
-        oldPosition = readPtr;
+        
+        oldPosition = (uint32_t)readPtr;
         //MIDI Parse Event returns the ptr to the next event.
         readPtr = MIDIParse_Event(event, readPtr);
         track->bufferOffset = readPtr-originPtr;
@@ -191,7 +211,6 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
         {
             position = (position+(uint32_t)(readPtr)-oldPosition);
             track->startPtr = position;
-
             if (event->deltaTime)
             {
                 track->trackClock = track->trackClock + event->deltaTime;
@@ -203,19 +222,9 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             {
                 MPB_PlayEvent(event, mode);
                 track->eventCount = MPB_PLAY_NEXT_EVENT;
-                
-                if (event->eventType==MIDI_META_MSG&&event->metaEvent.type==MIDI_META_TEMPO)
+                if (event->eventType==MIDI_META_MSG)
                 {
-                    uint32_t bpm;
-                    reverseOrder(event->metaEvent.data, event->metaEvent.length);
-                    memcpy(&bpm, event->metaEvent.data, 4); //*bpmptr;
-                    MPB_SetTickRate(BPM(bpm), MIDIHdr->PPQ);
-                }
-
-                if (event->eventType==MIDI_META_MSG&&event->metaEvent.type==MIDI_META_TRACKEND)
-                {
-                    track->eventCount = MPB_TRACK_STOPPED;
-                    return MPB_TRACK_STOPPED;
+                    MPB_ProcessMetaEvent(MIDIHdr, track, event);
                 }
             }
         }
@@ -231,6 +240,7 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             {
                 if (event->metaEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
                 {
+                    MPB_ProcessMetaEvent(MIDIHdr, track, event);
                     position = (position+(uint32_t)(readPtr)-oldPosition);
                     track->startPtr = position;
                 }
@@ -239,6 +249,7 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             {
                 if (event->sysExEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
                 {
+                   
                     position = (position+(uint32_t)(readPtr)-oldPosition);
                     track->startPtr = position;
                 }
@@ -279,7 +290,65 @@ void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
     PR1 = 39*usPerTick;
     T1CONbits.TCKPS0 = 0;
     T1CONbits.TCKPS1 = 1;
-    myprintfd("usPerTick: ", PR1);
+    //myprintfd("BPM: ", bpm);
+    //myprintfd("PPQ: ", PPQ);
+    //myprintfd("usPerTick: ", PR1);
+}
+
+
+void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event)
+{
+
+    switch(event->metaEvent.type)
+    {
+        case MIDI_META_TRACK_NAME:
+            memcpy(&track->name, event->metaEvent.data, event->metaEvent.length);
+            DEBUG("Track ");
+            myprintfd("", track->trackIndex);
+            uint8_t length = TRACK_MAX_NAME_LENGTH;
+            if( TRACK_MAX_NAME_LENGTH > event->metaEvent.length )
+            {
+                length = event->metaEvent.length;
+            }
+            DEBUGn(&track->name, length);
+            DEBUG("\n");
+            break;
+
+        case MIDI_META_TEMPO:
+            reverseOrder(event->metaEvent.data, event->metaEvent.length);
+            memcpy(&MIDIHdr->currentState.BPM, event->metaEvent.data, event->metaEvent.length); //*bpmptr;
+            MIDIHdr->currentState.BPM = BPM(MIDIHdr->currentState.BPM);
+            MPB_SetTickRate(MIDIHdr->currentState.BPM, MIDIHdr->PPQ);
+            break;
+
+        case MIDI_META_LYRICS:
+            DEBUGn(event->metaEvent.data, event->metaEvent.length);
+            break;
+
+        case MIDI_META_TIME_SIG:
+            MIDIHdr->currentState.timeSignature = 0;
+            MIDIHdr->currentState.timeSignature |= event->metaEvent.data[0] << 4;
+            MIDIHdr->currentState.timeSignature |= 1 << event->metaEvent.data[1];
+            myprintfd("Numerator: ", MIDIHdr->currentState.timeSignature >> 4);
+            myprintfd("Denominator: ", MIDIHdr->currentState.timeSignature & 0x0F);
+            break;
+            
+        case MIDI_META_KEY_SIG:
+            MIDIHdr->currentState.keySignature = event->metaEvent.data[0];
+            //The major or minor scale
+            MIDIHdr->currentState.keyScale = event->metaEvent.data[1];
+            DEBUG("Key Signature: ");
+            DEBUG(MIDIParse_KeySignature(MIDIHdr->currentState.keySignature, MIDIHdr->currentState.keyScale));
+            DEBUG("\n");
+            break;
+
+        case MIDI_META_TRACKEND:
+            track->eventCount = MPB_TRACK_STOPPED;
+            break;
+
+        default:
+            break;
+    }
 }
 
 void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
@@ -303,12 +372,6 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             {
                 return;
             }
-            
-            if (event->metaEvent.type==MIDI_META_LYRICS)
-            {
-                DEBUGn(event->metaEvent.data, event->metaEvent.length);
-            }
-
             break;
 
         default:
@@ -337,6 +400,7 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             {
                 MIDI_Tx(event->chanEvent.parameter2);
             }
+
             break;
     }
 }
