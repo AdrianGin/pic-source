@@ -199,7 +199,7 @@
         <property key="enable-data-init" value="true"/>
         <property key="enable-default-isr" value="true"/>
         <property key="enable-handles" value="true"/>
-        <property key="enable-pack-data" value="false"/>
+        <property key="enable-pack-data" value="true"/>
         <property key="extra-lib-directories" value=".."/>
         <property key="general-code-protect" value="no_code_protect"/>
         <property key="general-write-protect" value="no_write_protect"/>

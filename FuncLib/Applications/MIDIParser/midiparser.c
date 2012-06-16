@@ -176,18 +176,24 @@ void* MIDIParse_Track(MIDI_TRACK_CHUNK_t* track, void* data, uint32_t size)
     return 0;
 }
 
-void* MIDIParse_Event(MIDI_EVENT_t* event, uint8_t* data)
+void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* data)
 {
     uint32_t byteOffset = 0;
 
-    uint8_t runningStatus = event->eventType;
+    //uint8_t runningStatus;
+    
+    if( ((event->eventType & 0xF0) >= MIDI_NOTE_OFF) &&
+        ((event->eventType & 0xF0) < MIDI_SYSEX_START))
+    {
+        track->runningStatus = event->eventType;
+    }
 
     byteOffset = midiparse_variableLength(data, &event->deltaTime);
     event->eventType = data[byteOffset];
     //for running status
     if (event->eventType<MIDI_NOTE_OFF)
     {
-        event->eventType = runningStatus;
+        event->eventType = track->runningStatus;
         byteOffset--;
     }
 

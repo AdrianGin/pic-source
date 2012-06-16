@@ -113,19 +113,25 @@ typedef struct
     uint32_t startPtr;
     uint32_t length;
     uint32_t position;
-    uint8_t  eventCount;
     uint32_t trackClock;
     MIDI_EVENT_t trackEvent;
+    uint8_t  eventCount;
     uint8_t  trackIndex;
+    uint8_t  bufferOffset;
+    uint8_t  runningStatus;
     uint8_t  name[TRACK_MAX_NAME_LENGTH];
     uint8_t  buffer[MIDI_TRACK_BUFFER_SIZE];
-    uint8_t  bufferOffset;
+    
 } MIDI_TRACK_CHUNK_t;
 
 typedef struct
 {
+    uint32_t maxLength;
+    uint32_t tickTime;
+    uint32_t trackTime;
+    uint32_t lastTempoChange;
     uint32_t BPM;
-    uint16_t trackLengthSecs;
+    uint32_t trackLengthSecs;
     uint16_t trackState; //represents which tracks are active
     uint8_t  timeSignature; //BCD 4bit. (high4=numerator)
     int8_t   keySignature; //BCD 4bit. high4=major/minor, low4=-7 -> +7
@@ -158,7 +164,7 @@ char* MIDIParse_KeySignature(int8_t keySig, uint8_t keyScale);
 uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size);
 uint32_t MIDIPopulate_HeaderTrack(MIDI_HEADER_CHUNK_t* header, uint8_t trackNo, uint32_t filePos, void* data, uint32_t size);
 void* MIDIParse_Track(MIDI_TRACK_CHUNK_t* track, void* data, uint32_t size);
-void* MIDIParse_Event(MIDI_EVENT_t* event, uint8_t* data);
+void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* data);
 
 void MIDI_PrintEventInfo(MIDI_EVENT_t* event);
 

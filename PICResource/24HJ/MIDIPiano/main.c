@@ -246,9 +246,17 @@ int main(void)
             {
                 uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
+                TimerStart();
                 MIDIHdr.masterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
+
+                if(MIDIHdr.masterClock > MIDIHdr.currentState.maxLength)
+                {
+                    MIDIHdr.masterClock = MIDIHdr.currentState.maxLength;
+                }
+
                 MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
+
                 break;
             }
 
@@ -260,9 +268,11 @@ int main(void)
                     tmasterClock = 1;
                 }
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
+                TimerStart();
                 MIDIHdr.masterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
                 MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
+
                 break;
             }
 
@@ -284,6 +294,11 @@ int main(void)
                 break;
             }
 
+            case 'P':
+            {
+                MPB_CurrentTimePosition(&MIDIHdr);
+            }
+
             default:
                 break;
 
@@ -297,7 +312,6 @@ int main(void)
             if( MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
             {
                 myprintf("End of MIDI File: ", 1);
-                MIDIHdr.masterClock = 0;
                 T1CONbits.TON = 0x00;
             }
         }
