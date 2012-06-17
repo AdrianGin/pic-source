@@ -128,7 +128,6 @@ typedef struct
 {
     uint32_t maxLength;
     uint32_t tickTime;
-    uint32_t trackTime;
     uint32_t lastTempoChange;
     uint32_t BPM;
     uint32_t trackLengthSecs;

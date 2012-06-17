@@ -36,7 +36,10 @@ enum
 
 
 
-void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename);
+uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename);
+void    MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void    _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr);
+
 uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, uint8_t mode);
 uint8_t MPB_AddEvent(MIDI_EVENT_t* event);
 void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event);
@@ -48,7 +51,7 @@ void MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
 void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
 
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode);
-uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t trackBitmap);
+uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t mode);
 void*   _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 uint8_t _MIDI_fileopen(uint8_t* filename);
 

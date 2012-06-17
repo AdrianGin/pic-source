@@ -38,20 +38,37 @@ void MPB_ResetMIDI(void)
 void MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
 
-    MIDIHdr->currentState.tickTime = MIDIHdr->currentState.tickTime +
-                                     ((uint32_t)((MIDIHdr->masterClock - MIDIHdr->currentState.lastTempoChange)*60) / MIDIHdr->currentState.BPM);
+    uint32_t currentPosition = MIDIHdr->currentState.tickTime +
+                               ((uint32_t)((MIDIHdr->masterClock - MIDIHdr->currentState.lastTempoChange)*60) / MIDIHdr->currentState.BPM);
 
 
-    MIDIHdr->currentState.trackLengthSecs = MIDIHdr->currentState.tickTime / MIDIHdr->PPQ;
-    myprintfd("Min: ", MIDIHdr->currentState.trackLengthSecs/60);
-    myprintfd("Sec: ", MIDIHdr->currentState.trackLengthSecs%60);
+    currentPosition = currentPosition / MIDIHdr->PPQ;
+    myPrintNum(currentPosition/60, 10);
+    DEBUG(":");
+    myPrintNum(currentPosition%60, 10);
+    DEBUG("\n");
+    DEBUG("of");
+    
+    currentPosition = MIDIHdr->currentState.trackLengthSecs;
+    myPrintNum(currentPosition/60, 10);
+    DEBUG(":");
+    myPrintNum(currentPosition%60, 10);
+    DEBUG("\n");
+
+    DEBUG("BAR:");
+    myPrintNum((MIDIHdr->masterClock/MIDIHdr->PPQ)>>2, 10);
+    DEBUG(" of ");
+    myPrintNum((MIDIHdr->currentState.maxLength/MIDIHdr->PPQ)>>2, 10);
+    DEBUG("\n");
+
 }
 
 void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint8_t i;
 
-    while(MPB_RePosition(MIDIHdr, 0xFFFFFFFF, MPB_PB_ALL_OFF) != MPB_FILE_FINISHED)
+    MIDIHdr->masterClock = 0xFFFFFFFF;
+    while(MPB_ContinuePlay(MIDIHdr, MPB_PB_ALL_OFF) != MPB_FILE_FINISHED)
     {
         if(MIDIHdr->trackCount == 0)
         {
@@ -88,24 +105,45 @@ void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
     myprintf("MaxLength: ", *maxLength >> 16);
     myprintf("MaxLength: ", *maxLength);
 
+
 }
 
-void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
+
+uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
+{
+    uint8_t ret;
+    ret = MPB_OpenFile(filename);
+    if( ret != FR_OK)
+    {
+        return ret;
+    }
+    MPB_InitMIDIHdr(MIDIHdr);
+    return FR_OK;
+}
+
+void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+    uint32_t lengthSecs;
+    uint32_t maxLength;
+    MPB_ResetMIDI();
+    
+    _mpb_InitMIDIHdr(MIDIHdr);
+    MPB_DetermineLength(MIDIHdr);
+    lengthSecs = MIDIHdr->currentState.trackLengthSecs;
+    maxLength = MIDIHdr->currentState.maxLength;
+    _mpb_InitMIDIHdr(MIDIHdr);
+    MIDIHdr->currentState.trackLengthSecs = lengthSecs;
+    MIDIHdr->currentState.maxLength = maxLength;
+}
+
+void _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint8_t i;
     uint32_t position = 0;
     uint8_t* buf = &MIDIHdr->Track[0].buffer[0];
     uint8_t* ptr;
-    uint8_t ret;
-
-    MPB_ResetMIDI();
-    ret = MPB_OpenFile(filename);
+    
     memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
-    if( ret != FR_OK)
-    {
-        return;
-        //return ret;
-    }
     MPB_ReadToBuffer(position, buf);
     ptr = findSubString(buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
     if( ptr )
@@ -127,16 +165,20 @@ void MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
         MIDIHdr->Track[i].eventCount = MPB_NEW_DATA;
         MIDIHdr->Track[i].trackIndex = i;
     }
-
-
 }
 
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode)
 {
+    MPB_InitMIDIHdr(MIDIHdr);
+    MIDIHdr->masterClock = position;
+    return MPB_ContinuePlay(MIDIHdr, mode);
+}
+
+
+uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t mode)
+{
     uint8_t i;
     uint8_t ret = 0;
-
-    MIDIHdr->masterClock = position;
 
     for (i = 0; i<MIDIHdr->trackCount; i++)
     {
@@ -201,8 +243,6 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             MPB_PlayEvent(event, mode);
             track->eventCount = MPB_PLAY_NEXT_EVENT;
             
-            MIDIHdr->currentState.trackTime += (event->deltaTime * 60) / MIDIHdr->currentState.BPM;
-
             if (event->eventType==MIDI_META_MSG)
             {
                 MPB_ProcessMetaEvent(MIDIHdr, track, event);
@@ -311,9 +351,10 @@ MIDI_EVENT_t* MPB_ConfirmEventTx(void)
 
 void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
 {
+    //*to send a Timing signal we need to send 24 0xF8's per quarter note
     uint16_t usPerTick;
     usPerTick = ((US_PER_MINUTE/64)/(bpm)/PPQ);
-    PR1 = 39*usPerTick;
+    PR1 = 41*usPerTick;
     T1CONbits.TCKPS0 = 0;
     T1CONbits.TCKPS1 = 1;
     //myprintfd("BPM: ", bpm);
@@ -355,24 +396,13 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
             {
                 MIDIHdr->currentState.tickTime += ((track->trackClock-MIDIHdr->currentState.lastTempoChange)*60)/(existingBPM);
                 MIDIHdr->currentState.lastTempoChange = track->trackClock;
-//                myprintf("TT: ", MIDIHdr->currentState.tickTime>>16);
-//                myprintf("TT: ", MIDIHdr->currentState.tickTime);
-//
-//                myprintfd("DT: ", event->deltaTime>>16);
-//                myprintfd("DT: ", event->deltaTime);
-//                myprintfd("EXTEMPO: ", existingBPM);
-//                myprintf("LASTTEMPO: ", MIDIHdr->currentState.lastTempoChange >> 16);
-//                myprintf("LASTTEMPO: ", MIDIHdr->currentState.lastTempoChange);
             }
-
-            
-            
-
 
             break;
 
         case MIDI_META_LYRICS:
-            DEBUGn(event->metaEvent.data, event->metaEvent.length);
+            //Lyrics parsed in play events.
+            //DEBUGn(event->metaEvent.data, event->metaEvent.length);
             break;
 
         case MIDI_META_TIME_SIG:
@@ -423,6 +453,14 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             {
                 return;
             }
+            
+            switch(event->metaEvent.type)
+            {
+                case MIDI_META_LYRICS:
+                    DEBUGn(event->metaEvent.data, event->metaEvent.length);
+                    break;
+            }
+            
             break;
 
         default:

@@ -100,21 +100,25 @@ void LoadMIDIFile(FIL* waveFile, char* filename)
 
 void myprintf(char* string, uint32_t num)
 {
-    char outputString[20];
-    utoa(outputString, num, 16);
     DEBUG(string);
-    DEBUG(outputString);
+    myPrintNum(num, 16);
     DEBUG("\n");
 }
 
 void myprintfd(char* string, uint32_t num)
 {
-    char outputString[20];
-    utoa(outputString, num, 10);
     DEBUG(string);
-    DEBUG(outputString);
+    myPrintNum(num, 10);
     DEBUG("\n");
 }
+
+void myPrintNum(uint32_t num, uint8_t base)
+{
+    char outputString[20];
+    utoa(outputString, num, base);
+    DEBUG(outputString);
+}
+
 
 void SendString(char* string)
 {
@@ -218,7 +222,10 @@ int main(void)
 
     ret = f_mount(0, &filesys);
 
+
     MPB_SetTickRate(32, 480);
+    uint8_t tickCounter = 0;
+
     while(1)
     {
 
@@ -228,8 +235,8 @@ int main(void)
             {
                 strcpy(filename, inputString);
                 MPB_PlayMIDIFile(&MIDIHdr, filename);
-                MPB_DetermineLength(&MIDIHdr);
-                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                //MPB_DetermineLength(&MIDIHdr);
+               // MPB_PlayMIDIFile(&MIDIHdr, filename);
                 TimerStart();
                 newSongFlag = 0;
                 break;
@@ -245,16 +252,19 @@ int main(void)
             case 'F':
             {
                 uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
-                MPB_PlayMIDIFile(&MIDIHdr, filename);
-                TimerStart();
-                MIDIHdr.masterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
-
-                if(MIDIHdr.masterClock > MIDIHdr.currentState.maxLength)
+                
+                tmasterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
+                myprintf("tMClock: ", tmasterClock);
+                myprintf("MClock: ", MIDIHdr.masterClock);
+                myprintf("maxLen: ", MIDIHdr.currentState.maxLength);
+                if(tmasterClock > MIDIHdr.currentState.maxLength)
                 {
-                    MIDIHdr.masterClock = MIDIHdr.currentState.maxLength;
+                    tmasterClock = MIDIHdr.currentState.maxLength;
                 }
-
-                MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
+                myprintf("MClock: ", tmasterClock);
+                //MPB_PlayMIDIFile(&MIDIHdr, filename);
+                TimerStart();
+                MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
 
                 break;
@@ -267,10 +277,10 @@ int main(void)
                 {
                     tmasterClock = 1;
                 }
-                MPB_PlayMIDIFile(&MIDIHdr, filename);
+                //MPB_PlayMIDIFile(&MIDIHdr, filename);
                 TimerStart();
-                MIDIHdr.masterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
-                MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_NO_NOTES);
+                tmasterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
+                MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_NO_NOTES);
                 newSongFlag = 0;
 
                 break;
@@ -297,6 +307,8 @@ int main(void)
             case 'P':
             {
                 MPB_CurrentTimePosition(&MIDIHdr);
+                newSongFlag = 0;
+                break;
             }
 
             default:
@@ -307,12 +319,22 @@ int main(void)
         //if(0)
         if (globalFlag)
         {
-            MIDIHdr.masterClock++;
-            globalFlag = 0;
-            if( MPB_RePosition(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
+
+            tickCounter++;
+            //if( tickCounter == 4)
             {
-                myprintf("End of MIDI File: ", 1);
-                T1CONbits.TON = 0x00;
+                MIDIHdr.masterClock++;
+                globalFlag = 0;
+                if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
+                {
+                    myprintf("End of MIDI File: ", 1);
+                    T1CONbits.TON = 0x00;
+                }
+            }
+            if( tickCounter == (MIDIHdr.PPQ / 24) )
+            {
+                MIDI_Tx(0xF8);
+                tickCounter = 0;
             }
         }
 
