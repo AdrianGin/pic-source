@@ -47,11 +47,14 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode);
 void MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
 void MPB_ResetMIDI(void);
 
-void MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
-void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
-
+uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, uint8_t mode);
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode);
 uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t mode);
+
+void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
+uint16_t MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
+uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
+
 void*   _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 uint8_t _MIDI_fileopen(uint8_t* filename);
 

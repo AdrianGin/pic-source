@@ -35,32 +35,22 @@ void MPB_ResetMIDI(void)
 
 }
 
-void MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
+
+//returns the number of seconds.
+uint16_t MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
 
     uint32_t currentPosition = MIDIHdr->currentState.tickTime +
                                ((uint32_t)((MIDIHdr->masterClock - MIDIHdr->currentState.lastTempoChange)*60) / MIDIHdr->currentState.BPM);
-
-
     currentPosition = currentPosition / MIDIHdr->PPQ;
-    myPrintNum(currentPosition/60, 10);
-    DEBUG(":");
-    myPrintNum(currentPosition%60, 10);
-    DEBUG("\n");
-    DEBUG("of");
-    
-    currentPosition = MIDIHdr->currentState.trackLengthSecs;
-    myPrintNum(currentPosition/60, 10);
-    DEBUG(":");
-    myPrintNum(currentPosition%60, 10);
-    DEBUG("\n");
+    return currentPosition;
+}
 
-    DEBUG("BAR:");
-    myPrintNum((MIDIHdr->masterClock/MIDIHdr->PPQ)>>2, 10);
-    DEBUG(" of ");
-    myPrintNum((MIDIHdr->currentState.maxLength/MIDIHdr->PPQ)>>2, 10);
-    DEBUG("\n");
 
+
+uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+    return (MIDIHdr->masterClock/MIDIHdr->PPQ)>>2;
 }
 
 void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
@@ -117,6 +107,8 @@ uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
     {
         return ret;
     }
+    _mpb_InitMIDIHdr(MIDIHdr);
+    MPB_DetermineLength(MIDIHdr);
     MPB_InitMIDIHdr(MIDIHdr);
     return FR_OK;
 }
@@ -125,10 +117,7 @@ void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint32_t lengthSecs;
     uint32_t maxLength;
-    MPB_ResetMIDI();
     
-    _mpb_InitMIDIHdr(MIDIHdr);
-    MPB_DetermineLength(MIDIHdr);
     lengthSecs = MIDIHdr->currentState.trackLengthSecs;
     maxLength = MIDIHdr->currentState.maxLength;
     _mpb_InitMIDIHdr(MIDIHdr);
@@ -172,6 +161,45 @@ uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t 
     MPB_InitMIDIHdr(MIDIHdr);
     MIDIHdr->masterClock = position;
     return MPB_ContinuePlay(MIDIHdr, mode);
+}
+
+
+uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, uint8_t mode)
+{
+    uint16_t currentPos;
+    uint32_t myMasterClock;
+    uint32_t myMaxLength = MIDIHdr->currentState.maxLength;
+    uint16_t i;
+    MPB_InitMIDIHdr(MIDIHdr);
+    
+    
+    for(i = 0 ; i < 30000 ; i++ )
+    {
+        MPB_ContinuePlay(MIDIHdr,mode);
+        currentPos = MPB_CurrentTimePosition(MIDIHdr);
+
+        if( currentPos >= timePosSec )
+        {
+            break;
+        }
+
+        if( currentPos < timePosSec)
+        {
+            myMasterClock = myMasterClock + (MIDIHdr->PPQ<<2);
+            MIDIHdr->masterClock = myMasterClock;
+        }
+
+        if(myMasterClock > myMaxLength )
+        {
+            MIDIHdr->masterClock = myMaxLength;
+            break;
+        }
+    }
+
+    myprintfd("Min: ", MPB_CurrentTimePosition(MIDIHdr)/60);
+    myprintfd("Sec: ", MPB_CurrentTimePosition(MIDIHdr)%60);
+    myprintfd("Iter: ", i);
+    return 0;
 }
 
 
@@ -435,7 +463,7 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
 {
     static uint8_t runningStatus;
-
+    
     if( mode == MPB_PB_ALL_OFF)
     {
         return;
