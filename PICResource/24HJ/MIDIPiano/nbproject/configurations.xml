@@ -30,6 +30,10 @@
       <itemPath>/D:/Microchip/MPLAB C30/include/string.h</itemPath>
       <itemPath>D:/Microchip/MPLAB C30/src/peripheral_30F_24H_33F/include/pps.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="f1" displayName="LEDArray" projectFiles="true">
+      <itemPath>../../../FuncLib/External/LEDArray/LEDArray.c</itemPath>
+      <itemPath>../../../FuncLib/External/LEDArray/LEDArray.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
@@ -53,6 +57,10 @@
       <itemPath>../../../FuncLib/Other/mmculib/uint8toa.h</itemPath>
       <itemPath>../../../FuncLib/Other/mmculib/root.c</itemPath>
       <itemPath>../../../FuncLib/Other/mmculib/root.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="MSB2LSB" displayName="MSB2LSB" projectFiles="true">
+      <itemPath>../../../FuncLib/Util/MSB2LSB/MSB2LSB.c</itemPath>
+      <itemPath>../../../FuncLib/Util/MSB2LSB/MSB2LSB.h</itemPath>
     </logicalFolder>
     <logicalFolder name="Peripherals" displayName="Peripherals" projectFiles="true">
       <logicalFolder name="ADC" displayName="ADC" projectFiles="true">
@@ -118,6 +126,7 @@
     <Elem>../../Peripherals</Elem>
     <Elem>../../../FuncLib/Other/MIDIPlayback</Elem>
     <Elem>../../../FuncLib/Other/stack</Elem>
+    <Elem>../../../FuncLib/Util/MSB2LSB</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -163,7 +172,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\MIDIPiano;../../../FuncLib/External;../../../FuncLib/Applications;./"/>
+                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\MIDIPiano;../../../FuncLib/External;../../../FuncLib/Applications;./;../../../FuncLib/Util"/>
         <property key="isolate-each-function" value="false"/>
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>

@@ -8,6 +8,9 @@
 #define MPB_EVENT_STACK_SIZE (16)
 #define MPB_DEFAULT_TEMPO (120)
 #define MPB_DEFAULT_PPQ (96)
+
+#define MPB_NULL_ON_ARRAY (255)
+#define MPB_DEFAULT_NOTE_ON_DIVISOR (8)
 //Continue Playing Status
 enum
 {
@@ -46,6 +49,7 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode);
 void MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
 void MPB_ResetMIDI(void);
+void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t mode);
 
 uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, uint8_t mode);
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, uint8_t mode);
@@ -61,7 +65,8 @@ uint8_t _MIDI_fileopen(uint8_t* filename);
 #define MPB_ReadToBuffer(position, buf) _MIDI_readbuf(position, buf, MIDI_TRACK_BUFFER_SIZE)
 #define MPB_OpenFile(x) _MIDI_fileopen(x)
 
-#define MIDI_Tx(x) uartTx(PrimaryUART, x);
+#define MIDI_Tx(x)          uartTx(PrimaryUART, x)
+#define MIXI_TxDump(x, n)   uartTxDump(PrimaryUART, x, n)
 
 MIDI_EVENT_t* MPB_GetNextEvent(void);
 MIDI_EVENT_t* MPB_ConfirmEventTx(void);

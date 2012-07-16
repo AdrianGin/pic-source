@@ -73,7 +73,7 @@ extern FATFS filesys;
 extern FIL testFIL;
 extern uint16_t br;
 extern uint8_t buffer[];
-
+extern volatile uint8_t globalFlag;
 
 void myprintf(char* string, uint32_t num);
 void myprintfd(char* string, uint32_t num);

@@ -18,6 +18,8 @@
 #include "dmaSPI/dmaSPI.h"
 #include "MIDIParser/midiparser.h"
 
+#include "LEDArray/LEDArray.h"
+
 #include "SD_MMC/sd.h"
 
 #include "MIDIPlayback/midiplayback.h"
@@ -83,8 +85,7 @@ volatile uint8_t ProcessBufferFlag;
 volatile char inputString[20];
 char filename[20];
 
-//Number of keys with RGB LEDs
-uint8_t LEDArrayRAM[88][3];
+
 
 MIDI_HEADER_CHUNK_t MIDIHdr;
 FATFS filesys;
@@ -146,6 +147,12 @@ void TimerInit(void)
     IFS0bits.T1IF = 0x00;
     IEC0bits.T1IE = 0x01;
     T1CONbits.TON = 0x00;
+
+    //Setup Timer2 too
+    IPC1bits.T2IP = 0x01;
+    IFS0bits.T2IF = 0x00;
+    IEC0bits.T2IE = 0x01;
+    T2CONbits.TON = 0x00;
 }
 
 void TimerStart(void)
@@ -156,118 +163,6 @@ void TimerStart(void)
 void TimerStop(void)
 {
     T1CONbits.TON = 0x00;
-}
-
-#define LED_CLK (1<<0)
-#define LED_DAT (1<<1)
-
-#define LED_BLUE    (0x01)
-#define LED_GREEN   (0x02)
-#define LED_RED     (0x04)
-
-#define RED_POS     (11)
-#define GREEN_POS   (5)
-#define BLUE_POS    (0)
-
-#define RGB(r,g,b)   ((r<<RED_POS) | (g<<GREEN_POS) | b)
-#define BLUE_MAP     (0x1F)
-#define GREEN_MAP    (0x3F << GREEN_POS)
-#define RED_MAP      (0x1F << RED_POS)
-
-#define MAX_BRIGHTNESS (127)
-
-void Show8BitColour(uint16_t bitmap, uint8_t ledIndex, uint8_t r, uint8_t g, uint8_t b)
-{
-    int16_t i;
-    uint8_t outByte;
-
-    int16_t rc,gc,bc;
-
-    r = (r % (MAX_BRIGHTNESS+1));
-    g = (g % (MAX_BRIGHTNESS+1));
-    b = (b % (MAX_BRIGHTNESS+1));
-//    uint8_t r,g,b;
-//    r = (bitmap & RED_MAP) >> RED_POS;
-//    g = (bitmap & GREEN_MAP) >> GREEN_POS;
-//    b = (bitmap & BLUE_MAP) >> BLUE_POS;
-
-    for( i=0, rc=0, gc=0,bc=0; i < MAX_BRIGHTNESS ; i ++)
-    {
-
-        rc += r;
-        gc += g;
-        bc += b;
-
-        outByte = 0;
-        if( bc >=  MAX_BRIGHTNESS)
-        {
-            bc -= MAX_BRIGHTNESS;
-            outByte |= LED_BLUE;
-        }
-
-        if( gc >=  MAX_BRIGHTNESS)
-        {
-            gc -= MAX_BRIGHTNESS;
-            outByte |= LED_GREEN;
-        }
-
-        if( rc >=  MAX_BRIGHTNESS)
-        {
-            rc -= MAX_BRIGHTNESS;
-            outByte |= LED_RED;
-        }
-
-        SendLED(outByte<<(ledIndex*3), ledIndex);
-//        Delay(1);
-
-//        uint16_t scanCount=0;
-//        while( scanCount < 1 )
-//        {
-//            while( globalFlag )
-//            {
-//                scanCount++;
-//                globalFlag = 0;
-//            }
-//        }
-
-
-    }
-
-
-//        globalFlag = 0;
-//        while( globalFlag == 0 )
-//        {
-//        }
-        
-   
-
-    
-}
-
-void SendLED(uint16_t bitmap, uint8_t ledIndex)
-{
-    uint8_t i;
-    uint16_t scanCount=0;
-
-    LATA &= ~(LED_CLK | LED_DAT);
-    LATB |= (1<<15);
-    for( i = 0; i < 16; i++)
-    {
-        LATA &= ~LED_DAT;
-        if(bitmap & (1<<i))
-        {
-            LATA |= LED_DAT;
-        }
-        LATA |= LED_CLK;
-        LATA &= ~LED_CLK;
-        
-    }
-
-    LATB |= (1<<14);
-    LATB &= ~(1<<14);
-    {
-        LATB &= ~(1<<15);
-    } 
 }
 
 int main(void)
@@ -288,10 +183,9 @@ int main(void)
 
     TRISB &= ~(1<<8);
     TRISB &= ~(1<<9);
-    TRISB &= ~(1<<15);
-    TRISB &= ~(1<<14);
+    LEDArray_Init();
 
-    TRISA &= ~((1<<1)|(1<<0));
+    TRISA &= ~((1<<0)|(1<<2));
 
     PPSUnLock;
     PPSOutput(PPS_U2TX, PPS_RP8);
@@ -330,7 +224,7 @@ int main(void)
     ADC_Init();
     ADC_Set10bit();
     ADC_SetClockSpeed(5, 4);
-    ADC_SetPin(11);
+    ADC_SetPin(1);
     //ADC_Off();
 
     Delay(10);
@@ -345,121 +239,70 @@ int main(void)
     ret = f_mount(0, &filesys);
 
 
-    //MPB_SetTickRate(32, 480);
-    uint8_t tickCounter = 0;
+    MPB_SetTickRate(32, 480);
+    uint16_t tickCounter = 0;
 
     TimerStart();
     //For a 100us tick rate
     //PR1 = F_CPU/10000;
-    uint16_t usPerTick = 7;
-    PR1 = (F_CPU / 1000000)*usPerTick;
+    //uint16_t usPerTick = 1;
+    //PR1 = (F_CPU / 1000000)*usPerTick;
 
     uint16_t intCount = 0;
-    uint8_t r,g,b,i;
+    uint8_t r = 0, g = 0, b = 0;
+    uint8_t i;
     uint8_t* varPtr = &r;
 
-    while(1)
-    {
-        //if( globalFlag )
+    uint8_t mode = 0;
+
+    PR2 = 5120;
+    
+    T2CONbits.TCKPS = 0x00;
+    T2CONbits.TON = 0x01;
 
 
-        switch( newSongFlag )
-        {
-            case 'r':
-                varPtr = &r;
-                newSongFlag = 0;
-                break;
+    uint8_t counter = 0;
+    uint8_t tempVar = LA_REDRAW_FINISHED;
 
-            case 'g':
-                varPtr = &g;
-                newSongFlag = 0;
-                break;
-
-            case 'b':
-                varPtr = &b;
-                newSongFlag = 0;
-                break;
-
-            case '+':
-                *varPtr = *varPtr + 1;
-                newSongFlag = 0;
-                break;
-
-            case '-':
-                *varPtr = *varPtr - 1;
-                newSongFlag = 0;
-                break;
-
-            case 't':
-                *varPtr = ADC_Sample()/(1024/MAX_BRIGHTNESS);
-                //newSongFlag = 0;
-                break;
-
-            default:
-                break;
-        }
-
-        
-        {
-            intCount++;
-            {
-//                for( r = 0; r < 4; r++ )
-                {
-//                    for( g = 0; g < 8; g++ )
-                    {
-//                        for( b = 1; b < 8; b++ )
-                        {
-                            //myprintfd("ADC:", *varPtr);
-                            Show8BitColour( RGB(r,g,b) , 0 , r, g, b);
-                            for( i = 0; i < 10; i++ )
-                            {
-                                Show8BitColour( RGB(0,0,0) , 1, 0, 0, 0 );
-                            }
-                          
-
-//                            Show8BitColour( RGB(3-r,7-g,7-b) , 1 );
-                            //Delay(200);
-                        }
-                    }
-
-                }
-
-
-//                for( r = 0; r < 4; r++ )
-//                {
-//                    for( g = 0; g < 8; g++ )
-//                    {
-//                        for( b = 1; b < 8; b++ )
-//                        {
-//                            Show8BitColour( RGB(3-r,7-g,7-b) , 0 );
-//                            Show8BitColour( RGB(r,g,b) , 1 );
-//                        }
-//                    }
-//                }
-                //LATB |= (1<<15);
-                intCount = 0;
-            }
-            
-            globalFlag = 0;
-        }
-        
-    }
-
-
+    //LEDArray_SetLED(87, 7,0,0);
 
     while(1)
     {
 
         switch( newSongFlag )
         {
+
+            case 'm':
+                mode ^= 1;
+                newSongFlag = 0;
+                break;
+                
             case 1:
             {
-                strcpy(filename, inputString);
-                MPB_ResetMIDI();
-                MPB_PlayMIDIFile(&MIDIHdr, filename);
-                //MPB_DetermineLength(&MIDIHdr);
-               // MPB_PlayMIDIFile(&MIDIHdr, filename);
-                TimerStart();
+                if(mode)
+                {
+                    strcpy(filename, inputString);
+                    MPB_ResetMIDI();
+                    //MPB_DetermineLength(&MIDIHdr);
+                   // MPB_PlayMIDIFile(&MIDIHdr, filename);
+                    if( MPB_PlayMIDIFile(&MIDIHdr, filename) == FR_OK )
+                    {
+                        TimerStart();
+                    }
+                    else
+                    {
+                        TimerStop();
+                        //File not found!
+
+                    }
+                }
+                else
+                {
+                    myprintfd("IntA:", atoi(inputString));
+                    intCount = atoi(inputString);
+                    LEDArray_SetLED(atoi(inputString), 127, 0, 0);
+                    //inputString;
+                }
                 newSongFlag = 0;
                 break;
             }
@@ -549,34 +392,120 @@ int main(void)
                 break;
             }
 
+
+            case 'r':
+                varPtr = &r;
+                newSongFlag = 0;
+                break;
+
+            case 'g':
+                varPtr = &g;
+                newSongFlag = 0;
+                break;
+
+            case 'b':
+                varPtr = &b;
+                newSongFlag = 0;
+                break;
+
+            case '+':
+                *varPtr = *varPtr + 1;
+                newSongFlag = 0;
+                break;
+
+            case '-':
+                *varPtr = *varPtr - 1;
+                newSongFlag = 0;
+                break;
+
+            case 't':
+                *varPtr = ADC_Sample()/(1024/LA_MAX_BRIGHTNESS);
+                //newSongFlag = 0;
+                break;
+
+            case 'y':
+                myprintfd("Int:", intCount);
+                LEDArray_SetLED(intCount++, 127, 0, 0);
+                newSongFlag = 0;
+                break;
+
+
+
             default:
                 break;
 
         }
 
-        //if(0)
-        if (globalFlag)
-        {
+        //LEDArray_SetLED(intCount, r, g, b);
+        //LEDArray_SetLED(0, r, g, b);
+        
 
+        
+        if( globalFlag & 0x02 )
+        {
+            //if( counter == 0)
+            {
+
+                tempVar = LEDArray_ReDraw(tempVar);
+                counter = 0;
+            }
+//            else
+//            {
+//                counter++;
+//            }
+            globalFlag &= ~(0x02);
+        }
+
+
+        //if(0)
+        if (globalFlag & 0x01)
+        {
+            
             
             //if( tickCounter == 4)
             {
                 MIDIHdr.masterClock++;
-                globalFlag = 0;
+                globalFlag &= ~1;
                 if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
                 {
                     myprintf("End of MIDI File: ", 1);
-                    T1CONbits.TON = 0x00;
+                    TimerStop();
                 }
             }
 
             if( (T1CONbits.TON) )
             {
                 tickCounter++;
-                if(tickCounter == (MIDIHdr.PPQ / 24))
+
+                uint8_t j, k;
+                for( j = 0, k = 0; j < MIDI_MAX_KEY; j++, k++)
                 {
-                    MIDI_Tx(0xF8);
+                    if( MIDIHdr.NoteOnArray[j] != MPB_NULL_ON_ARRAY )
+                    {
+                        MIDIHdr.NoteOnTime[MIDIHdr.NoteOnArray[j]]--;
+                        if(MIDIHdr.NoteOnTime[MIDIHdr.NoteOnArray[j]])
+                        {
+                        }
+                        else
+                        {
+                            LEDArray_SetLED(0, 0, 0, 0);
+                            MIDIHdr.NoteOnArray[j] = MPB_NULL_ON_ARRAY;
+                            MIDIHdr.currentPolyphony--;
+                        }
+                    }
+
+                    if(k == MIDIHdr.currentPolyphony)
+                    {
+                        break;
+                    }
+                }
+
+                if( (tickCounter == (MIDIHdr.PPQ / 24)) )
+                //if(tickCounter == 255)
+                {
                     tickCounter = 0;
+                    //MIDI_Tx(0xF8);
+                    
                 }
             }
 
@@ -617,9 +546,16 @@ void __attribute__((__interrupt__, no_auto_psv)) _DMACError(void)
 
 void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 {
-    globalFlag = 1;
+    globalFlag |= 0x01;
     IFS0bits.T1IF = 0; //clear interrupt flag
 }
+
+void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
+{
+    globalFlag |= 0x02;
+    IFS0bits.T2IF = 0; //clear interrupt flag
+}
+
 
 void __attribute__((__interrupt__, no_auto_psv)) _ADC1Interrupt(void)
 {

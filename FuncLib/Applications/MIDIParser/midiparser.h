@@ -45,6 +45,8 @@
 #define TRACK_MAX_NAME_LENGTH    (16)
 #define TRACK_EVENT_BUFFER_SIZE  (2)
 
+
+
 #define PROGRAM_CHAR const char
 #define PROGRAM_SPACE
 #define FLASH_GET_PGM_BYTE
@@ -139,6 +141,7 @@ typedef struct
 
 
 #define MIDI_MAX_FILENAME (32)
+#define MIDI_MAX_POLYPHONY (32)
 typedef struct
 {
     uint16_t format;
@@ -149,6 +152,18 @@ typedef struct
     uint8_t  fileName[MIDI_MAX_FILENAME];
     MIDI_TRACK_CHUNK_t Track[MAX_MIDI_TRACKS];
     MIDI_CURRENT_TRACK_STATE_t currentState;
+
+    //This is for the drum track.
+    //Once a drum is hit, it will stay on for a set period of time.
+    uint8_t  NoteOnTimer[MIDI_MAX_KEY+1];
+    
+    //TimeOn = PPQ / NoteOnDivisor.
+    uint8_t  NoteOnTime;
+    //Just for the drum track.
+    uint8_t  NoteOnList[MIDI_MAX_POLYPHONY];
+    uint8_t  channelPolyphony[MAX_MIDI_CHANNELS];
+    uint8_t  totalPolyphony;
+
 } MIDI_HEADER_CHUNK_t;
 
 
