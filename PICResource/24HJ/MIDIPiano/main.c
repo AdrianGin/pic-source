@@ -246,7 +246,7 @@ int main(void)
     UI_LCD_Clear(&PrimaryDisplay);
     UI_LCD_Home(&PrimaryDisplay);
 
-    //LCDInterface_Print(&PrimaryDisplay, "Hi!", 0);
+    LCDInterface_Print(&PrimaryDisplay, "Hi!", 0);
 
     Delay(10);
 
@@ -503,7 +503,7 @@ int main(void)
                 globalFlag &= ~1;
                 if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
                 {
-                    //myprintf("End of MIDI File: ", 1);
+                    myprintf("End of MIDI File: ", 1);
                     TimerStop();
                 }
             }
