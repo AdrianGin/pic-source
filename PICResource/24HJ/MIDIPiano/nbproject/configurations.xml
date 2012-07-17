@@ -113,6 +113,14 @@
       <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
       <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="UI_LCD" displayName="UI_LCD" projectFiles="true">
+      <itemPath>../../../FuncLib/External/UI_LCD/UI_LCD.c</itemPath>
+      <itemPath>../../../FuncLib/External/UI_LCD/UI_LCD.h</itemPath>
+      <itemPath>LCDSettings.c</itemPath>
+      <itemPath>LCDSettings.h</itemPath>
+      <itemPath>../../../FuncLib/External/UI_LCD/LCDInterface.c</itemPath>
+      <itemPath>../../../FuncLib/External/UI_LCD/LCDInterface.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
@@ -172,7 +180,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\MIDIPiano;../../../FuncLib/External;../../../FuncLib/Applications;./;../../../FuncLib/Util"/>
+                  value="../../../FuncLib/Other;/D:/Microchip/MPLAB C30/include;../../Peripherals;../..;../../Peripherals/hardUART24H;/D:/Microchip/MPLAB C30/support/PIC24H/h;../../../FuncLib/Other/RingBuffer;/D:/Microchip/MPLAB C30/support/peripheral_30F_24H_33F;../../../FuncLib/Other/linkedlist;M:\Robotics\Source\PICResource\24HJ\MIDIPiano;../../../FuncLib/External;../../../FuncLib/Applications;./;../../../FuncLib/Util;C:\Users\Adrian\Documents\..\..\..\FuncLib\Other"/>
         <property key="isolate-each-function" value="false"/>
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>

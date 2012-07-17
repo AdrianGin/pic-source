@@ -138,7 +138,7 @@ void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
     MIDIHdr->currentState.trackLengthSecs = lengthSecs;
     MIDIHdr->currentState.maxLength = maxLength;
 
-    MIDIHdr->NoteOnTime = MIDIHdr->PPQ / MPB_DEFAULT_NOTE_ON_DIVISOR;
+    MIDIHdr->NoteOnTime = MIDIHdr->PPQ/8;
 
 }
 
@@ -269,59 +269,52 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
     MPB_PlayEvent(event, mode);
     track->eventCount = MPB_PLAY_NEXT_EVENT;
 
+    uint8_t midiChannel = (event->eventType & 0x0F);
     
     if( (event->eventType & 0xF0) == MIDI_NOTE_ON )
     {
-        uint8_t midiChannel = (event->eventType & 0x0F);
-
-        MIDIHdr->channelPolyphony[midiChannel]++;
-
+        //A note on with a velocity of 0, can be NOTE_OFFs.
+        if(event->chanEvent.parameter2 == 0)
+        {
+            if(MIDIHdr->channelPolyphony[midiChannel])
+            {
+                MIDIHdr->channelPolyphony[midiChannel]--;
+            }
+            if(MIDIHdr->totalPolyphony)
+            {
+                MIDIHdr->totalPolyphony--;
+            }
+        }
+        else
+        {
+            MIDIHdr->channelPolyphony[midiChannel]++;
+            MIDIHdr->totalPolyphony++;
+        }
         //The drum channel has an exception because sometimes there
         //might not be any offnotes. etc
         if( midiChannel == MIDI_DRUM_CHANNEL)
         {
-
             MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] = MIDIHdr->NoteOnTime;
-
-            uint8_t i;
-            for( i = 0; i < MIDIHdr->channelPolyphony[MIDI_DRUM_CHANNEL]; i++)
-            {
-                if(MIDIHdr->NoteOnArray[i] == MPB_NULL_ON_ARRAY ||
-                   MIDIHdr->NoteOnArray[i] == event->chanEvent.parameter1 )
-                {
-                    break;
-                }
-            }
-            
-            if( MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] == 0 )
-            {
-                MIDIHdr->NoteOnArray[i] = event->chanEvent.parameter1;
-                MIDIHdr->channelPolyphony[0x09]++;
-            }
-            MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] = MIDIHdr->PPQ/8;
         }
     }
     else if( (event->eventType & 0xF0) == MIDI_NOTE_OFF )
     {
-        
-
+        if(MIDIHdr->channelPolyphony[midiChannel])
+        {
+            MIDIHdr->channelPolyphony[midiChannel]--;
+        }
+        if(MIDIHdr->totalPolyphony)
+        {
+            MIDIHdr->totalPolyphony--;
+        }
         //If however we receive a Note Off before the timer has
         //elapsed, then reset it all.
-        if( MIDIHdr->NoteOnTime[event->chanEvent.parameter1] )
+        if( midiChannel == MIDI_DRUM_CHANNEL)
         {
-            uint8_t j;
-            for( j = 0; j < MIDIHdr->channelPolyphony[0x09]; j++ )
-            {
-                if( MIDIHdr.NoteOnArray[j] == event->chanEvent.parameter1)
-                {
-                    MIDIHdr.NoteOnArray[j] = MPB_NULL_ON_ARRAY;
-                }
-            }
-            MIDIHdr->NoteOnTime[event->chanEvent.parameter1] = 0;
-            MIDIHdr->channelPolyphony[0x09]--;
-            //Turn respective LED off.
-            LEDArray_SetLED(0, 0, 0, 0);
+            MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] = 0;
         }
+        //Turn off the respective LED.
+        //LEDArray_SetLED(0, 0, 0, 0);
     }
     
     if (event->eventType==MIDI_META_MSG)
@@ -371,7 +364,7 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             readPtr = originPtr;
             track->bufferOffset = 0;
         }
-        
+
         oldPosition = (uint32_t)readPtr;
         //MIDI Parse Event returns the ptr to the next event.
         readPtr = MIDIParse_Event(track, event, readPtr);
@@ -570,6 +563,8 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             {
                 case MIDI_META_LYRICS:
                     DEBUGn(event->metaEvent.data, event->metaEvent.length);
+                    //myprintf(event->metaEvent.data, event->metaEvent.length);
+
                     break;
             }
             
@@ -605,19 +600,19 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
 
                     if( (event->chanEvent.parameter1 == BASS_DRUM1) )
                     {
-                        LEDArray_AppendLED(0, 7, 0, 0);
+                        LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS-1, 0, 0);
                         //myprintfd("YES:", 3);
                     }
 
                     if( (event->chanEvent.parameter1 == ELECTRIC_SNARE) )
                     {
-                        LEDArray_AppendLED(0, 0, 7, 0);
+                        LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS-1, 0);
                         //myprintfd("YES:", 7);
                     }
 
                     if( (event->chanEvent.parameter1 == RIDE_CYMBAL2) )
                     {
-                        LEDArray_AppendLED(87, 0, 0, 7);
+                        LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS-1);
                         //myprintfd("YES:", 7);
                     }
 

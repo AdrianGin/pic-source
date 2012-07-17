@@ -70,3 +70,18 @@ void Delay_Us( unsigned int delayUs_count )
 	asm volatile("done1:");
 }		
 
+
+void _delay_us( unsigned int delayUs_count )
+{
+	temp_count = delayUs_count +1;
+	asm volatile("outer2: dec _temp_count");
+	asm volatile("cp0 _temp_count");
+	asm volatile("bra z, done2");
+	asm volatile("repeat #10" );
+	asm volatile("nop");
+	asm volatile("repeat #10" );
+	asm volatile("nop");
+	asm volatile("bra outer2");
+	asm volatile("done2:");
+}
+

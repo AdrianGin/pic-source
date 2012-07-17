@@ -155,10 +155,10 @@ typedef struct
 
     //This is for the drum track.
     //Once a drum is hit, it will stay on for a set period of time.
-    uint8_t  NoteOnTimer[MIDI_MAX_KEY+1];
+    uint16_t  NoteOnTimer[MIDI_MAX_KEY+1];
     
     //TimeOn = PPQ / NoteOnDivisor.
-    uint8_t  NoteOnTime;
+    uint16_t  NoteOnTime;
     //Just for the drum track.
     uint8_t  NoteOnList[MIDI_MAX_POLYPHONY];
     uint8_t  channelPolyphony[MAX_MIDI_CHANNELS];

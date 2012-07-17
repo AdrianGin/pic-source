@@ -22,13 +22,14 @@
 #define LA_COL2     (13)
 #define LA_COL3     (12)
 
-#define LA_OUT_PORT LATA
-#define LA_SR_CLK  (1<<0)
-#define LA_SR_DAT  (1<<1)
+#define LA_OUT_DDR  TRISB
+#define LA_OUT_PORT LATB
+#define LA_SR_CLK  (1<<1)
+#define LA_SR_DAT  (1<<0)
 #define LA_SR_LAT  (1<<2)
 
-#define LA_SR_MR_PORT LATB
-#define LA_SR_OE      (1<<LA_COL0)
+//#define LA_SR_MR_PORT LATB
+//#define LA_SR_OE      (1<<LA_COL0)
 
 
 
@@ -47,8 +48,8 @@
 #define LA_ROW_COUNT        (BITS_PER_REGISTER*NUMBER_OF_SHIFT_REGISTERS)
 
 //Note that Data needs to be shifted out LSB first.
-#define LA_TxByte(x)    SPI_TxByte((PIC_SPI_t*)&S1, x)
-//define LA_TxByte(x)    _LA_ShiftOut(x)
+//#define LA_TxByte(x)    SPI_TxByte((PIC_SPI_t*)&S1, x)
+#define LA_TxByte(x)    _LA_ShiftOut(x)
 
 #define LEDArray_OffDisplay() LEDArray_SetColumn(LA_COLUMN_COUNT+1)
 

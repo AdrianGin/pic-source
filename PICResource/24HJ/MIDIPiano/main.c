@@ -28,6 +28,9 @@
 #include "mmculib/root.h"
 #include "adc/adc.h"
 
+#include "UI_LCD/UI_LCD.h"
+#include "UI_LCD/LCDInterface.h"
+#include "LCDSettings.h"
 
 void InterruptHandlerLow();
 
@@ -39,7 +42,7 @@ LINKED_LIST_t PrimaryList;
 PIC_SPI_t S1 = {&SPI1STAT, &SPI1CON1, &SPI1CON2, &SPI1BUF};
 
 volatile uint8_t globalFlag = 0;
-
+volatile uint8_t tempVar = LA_REDRAW_FINISHED;
 
 PIC_DMA_UART_t DMAUART1 = {&DMA0CON,
     &DMA0REQ,
@@ -82,7 +85,7 @@ volatile uint8_t songIndex = 0;
 volatile uint8_t ProcessBufferFlag;
 //volatile uint8_t ProcessBufferFlag;
 
-volatile char inputString[20];
+volatile char inputString[80];
 char filename[20];
 
 
@@ -211,8 +214,10 @@ int main(void)
 
     //TRISA |= (1<<1);
     //LATA = 0;
-    Delay(10);
+    Delay(60);
 
+
+    
     //SendString("Welcome executive:\n");
     //SendString("My Name\n");
     //SendString("is Adrian123\n");
@@ -231,14 +236,31 @@ int main(void)
     uint16_t ADCValue;
 
     SPI_Init(&S1);
+
+    UI_LCD_HWInit();
+    UI_LCD_Init(&PrimaryDisplay);
+
+    UI_LCD_LoadDefaultChars();
+    UI_LCD_Clear(&PrimaryDisplay);
+    UI_LCD_Write(&PrimaryDisplay, LCD_DISPLAY_DEFAULT);
+    UI_LCD_Clear(&PrimaryDisplay);
+    UI_LCD_Home(&PrimaryDisplay);
+
+    //LCDInterface_Print(&PrimaryDisplay, "Hi!", 0);
+
+    Delay(10);
+
+
     uint8_t ret;
+
+
 
     DMA_SPI_Init(&DMASPI1, &DMASPI1T, DMA_SPI1);
     DMA_SPI_Enable();
 
     ret = f_mount(0, &filesys);
 
-
+    
     MPB_SetTickRate(32, 480);
     uint16_t tickCounter = 0;
 
@@ -255,14 +277,14 @@ int main(void)
 
     uint8_t mode = 0;
 
-    PR2 = 5120;
-    
+
+    PR2 = 2000;
     T2CONbits.TCKPS = 0x00;
     T2CONbits.TON = 0x01;
 
-
-    uint8_t counter = 0;
-    uint8_t tempVar = LA_REDRAW_FINISHED;
+    
+    uint16_t counter = 0;
+    // tempVar = LA_REDRAW_FINISHED;
 
     //LEDArray_SetLED(87, 7,0,0);
 
@@ -429,6 +451,10 @@ int main(void)
                 newSongFlag = 0;
                 break;
 
+            case 'l':
+                UI_LCD_LoadDefaultChars();
+                newSongFlag = 0;
+                break;
 
 
             default:
@@ -438,37 +464,46 @@ int main(void)
 
         //LEDArray_SetLED(intCount, r, g, b);
         //LEDArray_SetLED(0, r, g, b);
-        
 
-        
-        if( globalFlag & 0x02 )
+        if( globalFlag & 0x04 )
         {
-            //if( counter == 0)
+            globalFlag &= ~(0x04);
+            if( newSongFlag )
             {
-
-                tempVar = LEDArray_ReDraw(tempVar);
-                counter = 0;
+                //LCD_SendChar(&PrimaryDisplay, newSongFlag);
+                newSongFlag = 0;
             }
-//            else
-//            {
-//                counter++;
-//            }
-            globalFlag &= ~(0x02);
         }
 
+        if( globalFlag & 0x02 )
+        {
+            {
+                //tempVar = LEDArray_ReDraw(tempVar);
+                //counter = 0;
+            }
+            if( counter == 1)
+            {
+                uint8_t j;
+                UI_LCD_MainLoop(&PrimaryDisplay);
+                counter = 0;
+            }
+            else
+            {
+                counter++;
+            }
+            globalFlag &= ~(0x02);
+        }
 
         //if(0)
         if (globalFlag & 0x01)
         {
-            
-            
             //if( tickCounter == 4)
             {
                 MIDIHdr.masterClock++;
                 globalFlag &= ~1;
                 if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
                 {
-                    myprintf("End of MIDI File: ", 1);
+                    //myprintf("End of MIDI File: ", 1);
                     TimerStop();
                 }
             }
@@ -477,26 +512,16 @@ int main(void)
             {
                 tickCounter++;
 
-                uint8_t j, k;
-                for( j = 0, k = 0; j < MIDI_MAX_KEY; j++, k++)
+                uint8_t k;
+                for(k = 0;(k < MIDI_MAX_KEY+1); k++)
                 {
-                    if( MIDIHdr.NoteOnArray[j] != MPB_NULL_ON_ARRAY )
+                    if( MIDIHdr.NoteOnTimer[k] )
                     {
-                        MIDIHdr.NoteOnTime[MIDIHdr.NoteOnArray[j]]--;
-                        if(MIDIHdr.NoteOnTime[MIDIHdr.NoteOnArray[j]])
-                        {
-                        }
-                        else
+                        MIDIHdr.NoteOnTimer[k]--;
+                        if(MIDIHdr.NoteOnTimer[k] == 0)
                         {
                             LEDArray_SetLED(0, 0, 0, 0);
-                            MIDIHdr.NoteOnArray[j] = MPB_NULL_ON_ARRAY;
-                            MIDIHdr.currentPolyphony--;
                         }
-                    }
-
-                    if(k == MIDIHdr.currentPolyphony)
-                    {
-                        break;
                     }
                 }
 
@@ -508,9 +533,7 @@ int main(void)
                     
                 }
             }
-
         }
-
     }
 
     //MPB_PlayTrack(&MIDIHdr, &MIDIHdr.Track[11]);
@@ -553,6 +576,12 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
 {
     globalFlag |= 0x02;
+    //if(globalFlag & 0x02)
+    {
+        tempVar = LEDArray_ReDraw(tempVar);
+        //globalFlag &= ~(0x02);
+    }
+
     IFS0bits.T2IF = 0; //clear interrupt flag
 }
 
@@ -638,6 +667,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
     //uartTx((PIC_USART_t*)&U1, i);
     static uint8_t byteCount = 0;
 
+    globalFlag |= 0x04;
+    LCD_SendChar(&PrimaryDisplay, i);
 
     if (i!=0x0D)
     {

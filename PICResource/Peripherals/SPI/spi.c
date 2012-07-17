@@ -82,6 +82,16 @@ void SPI_Init(PIC_SPI_t* port)
 
 }
 
+void SPI_DisablePort(PIC_SPI_t* port)
+{
+    *port->SPIXSTA  &= ~(1<<SPIEN);
+}
+
+void SPI_EnablePort(PIC_SPI_t* port)
+{
+    *port->SPIXSTA  |= (1<<SPIEN);
+}
+
 void SPI_SetClockPolarity(PIC_SPI_t* port, uint8_t polarity)
 {
     *port->SPIXCON1 &= ~(1<<CKE);

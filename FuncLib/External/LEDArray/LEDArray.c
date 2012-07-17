@@ -74,6 +74,7 @@ void LEDArray_AppendLED(uint8_t index, uint8_t r, uint8_t g, uint8_t b)
 
 void LEDArray_Init(void)
 {
+    LA_OUT_DDR &= ~(LA_SR_CLK | LA_SR_DAT | LA_SR_LAT);
     LA_COL_DDR &= ~LA_COL_MASK;
     memset(LEDArrayRAM, 1 , sizeof(LEDArrayRAM));
     memset(LEDArrayCurrentStateRAM, 0 , sizeof(LEDArrayCurrentStateRAM));

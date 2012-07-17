@@ -82,6 +82,8 @@ THE SOFTWARE.
 
 //Set Speed defines
 #define PRESCALER_MASK   (0x1F)
+#define PRESCALE_DIV2    (0x1B)
+#define PRESCALE_DIV3    (0x17)
 #define PRESCALE_DIV4    (0x1E)
 #define PRESCALE_DIV8    (0x03)
 #define PRESCALE_DIV16   (0x1D)
@@ -116,5 +118,8 @@ uint8_t SPI_RxByte(PIC_SPI_t* port);
 void SPI_RxBlock(PIC_SPI_t* port, uint8_t* data, uint16_t n);
 
 void SPI_TxBlock(PIC_SPI_t* port, uint8_t* data, uint16_t n);
+
+void SPI_DisablePort(PIC_SPI_t* port);
+void SPI_EnablePort(PIC_SPI_t* port);
 
 #endif
