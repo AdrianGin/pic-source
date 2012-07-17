@@ -102,6 +102,7 @@ THE SOFTWARE.
 
 #define LCD_OUTPUT_BUFFER_EMPTY     (0)
 #define LCD_OUTPUT_BUFFER_NOT_EMPTY (1)
+#define LCD_OUTPUT_SENT_ONE_BYTE    (2)
 
 typedef struct
 {
@@ -113,6 +114,7 @@ enum
 {
     NO_WAIT = 0,
     STROBE_WAIT,
+    UPPER_NIBBLE = 225,
 };
 
 typedef struct

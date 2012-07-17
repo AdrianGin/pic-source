@@ -315,7 +315,6 @@ int main(void)
                     {
                         TimerStop();
                         //File not found!
-
                     }
                 }
                 else
@@ -468,11 +467,6 @@ int main(void)
         if( globalFlag & 0x04 )
         {
             globalFlag &= ~(0x04);
-            if( newSongFlag )
-            {
-                //LCD_SendChar(&PrimaryDisplay, newSongFlag);
-                newSongFlag = 0;
-            }
         }
 
         if( globalFlag & 0x02 )
