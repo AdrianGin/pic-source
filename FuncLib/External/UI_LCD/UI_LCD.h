@@ -122,11 +122,13 @@ typedef struct
     
 } LCDData_t;
 
+//The fastest execution time of an instruction
+#define MIN_EXECUTION_TIME (50)
 enum
 {
     NO_WAIT = 0,
     STROBE_WAIT,
-    UPPER_NIBBLE = 235,
+    LONG_WAIT = 50,
 };
 
 typedef struct
