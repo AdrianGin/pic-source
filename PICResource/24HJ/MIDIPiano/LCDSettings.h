@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 
 
-extern volatile HD44780lcd_t   PrimaryDisplay;
+extern HD44780lcd_t   PrimaryDisplay;
 
 void UI_LCD_HWInit(void);
 void UI_LCD_Strobe(void);
