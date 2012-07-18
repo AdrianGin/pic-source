@@ -123,13 +123,16 @@ typedef struct
 } LCDData_t;
 
 //The fastest execution time of an instruction
-#define MIN_EXECUTION_TIME (50)
+#define MIN_EXECUTION_TIME (60)
 enum
 {
     NO_WAIT = 0,
     STROBE_WAIT,
     LONG_WAIT = 50,
 };
+
+#define LCD_OUTPUT_BUFFER_SIZE  (2)
+
 
 typedef struct
 {   
@@ -153,10 +156,10 @@ typedef struct
    void (*BL_On)(void);
    void (*BL_Off)(void);
 
-   void (*StrobeHI)(void);
-   void (*StrobeLO)(void);
+    uint8_t writePtr;
+    uint8_t readPtr;
+    LCDData_t LCDBuffer[LCD_OUTPUT_BUFFER_SIZE];
    
-        
 } HD44780lcd_t;
 
 extern const uint8_t LcdCustomChar[][8]; 

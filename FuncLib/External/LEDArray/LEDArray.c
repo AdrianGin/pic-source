@@ -120,7 +120,6 @@ uint8_t _check_zero(uint8_t* ptr, uint8_t n)
 
 uint8_t LEDArray_ReDraw(uint8_t reEntry)
 {
-    uint16_t i;
     uint8_t outByte[NUMBER_OF_SHIFT_REGISTERS];
 
     int16_t tempColour;

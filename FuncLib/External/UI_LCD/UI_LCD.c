@@ -32,11 +32,7 @@ THE SOFTWARE.
 
 
 
-#define LCD_OUTPUT_BUFFER_SIZE  (2)
 
-uint8_t writePtr;
-uint8_t readPtr;
-LCDData_t LCDBuffer[LCD_OUTPUT_BUFFER_SIZE];
 
 //uint8_t LCDOutputBuffer[LCD_OUTPUT_BUFFER_SIZE];
 //RINGBUFFER_T LCDBuffer = {LCDOutputBuffer, sizeof (LCDOutputBuffer)};
@@ -83,14 +79,16 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
 
     uint8_t bufLen;
     uint8_t rsStatus = lcd->RSStatus;
-
-    if( writePtr >= readPtr )
+    uint8_t* writeAddr = &lcd->writePtr;
+    uint8_t* readAddr = &lcd->readPtr;
+    
+    if( *writeAddr >= *readAddr )
     {
-        bufLen = writePtr - readPtr;
+        bufLen = *writeAddr - *readAddr;
     }
     else
     {
-        bufLen = writePtr + LCD_OUTPUT_BUFFER_SIZE - readPtr;
+        bufLen = *writeAddr + LCD_OUTPUT_BUFFER_SIZE - *readAddr;
     }
 
     if( bufLen + 2 >= LCD_OUTPUT_BUFFER_SIZE )
@@ -101,10 +99,10 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
     uint8_t bufMask = LCD_OUTPUT_BUFFER_SIZE-1;
 
     //adds it to the output buffer.
-    LCDBuffer[writePtr&bufMask].data = (code);
+    lcd->LCDBuffer[*writeAddr&bufMask].data = (code);
     //The RS Status can change sometimes when flushing the buffer.
-    LCDBuffer[writePtr&bufMask].RSState = rsStatus;
-    writePtr = (writePtr + 1) & (bufMask);
+    lcd->LCDBuffer[*writeAddr&bufMask].RSState = rsStatus;
+    *writeAddr = (*writeAddr + 1) & (bufMask);
 #else
     LCDBuffer[LCDStack.writePtr].data = code;
     LCDBuffer[LCDStack.writePtr].RSState = lcd->RSStatus;
@@ -144,13 +142,15 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
     static uint8_t mainLoopCounter = 0;
     uint8_t fullByte;
     LCDData_t* lcdData;
-
-    if( readPtr != writePtr || (mainLoopCounter != 0))
+    uint8_t* writeAddr = &lcd->writePtr;
+    uint8_t* readAddr = &lcd->readPtr;
+    
+    if( *readAddr != *writeAddr || (mainLoopCounter != 0))
     {
 
         if( mainLoopCounter == 0)
         {
-            lcdData = &LCDBuffer[readPtr];
+            lcdData = &lcd->LCDBuffer[*readAddr];
             fullByte = lcdData->data;
             lcd->RSStatus = lcdData->RSState;
             if( (lcd->RSStatus & RS_STATUS_FLAG) == UI_LCD_RS_INSTRUCTION)
@@ -193,7 +193,7 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
 #endif                
             lcd->SetRegister(fullByte);
             lcd->Strobe();
-            readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
+            *readAddr = (*readAddr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
             return LCD_OUTPUT_SENT_ONE_BYTE;
         }
         else

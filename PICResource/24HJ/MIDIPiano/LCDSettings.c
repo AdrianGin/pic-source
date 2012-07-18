@@ -40,8 +40,8 @@ HD44780lcd_t PrimaryDisplay ={
     UI_LCD_Strobe,
     UI_LCD_BL_On,
     UI_LCD_BL_Off,
-    UI_LCD_StrobeHI,
-    UI_LCD_StrobeLO,
+    0,
+    0,
 };
 
 
@@ -92,32 +92,13 @@ void UI_LCD_Strobe(void)
     UI_LCD_CONTROL_PORT &= ~(1<<UI_LCD_RS_PIN);
     UI_LCD_CONTROL_PORT |= (PrimaryDisplay.RSStatus<<UI_LCD_RS_PIN);
     UI_LCD_CONTROL_PORT |= UI_LCD_E;
-
     //This needs to be slightly longer.
     UI_LCD_CONTROL_PORT |= UI_LCD_E;
     UI_LCD_CONTROL_PORT |= UI_LCD_E;
     UI_LCD_CONTROL_PORT &= ~UI_LCD_E;
-
     SPI_EnablePort(&S1);
 }
 
-
-void UI_LCD_StrobeHI(void)
-{
-    /* Need to disable the SPI for a moment as we clock in the LCD data */
-    UI_LCD_CONTROL_PORT |= UI_LCD_E;
-}
-
-void UI_LCD_StrobeLO(void)
-{
-    /* Need to disable the SPI for a moment as we clock in the LCD data */
-    SPI_DisablePort(&S1);
-    UI_LCD_CONTROL_PORT &= ~(1<<UI_LCD_RS_PIN);
-    UI_LCD_CONTROL_PORT |= (PrimaryDisplay.RSStatus<<UI_LCD_RS_PIN);
-    UI_LCD_CONTROL_PORT |= UI_LCD_E;
-    UI_LCD_CONTROL_PORT &= ~UI_LCD_E;
-    SPI_EnablePort(&S1);
-}
 
 
 

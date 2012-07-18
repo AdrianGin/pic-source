@@ -45,8 +45,6 @@ void UI_LCD_BLInit(uint16_t TimerPeriod);
 void UI_LCD_LoadDefaultChars(void);
 void UI_LCD_SetRegister(uint8_t data);
 
-void UI_LCD_StrobeHI(void);
-void UI_LCD_StrobeLO(void);
 
 #endif
 
