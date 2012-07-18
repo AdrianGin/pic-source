@@ -131,8 +131,7 @@ enum
     LONG_WAIT = 50,
 };
 
-#define LCD_OUTPUT_BUFFER_SIZE  (2)
-
+#define LCD_OUTPUT_BUFFER_SIZE  (16)
 
 typedef struct
 {   

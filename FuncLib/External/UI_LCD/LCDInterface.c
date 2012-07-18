@@ -15,7 +15,7 @@ void LCDInterface_Print(HD44780lcd_t* lcd, uint8_t* string, uint8_t n)
     }
     else
     {
-        n = strlen(string);
+        n = strlen( (char*)string);
     }
 
     //If the string goes on for more than line,

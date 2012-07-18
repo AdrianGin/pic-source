@@ -91,7 +91,7 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
         bufLen = *writeAddr + LCD_OUTPUT_BUFFER_SIZE - *readAddr;
     }
 
-    if( bufLen + 2 >= LCD_OUTPUT_BUFFER_SIZE )
+    if( (bufLen + 1) >= LCD_OUTPUT_BUFFER_SIZE )
     {
         UI_LCD_FlushBuffer(lcd);
     }
@@ -155,7 +155,7 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
             lcd->RSStatus = lcdData->RSState;
             if( (lcd->RSStatus & RS_STATUS_FLAG) == UI_LCD_RS_INSTRUCTION)
             {
-                uint8_t instructionType;
+                uint8_t instructionType = 0;
                 uint8_t i;
                 for( i = 0; i < LCD_INSTRUCTION_COUNT; i++)
                 {
@@ -330,7 +330,7 @@ void UI_LCD_String_P(HD44780lcd_t* lcd, const char* string_P)
     uint8_t c;
     UI_LCD_SetData(lcd);
 
-    while ((c = UI_LCD_GET_FLASHBYTE(string_P++)))
+    while ((c = (uint8_t)UI_LCD_GET_FLASHBYTE(string_P++)))
     {
         UI_LCD_Write(lcd, c);
     }

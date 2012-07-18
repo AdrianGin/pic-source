@@ -293,7 +293,6 @@ uint8_t SD_Command(uint8_t cmd, uint32_t arg)
 /* Subroutine which reads 'byteCount' bytes from the SPI and writes it to buffer */
 uint8_t SD_ReadBlock(uint8_t* buffer, uint16_t byteCount)
 {
-    uint16_t i;
     uint16_t retry = 0;
     /** Wait for start block */
     while (SD_RXBYTE() != SD_STARTBLOCK_READ)
