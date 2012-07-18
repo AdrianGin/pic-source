@@ -67,7 +67,7 @@
 #define UI_LCD_GET_FLASHBYTE(x)  (x)
 #define LCD_FUNCTION_DEFAULT	((1<<LCD_FUNCTION) | (1<<LCD_FUNCTION_2LINES))
 #define LCD_MODE_DEFAULT	((1<<LCD_ENTRY_MODE) | (1<<LCD_ENTRY_INC))
-#define LCD_DISPLAY_DEFAULT   ((1<<LCD_DISPLAY) | (1<<LCD_ON_DISPLAY))
+#define LCD_DISPLAY_DEFAULT   ((1<<LCD_DISPLAY) | (1<<LCD_ON_DISPLAY) | (1<<LCD_ON_BLINK))
 
 #define LCD_FUNCTION_RESET   ((1<<LCD_FUNCTION) | (1<<LCD_FUNCTION_8BIT))
 #define LCD_DISPLAY_RESET   ((1<<LCD_DISPLAY))
@@ -94,8 +94,8 @@
 #define SD_RXBLOCK(buffer, bytes)   DMA_SPI_ReceiveBlock(&DMASPI1, &DMASPI1T, buffer, bytes)
 #define SD_TXBYTE(x)   SPI_TxByte((PIC_SPI_t*)&S1, x)
 
-#define DEBUG(string)  uartTxString(&U2, string); LCDInterface_Print(&PrimaryDisplay, string, 0)
-#define DEBUGn(string,n) uartTxDump(&U2, string, n); LCDInterface_Print(&PrimaryDisplay, string, n)
+#define DEBUG(string)  uartTxString(&U2, string); //LCDInterface_Print(&PrimaryDisplay, string, 0)
+#define DEBUGn(string,n) uartTxDump(&U2, string, n); //LCDInterface_Print(&PrimaryDisplay, string, n)
 
 #define SD_STARTUP()        SD_Startup()
 #define SD_SETMAXSPEED()    SD_SetMaxSpeed()

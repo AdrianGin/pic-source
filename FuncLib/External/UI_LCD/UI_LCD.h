@@ -74,6 +74,17 @@ THE SOFTWARE.
 // reading:
 #define LCD_BUSY            7      // DB7: LCD is busy
 
+#define LCD_CLR_MASK        (0xFE)
+#define LCD_HOME_MASK       (0xFC)
+#define LCD_ENTRY_MASK      (0xF8)
+#define LCD_DISPLAY_MASK    (0xF0)
+#define LCD_SHIFT_MASK      (0xE0)
+#define LCD_FUNCTION_MASK   (0xC0)
+#define LCD_CGADDR_MASK     (0x80)
+#define LCD_DDADDR_MASK     (0x00)
+
+#define LCD_INSTRUCTION_COUNT (8)
+
 /* To be defined in hardware Specific */
 /*
 #define LCD_FUNCTION_DEFAULT	((1<<LCD_FUNCTION) | (1<<LCD_FUNCTION_2LINES) | (LCD_FUNCTION_8BIT))
@@ -106,15 +117,16 @@ THE SOFTWARE.
 
 typedef struct
 {
-    uint8_t RSState;
     uint8_t data;
+    uint8_t RSState;
+    
 } LCDData_t;
 
 enum
 {
     NO_WAIT = 0,
     STROBE_WAIT,
-    UPPER_NIBBLE = 225,
+    UPPER_NIBBLE = 235,
 };
 
 typedef struct
@@ -123,9 +135,9 @@ typedef struct
    uint8_t MAX_ROW;
    uint8_t MAX_COL;
    
-   uint8_t RSStatus;
-   uint8_t RowPos;
-   uint8_t ColPos;
+   volatile uint8_t RSStatus;
+   volatile uint8_t RowPos;
+   volatile uint8_t ColPos;
    
    /* Set up data direction registers */
    void (*HWInit)(void);

@@ -31,7 +31,7 @@ DEFAULTCONF=defaultx
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=defaultx 
+ALLCONFS=defaultx Simulator 
 
 
 # build
@@ -46,12 +46,14 @@ ALLCONFS=defaultx
 # clobber
 .clobber-impl: .clobber-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=defaultx clean
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Simulator clean
 
 
 
 # all
 .all-impl: .all-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=defaultx build
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=Simulator build
 
 
 

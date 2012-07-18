@@ -20,26 +20,32 @@ void LCDInterface_Print(HD44780lcd_t* lcd, uint8_t* string, uint8_t n)
 
     //If the string goes on for more than line,
     //start at the next line.
-    if( n + lcd->ColPos > (lcd->MAX_COL+1) )
+    if( (n + lcd->ColPos) > (lcd->MAX_COL+1) && (lcd->ColPos != 0) )
     {
         LCD_ClearLine(lcd, lcd->RowPos+1);
     }
     
-    while (n--)
+    while (n)
     {
         LCD_SendChar(lcd, *string++);
+        n = n - 1;
     }
 }
 
 void LCD_ClearLine(HD44780lcd_t* lcd, uint8_t row)
 {
     UI_LCD_Pos(lcd, row, 0);
+    myprintf("ROW1:", lcd->RowPos);
     uint8_t i;
     for( i = 0; i <= lcd->MAX_COL; i++ )
     {
         UI_LCD_Char(lcd, ' ');
     }
+
+
     UI_LCD_Pos(lcd, row, 0);
+    myprintf("WTF:", lcd->RSStatus);
+    myprintf("ROW2:", lcd->RowPos);
 }
 
 void LCD_SendChar(HD44780lcd_t* lcd, uint8_t byte)
@@ -47,11 +53,15 @@ void LCD_SendChar(HD44780lcd_t* lcd, uint8_t byte)
     static uint8_t pendingClear = 0;
     if( pendingClear )
     {
-        UI_LCD_Clear(lcd);
+        //LCD_ClearLine(lcd, 0);
+        //LCD_ClearLine(lcd, 2);
+        //LCD_ClearLine(lcd, 1);
+        //LCD_ClearLine(lcd, 0);
+        //UI_LCD_Clear(lcd);
         pendingClear = 0;
     }
 
-    if( byte == 0x0D || byte == 0x0A)
+    if( (byte == 0x0D) || (byte == 0x0A) )
     {
         pendingClear = 1;
     }
@@ -59,7 +69,6 @@ void LCD_SendChar(HD44780lcd_t* lcd, uint8_t byte)
     {
         if( lcd->ColPos > lcd->MAX_COL )
         {
-            
             LCD_ClearLine(lcd, lcd->RowPos+1);
         }
         UI_LCD_Char(lcd, byte);

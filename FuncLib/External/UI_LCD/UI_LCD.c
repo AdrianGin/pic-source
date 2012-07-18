@@ -31,8 +31,8 @@ THE SOFTWARE.
 #endif
 
 
-static uint8_t mainLoopState = 0;
-#define LCD_OUTPUT_BUFFER_SIZE  (64)
+
+#define LCD_OUTPUT_BUFFER_SIZE  (8)
 
 uint8_t writePtr;
 uint8_t readPtr;
@@ -82,6 +82,7 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
 #ifdef UI_LCD_4BITMODE
 
     uint8_t bufLen;
+    uint8_t rsStatus = lcd->RSStatus;
 
     if( writePtr >= readPtr )
     {
@@ -95,23 +96,15 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
     if( bufLen + 2 >= LCD_OUTPUT_BUFFER_SIZE )
     {
         UI_LCD_FlushBuffer(lcd);
-        //writePtr = 0;
-        //readPtr = 0;
     }
 
     uint8_t bufMask = LCD_OUTPUT_BUFFER_SIZE-1;
 
     //adds it to the output buffer.
     LCDBuffer[writePtr&bufMask].data = (code);
-    LCDBuffer[writePtr&bufMask].RSState = lcd->RSStatus;
-    //STACK_PushData(&LCDStack, &LCDBuffer[LCDStack.writePtr]);
+    //The RS Status can change sometimes when flushing the buffer.
+    LCDBuffer[writePtr&bufMask].RSState = rsStatus;
     writePtr = (writePtr + 1) & (bufMask);
-//    LCDBuffer[writePtr&bufMask].data = code & 0x0F;
-//    LCDBuffer[writePtr&bufMask].RSState = lcd->RSStatus;
-//    writePtr = (writePtr + 1) & (bufMask);
-
-
-    //STACK_PushData(&LCDStack, &LCDBuffer[LCDStack.writePtr]);
 #else
     LCDBuffer[LCDStack.writePtr].data = code;
     LCDBuffer[LCDStack.writePtr].RSState = lcd->RSStatus;
@@ -142,11 +135,16 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
 #define UPPERNIBBLE_FLAG (0x02)
 #define RS_STATUS_FLAG   (0x01)
 //Call this function once per about 3-milliseconds.
+
+
 uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
 {
     //for 4bit modes
+    //stange that this needs to be volatile??? not sure why
+    volatile static uint8_t mainLoopState = 0;
     static uint8_t fullByte = 0;
     static uint8_t statusFlag = 0;
+
     LCDData_t* lcdData;
 
     if( readPtr != writePtr || (mainLoopState != NO_WAIT))
@@ -159,36 +157,65 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
 #ifdef UI_LCD_4BITMODE
                 if( statusFlag & UPPERNIBBLE_FLAG)
                 {
-                    fullByte = fullByte << 4;
-                    lcd->RSStatus = statusFlag & RS_STATUS_FLAG;
-                    statusFlag = 0;
                     //These two functions take longer to execute
-                    if( lcd->RSStatus == UI_LCD_RS_INSTRUCTION)
+                    if( (statusFlag & RS_STATUS_FLAG) == UI_LCD_RS_INSTRUCTION)
                     {
-    //                    if( (fullByte == (1<<LCD_CLR)) || (fullByte == (1<<LCD_HOME)) ||
-    //                        (fullByte & (1<<LCD_DDRAM) || (fullByte & (1<<LCD_CGRAM) )))
+                        uint8_t instructionType;
+                        uint8_t i;
+                        for( i = 0; i < LCD_INSTRUCTION_COUNT; i++)
                         {
-                            mainLoopState = 200;
-                            //return LCD_OUTPUT_BUFFER_NOT_EMPTY;
+                            if(fullByte & (1<<(LCD_INSTRUCTION_COUNT-1-i)))
+                            {
+                                instructionType = 1<<(LCD_INSTRUCTION_COUNT-1-i);
+                                break;
+                            }
+                        }
+
+                        switch(instructionType)
+                        {
+                            case (1<<LCD_ENTRY_MODE):
+                            case (1<<LCD_MOVE):
+                            case (1<<LCD_FUNCTION):
+                            case (1<<LCD_DISPLAY):
+                            case (1<<LCD_CLR):
+                            case (1<<LCD_HOME):
+                                mainLoopState = 200;
+                                break;
+
+                            case (1<<LCD_DDRAM):
+                            case (1<<LCD_CGRAM):
+                                mainLoopState = 230;
+                                break;
+
+                            default:
+                                mainLoopState = STROBE_WAIT;
+                                break;
+
                         }
                     }
                     else
                     {
                         mainLoopState = STROBE_WAIT;
                     }
+                    fullByte = fullByte << 4;
+                    lcd->RSStatus = statusFlag & RS_STATUS_FLAG;
+                    statusFlag = 0;
+                    //Can only increment out pointer once we're done.
+                    readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
                 }
                 else
                 {
                     lcdData = &LCDBuffer[readPtr];
-                    readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
                     fullByte = lcdData->data;
                     lcd->RSStatus = lcdData->RSState;
 
                     statusFlag = 0;
                     statusFlag |= UPPERNIBBLE_FLAG;
                     statusFlag |= lcd->RSStatus;
-                    mainLoopState = UPPER_NIBBLE+10;
+                    mainLoopState = UPPER_NIBBLE+1;
                 }
+                myprintf("R:", lcd->RSStatus);
+                myprintf("D:", fullByte >> 4);
                 lcd->SetRegister(fullByte >> 4);
 #else
                 lcdData = &LCDBuffer[readPtr];
@@ -216,7 +243,7 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
             }
 
             default:
-                mainLoopState--;
+                mainLoopState = mainLoopState - 1;
                 break;
         }
         return LCD_OUTPUT_BUFFER_NOT_EMPTY;
@@ -232,14 +259,8 @@ void UI_LCD_FlushBuffer(HD44780lcd_t* lcd)
 
     while( UI_LCD_MainLoop(lcd) != LCD_OUTPUT_BUFFER_EMPTY)
     {
-//        if( UI_LCD_MainLoop(lcd) == LCD_OUTPUT_SENT_ONE_BYTE)
-//        {
-//            cnt++;
-//        }
         _delay_us(50);
-        //Delay(10);
     }
-    _delay_ms(50);
 }
 
 void UI_LCD_Char(HD44780lcd_t* lcd, char data)
@@ -398,6 +419,7 @@ void UI_LCD_Pos(HD44780lcd_t* lcd, uint8_t row, uint8_t col)
     }
     // set data address
     UI_LCD_SetInstruction(lcd);
+    lcd->RSStatus = UI_LCD_RS_INSTRUCTION;
     UI_LCD_Write(lcd, (1<<LCD_DDRAM)|DDRAMAddr);
 
 
