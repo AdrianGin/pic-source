@@ -142,79 +142,60 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
     //for 4bit modes
     //stange that this needs to be volatile??? not sure why
     volatile static uint8_t mainLoopState = 0;
-    static uint8_t fullByte = 0;
-    static uint8_t statusFlag = 0;
-
+    uint8_t fullByte = 0;
     LCDData_t* lcdData;
 
     if( readPtr != writePtr || (mainLoopState != NO_WAIT))
     {
         switch(mainLoopState)
         {
-            case UPPER_NIBBLE:
             case NO_WAIT:
             {
 #ifdef UI_LCD_4BITMODE
-                if( statusFlag & UPPERNIBBLE_FLAG)
+                lcdData = &LCDBuffer[readPtr];
+                fullByte = lcdData->data;
+                lcd->RSStatus = lcdData->RSState;
+                
+                if( (lcd->RSStatus & RS_STATUS_FLAG) == UI_LCD_RS_INSTRUCTION)
                 {
-                    //These two functions take longer to execute
-                    if( (statusFlag & RS_STATUS_FLAG) == UI_LCD_RS_INSTRUCTION)
+                    uint8_t instructionType;
+                    uint8_t i;
+                    for( i = 0; i < LCD_INSTRUCTION_COUNT; i++)
                     {
-                        uint8_t instructionType;
-                        uint8_t i;
-                        for( i = 0; i < LCD_INSTRUCTION_COUNT; i++)
+                        if(fullByte & (1<<(LCD_INSTRUCTION_COUNT-1-i)))
                         {
-                            if(fullByte & (1<<(LCD_INSTRUCTION_COUNT-1-i)))
-                            {
-                                instructionType = 1<<(LCD_INSTRUCTION_COUNT-1-i);
-                                break;
-                            }
-                        }
-
-                        switch(instructionType)
-                        {
-                            case (1<<LCD_ENTRY_MODE):
-                            case (1<<LCD_MOVE):
-                            case (1<<LCD_FUNCTION):
-                            case (1<<LCD_DISPLAY):
-                            case (1<<LCD_CLR):
-                            case (1<<LCD_HOME):
-                                mainLoopState = 50;
-                                break;
-
-                            case (1<<LCD_DDRAM):
-                            case (1<<LCD_CGRAM):
-                                mainLoopState = 1;
-                                break;
-
-                            default:
-                                mainLoopState = STROBE_WAIT;
-                                break;
-
+                            instructionType = 1<<(LCD_INSTRUCTION_COUNT-1-i);
+                            break;
                         }
                     }
-                    else
-                    {
-                        mainLoopState = STROBE_WAIT;
-                    }
-                    fullByte = fullByte << 4;
-                    lcd->RSStatus = statusFlag & RS_STATUS_FLAG;
-                    statusFlag = 0;
-                    //Can only increment out pointer once we're done.
-                    readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
-                }
-                else
-                {
-                    lcdData = &LCDBuffer[readPtr];
-                    fullByte = lcdData->data;
-                    lcd->RSStatus = lcdData->RSState;
 
-                    statusFlag = 0;
-                    statusFlag |= UPPERNIBBLE_FLAG;
-                    statusFlag |= lcd->RSStatus;
-                    mainLoopState = UPPER_NIBBLE+1;
+                    switch(instructionType)
+                    {
+                        case (1<<LCD_ENTRY_MODE):
+                        case (1<<LCD_MOVE):
+                        case (1<<LCD_FUNCTION):
+                        case (1<<LCD_DISPLAY):
+                        case (1<<LCD_CLR):
+                        case (1<<LCD_HOME):
+                            mainLoopState = 50;
+                            break;
+
+                        case (1<<LCD_DDRAM):
+                        case (1<<LCD_CGRAM):
+                            mainLoopState = STROBE_WAIT;
+                            break;
+
+                        default:
+                            mainLoopState = STROBE_WAIT;
+                            break;
+                    }
                 }
+
                 lcd->SetRegister(fullByte >> 4);
+                lcd->Strobe();
+                lcd->SetRegister(fullByte);
+                lcd->Strobe();
+                readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
 #else
                 lcdData = &LCDBuffer[readPtr];
                 readPtr = (readPtr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
@@ -234,8 +215,6 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
                     mainLoopState = STROBE_WAIT;
                 }
 #endif
-                lcd->Strobe();
-
                 return LCD_OUTPUT_SENT_ONE_BYTE;
                 break;
             }
