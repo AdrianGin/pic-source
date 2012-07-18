@@ -241,25 +241,11 @@ int main(void)
     UI_LCD_Init(&PrimaryDisplay);
 
     UI_LCD_LoadDefaultChars();
-    UI_LCD_Clear(&PrimaryDisplay);
-    UI_LCD_Write(&PrimaryDisplay, LCD_DISPLAY_DEFAULT);
-    UI_LCD_Clear(&PrimaryDisplay);
     UI_LCD_Home(&PrimaryDisplay);
 
-    uint8_t t;
     LCDInterface_Print(&PrimaryDisplay, "Hello", 0);
-//    UI_LCD_FlushBuffer(&PrimaryDisplay);
-//    for( t= 0 ; t < 50; t ++)
-//    {
-//        Delay(200);
-//    }
-    LCD_ClearLine(&PrimaryDisplay, 0);
     UI_LCD_FlushBuffer(&PrimaryDisplay);
     
-    for( t= 0 ; t < 50; t ++)
-    {
-        Delay(200);
-    }
 
     
 
@@ -510,14 +496,6 @@ int main(void)
                 if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
                 {
                     myprintf("End of MIDI File:  ", 1);
-                    //myprintf("End of MIDI File:  ", 2);
-                    //LCD_SendChar(&PrimaryDisplay, 'B');
-                    while(1)
-                    {
-                        _delay_us(50);
-                        UI_LCD_FlushBuffer(&PrimaryDisplay);
-                    }
-                    DEBUG("END");
 
                     TimerStop();
                 }

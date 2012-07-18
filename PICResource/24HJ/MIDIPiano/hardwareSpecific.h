@@ -94,8 +94,8 @@
 #define SD_RXBLOCK(buffer, bytes)   DMA_SPI_ReceiveBlock(&DMASPI1, &DMASPI1T, buffer, bytes)
 #define SD_TXBYTE(x)   SPI_TxByte((PIC_SPI_t*)&S1, x)
 
-#define DEBUG(string)  uartTxString(&U2, string); //LCDInterface_Print(&PrimaryDisplay, string, 0)
-#define DEBUGn(string,n) uartTxDump(&U2, string, n); //LCDInterface_Print(&PrimaryDisplay, string, n)
+#define DEBUG(string)  uartTxString(&U2, string); LCDInterface_Print(&PrimaryDisplay, string, 0)
+#define DEBUGn(string,n) uartTxDump(&U2, string, n); LCDInterface_Print(&PrimaryDisplay, string, n)
 
 #define SD_STARTUP()        SD_Startup()
 #define SD_SETMAXSPEED()    SD_SetMaxSpeed()

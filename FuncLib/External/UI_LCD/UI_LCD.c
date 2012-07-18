@@ -179,12 +179,12 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
                             case (1<<LCD_DISPLAY):
                             case (1<<LCD_CLR):
                             case (1<<LCD_HOME):
-                                mainLoopState = 200;
+                                mainLoopState = 50;
                                 break;
 
                             case (1<<LCD_DDRAM):
                             case (1<<LCD_CGRAM):
-                                mainLoopState = 230;
+                                mainLoopState = 1;
                                 break;
 
                             default:
@@ -214,8 +214,6 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
                     statusFlag |= lcd->RSStatus;
                     mainLoopState = UPPER_NIBBLE+1;
                 }
-                myprintf("R:", lcd->RSStatus);
-                myprintf("D:", fullByte >> 4);
                 lcd->SetRegister(fullByte >> 4);
 #else
                 lcdData = &LCDBuffer[readPtr];
@@ -318,8 +316,8 @@ void UI_LCD_Init(HD44780lcd_t* lcd)
 
     //Some 'strange' reason, cannot do any Read/Writes without calling an extra:
     //however, this needs to be done AFTER a Data write? Strange as!
-//    UI_LCD_Clear(&PrimaryDisplay);
-//    UI_LCD_Write(&PrimaryDisplay, LCD_DISPLAY_DEFAULT);
+    UI_LCD_Clear(lcd);
+    UI_LCD_Write(lcd, LCD_DISPLAY_DEFAULT);
 
 #endif
 
