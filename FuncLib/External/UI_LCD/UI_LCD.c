@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 
 
-#define LCD_OUTPUT_BUFFER_SIZE  (8)
+#define LCD_OUTPUT_BUFFER_SIZE  (2)
 
 uint8_t writePtr;
 uint8_t readPtr;

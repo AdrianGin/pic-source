@@ -246,9 +246,6 @@ int main(void)
     LCDInterface_Print(&PrimaryDisplay, "Hello", 0);
     UI_LCD_FlushBuffer(&PrimaryDisplay);
     
-
-    
-
     uint8_t ret;
 
 
