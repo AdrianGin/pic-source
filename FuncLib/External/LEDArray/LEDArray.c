@@ -141,7 +141,6 @@ uint8_t LEDArray_ReDraw(uint8_t reEntry)
                 colPrintBitmap |= (1<<col);
             }
         }
-
         col = 0;
         if( colPrintBitmap == 0 )
         {
@@ -151,64 +150,40 @@ uint8_t LEDArray_ReDraw(uint8_t reEntry)
         }   
     }
 
-    
-
-
-
-
-//    for( ; cnt < LA_MAX_BRIGHTNESS ; cnt++)
+    //Go through each LED in multiples of the the ShiftRegister bits.
+    memset(outByte, 0, sizeof(outByte));
     {
-//        for( ; col < LA_COLUMN_COUNT; col++)
+
+        //Here we convert the GFX RAM into Binary On/Offs for the Shift Registers.
+        for(j = 0; j < LA_ROW_COUNT; j++)
         {
-            //Go through each LED in multiples of the the ShiftRegister bits.
-            memset(outByte, 0, sizeof(outByte));
-            //while( (colPrintBitmap & (1<<col)) == 0)
+            uint16_t ledIndex = j + (LA_ROW_COUNT*col);
+            tempByte = (LEDArrayRAM[ledIndex] % (LA_MAX_BRIGHTNESS+1));
+
+            tempColour = LEDArrayCurrentStateRAM[ledIndex] + tempByte;
+            if( tempColour >=  LA_MAX_BRIGHTNESS)
             {
-                //col++;
-//                if( col >= LA_COLUMN_COUNT)
-//                {
-//                    col = 0;
-                    //return LA_REDRAW_COL_FINISHED;
-//                }
+                tempColour -= LA_MAX_BRIGHTNESS;
+                outByte[j>>LA_SR_MASK] |= (1<<(j&LA_SR_BITMAP_MASK) );
             }
-            //else
-            {
-                
-                //Here we convert the GFX RAM into Binary On/Offs for the Shift Registers.
-                for(j = 0; j < LA_ROW_COUNT; j++)
-                {
-                    uint16_t ledIndex = j + (LA_ROW_COUNT*col);
-                    tempByte = (LEDArrayRAM[ledIndex] % (LA_MAX_BRIGHTNESS+1));
-
-                    tempColour = LEDArrayCurrentStateRAM[ledIndex] + tempByte;
-                    if( tempColour >=  LA_MAX_BRIGHTNESS)
-                    {
-                        tempColour -= LA_MAX_BRIGHTNESS;
-                        outByte[j>>LA_SR_MASK] |= (1<<(j&LA_SR_BITMAP_MASK) );
-                    }
-                    LEDArrayCurrentStateRAM[ledIndex] = tempColour;
-                }
-            }
-            //Update the register
-            LEDArray_SetShiftRegister(outByte);
-            //See photo 1, gives the last column time to turn off
-            //before starting the new display. Otherwise it rolls
-            //across! We still need the resistors however!
-            LEDArray_OffDisplay();
-            LEDArray_OffDisplay();
-            //Turn on the column
-            LEDArray_SetColumn(col);
-            //Refer to picture 2, but there is no chance
-            //of LEDs turning on with incorrect data.
-            //Turn on time for PNP is much greater
-            //than the time it takes to latch.
-            LA_OUT_PORT |= LA_SR_LAT;
-            LA_OUT_PORT &= ~LA_SR_LAT;
-
-
+            LEDArrayCurrentStateRAM[ledIndex] = tempColour;
         }
-
     }
+    //Update the register
+    LEDArray_SetShiftRegister(outByte);
+    //See photo 1, gives the last column time to turn off
+    //before starting the new display. Otherwise it rolls
+    //across! We still need the resistors however!
+    LEDArray_OffDisplay();
+    LEDArray_OffDisplay();
+    //Turn on the column
+    LEDArray_SetColumn(col);
+    //Refer to picture 2, but there is no chance
+    //of LEDs turning on with incorrect data.
+    //Turn on time for PNP is much greater
+    //than the time it takes to latch.
+    LA_OUT_PORT |= LA_SR_LAT;
+    LA_OUT_PORT &= ~LA_SR_LAT;
 
 
     col++;

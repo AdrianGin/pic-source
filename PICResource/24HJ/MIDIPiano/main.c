@@ -42,7 +42,7 @@ LINKED_LIST_t PrimaryList;
 PIC_SPI_t S1 = {&SPI1STAT, &SPI1CON1, &SPI1CON2, &SPI1BUF};
 
 volatile uint8_t globalFlag = 0;
-volatile uint8_t tempVar = LA_REDRAW_FINISHED;
+volatile uint8_t byteCount = 0;
 
 PIC_DMA_UART_t DMAUART1 = {&DMA0CON,
     &DMA0REQ,
@@ -168,6 +168,16 @@ void TimerStop(void)
     T1CONbits.TON = 0x00;
 }
 
+uint8_t ReadAnalogueInput(void)
+{
+    uint16_t sample;
+    ADC_SetPin(0);
+    sample = ADC_Sample();
+
+    myprintfd("ADC:", sample);
+
+}
+
 int main(void)
 {
 
@@ -188,7 +198,7 @@ int main(void)
     TRISB &= ~(1<<9);
     LEDArray_Init();
 
-    TRISA &= ~((1<<0)|(1<<2));
+    TRISA &= ~((1<<2) | (1<<4));
 
     PPSUnLock;
     PPSOutput(PPS_U2TX, PPS_RP8);
@@ -273,19 +283,20 @@ int main(void)
     uint8_t mode = 0;
 
 
-    PR2 = 2000;
+    PR2 = 2400;
     T2CONbits.TCKPS = 0x00;
     T2CONbits.TON = 0x01;
 
     
     uint16_t counter = 0;
-    // tempVar = LA_REDRAW_FINISHED;
-
     //LEDArray_SetLED(87, 7,0,0);
+    uint8_t readPtr = 0;
 
     while(1)
     {
 
+
+        //LATA ^= (1<<4);
         switch( newSongFlag )
         {
 
@@ -459,27 +470,16 @@ int main(void)
         //LEDArray_SetLED(intCount, r, g, b);
         //LEDArray_SetLED(0, r, g, b);
 
-        if( globalFlag & 0x04 )
+        if( readPtr != byteCount )
         {
+            LCD_SendChar(&PrimaryDisplay, inputString[readPtr++]);
             globalFlag &= ~(0x04);
         }
 
         if( globalFlag & 0x02 )
         {
-            {
-                //tempVar = LEDArray_ReDraw(tempVar);
-                //counter = 0;
-            }
-            if( counter == 1)
-            {
-                uint8_t j;
-                UI_LCD_MainLoop(&PrimaryDisplay);
-                counter = 0;
-            }
-            else
-            {
-                counter++;
-            }
+            
+            RunCriticalTimer();
             globalFlag &= ~(0x02);
         }
 
@@ -511,6 +511,7 @@ int main(void)
                         if(MIDIHdr.NoteOnTimer[k] == 0)
                         {
                             LEDArray_SetLED(0, 0, 0, 0);
+                            LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS);
                         }
                     }
                 }
@@ -566,12 +567,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
 {
     globalFlag |= 0x02;
-    //if(globalFlag & 0x02)
-    {
-        tempVar = LEDArray_ReDraw(tempVar);
-        //globalFlag &= ~(0x02);
-    }
-
     IFS0bits.T2IF = 0; //clear interrupt flag
 }
 
@@ -652,13 +647,13 @@ void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void)
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
 {
     uint8_t i = *U1.UXRXREG;
-    IFS0bits.U1RXIF = 0;
+    
     //i = SPI_TxByte(&S1, i);
     //uartTx((PIC_USART_t*)&U1, i);
-    static uint8_t byteCount = 0;
+    
 
     globalFlag |= 0x04;
-    LCD_SendChar(&PrimaryDisplay, i);
+    //LCD_SendChar(&PrimaryDisplay, i);
 
     if (i!=0x0D)
     {
@@ -681,5 +676,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
         //songIndex = (songIndex) % 2;
     }
 
+    IFS0bits.U1RXIF = 0;
 }
 //----------------------------------------------------------------------------

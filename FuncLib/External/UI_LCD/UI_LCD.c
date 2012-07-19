@@ -91,8 +91,9 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
         bufLen = *writeAddr + LCD_OUTPUT_BUFFER_SIZE - *readAddr;
     }
 
-    if( (bufLen + 1) >= LCD_OUTPUT_BUFFER_SIZE )
+    if( (bufLen+1) >= LCD_OUTPUT_BUFFER_SIZE )
     {
+        //myprintf("BufLen:", bufLen+1);
         UI_LCD_FlushBuffer(lcd);
     }
 
@@ -186,6 +187,10 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
                         mainLoopCounter = STROBE_WAIT;
                         break;
                 }
+            }
+            else
+            {
+                mainLoopCounter = STROBE_WAIT;
             }
 #ifdef UI_LCD_4BITMODE
             lcd->SetRegister(fullByte >> 4);

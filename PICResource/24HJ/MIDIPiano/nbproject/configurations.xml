@@ -99,6 +99,10 @@
       <itemPath>../../../FuncLib/External/SD_MMC/picsd.c</itemPath>
       <itemPath>../../../FuncLib/External/SD_MMC/sddriver.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="SoftTimer" displayName="SoftTimer" projectFiles="true">
+      <itemPath>../../../FuncLib/Other/SoftTimer/Softtimer.h</itemPath>
+      <itemPath>../../../FuncLib/Other/SoftTimer/softtimer.c</itemPath>
+    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
@@ -108,6 +112,8 @@
       <itemPath>hardwareSpecific.c</itemPath>
       <itemPath>hardwareSpecific.h</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>TimerCallbacks.c</itemPath>
+      <itemPath>TimerCallbacks.h</itemPath>
     </logicalFolder>
     <logicalFolder name="stack" displayName="stack" projectFiles="true">
       <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
@@ -135,6 +141,7 @@
     <Elem>../../../FuncLib/Other/MIDIPlayback</Elem>
     <Elem>../../../FuncLib/Other/stack</Elem>
     <Elem>../../../FuncLib/Util/MSB2LSB</Elem>
+    <Elem>../../../FuncLib/Other/SoftTimer</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
