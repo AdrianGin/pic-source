@@ -27,6 +27,12 @@
 #include "PetitFS/pff.h"
 #endif
 
+//#define PROGRAM_SPACE PROGMEM
+//#define PROGRAM_CHAR  prog_char
+//#define PROGRAM_PTR   PGM_P
+//#define PROGRAM_SPACE const
+//#define PROGRAM_CHAR  const
+//#define PROGRAM_PTR   const
 
 /* Not used in Direct Mode */
 #define UI_LCD_PORT     (0x00)
@@ -79,8 +85,8 @@
 #define MOSI      (6)
 #define nSS       (4)
 
-#define SD_CS_DDR   TRISB
-#define SD_CS_PORT  LATB
+#define SD_CS_DDR   TRISA
+#define SD_CS_PORT  LATA
 #define SD_CS_PIN   nSS
 
 #define WAVE_LEFT_REG    OC1RS
@@ -127,6 +133,8 @@ void myprintfd(char* string, uint32_t num);
 void myprintNum(uint32_t num, uint8_t base);
 void* local_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 void TimerStart(void);
+
+uint8_t ReadAnalogueInput(void);
 
 #endif
 

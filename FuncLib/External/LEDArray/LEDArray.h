@@ -48,8 +48,8 @@
 #define LA_ROW_COUNT        (BITS_PER_REGISTER*NUMBER_OF_SHIFT_REGISTERS)
 
 //Note that Data needs to be shifted out LSB first.
-#define LA_TxByte(x)    SPI_TxByte((PIC_SPI_t*)&S1, x)
-//#define LA_TxByte(x)    _LA_ShiftOut(x)
+//#define LA_TxByte(x)    SPI_TxByte((PIC_SPI_t*)&S1, x)
+#define LA_TxByte(x)    _LA_ShiftOut(x)
 
 #define LEDArray_OffDisplay() LEDArray_SetColumn(LA_COLUMN_COUNT+1)
 

@@ -160,7 +160,6 @@ void uartTx(PIC_USART_t* port, uint8_t byte)
     // * to prevent data loss
     while (ringbuffer_put((RINGBUFFER_T*) port->TransmitBuffer, byte) == BUFFER_OVERFLOW)
     {
-        LATA ^= (1<<4);
         _internalTx(port, byte);
     }
     _internalTx(port, byte);

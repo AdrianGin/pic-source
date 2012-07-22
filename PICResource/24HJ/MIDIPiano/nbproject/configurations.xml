@@ -106,6 +106,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="ButtonScan" displayName="ButtonScan" projectFiles="true">
+        <itemPath>ButtonScan/buttonScan.c</itemPath>
+        <itemPath>ButtonScan/buttonScan.h</itemPath>
+      </logicalFolder>
       <itemPath>../../../FuncLib/Other/RingBuffer/ringbuffer.c</itemPath>
       <itemPath>../../delay.c</itemPath>
       <itemPath>../../../FuncLib/Other/linkedlist/linkedlist.c</itemPath>
@@ -118,6 +122,14 @@
     <logicalFolder name="stack" displayName="stack" projectFiles="true">
       <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
       <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="UI_GLCD" displayName="UI_GLCD" projectFiles="true">
+      <itemPath>../../../FuncLib/External/UI_GLCD/UI_GLCD.h</itemPath>
+      <itemPath>../../../FuncLib/External/UI_GLCD/UI_GLCD.c</itemPath>
+      <itemPath>../../../FuncLib/External/UI_GLCD/gLCDInterface.c</itemPath>
+      <itemPath>../../../FuncLib/External/UI_GLCD/gLCDInterface.h</itemPath>
+      <itemPath>../../../FuncLib/External/UI_GLCD/gLCDSettings.c</itemPath>
+      <itemPath>../../../FuncLib/External/UI_GLCD/gLCDSettings.h</itemPath>
     </logicalFolder>
     <logicalFolder name="UI_LCD" displayName="UI_LCD" projectFiles="true">
       <itemPath>../../../FuncLib/External/UI_LCD/UI_LCD.c</itemPath>
@@ -361,13 +373,6 @@
         <property key="legacy-libc" value="false"/>
         <property key="output-file-format" value="elf"/>
       </C30Global>
-      <PICkit2PlatformTool>
-        <property key="pk2settings.3state" value="false"/>
-        <property key="pk2settings.preserveee" value="false"/>
-        <property key="pk2settings.setvddvoltage" value="3"/>
-        <property key="pk2settings.userpgmexec" value="true"/>
-        <property key="pk2settings.usetargetpower" value="true"/>
-      </PICkit2PlatformTool>
       <Simulator>
         <property key="animationupdates.realtimewatchupdates" value="false"/>
         <property key="animationupdates.steptime" value=""/>

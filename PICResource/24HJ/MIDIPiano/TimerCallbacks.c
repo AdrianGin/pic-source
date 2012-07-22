@@ -29,9 +29,10 @@ THE SOFTWARE.
 #include "TimerCallbacks.h"
 
 /* These are the critical timers, 10ms resolution */
-SoftTimer_8 SoftTimer1[TIMER1_COUNT] = {
-    {2, 0, 1, Callback_LEDUpdate}, // LED Output
-    {1, 0, 1, Callback_LCDUpdate},
+SoftTimer_16 SoftTimer1[TIMER1_COUNT] = {
+    {3, 1, 0, Callback_LEDUpdate}, // LED Output
+    {1, 1, 1, Callback_LCDUpdate},
+    {10000, 1, 1, Callback_ScanInput},
 };
 
 
@@ -43,5 +44,15 @@ void Callback_LEDUpdate(void)
 
 void Callback_LCDUpdate(void)
 {
+    //LATA ^= (1<<4);
     UI_LCD_MainLoop(&PrimaryDisplay);
 }
+
+void Callback_ScanInput(void)
+{
+    ReadAnalogueInput();
+}
+
+
+
+

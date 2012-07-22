@@ -93,7 +93,6 @@ void UI_LCD_Write(HD44780lcd_t* lcd, char code)
 
     if( (bufLen+1) >= LCD_OUTPUT_BUFFER_SIZE )
     {
-        //myprintf("BufLen:", bufLen+1);
         UI_LCD_FlushBuffer(lcd);
     }
 

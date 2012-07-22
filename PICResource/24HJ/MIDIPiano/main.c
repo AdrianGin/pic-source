@@ -28,9 +28,9 @@
 #include "mmculib/root.h"
 #include "adc/adc.h"
 
-#include "UI_LCD/UI_LCD.h"
-#include "UI_LCD/LCDInterface.h"
-#include "LCDSettings.h"
+#include "UI_GLCD/UI_GLCD.h"
+#include "UI_GLCD/gLCDInterface.h"
+#include "UI_GLCD/gLCDSettings.h"
 
 void InterruptHandlerLow();
 
@@ -171,11 +171,8 @@ void TimerStop(void)
 uint8_t ReadAnalogueInput(void)
 {
     uint16_t sample;
-    ADC_SetPin(0);
-    sample = ADC_Sample();
-
-    myprintfd("ADC:", sample);
-
+    sample = Button_GetInput();
+    myprintfd("Input:", sample);
 }
 
 int main(void)
@@ -198,7 +195,7 @@ int main(void)
     TRISB &= ~(1<<9);
     LEDArray_Init();
 
-    TRISA &= ~((1<<2) | (1<<4));
+    TRISA &= ~((1<<2) | (1<<4) | (1<<3));
 
     PPSUnLock;
     PPSOutput(PPS_U2TX, PPS_RP8);
@@ -469,16 +466,14 @@ int main(void)
 
         //LEDArray_SetLED(intCount, r, g, b);
         //LEDArray_SetLED(0, r, g, b);
-
-        if( readPtr != byteCount )
+        if( ringbuffer_len((RINGBUFFER_T*)U1.ReceiveBuffer) )
         {
-            LCD_SendChar(&PrimaryDisplay, inputString[readPtr++]);
+            LCD_SendChar(&PrimaryDisplay, ringbuffer_get((RINGBUFFER_T*)U1.ReceiveBuffer));
             globalFlag &= ~(0x04);
         }
 
         if( globalFlag & 0x02 )
         {
-            
             RunCriticalTimer();
             globalFlag &= ~(0x02);
         }
@@ -567,6 +562,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt(void)
 {
     globalFlag |= 0x02;
+    static uint8_t tempVar;
+    tempVar = LEDArray_ReDraw(tempVar);
     IFS0bits.T2IF = 0; //clear interrupt flag
 }
 
@@ -651,6 +648,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
     //i = SPI_TxByte(&S1, i);
     //uartTx((PIC_USART_t*)&U1, i);
     
+
+    ringbuffer_put((RINGBUFFER_T*)U1.ReceiveBuffer, i);
 
     globalFlag |= 0x04;
     //LCD_SendChar(&PrimaryDisplay, i);

@@ -34,6 +34,7 @@ THE SOFTWARE.
 enum {  
    SC_LEDUpdate = 0,
    SC_LCDUpdate,
+   SC_ScanInput,
    TIMER1_COUNT
 };
 
@@ -49,11 +50,11 @@ enum {
    SC_LCD_BL_Period,
    SC_MonitorChannel,
    SC_Keypress,
-   TIMER2_COUNT 
+   TIMER2_COUNT
    
 };
 
-extern SoftTimer_8  SoftTimer1[];
+extern SoftTimer_16  SoftTimer1[];
 extern SoftTimer_16  SoftTimer2[];
 
 #define KP_WAIT          (3)
@@ -70,5 +71,7 @@ extern SoftTimer_16  SoftTimer2[];
 /* Critical timers */
 void Callback_LEDUpdate(void);
 void Callback_LCDUpdate(void);
+void Callback_ScanInput(void);
+
 
 #endif
