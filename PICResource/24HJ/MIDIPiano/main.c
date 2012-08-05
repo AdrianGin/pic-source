@@ -242,17 +242,38 @@ int main(void)
     Delay(10);
     uint16_t ADCValue;
 
+    LEDArray_SetColumn(15);
+
     SPI_Init(&S1);
 
-    UI_LCD_HWInit();
-    UI_LCD_Init(&PrimaryDisplay);
-
-    UI_LCD_LoadDefaultChars();
-    UI_LCD_Home(&PrimaryDisplay);
-
-    LCDInterface_Print(&PrimaryDisplay, "Hello", 0);
-    UI_LCD_FlushBuffer(&PrimaryDisplay);
-    
+//    UI_gLCD_HWInit();
+//
+//    UI_gLCD_Init(&gPrimaryDisplay);
+//    UI_gLCD_Char(&gPrimaryDisplay, 0xAA);
+//    UI_gLCD_Char(&gPrimaryDisplay, 0x00);
+//    UI_gLCD_Char(&gPrimaryDisplay, 0xFF);
+//    UI_gLCD_Char(&gPrimaryDisplay, 0xFF);
+//    uint8_t i;
+//    while(1)
+//    {
+//        for(i = 0; i < 240; i++)
+//        {
+//            UI_gLCD_Char(&gPrimaryDisplay, 0xFF);
+//            UI_gLCD_MainLoop(&gPrimaryDisplay);
+//            UI_gLCD_MainLoop(&gPrimaryDisplay);
+//            Delay(200);
+//        }
+//        for(i = 0; i < 240; i++)
+//        {
+//            UI_gLCD_Char(&gPrimaryDisplay, 0x00);
+//            UI_gLCD_MainLoop(&gPrimaryDisplay);
+//            UI_gLCD_MainLoop(&gPrimaryDisplay);
+//            Delay(200);
+//        }
+//    }
+//
+//    while(1);
+//
     uint8_t ret;
 
 
@@ -274,7 +295,6 @@ int main(void)
 
     uint16_t intCount = 0;
     uint8_t r = 0, g = 0, b = 0;
-    uint8_t i;
     uint8_t* varPtr = &r;
 
     uint8_t mode = 0;

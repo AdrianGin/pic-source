@@ -32,7 +32,7 @@ THE SOFTWARE.
 SoftTimer_16 SoftTimer1[TIMER1_COUNT] = {
     {3, 1, 0, Callback_LEDUpdate}, // LED Output
     {1, 1, 1, Callback_LCDUpdate},
-    {10000, 1, 1, Callback_ScanInput},
+    {10000, 1, 0, Callback_ScanInput},
 };
 
 

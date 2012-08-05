@@ -50,6 +50,7 @@ THE SOFTWARE.
 #include "hardwareSpecific.h"
 
 #define UI_gLCD_DISPLAY_ON      (0x3F)
+#define UI_gLCD_DISPLAY_START   (0xC0)
 
 
 #define UI_gLCD_RS_INSTRUCTION (0)
@@ -135,8 +136,6 @@ typedef struct
    
    /* Backlight functionality */
    void (*SelectController)(uint8_t index);
-   void (*BL_Off)(void);
-
     uint8_t writePtr;
     uint8_t readPtr;
     gLCDData_t LCDBuffer[LCD_OUTPUT_BUFFER_SIZE];

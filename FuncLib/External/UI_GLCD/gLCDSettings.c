@@ -10,15 +10,20 @@ gLCD0108_t gPrimaryDisplay ={
     UI_gLCD_SetRegister,
     UI_gLCD_Strobe,
     UI_gLCD_SelectController,
+    0,0
 };
 
 
 void UI_gLCD_SelectController(uint8_t index)
 {
-    UI_gLCD_CONTROL_PORT &= ~UI_gLCD_CS;
+    
     if(index == 0)
     {
         UI_gLCD_CONTROL_PORT |= UI_gLCD_CS;
+    }
+    else
+    {
+        UI_gLCD_CONTROL_PORT &= ~UI_gLCD_CS;
     }
 }
 
@@ -31,6 +36,7 @@ void UI_gLCD_Strobe(void)
     UI_gLCD_CONTROL_PORT |= (gPrimaryDisplay.RSStatus<<UI_gLCD_RS_PIN);
     UI_gLCD_CONTROL_PORT |= UI_gLCD_E;
     //This needs to be slightly longer.
+    _delay_us(1);
     UI_gLCD_CONTROL_PORT |= UI_gLCD_E;
     UI_gLCD_CONTROL_PORT |= UI_gLCD_E;
     UI_gLCD_CONTROL_PORT &= ~UI_gLCD_E;
@@ -39,7 +45,7 @@ void UI_gLCD_Strobe(void)
 
 /* Use a wrapper for the UI_MAX7300 interface to ensure LCD_Power is enabled
  * if any write commands are used */
-void UI_gLCD_SetRegister(uint8_t reg, uint8_t data)
+void UI_gLCD_SetRegister(uint8_t data)
 {
     SPI_SetSpeed((PIC_SPI_t*)&S1,PRESCALE_DIV3);
     SPI_TxByte((PIC_SPI_t*)&S1, data);
@@ -48,5 +54,5 @@ void UI_gLCD_SetRegister(uint8_t reg, uint8_t data)
 void UI_gLCD_HWInit(void)
 {
     UI_gLCD_CONTROL_PORT &= ~(UI_gLCD_CONTROL);
-    UI_gLCD_CONTROL_DIR &= ~(UI_gLCD_CONTROL);
+    UI_gLCD_CONTROL_DIR  &= ~(UI_gLCD_CONTROL);
 }

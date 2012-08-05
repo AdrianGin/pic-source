@@ -96,8 +96,11 @@ uint8_t UI_gLCD_MainLoop(gLCD0108_t* lcd)
             lcdData = &lcd->LCDBuffer[*readAddr];
             fullByte = lcdData->data;
             lcd->RSStatus = lcdData->RSState;
-            mainLoopCounter = STROBE_WAIT;
-                
+            mainLoopCounter = gSTROBE_WAIT;
+
+            myprintf("gLCD:", fullByte);
+
+            lcd->SelectController(0);
             lcd->SetRegister(fullByte);
             lcd->Strobe();
             *readAddr = (*readAddr + 1) & (LCD_OUTPUT_BUFFER_SIZE-1);
@@ -133,6 +136,8 @@ void UI_gLCD_Init(gLCD0108_t* lcd)
     UI_gLCD_SetInstruction(lcd);
     /* Set to 8 - bit mode */
     UI_gLCD_Write(lcd, UI_gLCD_DISPLAY_ON);
+    UI_gLCD_Write(lcd, UI_gLCD_DISPLAY_START);
+
 
 }
 
