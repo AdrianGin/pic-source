@@ -208,8 +208,9 @@ int main(void)
     PPSOutput(PPS_OC2, PPS_RP14);
 
     PPSOutput(PPS_SCK1, PPS_RP5);
-    PPSOutput(PPS_SDO1, PPS_RP6);
-    PPSInput(PPS_SDI1, PPS_RP7);
+    PPSInput(PPS_SDI1, PPS_RP6);
+    PPSOutput(PPS_SDO1, PPS_RP7);
+    
 
     PPSLock;
 

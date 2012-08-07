@@ -13,19 +13,19 @@
 #define LEDARRAY_RED_LED    (1)
 #define LEDARRAY_GREEN_LED  (2)
 
-#define LA_COL_DDR  TRISB
-#define LA_COL_PORT LATB
+#define LA_COL_DDR  TRISA
+#define LA_COL_PORT LATA
 
-#define LA_COL_MASK (0xF000)
-#define LA_COL0     (15)
-#define LA_COL1     (14)
-#define LA_COL2     (13)
-#define LA_COL3     (12)
+#define LA_COL_MASK ((1<<LA_COLA) | (1<<LA_COLB) | (1<<LA_COLC) | (1<<LA_COLD))
+#define LA_COLA     (1)
+#define LA_COLB     (2)
+#define LA_COLC     (3)
+#define LA_COLD     (4)
 
 #define LA_OUT_DDR  TRISB
 #define LA_OUT_PORT LATB
-#define LA_SR_CLK  (1<<1)
-#define LA_SR_DAT  (1<<0)
+#define LA_SR_CLK  (1<<0)
+#define LA_SR_DAT  (1<<1)
 #define LA_SR_LAT  (1<<2)
 
 //#define LA_SR_MR_PORT LATB

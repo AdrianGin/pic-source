@@ -38,9 +38,9 @@
 #define UI_LCD_PORT     (0x00)
 
 /* LCD Inputs */
-#define UI_LCD_RS_PIN      (6)
-#define UI_LCD_RS       (1<<6)
-#define UI_LCD_DAT      (1<<6)
+#define UI_LCD_RS_PIN      (7)
+#define UI_LCD_RS       (1<<7)
+#define UI_LCD_DAT      (1<<7)
 #define UI_LCD_CLK      (1<<1)
 #define UI_LCD_E        (1<<3)
 #define UI_LCD_D4       (1<<0)
@@ -81,12 +81,12 @@
 #define SPI_DDR   (TRISB)
 #define SPI_PORT  (LATB)
 #define SCK       (5)
-#define MISO      (7)
-#define MOSI      (6)
+#define MISO      (6)
+#define MOSI      (7)
 #define nSS       (4)
 
-#define SD_CS_DDR   TRISA
-#define SD_CS_PORT  LATA
+#define SD_CS_DDR   TRISB
+#define SD_CS_PORT  LATB
 #define SD_CS_PIN   nSS
 
 #define WAVE_LEFT_REG    OC1RS

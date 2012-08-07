@@ -84,8 +84,8 @@ void LEDArray_SetColumn(uint8_t column)
 {
     uint16_t outByte = 0;
 
-    outByte =  ((column&0x01)<<LA_COL0) | ((column&0x02)<<(LA_COL1-1))
-              |((column&0x04)<<(LA_COL2-2)) | ((column&0x08)<<(LA_COL3-3));
+    outByte =  ((column&0x01)<<LA_COLA) | ((column&0x02)<<(LA_COLB-1))
+              |((column&0x04)<<(LA_COLC-2)) | ((column&0x08)<<(LA_COLD-3));
 
     LA_COL_PORT = (LA_COL_PORT & ~LA_COL_MASK) | outByte;
 
