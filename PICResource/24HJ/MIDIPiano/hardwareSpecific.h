@@ -15,6 +15,8 @@
 
 #ifndef F_CPU
 #define F_CPU   39469000
+//#define F_CPU   10469000
+#define FCY     F_CPU
 #endif
 
 #define USE_FAT_FS  (1)

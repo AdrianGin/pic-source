@@ -180,6 +180,7 @@ int main(void)
 
     PrimaryUART = (PIC_USART_t*)&U1;
     //CLKDIVbits.DOZE = 0;
+    
     CLKDIVbits.DOZEN = 0;
     CLKDIVbits.PLLPOST = 0;
     CLKDIVbits.PLLPRE = 0;
@@ -198,18 +199,18 @@ int main(void)
     TRISA &= ~((1<<2) | (1<<4) | (1<<3));
 
     PPSUnLock;
-    PPSOutput(PPS_U2TX, PPS_RP8);
-    PPSOutput(PPS_U1TX, PPS_RP9);
+    PPSOutput(OUT_FN_PPS_U2TX, OUT_PIN_PPS_RP8);
+    PPSOutput(OUT_FN_PPS_U1TX, OUT_PIN_PPS_RP9);
     PPSInput(PPS_U2RX, PPS_RP10);
     PPSInput(PPS_U1RX, PPS_RP11);
 
 
-    PPSOutput(PPS_OC1, PPS_RP15);
-    PPSOutput(PPS_OC2, PPS_RP14);
+    PPSOutput(OUT_FN_PPS_OC1, OUT_PIN_PPS_RP15);
+    PPSOutput(OUT_FN_PPS_OC2, OUT_PIN_PPS_RP14);
 
-    PPSOutput(PPS_SCK1, PPS_RP5);
+    PPSOutput(OUT_FN_PPS_SCK1, OUT_PIN_PPS_RP5);
     PPSInput(PPS_SDI1, PPS_RP6);
-    PPSOutput(PPS_SDO1, PPS_RP7);
+    PPSOutput(OUT_FN_PPS_SDO1, OUT_PIN_PPS_RP7);
     
 
     PPSLock;

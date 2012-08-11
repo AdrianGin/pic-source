@@ -164,7 +164,7 @@
         <targetHeader></targetHeader>
         <platformTool>PICkit2PlatformTool</platformTool>
         <languageToolchain>C30</languageToolchain>
-        <languageToolchainVersion>3_25</languageToolchainVersion>
+        <languageToolchainVersion>3_31</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -204,7 +204,7 @@
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value="__PIC24H__;Fcy=40000000"/>
+        <property key="preprocessor-macros" value="__PIC24H__"/>
         <property key="scalar-model" value="default"/>
       </C30>
       <C30-AS>
@@ -262,10 +262,10 @@
         <property key="output-file-format" value="elf"/>
       </C30Global>
       <PICkit2PlatformTool>
-        <property key="pk2settings.3state" value="false"/>
+        <property key="pk2settings.3state" value="true"/>
         <property key="pk2settings.preserveee" value="false"/>
-        <property key="pk2settings.setvddvoltage" value="3"/>
-        <property key="pk2settings.userpgmexec" value="true"/>
+        <property key="pk2settings.setvddvoltage" value=""/>
+        <property key="pk2settings.userpgmexec" value="false"/>
         <property key="pk2settings.usetargetpower" value="true"/>
       </PICkit2PlatformTool>
     </conf>
@@ -316,7 +316,7 @@
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value="__PIC24H__;Fcy=40000000"/>
+        <property key="preprocessor-macros" value="__PIC24H__;Fcy=10000000"/>
         <property key="scalar-model" value="default"/>
       </C30>
       <C30-AS>
