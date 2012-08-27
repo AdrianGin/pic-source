@@ -168,6 +168,54 @@
 //#define SD_STARTUP()               SD_Startup()
 //#define SD_SETMAXSPEED()           SD_SetMaxSpeed()
 
+
+typedef struct _CIDStruct
+{
+    uint8_t     manfid;
+    uint16_t    oemid;
+    uint8_t     prod_name[5];
+    uint8_t     prodRev;
+    uint32_t    serialNumber;
+    uint8_t     year;
+    uint8_t     month;
+    uint8_t     crc;
+} CIDStruct_t;
+
+
+typedef struct _CSDStruct
+{
+    uint8_t     :6;
+    uint8_t     CSD_Structure : 2;
+    
+
+    uint8_t     TAAC;
+    uint8_t     TSAC;
+    uint8_t     TRANS_SPEED;
+
+    uint16_t    READ_BL_LEN : 4;
+    uint16_t    CCC : 12;
+   
+    
+    uint32_t    VDD_R_CURR_MAX : 3;
+    uint32_t    VDD_R_CURR_MIN : 3;
+    uint32_t    C_SIZE : 12;
+    uint32_t    rsv : 2;
+    uint32_t    DSR_IMP : 1;
+    uint32_t    READ_BLK_MISALIGN : 1;
+    uint32_t    WRITE_BLK_MISALIGN : 1;
+    uint32_t    READ_BL_PARTIAL : 1;
+ 
+    uint16_t    oemID;
+    uint8_t     prodName[5];
+    uint8_t     prodRev;
+    uint8_t     serialNumber[4];
+
+    uint16_t    :4;
+    uint16_t    manufDate : 12;
+    uint8_t     : 1;
+    uint8_t     crc : 7;
+} CSDStruct_t;
+
 uint8_t SD_WaitUntilReady(void);
 uint8_t SD_Init(void);
 

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="BMPDraw" displayName="BMPDraw" projectFiles="true">
+      <itemPath>../../../FuncLib/Applications/BMPDraw/BMPDraw.c</itemPath>
+      <itemPath>../../../FuncLib/Applications/BMPDraw/BMPDraw.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="FatFS" displayName="FatFS" projectFiles="true">
       <logicalFolder name="option" displayName="option" projectFiles="true">
       </logicalFolder>
@@ -119,6 +123,10 @@
       <itemPath>TimerCallbacks.c</itemPath>
       <itemPath>TimerCallbacks.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="SSD1289" displayName="SSD1289" projectFiles="true">
+      <itemPath>../../../FuncLib/External/SSD1289/SSD1289.c</itemPath>
+      <itemPath>../../../FuncLib/External/SSD1289/SSD1289.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="stack" displayName="stack" projectFiles="true">
       <itemPath>../../../FuncLib/Other/stack/stack.c</itemPath>
       <itemPath>../../../FuncLib/Other/stack/stack.h</itemPath>
@@ -206,6 +214,7 @@
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value="__PIC24H__"/>
         <property key="scalar-model" value="default"/>
+        <appendMe value="-fpack-struct"/>
       </C30>
       <C30-AS>
         <property key="assembler-symbols" value=""/>
@@ -264,7 +273,7 @@
       <PICkit2PlatformTool>
         <property key="pk2settings.3state" value="true"/>
         <property key="pk2settings.preserveee" value="false"/>
-        <property key="pk2settings.setvddvoltage" value=""/>
+        <property key="pk2settings.setvddvoltage" value="3.25"/>
         <property key="pk2settings.userpgmexec" value="false"/>
         <property key="pk2settings.usetargetpower" value="true"/>
       </PICkit2PlatformTool>

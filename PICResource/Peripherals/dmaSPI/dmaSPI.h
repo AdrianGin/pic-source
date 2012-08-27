@@ -52,8 +52,9 @@ void DMA_SPI_Enable(void);
 void DMA_SendSPIString(PIC_DMA_SPI_t* DMASPI, char* string);
 void DMA_SendSPIString_NoStart(PIC_DMA_SPI_t* DMASPI, char* string);
 uint8_t DMA_StartSPI(PIC_DMA_SPI_t* DMASPI);
-void DMA_SPI_ReceiveBytes(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount);
+void DMA_SPI_ExecuteTransfer(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount);
 void DMA_SPI_ReceiveBlock(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount);
+void DMA_SPI_SendBlock(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount);
 
 #endif
 

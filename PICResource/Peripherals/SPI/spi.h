@@ -95,6 +95,8 @@ THE SOFTWARE.
 #define TRANSFER_COMPLETE     (1)
 #define TRANSFER_INCOMPLETE   (0)
 
+#define MODE_16BIT  (1)
+#define MODE_8BIT  (0)
 
 typedef struct
 {
@@ -110,8 +112,9 @@ void SPI_Init(PIC_SPI_t* port);
 
 void SPI_SetSpeed(PIC_SPI_t* port, uint8_t divisor);
 void SPI_SetClockPolarity(PIC_SPI_t* port, uint8_t polarity);
+void SPI_SetDataMode(PIC_SPI_t* port, uint8_t mode);
 
-uint8_t SPI_TxByte(PIC_SPI_t* port, uint8_t data);
+uint8_t SPI_TxByte(PIC_SPI_t* port, uint16_t data);
 /** SPI_RxByte, the same as SPI_TxByte(0xFF) */
 uint8_t SPI_RxByte(PIC_SPI_t* port);
 

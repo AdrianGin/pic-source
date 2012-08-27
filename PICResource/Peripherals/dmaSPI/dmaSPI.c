@@ -42,11 +42,11 @@ void DMA_SPI_Init(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t spiMo
 
     //One Shot Mode, no Post-Increment
     *DMATXSPI->DMACON = (0x6011);
+    DMATXSPI->DMABuffer[0] = 0xFF;
     *DMATXSPI->DMAREQ = spiModule;
     *DMATXSPI->DMAPAD = (uint16_t)DMATXSPI->attachedSPI->SPIXBUF;
     *DMATXSPI->DMASTA = (uint16_t)DMATXSPI->DMABuffer;
 
-    DMATXSPI->DMABuffer[0] = 0xFF;
     DMATXSPI->DMAFlag = 0;
 
 
@@ -67,7 +67,7 @@ void DMA_SPI_Enable(void)
     IEC2bits.SPI2IE = 0x00;
 }
 
-void DMA_SPI_ReceiveBytes(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount)
+void DMA_SPI_ExecuteTransfer(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16_t byteCount)
 {
     if( DMASPI->DMAFlag == 0)
     {
@@ -91,14 +91,35 @@ void DMA_SPI_ReceiveBytes(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint16
     }
 }
 
+
 void DMA_SPI_ReceiveBlock(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount)
 {
     if( byteCount != 0 )
     {
-        DMA_SPI_ReceiveBytes(DMASPI, DMATXSPI, byteCount);
+        *DMATXSPI->DMACON = (0x6011);
+        DMATXSPI->DMABuffer[0] = 0xFF;
+        DMA_SPI_ExecuteTransfer(DMASPI, DMATXSPI, byteCount);
         //Here it's polled
         while(DMASPI->DMAFlag);
 
+        if( buffer )
+        {
+            memcpy(buffer, (uint8_t*)&DMASPI->DMABuffer[0], byteCount);
+        }
+    }
+}
+
+
+void DMA_SPI_SendBlock(PIC_DMA_SPI_t* DMASPI, PIC_DMA_SPI_t* DMATXSPI, uint8_t* buffer, uint16_t byteCount)
+{
+    if( byteCount != 0 )
+    {
+        //When we receive we send 0xFF's
+        *DMATXSPI->DMACON = (0x6001);
+        memcpy((uint8_t*)&DMASPI->DMABuffer[0], buffer, byteCount);
+        DMA_SPI_ExecuteTransfer(DMASPI, DMATXSPI, byteCount);
+        //Here it's polled
+        while(DMASPI->DMAFlag);
         if( buffer )
         {
             memcpy(buffer, (uint8_t*)&DMASPI->DMABuffer[0], byteCount);

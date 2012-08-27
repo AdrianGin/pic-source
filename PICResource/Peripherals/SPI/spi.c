@@ -92,6 +92,12 @@ void SPI_EnablePort(PIC_SPI_t* port)
     *port->SPIXSTA  |= (1<<SPIEN);
 }
 
+void SPI_SetDataMode(PIC_SPI_t* port, uint8_t mode)
+{
+    *port->SPIXCON1 &= ~(1<<MODE16);
+    *port->SPIXCON1 |= (mode<<MODE16);
+}
+
 void SPI_SetClockPolarity(PIC_SPI_t* port, uint8_t polarity)
 {
     *port->SPIXCON1 &= ~(1<<CKE);
@@ -113,7 +119,7 @@ void SPI_SetSpeed(PIC_SPI_t* port, uint8_t divisor)
 }
 
 
-uint8_t SPI_TxByte(PIC_SPI_t* port, uint8_t data)
+uint8_t SPI_TxByte(PIC_SPI_t* port, uint16_t data)
 {
    //spiTransferComplete = TRANSFER_INCOMPLETE;
    *port->SPIXBUF = data;

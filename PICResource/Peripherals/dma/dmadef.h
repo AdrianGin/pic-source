@@ -37,7 +37,7 @@ THE SOFTWARE.
 
 //The largest block of data to be sent at once.
 #define DMA_MEM_SIZE (2048)
-#define DMA_TX_SIZE  (64)
+#define DMA_TX_SIZE  (1024)
 #define DMA_RX_SIZE  (DMA_MEM_SIZE-DMA_TX_SIZE)
 
 #define DMA_NOT_STARTING (0)

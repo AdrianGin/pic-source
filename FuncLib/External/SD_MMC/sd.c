@@ -176,6 +176,8 @@ uint8_t SD_Init(void)
 #endif    
 
 
+    
+
     SD_SETMAXSPEED();
 
     r1 = SD_Command(SD_CRC_ON_OFF, 0);
@@ -348,11 +350,9 @@ uint8_t SD_WriteSector(uint8_t* buffer, uint8_t token)
     if ((r1 & SD_DR_MASK) != SD_DR_ACCEPT)
     {
 #if SD_DEBUG		
-        uartNewLine();
-        uartTxString("R1 Response: ");
+        DEBUG("R1 Response: ");
         uint8toa(r1, outputString);
-        uartTxString(outputString);
-        uartNewLine();
+        DEBUG(outputString);
 #endif   	
         return SD_ERROR;
     }
@@ -396,6 +396,7 @@ DRESULT disk_read(BYTE drive, BYTE* buffer, DWORD sector, BYTE secCount)
 {
     // assert chip select
     //SD_CS_PORT &= ~(1 << SD_CS_PIN);
+    SD_SetMaxSpeed();
 
     /* Convert sectors to bytes, if it is NOT an SDHC card */
     if (!(SDVersion & CT_BLOCK))
@@ -440,6 +441,8 @@ DRESULT disk_read(BYTE drive, BYTE* buffer, DWORD sector, BYTE secCount)
 /* Writes 'secCount' sectors of buffer to the address sector */
 DRESULT disk_write(BYTE drive, const BYTE* buffer, DWORD sector, BYTE secCount)
 {
+    SD_SetMaxSpeed();
+    
     // assert chip select
     SD_CS_PORT &= ~(1 << SD_CS_PIN);
 
@@ -495,6 +498,7 @@ DRESULT disk_ioctl(BYTE drive, BYTE ctrl, void *buff)
 
     res = RES_ERROR;
 
+    SD_SetMaxSpeed();
 
     if (SD_Stat & STA_NOINIT) return RES_NOTRDY;
 

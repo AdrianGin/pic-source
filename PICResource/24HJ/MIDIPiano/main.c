@@ -32,6 +32,10 @@
 #include "UI_GLCD/gLCDInterface.h"
 #include "UI_GLCD/gLCDSettings.h"
 
+#include "SSD1289/SSD1289.h"
+#include "BMPDraw/BMPDraw.h"
+
+
 void InterruptHandlerLow();
 
 volatile PIC_USART_t U1 = {&U1STA, &U1MODE, &U1BRG, &U1TXREG, &U1RXREG, &IFS0, TX1IF, &TransmitBuffer, &ReceiveBuffer};
@@ -70,6 +74,9 @@ PIC_DMA_SPI_t DMASPI1T = {&DMA2CON,
     &DMAUARTStack,
     (uint8_t*)&DMABuffer[0],
     &S1};
+
+
+BMPFile_t BMPFile;
 
 
 PGM_P ROMSTRING = "ROM STRING\n";
@@ -136,8 +143,14 @@ void SendString(char* string)
 void PWMInit(void)
 {
     OC1CONbits.OCM = 0x06;
-    PR2 = 4;
-    OC1RS = 1;
+    OC1CONbits.OCTSEL = 0x00; //TMR2 for Period
+    OC1RS = 39;
+    T1CONbits.TON = 1;
+
+    PR2 = 60;
+    OC2RS = 16;
+    OC2CONbits.OCM = 0x06;
+    OC2CONbits.OCTSEL = 0x00; //TMR2 for Period
     T2CONbits.TON = 1;
 }
 
@@ -180,7 +193,7 @@ int main(void)
 
     PrimaryUART = (PIC_USART_t*)&U1;
     //CLKDIVbits.DOZE = 0;
-    
+
     CLKDIVbits.DOZEN = 0;
     CLKDIVbits.PLLPOST = 0;
     CLKDIVbits.PLLPRE = 0;
@@ -192,11 +205,19 @@ int main(void)
     {
     };
 
+    TRISB &= ~(1<<15);
+    TRISB &= ~(1<<14);
+
     TRISB &= ~(1<<8);
     TRISB &= ~(1<<9);
+
+    LATB |= (1<<SD_CS_PIN);
+    TRISB &= ~(1<<SD_CS_PIN);
+
     LEDArray_Init();
 
     TRISA &= ~((1<<2) | (1<<4) | (1<<3));
+
 
     PPSUnLock;
     PPSOutput(OUT_FN_PPS_U2TX, OUT_PIN_PPS_RP8);
@@ -205,8 +226,8 @@ int main(void)
     PPSInput(PPS_U1RX, PPS_RP11);
 
 
-    PPSOutput(OUT_FN_PPS_OC1, OUT_PIN_PPS_RP15);
-    PPSOutput(OUT_FN_PPS_OC2, OUT_PIN_PPS_RP14);
+    //PPSOutput(OUT_FN_PPS_OC1, OUT_PIN_PPS_RP15);
+    //PPSOutput(OUT_FN_PPS_OC2, OUT_PIN_PPS_RP14);
 
     PPSOutput(OUT_FN_PPS_SCK1, OUT_PIN_PPS_RP5);
     PPSInput(PPS_SDI1, PPS_RP6);
@@ -219,34 +240,157 @@ int main(void)
     uartSetBaud(PrimaryUART, 320);
     uartInit((PIC_USART_t*)&U2);
     uartSetBaud((PIC_USART_t*)&U2, 320);
+    
+//    PMD1bits.U1MD = 1;
+//    PMD1bits.U2MD = 1;
     SET_CPU_IPL(0);
 
+    //Baud rate of 38400 bps for Bluetooth Init
+    uartSetBaud(PrimaryUART, 320);
+    uartSetBaud((PIC_USART_t*)&U2, 320);
+
+    
+    PWMInit();
+    
     //TRISA |= (1<<1);
     //LATA = 0;
     Delay(60);
-
-
-    
     //SendString("Welcome executive:\n");
     //SendString("My Name\n");
     //SendString("is Adrian123\n");
 
     //Delay_Us(Delay_1S_Cnt);
-    //PWMInit();
-    TimerInit();
+    
+    //TimerInit();
 
     ADC_Init();
     ADC_Set10bit();
     ADC_SetClockSpeed(5, 4);
-    ADC_SetPin(1);
+    ADC_SetPin(11);
     //ADC_Off();
 
+    SPI_Init(&S1);
+    
     Delay(10);
     uint16_t ADCValue;
 
+    LATB |= SSD1289_WR;
+    TRISB &= ~SSD1289_WR;
+    TRISB &= ~SSD1289_RS;
+
+    SSD1289_Init();
+    
+    uint8_t ret;
+    DMA_SPI_Init(&DMASPI1, &DMASPI1T, DMA_SPI1);
+    DMA_SPI_Enable();
+    
+    ret = f_mount(0, &filesys);
+    myprintfd("Mount:", ret);
+
+    myprintf("SPISPEED:", *S1.SPIXCON1);
+    FIL temp;
+
+    BMPFile.pImageFile = &temp;
+
+    ret = f_open( BMPFile.pImageFile, "bride.bmp", FA_OPEN_EXISTING | FA_READ );
+
+    //myprintf("SPISPEED:", *S1.SPIXCON1);
+
+    myprintfd("Open:", ret);
+    
+    BMP_ReadHeader(&BMPFile);
+
+    myprintfd("BMP Width:", BMPFile.lWidth);
+    myprintfd("BMP Length:", BMPFile.lHeight);
+    myprintfd("BMP Planes:", BMPFile.bNumOfPlanes);
+    myprintfd("BMP Depth:", BMPFile.bBitsPerPixel);
+    myprintfd("BMP CompType:", BMPFile.blCompressionType);
+
+    //ret = BMP_Print(&BMPFile);
+    myprintfd("PrintSuccess:", ret);
+
+    uint32_t CSDbuf[4];
+    memset(&CSDbuf, 0x00, 16);
+    uint8_t k;
+    disk_ioctl(0, MMC_GET_CID, &CSDbuf);
+
+
+    CIDStruct_t CIDStruct;
+    uint32_t* resp = &CSDbuf[0];
+
+    CIDStruct.manfid                    = UNSTUFF_BITS(resp, 0, 8);
+    CIDStruct.oemid			= UNSTUFF_BITS(resp, 8, 16);
+    CIDStruct.prod_name[0]		= UNSTUFF_BITS(resp, 24, 8);
+    CIDStruct.prod_name[1]		= UNSTUFF_BITS(resp, 32, 8);
+    CIDStruct.prod_name[2]		= UNSTUFF_BITS(resp, 40, 8);
+    CIDStruct.prod_name[3]		= UNSTUFF_BITS(resp, 48, 8);
+    CIDStruct.prod_name[4]		= UNSTUFF_BITS(resp, 56, 8);
+    CIDStruct.prodRev			= UNSTUFF_BITS(resp, 64, 8);
+    CIDStruct.serialNumber              = UNSTUFF_BITS(resp, 72, 32);
+    CIDStruct.year			= (UNSTUFF_BITS(resp, 112, 16) & 0xFF) >> 4;
+    CIDStruct.month			= UNSTUFF_BITS(resp, 112, 4);
+
+//    myprintfd("Sizeof", sizeof(CIDStruct_t));
+//
+    myprintf("MANF ID:", CIDStruct.manfid);
+    myprintf("OEM ID:", CIDStruct.oemid);
+//
+    DEBUG("ProdName:")
+    DEBUGn(CIDStruct.prod_name, sizeof(CIDStruct.prod_name) );
+//
+    myprintf("prodRev:", CIDStruct.prodRev);
+//
+//    DEBUG("serialNumber:")
+//    DEBUGn(CIDStruct.serialNumber, sizeof(CIDStruct.serialNumber) );
+//
+    myprintf("Year:", CIDStruct.year);
+    myprintf("Month:", CIDStruct.month);
+//
+    uint8_t* ptr = &CSDbuf[0];
+    for( k = 0; k < 16; k++ )
+    {
+        myprintf("CID:", ptr[k]);
+    }
+//
+//    while(1)
+//    {
+//        SSD1289_DispOneColor(0xffff);
+//        SSD1289_DispOneColor(0x07e0);
+//        SSD1289_DispOneColor(0xFFE0);
+//        SSD1289_DispOneColor(0xF800);
+//    }
+
+    while(1)
+    {
+
+        ret = f_open( BMPFile.pImageFile, "bride.bmp", FA_OPEN_EXISTING | FA_READ );
+        myprintfd("Open:", ret);
+        BMP_ReadHeader(&BMPFile);
+        myprintfd("BMP Width:", BMPFile.lWidth);
+        myprintfd("BMP Length:", BMPFile.lHeight);
+        myprintfd("BMP Planes:", BMPFile.bNumOfPlanes);
+        myprintfd("BMP Depth:", BMPFile.bBitsPerPixel);
+        myprintfd("BMP CompType:", BMPFile.blCompressionType);
+        ret = BMP_Print(&BMPFile);
+        myprintfd("PrintSuccess:", ret);
+
+        DELAY_MS(600);
+
+        ret = f_open( BMPFile.pImageFile, "Tic.bmp", FA_OPEN_EXISTING | FA_READ );
+        BMP_ReadHeader(&BMPFile);
+        BMP_Print(&BMPFile);
+        DELAY_MS(600);
+
+        ret = f_open( BMPFile.pImageFile, "fiona.bmp", FA_OPEN_EXISTING | FA_READ );
+        BMP_ReadHeader(&BMPFile);
+        BMP_Print(&BMPFile);
+        DELAY_MS(600);
+
+    }
+
     LEDArray_SetColumn(15);
 
-    SPI_Init(&S1);
+    
 
 //    UI_gLCD_HWInit();
 //
@@ -276,14 +420,7 @@ int main(void)
 //
 //    while(1);
 //
-    uint8_t ret;
 
-
-
-    DMA_SPI_Init(&DMASPI1, &DMASPI1T, DMA_SPI1);
-    DMA_SPI_Enable();
-
-    ret = f_mount(0, &filesys);
 
     
     MPB_SetTickRate(32, 480);
@@ -659,7 +796,24 @@ void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void)
     uint8_t i = *U2.UXRXREG;
     IFS1bits.U2RXIF = 0;
     //i = SPI_TxByte(&S1, i);
+
+
+    static uint8_t counter = 0;
+
+//    counter ++;
+//
+//    if( counter == 3)
+//    {
+//        uartSetBaud((PIC_USART_t*)&U2, 320);
+//    }
+//    if( counter == 6 )
+//    {
+//        uartSetBaud((PIC_USART_t*)&U2, 260);
+//        counter = 0;
+//    }
+
     uartTx((PIC_USART_t*)&U2, i);
+
 
 }
 
@@ -668,7 +822,9 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
     uint8_t i = *U1.UXRXREG;
     
     //i = SPI_TxByte(&S1, i);
-    //uartTx((PIC_USART_t*)&U1, i);
+    uartTx((PIC_USART_t*)&U2, i);
+    IFS0bits.U1RXIF = 0;
+    return;
     
 
     ringbuffer_put((RINGBUFFER_T*)U1.ReceiveBuffer, i);
@@ -697,6 +853,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
         //songIndex = (songIndex) % 2;
     }
 
-    IFS0bits.U1RXIF = 0;
+    
 }
 //----------------------------------------------------------------------------
