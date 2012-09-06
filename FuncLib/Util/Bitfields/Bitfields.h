@@ -20,11 +20,26 @@
     ( y= ((y) &~ BF_MASK(start, len)) | BF_PREP(x, start, len) )
 
 
+
+//#define UNSTUFF_BITS(resp,start,size)					\
+//	({								\
+//		const int __size = size;				\
+//		const uint32_t __mask = (__size < 32 ? 1 << __size : 0) - 1;	\
+//		const int __off = ((start) / 32);			\
+//		const int __shft = (start) & 31;			\
+//		uint32_t __res;						\
+//									\
+//		__res = resp[__off] >> __shft;				\
+//		if (__size + __shft > 32)				\
+//			__res |= resp[__off-1] << ((32 - __shft) % 32);	\
+//		__res & __mask;						\
+//	})
+
 #define UNSTUFF_BITS(resp,start,size)					\
 	({								\
 		const int __size = size;				\
 		const uint32_t __mask = (__size < 32 ? 1 << __size : 0) - 1;	\
-		const int __off = ((start) / 32);			\
+		const int __off =  ((start) / 32);			\
 		const int __shft = (start) & 31;			\
 		uint32_t __res;						\
 									\
@@ -33,6 +48,7 @@
 			__res |= resp[__off-1] << ((32 - __shft) % 32);	\
 		__res & __mask;						\
 	})
+
 
 
 #endif

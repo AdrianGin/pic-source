@@ -182,39 +182,22 @@ typedef struct _CIDStruct
 } CIDStruct_t;
 
 
-typedef struct _CSDStruct
+typedef struct _CSDStructV1
 {
-    uint8_t     :6;
-    uint8_t     CSD_Structure : 2;
-    
-
+    uint8_t     CSD_Structure;
     uint8_t     TAAC;
-    uint8_t     TSAC;
+    uint8_t     NSAC;
     uint8_t     TRANS_SPEED;
+    uint16_t    CCC;
+    uint8_t    READ_BL_LEN;
+    uint16_t    C_SIZE;
+    uint8_t     C_SIZE_MULT;
+} CSDStructV1_t;
 
-    uint16_t    READ_BL_LEN : 4;
-    uint16_t    CCC : 12;
-   
-    
-    uint32_t    VDD_R_CURR_MAX : 3;
-    uint32_t    VDD_R_CURR_MIN : 3;
-    uint32_t    C_SIZE : 12;
-    uint32_t    rsv : 2;
-    uint32_t    DSR_IMP : 1;
-    uint32_t    READ_BLK_MISALIGN : 1;
-    uint32_t    WRITE_BLK_MISALIGN : 1;
-    uint32_t    READ_BL_PARTIAL : 1;
- 
-    uint16_t    oemID;
-    uint8_t     prodName[5];
-    uint8_t     prodRev;
-    uint8_t     serialNumber[4];
 
-    uint16_t    :4;
-    uint16_t    manufDate : 12;
-    uint8_t     : 1;
-    uint8_t     crc : 7;
-} CSDStruct_t;
+void SD_PopulateCID(CIDStruct_t* CIDStruct, uint32_t* resp);
+void SD_PopulateCSD(CSDStructV1_t* CSDStruct, uint32_t* resp);
+
 
 uint8_t SD_WaitUntilReady(void);
 uint8_t SD_Init(void);

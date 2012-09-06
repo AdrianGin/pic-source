@@ -63,17 +63,17 @@ THE SOFTWARE.
 #define nSS       (PB2) */
 
 //SPIxSTAT Register
-#define SPIEN   (15)
-#define SPITBF  (1)
-#define SPIRBF  (0)
+#define SPIEN_BIT   (15)
+#define SPITBF_BIT  (1)
+#define SPIRBF_BIT  (0)
 
 //SPIxCON1 Register
-#define MODE16  (10)
-#define SMP     (9)
-#define CKE     (8)
-#define CKP     (6)
-#define MSTEN   (5)
-#define DISSCLK (12)
+#define MODE16_BIT  (10)
+#define SMP_BIT     (9)
+#define CKE_BIT     (8)
+#define CKP_BIT     (6)
+#define MSTEN_BIT   (5)
+#define DISSCLK_BIT (12)
 
 //Clock polarity
 #define SAMPLE_ON_RISING  (1)

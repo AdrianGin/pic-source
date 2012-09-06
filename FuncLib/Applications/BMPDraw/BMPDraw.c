@@ -121,6 +121,7 @@ uint8_t BMP_Print(BMPFile_t* pBmpDec)
     IMG_FSEEK(pBmpDec->pImageFile, pBmpDec->lImageOffset, 0);
 
 
+    SSD1289_SetMaxSpeed();
     if( pBmpDec->lHeight < pBmpDec->lWidth)
     {
         SSD1289_SendCommand(0x0011,0x6040 | (1<<3));    DELAY_US(1);
@@ -139,8 +140,10 @@ uint8_t BMP_Print(BMPFile_t* pBmpDec)
         {
             if( bufferIndex >= PIXEL_BUFFER_COUNT)
             {
+                SD_SetMaxSpeed();
                 IMG_FREAD(readBuf, PIXEL_BUFFER_COUNT*3, 1, pBmpDec->pImageFile);
                 bufferIndex = 0;
+                SSD1289_SetMaxSpeed();
             }
 
             b = readBuf[(3*bufferIndex)+0];

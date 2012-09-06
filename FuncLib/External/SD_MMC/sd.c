@@ -6,7 +6,7 @@
 #include "SPI/spi.h"
 #include "dmaSPI/dmaSPI.h"
 //#include "mmculib/uint8toa.h"
-
+#include "Bitfields/Bitfields.h"
 //include "waveplayer.h"
 
 #define SD_DEBUG  0
@@ -26,6 +26,30 @@ uint8_t SD_WaitUntilReady(void)
     return result;
 }
 
+
+void SD_PopulateCSD(CSDStructV1_t* CSDStruct, uint32_t* resp)
+{
+    CSDStruct->CSD_Structure = UNSTUFF_BITS(resp, 0, 2);
+    CSDStruct->TRANS_SPEED = UNSTUFF_BITS(resp, 24, 8);
+    CSDStruct->READ_BL_LEN = UNSTUFF_BITS(resp, 44, 4);
+    CSDStruct->C_SIZE = UNSTUFF_BITS(resp, 54, 16);
+    CSDStruct->C_SIZE_MULT = UNSTUFF_BITS(resp, 78, 4);
+}
+
+void SD_PopulateCID(CIDStruct_t* CIDStruct, uint32_t* resp)
+{
+    CIDStruct->manfid                   = UNSTUFF_BITS(resp, 120, 8);
+    CIDStruct->oemid			= UNSTUFF_BITS(resp, 104, 16);
+    CIDStruct->prod_name[0]		= UNSTUFF_BITS(resp, 96, 8);
+    CIDStruct->prod_name[1]		= UNSTUFF_BITS(resp, 88, 8);
+    CIDStruct->prod_name[2]		= UNSTUFF_BITS(resp, 80, 8);
+    CIDStruct->prod_name[3]		= UNSTUFF_BITS(resp, 72, 8);
+    CIDStruct->prod_name[4]		= UNSTUFF_BITS(resp, 64, 8);
+    CIDStruct->prodRev			= UNSTUFF_BITS(resp, 56, 8);
+    CIDStruct->serialNumber             = UNSTUFF_BITS(resp, 24, 32);
+    CIDStruct->year			= UNSTUFF_BITS(resp, 12, 8);
+    CIDStruct->month			= UNSTUFF_BITS(resp, 8, 4);
+}
 
 /* returns 0 if success */
 uint8_t SD_Init(void)

@@ -34,6 +34,7 @@
 
 #include "SSD1289/SSD1289.h"
 #include "BMPDraw/BMPDraw.h"
+#include "MSB2LSB/MSB2LSB.h"
 
 
 void InterruptHandlerLow();
@@ -278,6 +279,7 @@ int main(void)
     TRISB &= ~SSD1289_WR;
     TRISB &= ~SSD1289_RS;
 
+    SSD1289_SetMaxSpeed();
     SSD1289_Init();
     
     uint8_t ret;
@@ -317,18 +319,33 @@ int main(void)
 
     CIDStruct_t CIDStruct;
     uint32_t* resp = &CSDbuf[0];
+    uint8_t* ptr = &CSDbuf[0];
 
-    CIDStruct.manfid                    = UNSTUFF_BITS(resp, 0, 8);
-    CIDStruct.oemid			= UNSTUFF_BITS(resp, 8, 16);
-    CIDStruct.prod_name[0]		= UNSTUFF_BITS(resp, 24, 8);
-    CIDStruct.prod_name[1]		= UNSTUFF_BITS(resp, 32, 8);
-    CIDStruct.prod_name[2]		= UNSTUFF_BITS(resp, 40, 8);
-    CIDStruct.prod_name[3]		= UNSTUFF_BITS(resp, 48, 8);
-    CIDStruct.prod_name[4]		= UNSTUFF_BITS(resp, 56, 8);
-    CIDStruct.prodRev			= UNSTUFF_BITS(resp, 64, 8);
-    CIDStruct.serialNumber              = UNSTUFF_BITS(resp, 72, 32);
-    CIDStruct.year			= (UNSTUFF_BITS(resp, 112, 16) & 0xFF) >> 4;
-    CIDStruct.month			= UNSTUFF_BITS(resp, 112, 4);
+    for(k = 0; k < sizeof(CSDbuf); k++ )
+    {
+        ptr[k] = MSB2LSB(ptr[k]);
+    }
+
+
+    for(k = 0; k < sizeof(CSDbuf) / 2; k++ )
+    {
+        uint8_t  tempint;
+        tempint = ptr[k];
+        ptr[k] = ptr[sizeof(CSDbuf)-k];
+        ptr[sizeof(CSDbuf)-k] = tempint;
+    }
+
+    for(k = 0; k < sizeof(CSDbuf) / 4; k++ )
+    {
+        uint32_t  tempint;
+        tempint = CSDbuf[k];
+        CSDbuf[k] = CSDbuf[(sizeof(CSDbuf)/4)-k];
+        CSDbuf[(sizeof(CSDbuf)/4)-k] = tempint;
+    }
+
+
+    SD_PopulateCID(&CIDStruct, resp);
+
 
 //    myprintfd("Sizeof", sizeof(CIDStruct_t));
 //
@@ -346,12 +363,30 @@ int main(void)
     myprintf("Year:", CIDStruct.year);
     myprintf("Month:", CIDStruct.month);
 //
-    uint8_t* ptr = &CSDbuf[0];
     for( k = 0; k < 16; k++ )
     {
         myprintf("CID:", ptr[k]);
     }
+
+    CSDStructV1_t CSDStruct;
+    disk_ioctl(0, MMC_GET_CSD, &CSDbuf);
+    SD_PopulateCSD(&CSDStruct, resp);
+
+    myprintf("CSD:", CSDStruct.CSD_Structure);
+    myprintf("TRANS_SPEED:", CSDStruct.TRANS_SPEED);
+    myprintf("C_SIZE:", CSDStruct.C_SIZE);
+    myprintf("C_SIZE_MULT:", CSDStruct.C_SIZE_MULT);
+    myprintf("READ_BL_LEN:", CSDStruct.READ_BL_LEN);
+
+
+    for( k = 0; k < 16; k++ )
+    {
+        myprintf("CSD:", ptr[k]);
+    }
+
+
 //
+    
 //    while(1)
 //    {
 //        SSD1289_DispOneColor(0xffff);

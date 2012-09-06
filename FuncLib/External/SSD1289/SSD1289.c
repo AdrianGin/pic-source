@@ -9,7 +9,7 @@
 #include "SSD1289/SSD1289.h"
 
 
-#define SSD1289_SendByte(x) SPI_TxByte(&S1, x)
+
 
 typedef struct
 {
@@ -52,8 +52,8 @@ void SSD1289_WriteData(uint16_t data)
 void SSD1289_OutData(uint16_t data)
 {
     //SSD1289_SetMaxSpeed();
-    SSD1289_SendByte((data >> 8) & 0xFF);
-    SSD1289_SendByte(data & 0xFF);
+    //SSD1289_SendByte((data >> 8) & 0xFF);
+    SSD1289_SendByte(data);
 }
 
 void SSD1289_Init(void)

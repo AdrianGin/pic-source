@@ -26,5 +26,7 @@ void SSD1289_PutPixel(uint16_t colour);
 
 void SSD1289_SetMaxSpeed(void);
 
+#define SSD1289_SendByte(x) SPI_TxByte(&S1, x)
+
 #endif
 
