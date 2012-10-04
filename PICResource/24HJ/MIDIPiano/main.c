@@ -130,7 +130,7 @@ void myprintfd(char* string, uint32_t num)
 void myPrintNum(uint32_t num, uint8_t base)
 {
     char outputString[20];
-    utoa(outputString, num, base);
+    ltoa(outputString, num, base);
     DEBUG(outputString);
 }
 
@@ -227,7 +227,7 @@ int main(void)
     PPSInput(PPS_U1RX, PPS_RP11);
 
 
-    //PPSOutput(OUT_FN_PPS_OC1, OUT_PIN_PPS_RP15);
+    PPSOutput(OUT_FN_PPS_OC1, OUT_PIN_PPS_RP15);
     //PPSOutput(OUT_FN_PPS_OC2, OUT_PIN_PPS_RP14);
 
     PPSOutput(OUT_FN_PPS_SCK1, OUT_PIN_PPS_RP5);
@@ -321,29 +321,6 @@ int main(void)
     uint32_t* resp = &CSDbuf[0];
     uint8_t* ptr = &CSDbuf[0];
 
-    for(k = 0; k < sizeof(CSDbuf); k++ )
-    {
-        ptr[k] = MSB2LSB(ptr[k]);
-    }
-
-
-    for(k = 0; k < sizeof(CSDbuf) / 2; k++ )
-    {
-        uint8_t  tempint;
-        tempint = ptr[k];
-        ptr[k] = ptr[sizeof(CSDbuf)-k];
-        ptr[sizeof(CSDbuf)-k] = tempint;
-    }
-
-    for(k = 0; k < sizeof(CSDbuf) / 4; k++ )
-    {
-        uint32_t  tempint;
-        tempint = CSDbuf[k];
-        CSDbuf[k] = CSDbuf[(sizeof(CSDbuf)/4)-k];
-        CSDbuf[(sizeof(CSDbuf)/4)-k] = tempint;
-    }
-
-
     SD_PopulateCID(&CIDStruct, resp);
 
 
@@ -369,15 +346,21 @@ int main(void)
     }
 
     CSDStructV1_t CSDStruct;
+
+    uint32_t gsc = 0;
+    disk_ioctl(0, GET_SECTOR_COUNT, &gsc);
+    myprintfd("GSC:", gsc);
+
+
     disk_ioctl(0, MMC_GET_CSD, &CSDbuf);
     SD_PopulateCSD(&CSDStruct, resp);
-
     myprintf("CSD:", CSDStruct.CSD_Structure);
     myprintf("TRANS_SPEED:", CSDStruct.TRANS_SPEED);
     myprintf("C_SIZE:", CSDStruct.C_SIZE);
     myprintf("C_SIZE_MULT:", CSDStruct.C_SIZE_MULT);
     myprintf("READ_BL_LEN:", CSDStruct.READ_BL_LEN);
 
+    myprintfd("Size:", ((uint32_t)(1<<(CSDStruct.READ_BL_LEN+CSDStruct.C_SIZE_MULT+2-10))*(uint32_t)(CSDStruct.C_SIZE+1)));
 
     for( k = 0; k < 16; k++ )
     {

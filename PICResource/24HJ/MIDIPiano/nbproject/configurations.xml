@@ -61,6 +61,8 @@
       <itemPath>../../../FuncLib/Other/mmculib/uint8toa.h</itemPath>
       <itemPath>../../../FuncLib/Other/mmculib/root.c</itemPath>
       <itemPath>../../../FuncLib/Other/mmculib/root.h</itemPath>
+      <itemPath>../../../FuncLib/Util/Bitfields/Bitfields.c</itemPath>
+      <itemPath>../../../FuncLib/Util/Bitfields/Bitfields.h</itemPath>
     </logicalFolder>
     <logicalFolder name="MSB2LSB" displayName="MSB2LSB" projectFiles="true">
       <itemPath>../../../FuncLib/Util/MSB2LSB/MSB2LSB.c</itemPath>

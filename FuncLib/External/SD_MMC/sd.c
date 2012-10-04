@@ -29,26 +29,42 @@ uint8_t SD_WaitUntilReady(void)
 
 void SD_PopulateCSD(CSDStructV1_t* CSDStruct, uint32_t* resp)
 {
-    CSDStruct->CSD_Structure = UNSTUFF_BITS(resp, 0, 2);
-    CSDStruct->TRANS_SPEED = UNSTUFF_BITS(resp, 24, 8);
-    CSDStruct->READ_BL_LEN = UNSTUFF_BITS(resp, 44, 4);
-    CSDStruct->C_SIZE = UNSTUFF_BITS(resp, 54, 16);
-    CSDStruct->C_SIZE_MULT = UNSTUFF_BITS(resp, 78, 4);
+    CSDStruct->CSD_Structure = unpack128bits(resp, 126, 2);
+
+    if(CSDStruct->CSD_Structure == 0)
+    {
+        CSDStruct->TRANS_SPEED = unpack128bits(resp, 96, 8);
+        CSDStruct->READ_BL_LEN = unpack128bits(resp, 80, 4);
+        CSDStruct->C_SIZE = unpack128bits(resp, 62, 12);
+        CSDStruct->C_SIZE_MULT = unpack128bits(resp, 47, 3);
+    }
+    else
+    {
+        CSDStruct->TRANS_SPEED = unpack128bits(resp, 96, 8);
+        CSDStruct->READ_BL_LEN = unpack128bits(resp, 80, 4);
+        CSDStruct->C_SIZE = unpack128bits(resp, 48, 22);
+        CSDStruct->C_SIZE_MULT = 8;
+
+    }
+
+
 }
+
+
 
 void SD_PopulateCID(CIDStruct_t* CIDStruct, uint32_t* resp)
 {
-    CIDStruct->manfid                   = UNSTUFF_BITS(resp, 120, 8);
-    CIDStruct->oemid			= UNSTUFF_BITS(resp, 104, 16);
-    CIDStruct->prod_name[0]		= UNSTUFF_BITS(resp, 96, 8);
-    CIDStruct->prod_name[1]		= UNSTUFF_BITS(resp, 88, 8);
-    CIDStruct->prod_name[2]		= UNSTUFF_BITS(resp, 80, 8);
-    CIDStruct->prod_name[3]		= UNSTUFF_BITS(resp, 72, 8);
-    CIDStruct->prod_name[4]		= UNSTUFF_BITS(resp, 64, 8);
-    CIDStruct->prodRev			= UNSTUFF_BITS(resp, 56, 8);
-    CIDStruct->serialNumber             = UNSTUFF_BITS(resp, 24, 32);
-    CIDStruct->year			= UNSTUFF_BITS(resp, 12, 8);
-    CIDStruct->month			= UNSTUFF_BITS(resp, 8, 4);
+    CIDStruct->manfid                   = unpack128bits(resp, 120, 8);
+    CIDStruct->oemid			= unpack128bits(resp, 104, 16);
+    CIDStruct->prod_name[0]		= unpack128bits(resp, 96, 8);
+    CIDStruct->prod_name[1]		= unpack128bits(resp, 88, 8);
+    CIDStruct->prod_name[2]		= unpack128bits(resp, 80, 8);
+    CIDStruct->prod_name[3]		= unpack128bits(resp, 72, 8);
+    CIDStruct->prod_name[4]		= unpack128bits(resp, 64, 8);
+    CIDStruct->prodRev			= unpack128bits(resp, 56, 8);
+    CIDStruct->serialNumber             = unpack128bits(resp, 24, 32);
+    CIDStruct->year			= unpack128bits(resp, 12, 8);
+    CIDStruct->month			= unpack128bits(resp, 8, 4);
 }
 
 /* returns 0 if success */
