@@ -169,9 +169,6 @@ static void LCD_Configuration(void)
 	
 	/* Configure the FSMC Parallel interface -------------------------------------*/
 	LCD_FSMCConfig();
-
-
-
 }
 
 /*******************************************************************************
@@ -1119,12 +1116,12 @@ void LCD_BackLight_Init()
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	
 	/* BackLight */
-	GPIO_InitStructure.GPIO_Pin = BACKLIGHT_PIN;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(BACKLIGHT_PORT, &GPIO_InitStructure);
+	GPIO_Init(GPIOB, &GPIO_InitStructure);	
 	
-	GPIO_SetBits(BACKLIGHT_PORT , BACKLIGHT_PIN);
+	GPIO_SetBits(GPIOB , GPIO_Pin_1);
 	
 }
 

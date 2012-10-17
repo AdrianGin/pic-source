@@ -36,6 +36,9 @@ volatile uint32_t bytesLeft; /* Saves how many bytes left in readbuf	*/
 volatile uint32_t outOfData; /* Used to set when out of data to quit playback */
 volatile AUDIO_PlaybackBuffer_Status audio_buffer_fill;
 AUDIO_Playback_status_enum AUDIO_Playback_status;
+
+uint8_t Audio_Type;
+
 AUDIO_Format_enum AUDIO_Format;
 s8 *Audio_buffer;
 uint8_t readBuf[READBUF_SIZE]; /* Read buffer where data from SD card is read to */
@@ -48,11 +51,13 @@ UINT n_Read; /* File R/W count */
 /* MP3已播放字节 */
 uint32_t MP3_Data_Index;
 /* OS计数信号量 */
-//extern OS_EVENT *DMAComplete;
-//extern OS_EVENT *StopMP3Decode;
+extern OS_EVENT *DMAComplete;
+extern OS_EVENT *StopMP3Decode;
 
 static waveHeader_t Wavefile;
 volatile uint8_t TimeOut;
+
+static void WavNVIC_Configuration(void);
 
 /*******************************************************************************
  * Function Name  : AUDIO_PlaybackBuffer_Status
@@ -88,7 +93,7 @@ void AUDIO_Playback_Stop(void)
 	/* Shutdwon codec in order to avoid non expected voices */
 	//codec_send( ACTIVE_CONTROL | INACTIVE );    /* WM8731 Disable */
 	MP3_Data_Index = 0;
-//	OSSemPost(DMAComplete); /* 发送信号量 */
+	OSSemPost(DMAComplete); /* 发送信号量 */
 }
 
 /*******************************************************************************
@@ -124,6 +129,11 @@ int FillBuffer(FIL *FileObject, uint8_t start)
 		res = f_read(FileObject,
 				(uint8_t *) readBuf + word_Allignment + bytesLeft,
 				READBUF_SIZE - bytesLeft - word_Allignment, &n_Read);
+
+		 if( res != FR_OK )
+		 {
+			 printf("Read=%d\n", res);
+		 }
 
 		if (n_Read != 0)
 		{
@@ -392,7 +402,7 @@ uint16_t WavePlayer_ConvertPCM(uint8_t nChans, uint8_t bitlength, void* buff, ui
  *******************************************************************************/
 void PlayAudioFile(FIL *FileObject, char *path)
 {
-	uint8_t err;
+	INT8U err;
 	uint16_t i;
 	uint16_t waveReadSize;
 	/* Reset counters */
@@ -401,13 +411,19 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 	readPtr = readBuf;
 
-
+	WavNVIC_Configuration();
 	res = f_open(FileObject, path, FA_OPEN_EXISTING | FA_READ);
+
+
+
+
+	printf("FOPEN=%d\n", res);
+
 
 	if ((strstr(path, "WAV") != NULL) || (strstr(path, "wav") != NULL))
 	{
 		PlayWaveFile(FileObject);
-
+		Audio_Type = WAVE_FILE;
 		printf("SampleRate: %d\n", Wavefile.sampleRate);
 		printf("channelCount: %d\n", Wavefile.channelCount);
 		printf("resolution: %d\n", Wavefile.resolution);
@@ -421,21 +437,36 @@ void PlayAudioFile(FIL *FileObject, char *path)
 		DMA_Configuration((s8 *)&AudioBuffer, WAVE_OUTBUFFER_SIZE*2);
 
 		res = f_lseek(FileObject, Wavefile.data_start);
-
+		printf("LSEEK=%d\n", res);
+		AUDIO_Playback_status = IS_PLAYING;
 
 		BufferStatus = (AUDIO_PlaybackBuffer_Status) (LOW_EMPTY | HIGH_EMPTY);
 
-//		while (!OSSemAccept(StopMP3Decode))
+		while (!(outOfData == 1) && !OSSemAccept(StopMP3Decode))
 		{
 
+			//Here is where we output the decoded WavData
+
+
+			//if( OSSemAccept(DMAComplete) )
+			{
+
+			}
+
 			BufferStatus = AUDIO_PlaybackBuffer_GetStatus((AUDIO_PlaybackBuffer_Status) 0);
+
+
 
 			if (BufferStatus & LOW_EMPTY) /* Decode data to low part of buffer */
 			{
 				res = f_read(FileObject,
 						(uint8_t *)&readBuf[0],
 						waveReadSize, &n_Read);
-
+				 if( res != FR_OK )
+				 {
+					 printf("Read=%d\n", res);
+				 }
+				//printf("LREAD=%d\n", res);
 				WavePlayer_ConvertPCM(Wavefile.channelCount, Wavefile.resolution, &readBuf[0], (uint16_t*)&AudioBuffer[0], n_Read);
 				BufferStatus = AUDIO_PlaybackBuffer_GetStatus(LOW_EMPTY);
 			}
@@ -443,31 +474,50 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 			if (BufferStatus & HIGH_EMPTY) /* Decode data to low part of buffer */
 			{
-				//Start the high buffer.
 				res = f_read(FileObject,
 						(uint8_t *)&readBuf[0],
 						waveReadSize, &n_Read);
-
+				 if( res != FR_OK )
+				 {
+					 printf("Read=%d\n", res);
+				 }
+				//Start the high buffer.
+				//printf("HREAD=%d\n", res);
 				WavePlayer_ConvertPCM(Wavefile.channelCount, Wavefile.resolution, &readBuf[0], (uint16_t*)&AudioBuffer[0+WAVE_OUTBUFFER_SIZE*2], n_Read);
 				BufferStatus = AUDIO_PlaybackBuffer_GetStatus(HIGH_EMPTY);
 			}
 
+//			if (DMA_GetITStatus(DMA2_IT_HT4)) /* DMA1 通道5 半传输中断 */
+//			{
+//				DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_HT4); /* DMA1 通道5 全局中断 */
+//				audio_buffer_fill |= LOW_EMPTY;
+//				OSSemPost(DMAComplete); /* 发送信号量 */
+//			}
+//
+//			if (DMA_GetITStatus(DMA2_IT_TC4)) /* DMA1 通道5 传输完成中断 */
+//			{
+//				DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_TC4); /* DMA1 通道5 全局中断 */
+//				audio_buffer_fill |= HIGH_EMPTY;
+//				OSSemPost(DMAComplete); /* 发送信号量 */
+//			}
+
 
 			if(n_Read == 0)
 			{
-//				OSSemPost(DMAComplete);
-				//break;
+				OSSemPost(StopMP3Decode);
+				OSSemPost(DMAComplete);
 			}
 
-			//Here is where we output the decoded WavData
-//			OSSemPend(DMAComplete, 0, &err);
+			OSSemPend(DMAComplete, 0, &err);
+
 		}
 
 	}
 
-	if ((strstr(path, "MP3") != NULL) || (strstr(path, "mp3") != NULL))
+	else if ((strstr(path, "MP3") != NULL) || (strstr(path, "mp3") != NULL))
 	{
 
+		Audio_Type = MP3_FILE;
 		hMP3Decoder = MP3InitDecoder();
 		memset(&mp3_info, 0, sizeof(mp3_info));
 
@@ -530,12 +580,12 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 		printf("DataStart = %d", mp3_info.data_start);
 
-//		while (!(outOfData == 1) && !OSSemAccept(StopMP3Decode))
+		while (!(outOfData == 1) && !OSSemAccept(StopMP3Decode))
 		//while(1)
 		{
 			/* 获取信号量 */
 			//Here is where we output the decoded WavData
-//			OSSemPend(DMAComplete, 0, &err);
+			OSSemPend(DMAComplete, 0, &err);
 			FillBuffer(FileObject, 0);
 
 		}
@@ -705,7 +755,7 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 	/* TIM2 TRGO selection */
 	TIM_SetAutoreload(TIM7, (uint32_t)(SystemCoreClock / I2S_AudioFreq));
 	TIM_SelectOutputTrigger(TIM7, TIM_TRGOSource_Update);
-	TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
+	//TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
 
 	DAC_DeInit();
 	DAC_StructInit(&DAC_InitStructure);
@@ -743,41 +793,43 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
  *******************************************************************************/
 void DMA2_Channel4_5_IRQHandler(void)
 {
-//	CPU_SR cpu_sr;
-//	OS_ENTER_CRITICAL()	;
-//	OSIntNesting++;
-//	OS_EXIT_CRITICAL()	;
+	CPU_SR cpu_sr;
+	OS_ENTER_CRITICAL()	;
+	OSIntNesting++;
+	OS_EXIT_CRITICAL()	;
 
 	if (DMA_GetITStatus(DMA2_IT_HT4)) /* DMA1 通道5 半传输中断 */
 	{
 		DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_HT4); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
-//		OSSemPost(DMAComplete); /* 发送信号量 */
+		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
 	if (DMA_GetITStatus(DMA2_IT_TC4)) /* DMA1 通道5 传输完成中断 */
 	{
 		DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_TC4); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
-//		OSSemPost(DMAComplete); /* 发送信号量 */
+		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
-//	OSIntExit();
+
+
+	OSIntExit();
 }
 
 
 
 void TIM7_IRQHandler(void)
 {
-//	CPU_SR cpu_sr;
-//	OS_ENTER_CRITICAL()	;
-//	OSIntNesting++;
-//	OS_EXIT_CRITICAL()	;
+	CPU_SR cpu_sr;
+	OS_ENTER_CRITICAL()	;
+	OSIntNesting++;
+	OS_EXIT_CRITICAL()	;
 
 	TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
 	TimeOut = 1;
 
-//	OSIntExit();
+	OSIntExit();
 }
 
 
@@ -789,22 +841,22 @@ void TIM7_IRQHandler(void)
  * Return         : None
  * Attention		 : None
  *******************************************************************************/
-static void NVIC_Configuration(void)
+static void WavNVIC_Configuration(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 	NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
+	//NVIC_Init(&NVIC_InitStructure);
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel4_5_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
@@ -837,7 +889,7 @@ void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint16_t frequency,
 	/* Buffers are supposed to be empty here	*/
 	audio_buffer_fill = (AUDIO_PlaybackBuffer_Status) (LOW_EMPTY | HIGH_EMPTY);
 
-	NVIC_Configuration();
+	WavNVIC_Configuration();
 	I2S_Configuration(frequency);
 	//codec_send( ACTIVE_CONTROL | ACTIVE );	   /* WM8731 Enable */
 	DMA_ConfigurationMP3((s8 *) AudioBuffer, (mp3FrameInfo.outputSamps * 2));
@@ -868,6 +920,7 @@ void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint16_t frequency,
 	printf("-- MP3 layer          = %d \r\n", mp3FrameInfo.layer);
 	printf("-- MP3 version        = %d \r\n", mp3FrameInfo.version);
 	printf("-- MP3 duration       = %d \r\n", mp3_info.duration);
+	printf("-- MP3 datastart       = %d \r\n", mp3_info.data_start);
 }
 
 /*********************************************************************************************************

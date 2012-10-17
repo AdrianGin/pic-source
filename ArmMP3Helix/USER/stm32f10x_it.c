@@ -23,6 +23,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h>
 
+#if ( OS_VIEW_MODULE == DEF_ENABLED )
+extern	void OSView_RxTxISRHandler(void);
+#endif
+
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -101,9 +106,9 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-//void SVC_Handler(void)
-//{
-//}
+void SVC_Handler(void)
+{
+}
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -119,17 +124,17 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-//void SysTick_Handler(void)
-//{
-//	CPU_SR         cpu_sr;
-//	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
-//    OSIntNesting++;
-//    OS_EXIT_CRITICAL();
-//
-//    OSTimeTick();                                /* Call uC/OS-II's OSTimeTick()                       */
-//
-//    OSIntExit();                                 /* Tell uC/OS-II that we are leaving the ISR          */
-//}
+void SysTick_Handler(void)
+{
+	CPU_SR         cpu_sr;
+	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+    OSIntNesting++;
+    OS_EXIT_CRITICAL();
+
+    OSTimeTick();                                /* Call uC/OS-II's OSTimeTick()                       */
+
+    OSIntExit();                                 /* Tell uC/OS-II that we are leaving the ISR          */
+}
 
 /*******************************************************************************
 * Function Name  : USART1_IRQHandler
@@ -141,6 +146,9 @@ void DebugMon_Handler(void)
 
 void USART1_IRQHandler(void)
 {
+	#if ( OS_VIEW_MODULE == DEF_ENABLED )
+		OSView_RxTxISRHandler();
+	#endif
 }
 
 /*******************************************************************************
@@ -158,9 +166,15 @@ void SDIO_IRQHandler(void)
 //  OS_ENTER_CRITICAL();
 //  OSIntNesting++;
 //  OS_EXIT_CRITICAL();
-//
-  SD_ProcessIRQSrc();
-//
+	SD_Error errorstatus;
+  errorstatus = SD_ProcessIRQSrc();
+
+  if( errorstatus != SD_OK )
+  {
+	  SD_PrintError(errorstatus);
+  }
+
+
 //  OSIntExit();
 }
 

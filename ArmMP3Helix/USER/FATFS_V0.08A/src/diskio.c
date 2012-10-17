@@ -23,6 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "diskio.h"
 #include "sdio_sd.h"
+//#include "stm32_eval_sdio_sd.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -40,9 +41,13 @@ DSTATUS disk_initialize (
 	case 0 :	  
     Status = SD_Init();
     if(Status == SD_OK)
-	  return 0;
-    else 
-	  return STA_NOINIT;
+    {
+    	return 0;
+    }
+    else
+    {
+    	return STA_NOINIT;
+    }
 	
 	case 1 :	  
 		return STA_NOINIT;
@@ -121,6 +126,18 @@ DRESULT disk_read (
     }                                                
     if(Status == SD_OK)
     {
+
+//        SDTransferState State;
+//
+//        Status = SD_WaitReadOperation(); // Check if the Transfer is finished
+//
+//        while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
+//
+//        if (State == SD_TRANSFER_ERROR)
+//            return(RES_ERROR);
+//        else
+//            return(RES_OK);
+
       return RES_OK;
     }
     else

@@ -188,21 +188,6 @@ typedef struct
 } SD_CardInfo;
 
 
-/** 
-  * @brief  SDIO Data Transfer Frequency (25MHz max) 
-  */
-#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x10)
-
-#define SD_DETECT_PIN                    GPIO_Pin_2                 /* PB.14 */
-#define SD_DETECT_GPIO_PORT              GPIOE                       /* GPIOB */
-#define SD_DETECT_GPIO_CLK               RCC_APB2Periph_GPIOE
-
-/** 
-  * @brief  SDIO Intialization Frequency (400KHz max)
-  */
-#define SDIO_INIT_CLK_DIV                ((uint8_t)0xB2)
-#define SDIO_FIFO_ADDRESS                ((uint32_t)0x40018080)
-
 
 /** 
   * @brief SDIO Commands  Index 
@@ -308,6 +293,7 @@ typedef struct
 
 /* Private function prototypes -----------------------------------------------*/
 void SD_DeInit(void);
+SD_Error SD_SetHighSpeed(uint32_t arg);
 SD_Error SD_Init(void);
 SDTransferState SD_GetStatus(void);
 SDCardState SD_GetState(void);
@@ -329,6 +315,9 @@ SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr);
 SD_Error SD_SendStatus(uint32_t *pcardstatus);
 SD_Error SD_SendSDStatus(uint32_t *psdstatus);
 SD_Error SD_ProcessIRQSrc(void);
+
+void SD_PrintError(SD_Error errorstatus);
+SD_Error SD_ReceiveData(uint32_t* buffer);
 
 #ifdef __cplusplus
 }

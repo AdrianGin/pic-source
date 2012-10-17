@@ -17,7 +17,7 @@ S_DEPS += \
 Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/%.o: ../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/%.s
 	@echo 'Building file: $<'
 	@echo 'Invoking: ARM RealView Assembler'
-	armasm -g --brief_diagnostics --keep --diag_style=ide --cpu=Cortex-M3 --apcs=interwork --depend=$(@:%.o=%.d) -I"D:\Keil\ARM\RV31\INC" -I"D:\Keil\ARM\CMSIS\Include" -I"D:\Keil\ARM\Inc\ST\STM32F10x" -I"M:\Robotics\Source\ArmMP3Helix\USER\FreeRTOS\Source\include" -I"M:\Robotics\Source\ArmMP3Helix\USER\FreeRTOS\Source\portable\RVDS\ARM_CM3" -I"M:\Robotics\Source\ArmMP3Helix\USER\OS_Abstraction\Semaphore" -I"M:\Robotics\Source\ArmMP3Helix\USER\OS_Abstraction" --pd "__MICROLIB SETA 1" -o "$@" "$<" && \
+	armasm -g --brief_diagnostics --keep --diag_style=ide --cpu=Cortex-M3 --apcs=interwork --depend=$(@:%.o=%.d) -I"D:\Keil\ARM\RV31\INC" -I"D:\Keil\ARM\CMSIS\Include" -I"D:\Keil\ARM\Inc\ST\STM32F10x" --pd "__MICROLIB SETA 1" -o "$@" "$<" && \
 	echo Generated dependency file $(@:%.o=%.d)
 	@echo 'Finished building: $<'
 	@echo ' '

@@ -25,16 +25,17 @@
 #include <includes.h>
 #include "hw_config.h"
 
-#include "app_cfg.h"
-#include "intertaskComm.h"
 
-
+uint8_t bigReadBuffer[1000];
 
 /* Private variables ---------------------------------------------------------*/
-//static  OS_STK         App_TaskStartStk[APP_TASK_START_STK_SIZE];
-//OS_FLAG_GRP            *Sem_F;	   /* 事件标志 */
+static  OS_STK         App_TaskStartStk[APP_TASK_START_STK_SIZE];
+OS_FLAG_GRP            *Sem_F;	   /* 事件标志 */
 
 /* Private function prototypes -----------------------------------------------*/
+#if (OS_VIEW_MODULE == DEF_ENABLED)
+extern  void  App_OSViewTaskCreate        (void);
+#endif
 static  void  TargetInit                  (void);
 static  void  App_TaskCreate              (void);
 static  void  App_TaskStart               (void *p_arg);
@@ -42,17 +43,6 @@ extern  void  App_MicrochipGUITaskCreate  (void);
 extern  void  App_TouchScreenTaskCreate   (void);
 extern  void  App_ReadButtonTaskCreate    (void);
 extern  void  App_MP3DecodeTaskCreate     (void);
-
-
-/* Private define ------------------------------------------------------------*/
-
-
-xQueueHandle xQueue;
-
-/* Private function prototypes -----------------------------------------------*/
-static void prvSetupHardware( void );
-void vLEDTask(void * pvArg);
-void vLEDTask2(void * pvArg);
 
 /*******************************************************************************
 * Function Name  : main
@@ -64,84 +54,32 @@ void vLEDTask2(void * pvArg);
 *******************************************************************************/
 int main(void)
 {
+    CPU_INT08U  os_err;
+	os_err = os_err; /* prevent warning... */
 
-	prvSetupHardware();
+	/* Note:  由于使用UCOS, 在OS运行之前运行,注意别使能任何中断. */
+	CPU_IntDis();                    /* Disable all ints until we are ready to accept them.  */
 
-	InitInterTaskComms();
+    OSInit();                        /* Initialize "uC/OS-II, The Real-Time Kernel".         */
 
-//	GPIO_Configuration();
-//	NVIC_Configuration();
-//	USART_Configuration();
-	//TargetInit();
+	os_err = OSTaskCreateExt((void (*)(void *)) App_TaskStart,  /* Create the start task.                               */
+                             (void          * ) 0,
+                             (OS_STK        * )&App_TaskStartStk[APP_TASK_START_STK_SIZE - 1],
+                             (INT8U           ) APP_TASK_START_PRIO,
+                             (INT16U          ) APP_TASK_START_PRIO,
+                             (OS_STK        * )&App_TaskStartStk[0],
+                             (INT32U          ) APP_TASK_START_STK_SIZE,
+                             (void          * )0,
+                             (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+	
+#if OS_TASK_NAME_EN > 0
+    OSTaskNameSet(APP_TASK_START_PRIO, (CPU_INT08U *)"Start Task", &os_err);
+#endif
 
+	OSStart();               /* Start multitasking (i.e. give control to uC/OS-II).  */
 
-
-	xQueue = xQueueCreate(1, 1);
-	//App_TouchScreenTaskCreate();
-
-	xTaskCreate( App_TaskStart , ( signed char * ) "AppCreator" , APP_TASK_START_STK_SIZE , NULL , APP_TASK_START_PRIO , NULL );
-    /* Start the scheduler. */
-  vTaskStartScheduler();
 	return (0);
 }
-
-
-/*******************************************************************************
-* Function Name  : vLEDTask
-* Description    : LED Task
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-void vLEDTask(void * pvArg)
-{
-	uint8_t pxRxedMessage;
-	pxRxedMessage = 1;
-  while(1)
-  {
-    /*====LED-ON=======*/
-				//GPIO_SetBits(GPIOB , GPIO_Pin_12);
-		xQueueReceive( xQueue, &pxRxedMessage,  0);
-
-				vTaskDelay(1000);
-			/*====LED-OFF=======*/
-			//GPIO_ResetBits(GPIOB , GPIO_Pin_12);
-		xQueueSendToBack( xQueue, &pxRxedMessage,  0);
-				vTaskDelay(1000);
-
-	}
-}
-
-
-void vLEDTask2(void * pvArg)
-{
-	uint8_t buffer[50];
-
-  while(1)
-  {
-		 if( uxQueueMessagesWaiting( xQueue ) == 0 )
-        {
-    /*====LED-ON=======*/
-    //GPIO_SetBits(GPIOB , GPIO_Pin_14);
-    vTaskDelay(100);
-	/*====LED-OFF=======*/
-	//GPIO_ResetBits(GPIOB , GPIO_Pin_14);
-    vTaskDelay(100);
-				}
-		 else
-		 {
-
-			 vTaskList(buffer);
-			 printf("%s", buffer);
-			 vTaskDelay(1000);
-
-		 }
-
-
-  }
-}
-
 
 /*******************************************************************************
 * Function Name  : App_TaskStart
@@ -151,33 +89,31 @@ void vLEDTask2(void * pvArg)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void App_TaskStart(void * pvArg)
+static  void  App_TaskStart (void *p_arg)
 {   
-//    INT8U   err;
-//
-//	(void)p_arg;
-//
-//    OS_CPU_SysTickInit();                                    /* Initialize the SysTick.                              */
-//
-//#if (OS_TASK_STAT_EN > 0)
-//    OSStatInit();                                            /* Determine CPU capacity.                              */
-//#endif
-//
-//	Sem_F =  OSFlagCreate( 0,&err );                         /* 建立一个事件标志组，0初始化                          */
-//
+    INT8U   err;
+
+	(void)p_arg;
+			
+    OS_CPU_SysTickInit();                                    /* Initialize the SysTick.                              */
+
+#if (OS_TASK_STAT_EN > 0)
+    OSStatInit();                                            /* Determine CPU capacity.                              */
+#endif
+	
+	Sem_F =  OSFlagCreate( 0,&err );                         /* 建立一个事件标志组，0初始化                          */
+
     App_TaskCreate();                                        /* Create application tasks.                            */
-//
-//	OSTimeDlyHMSM(0, 0, 1, 0);	                             /* 1 second                                             */
-//
+	
+	OSTimeDlyHMSM(0, 0, 1, 0);	                             /* 1 second                                             */ 
+
 	TargetInit();
-//
-    //
+
 	for(;;)
    	{
 
-		vTaskDelay(5000);							 /* Delay One minute */
-		vTaskDelete( NULL );
-    }
+      	OSTimeDlyHMSM(0, 1, 0, 0);							 /* Delay One minute */
+    }	
 }
 
 /*******************************************************************************
@@ -190,14 +126,11 @@ void App_TaskStart(void * pvArg)
 *******************************************************************************/
 static  void  App_TaskCreate (void)
 {
+#if (OS_VIEW_MODULE == DEF_ENABLED)
+	App_OSViewTaskCreate();
+#endif	
 	
-
-	//xTaskCreate( vLEDTask , ( signed char * ) "LEDTask1" , APP_TASK_LED_STK_SIZE , NULL , APP_TASK_LED_PRIO , NULL );
-	//xTaskCreate( vLEDTask2 , ( signed char * ) "LEDTask2" , APP_TASK_LED2_STK_SIZE , NULL , APP_TASK_LED2_PRIO , NULL );
-	xTaskCreate( uctsk_MicrochipGUI , ( signed char * ) "MicrochipGUI" , APP_TASK_MICROCHIP_GUI_STK_SIZE , NULL , APP_TASK_MICROCHIP_GUI_PRIO , NULL );
-
-
-//	App_ReadButtonTaskCreate();
+	App_ReadButtonTaskCreate();
 //
 	App_MicrochipGUITaskCreate();
 //
@@ -205,28 +138,6 @@ static  void  App_TaskCreate (void)
 //
 	App_MP3DecodeTaskCreate();
 }
-
-
-/*******************************************************************************
-* Function Name  : prvSetupHardware
-* Description    : None
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-static void prvSetupHardware( void )
-{
-
-  GPIO_Configuration();
-  NVIC_Configuration();
-  USART_Configuration();
-  LCD_BackLight_Init();
-  //SystemInit();
-  /* Configure HCLK clock as SysTick clock source. */
-  SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
-}
-
 
 /*******************************************************************************
 * Function Name  : TargetInit
@@ -238,39 +149,39 @@ static void prvSetupHardware( void )
 *******************************************************************************/
 static void TargetInit(void)
 {
-  uint8_t HZLib[2];	uint8_t   err;
+  uint8_t HZLib[2];	INT8U   err;
+  UINT nRead;
+
+
 
   //SPI_FLASH_Init();
   //SPI_FLASH_Test();
+  GPIO_Configuration();
+  NVIC_Configuration();
+  USART_Configuration();  
+  
   printf("-- Basic MP3 Project %s \r\n", SOFTPACK_VERSION);
   printf("-- %s --\r\n", BOARD_NAME); 
   printf("-- Compiled: %s %s \r\n", __DATE__, __TIME__); 
 
-  //Wait until all other Init tasks have completed.
-  vTaskDelay(1000/portTICK_RATE_MS);
-
-  /* Clear screen */
+  /* 检测SD卡存在 */
   LCD_Clear(Black);
 
-  err = SD_Detect();
-  if(err  == SD_PRESENT )
+  if( SD_Detect() == SD_PRESENT )
   {
+	 ;
   }
   else
   {
     printf("-- Please connect a SD card \r\n");
     GUI_Text(36,100,"Please insert SD card",White,Black);
-    while(SD_Detect()!=SD_PRESENT)
-    {
-    	//GUI_Text(36,100,"Please insert SD card",White,Black);
-
-    }
+    while(SD_Detect()!=SD_PRESENT);
     printf("-- SD card connection detected \r\n");
   }
 
   GUI_Text(44,120,"SD card detected OK",White,Black);
-  vTaskDelay(2000/portTICK_RATE_MS);
-  //  OSTimeDlyHMSM(0, 0, 1, 0);	 /* 1 second  */
+  //OSTimeDlyHMSM(0, 0, 0, 100);	 /* 1 second  */
+
   SearchMusic(MUSIC_DIRECTORY);
 
   //df_read_open(0);
@@ -282,7 +193,20 @@ static void TargetInit(void)
     GUI_Text(60,100,"No Detect HZLib",White,Black);
 	GUI_Text(68,120,"Writing HZLib",White,Black);
     //df_write_open( HZLIB_ADDR );   
-	f_mount(0,&fs);   /* 挂载文件系统 */ 
+	res = f_mount(0,&fs);   /* 挂载文件系统 */
+	printf("resMnt=%d\n", res);
+	//res = f_open(&mp3FileObject , "0:/Music/4416s.wav" , FA_OPEN_EXISTING | FA_READ);
+	printf("resOpen=%d\n", res);
+	//res = f_open(&mp3FileObject , SYSTEM_FILE_HZLIB , FA_OPEN_EXISTING | FA_READ);
+//	for(;;)
+//	{
+//
+//		res = f_read(&mp3FileObject,(uint8_t *)&bigReadBuffer[0],800, &nRead);
+//		printf("resRead=%d\n", res);
+//		res = f_lseek(&mp3FileObject, 500);
+//		printf("resSeek=%d\n", res);
+//	}
+
 //    res = f_open(&mp3FileObject , SYSTEM_FILE_HZLIB , FA_OPEN_EXISTING | FA_READ);
 //	if( res != 0 )
 //	{
@@ -307,13 +231,10 @@ static void TargetInit(void)
 	HZLib[0] = 0xaa;  HZLib[1] = 0x55;
 // 	df_write_open(0);   
 //  	df_write(HZLib,2);
-//    OSTimeDlyHMSM(0, 0, 1, 0);	 /* 1 second  */
-	vTaskDelay(1000/portTICK_RATE_MS);
+    OSTimeDlyHMSM(0, 0, 1, 0);	 /* 1 second  */ 
   }
 
-
-  SemaphoreGive(Sem_TouchPanelRdy);
-//  OSFlagPost(Sem_F, 2, OS_FLAG_SET, &err);	  /* TargetIni初始化完成 */
+  OSFlagPost(Sem_F, 2, OS_FLAG_SET, &err);	  /* TargetIni初始化完成 */ 
 }
 
 

@@ -30,7 +30,10 @@
 /* Private typedef -----------------------------------------------------------*/
 struct PlayFileList
 {
+	//char longFileName[100];
     char filename[24];			 /* 短文件名8.3格式   */
+    char shortFileName[12];
+    uint8_t fileType; //MP3 or WAV
     struct PlayFileList *next;	 /* 指向链表下一个MP3 */
 	struct PlayFileList *back;	 /* 指向链表上一个MP3 */
 };
@@ -62,9 +65,9 @@ struct tag_info
 
 /* Private define ------------------------------------------------------------*/
 /* file type */
-#define wavFile                    	0
-#define mp3File                    	1 
-#define unknownFile				   	2
+#define WAVE_FILE                    	0
+#define MP3_FILE                    	1
+#define UNKNOWN_FILE				   	2
 
 #define MIN(x, y)			((x) < (y)? (x) : (y))
 

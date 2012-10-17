@@ -34,9 +34,6 @@
 // //#define DISP_ORIENTATION					180
 // //#define DISP_ORIENTATION					270
 
-#define BACKLIGHT_PORT  GPIOB
-#define BACKLIGHT_PIN 	GPIO_Pin_1
-
 // /* Private define ------------------------------------------------------------*/
 
 #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )

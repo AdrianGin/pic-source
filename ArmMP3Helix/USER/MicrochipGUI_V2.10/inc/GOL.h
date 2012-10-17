@@ -147,7 +147,7 @@ typedef enum
     TYPE_TOUCHSCREEN,               // Touchscreen.
     TYPE_MOUSE,                     // Mouse.
     TYPE_TIMER,                     // Timer.
-    TYPE_SYSTEM                     // System Messages.
+    TYPE_SYSTEM,                     // System Messages.
 } INPUT_DEVICE_TYPE;
 
 /*********************************************************************

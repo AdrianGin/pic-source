@@ -29,7 +29,7 @@
 #include <stdio.h>
 
 /* Private define ------------------------------------------------------------*/
-#define READBUF_SIZE   ( 5 * 1024 )      /* Value must min be 2xMAINBUF_SIZE = 2x1940 = 3880bytes */
+#define READBUF_SIZE   ( 7 * 1024 )      /* Value must min be 2xMAINBUF_SIZE = 2x1940 = 3880bytes */
 
 /* Private variables ---------------------------------------------------------*/
 /* file system*/
@@ -46,6 +46,7 @@ typedef enum { FULL=0,LOW_EMPTY=1,HIGH_EMPTY=2 }                AUDIO_PlaybackBu
 typedef enum { MONO, STEREO}                                    AUDIO_Format_enum;
 typedef enum { NO_SOUND, IS_PLAYING }                           AUDIO_Playback_status_enum;
 typedef enum { LG_8_BITS=8, LG_16_BITS=16}  					AUDIO_Length_enum;
+
 
 /* Private function prototypes -----------------------------------------------*/
 void AUDIO_Playback_Stop(void);

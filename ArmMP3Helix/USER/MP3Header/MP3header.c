@@ -185,7 +185,9 @@ int GetMP3Time(char* path)
    int TotalTime=0;  /* 音乐播放的总时间 */
    uint16_t mp3recordstart=0;
 
-   res = f_open(&mp3FileObject ,path, FA_OPEN_EXISTING | FA_READ);		
+   res = f_open(&mp3FileObject ,path, FA_OPEN_EXISTING | FA_READ);	
+   printf("FOPEN=%d\n", res);
+
    /* 获取MP3文件的播放时间 */
    if(mp3FileObject.fsize != 0)  /* 歌曲长度不为零 */
    {
@@ -195,7 +197,12 @@ int GetMP3Time(char* path)
 		 /* 调整读取位置 */
 	     mp3recordstart = mp3recordstart - recount + jump;	  
 	     /* 从SD卡中读取数据到缓存 */
-		 res = f_read(&mp3FileObject, readBuf, READBUF_SIZE, &n_Read);  
+		 res = f_read(&mp3FileObject, readBuf, READBUF_SIZE, &n_Read);
+		 if( res != FR_OK )
+		 {
+			 printf("Read=%d\n", res);
+			 while(1);
+		 }
 		 if(TotalTime == 0)
 		 {
 		   /* 对MP3文件头分析得到播放时间 */
@@ -213,6 +220,9 @@ int GetMP3Time(char* path)
 		 mp3recordstart += READBUF_SIZE;	 			
 	  }
    }
+
+   f_close(&mp3FileObject);
+
    return TotalTime;
 }
 
@@ -347,31 +357,44 @@ void SearchMusic(char* path)
 	FILINFO MusicFinfo;	
 	TIME destime;								       	
 	char *ShortFileName;
+	char *longFileName;
     char CurFileType;	 /* 当前所读取的文件类型 */
-	char Filepath[30];	 /* 记录完整的文件信息 */
+	char Filepath[80];	 /* 记录完整的文件信息 */
+	char FileName[_MAX_LFN];
+
 
 	f_mount(0, &fs);	 /* 挂载文件系统 */ 
 	res = f_opendir(&dirs, path);
 
+
+
+	MusicFinfo.lfname = FileName;
+	MusicFinfo.lfsize = _MAX_LFN;
+
     if(res == FR_OK) 
 	{	   
-       while ( ( f_readdir(&dirs, &MusicFinfo) == FR_OK ) && MusicFinfo.fname[0] ) 
+       while ( ( (res = f_readdir(&dirs, &MusicFinfo)) == FR_OK ) && MusicFinfo.fname[0] )
 	   {
+    	   //printf("RES=%d\n", res);
+    	    longFileName = MusicFinfo.lfname;
             ShortFileName = MusicFinfo.fname;
-			
 			/* 获取文件类型 */
 			if( (strstr(ShortFileName,"MP3") !=NULL) || (strstr(ShortFileName,"mp3") !=NULL) )
 			{
-			   CurFileType = mp3File;
+			   CurFileType = MP3_FILE;
 			}
 			else if( (strstr(ShortFileName,"WAV") !=NULL) || (strstr(ShortFileName,"wav") !=NULL) )
 			{
-			   CurFileType = wavFile;
+			   CurFileType = WAVE_FILE;
 			}
 			else
-			   CurFileType = unknownFile;
+			{
+			   CurFileType = UNKNOWN_FILE;
+			}
 
-			if( CurFileType == mp3File )
+
+
+			if( CurFileType == MP3_FILE )
    			{
 			  MusicFileCount++;
 			  if( MusicFileCount == 1 )
@@ -380,7 +403,9 @@ void SearchMusic(char* path)
 				if( PlayFile == NULL)
 				   return ;
 				memset(PlayFile->filename,' ',sizeof(PlayFile->filename) );	  /* 空格 */
-				strcpy(PlayFile->filename,ShortFileName);
+				strcpy(PlayFile->filename ,ShortFileName);
+				//strcpy(PlayFile->shortFileName ,ShortFileName);
+
 				printf("-- search %s ",ShortFileName);				
 				PlayFile->next = NULL;
 				PlayFile->back = NULL;
@@ -401,6 +426,7 @@ void SearchMusic(char* path)
 				PlayFile->filename[ sizeof(PlayFile->filename) -2 ]  = destime.second%10 + '0';	  /* 秒 */
 				PlayFile->filename[ sizeof(PlayFile->filename) -1 ]  = 0;	  /* 字符串结束符 */
 
+				PlayFile->fileType = CurFileType;
 				printf("-- listbox display %s \r\n", PlayFile->filename );				
               }
 			  else
@@ -431,12 +457,13 @@ void SearchMusic(char* path)
 				new_node->filename[ sizeof(new_node->filename) -2 ]  = destime.second%10 + '0';	  /* 秒 */
 				new_node->filename[ sizeof(new_node->filename) -1 ]  = 0;	  /* 字符串结束符 */
 
+				PlayFile->fileType = CurFileType;
 				printf("-- listbox display %s \r\n", new_node->filename );	
 			  }
 		    }
 
 
-			if( CurFileType == wavFile )
+			if( CurFileType == WAVE_FILE )
 			{
 				  MusicFileCount++;
 				  if( MusicFileCount == 1 )
@@ -446,6 +473,8 @@ void SearchMusic(char* path)
 					   return ;
 					memset(PlayFile->filename,' ',sizeof(PlayFile->filename) );	  /* 空格 */
 					strcpy(PlayFile->filename,ShortFileName);
+					PlayFile->fileType = CurFileType;
+
 					printf("-- search %s ",ShortFileName);
 					PlayFile->next = NULL;
 					PlayFile->back = NULL;
@@ -462,6 +491,9 @@ void SearchMusic(char* path)
 				       return ;
 					memset(new_node->filename,' ',sizeof(new_node->filename) );	  /* 空格 */
 	                strcpy(new_node->filename,ShortFileName);
+	                PlayFile->fileType = CurFileType;
+
+
 				    printf("-- search %s ",ShortFileName);
 	                new_node->next = NULL;
 				    new_node->back = before_node;
@@ -481,7 +513,9 @@ void SearchMusic(char* path)
 
 
 
+
 		}
+       printf("RES=%d\n", res);
 	}
 }
 

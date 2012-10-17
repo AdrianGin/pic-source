@@ -23,16 +23,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h> 
 #include <menu.h>
-#include "app_cfg.h"
-#include "intertaskComm.h"
 
 /* Private variables ---------------------------------------------------------*/
 GOL_MSG msg;       /* GOL message structure to interact with GOL */
-//static  OS_STK  AppMicrochipGUITaskStk[APP_TASK_MICROCHIP_GUI_STK_SIZE];
-
+static  OS_STK  AppMicrochipGUITaskStk[APP_TASK_MICROCHIP_GUI_STK_SIZE];
+extern  OS_FLAG_GRP    *Sem_F;	   /* 事件标志 */
 
 /* Private function prototypes -----------------------------------------------*/
-void uctsk_MicrochipGUI(void * pvArg);
+static  void    uctsk_MicrochipGUI(void *pdata);
 
 
 /*******************************************************************************
@@ -45,14 +43,36 @@ void uctsk_MicrochipGUI(void * pvArg);
 *******************************************************************************/
 void  App_MicrochipGUITaskCreate (void)
 {
-	xTaskCreate( uctsk_MicrochipGUI , ( signed char * ) "MicrochipGUI" , APP_TASK_MICROCHIP_GUI_STK_SIZE , NULL , APP_TASK_MICROCHIP_GUI_PRIO , NULL );
+	CPU_INT08U  os_err;
+
+	os_err = os_err; /* prevent warning... */
+    
+    os_err = OSTaskCreateExt((void (*)(void *)) uctsk_MicrochipGUI,
+                             (void          * ) 0,
+                             (OS_STK        * )&AppMicrochipGUITaskStk[APP_TASK_MICROCHIP_GUI_STK_SIZE - 1],
+                             (INT8U           ) APP_TASK_MICROCHIP_GUI_PRIO,
+                             (INT16U          ) APP_TASK_MICROCHIP_GUI_PRIO,
+                             (OS_STK        * )&AppMicrochipGUITaskStk[0],
+                             (INT32U          ) APP_TASK_MICROCHIP_GUI_STK_SIZE,
+                             (void          * ) 0,
+                             (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+
+	#if OS_TASK_NAME_EN > 0
+    	OSTaskNameSet(APP_TASK_MICROCHIP_GUI_PRIO, "Task MicrochipGUI", &os_err);
+	#endif
+
 }
 
-void uctsk_MicrochipGUI(void * pvArg)
+static  void  uctsk_MicrochipGUI(void *pdata)
 {
+	INT8U   err;
+
+	(void)pdata;	                    /* Prevent compiler warning */
 
 	GOLInit(); 	
-	SemaphoreTake(Sem_SystemRdy, portMAX_DELAY);
+	
+	OSFlagPend( Sem_F,(OS_FLAGS) 1,OS_FLAG_WAIT_SET_ALL,0,&err );  /* 等待触摸屏校准完成 */	  
+	
 	StartMenu();
 
 	for(;;)
@@ -61,7 +81,7 @@ void uctsk_MicrochipGUI(void * pvArg)
       	{				               
          	GOLMsg(&msg);        		/* Process message */
 		}  
-		vTaskDelay(50/portTICK_RATE_MS);
+		OSTimeDlyHMSM(0, 0, 0, 50);
     }
 }
 

@@ -33,10 +33,12 @@
 /* Includes ------------------------------------------------------------------*/
 
 
-
 #define USB_DISCONNECT                    GPIOB
 #define USB_DISCONNECT_PIN                GPIO_Pin_7 //8
 #define RCC_APB2Periph_GPIO_DISCONNECT    RCC_APB2Periph_GPIOB
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+
+#endif
