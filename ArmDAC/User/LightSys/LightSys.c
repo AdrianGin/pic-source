@@ -27,6 +27,7 @@
 #include "MIDICodes/MIDICodes.h"
 #include "LightSys.h"
 #include "hw_config.h"
+#include "MIDIUtils/MIDIUtils.h"
 
 typedef uint32_t LS_ChannelColour_t;
 //Every single possible note has its own individual countdown.
@@ -51,6 +52,8 @@ typedef struct
 
 LS_CountdownElement_t LS_Countdown[MAX_POLYPHONY];
 
+//Either  +/- from middle C up to +/- 24 semi tones.
+int8_t LS_TransposeMap[MIDI_MAX_CHANNELS];
 
 
 LS_ChannelColour_t LS_ChanColours[MIDI_MAX_CHANNELS] =
@@ -82,6 +85,9 @@ void LS_Init(void)
 		LS_Countdown[i].timer = 0;
 	}
 	LS_CountdownCount = 0;
+
+	memset(LS_TransposeMap, 0, sizeof(LS_TransposeMap));
+
 }
 
 void LS_ProcessAutoTurnOff(void)
@@ -90,29 +96,11 @@ void LS_ProcessAutoTurnOff(void)
 	uint8_t j;
 	uint32_t colour;
 
-	for( i=0, j=0; i < LS_CountdownCount; j++ )
+	for( i=0, j=0; (i < LS_CountdownCount) && (j < MAX_POLYPHONY); j++ )
 	{
 		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
 		{
-			if( (--LS_Countdown[j].timer) == 0 )
-			{
-				//Turn off the Pixel
-				//TODO: doesn't support Channel differentiation
-				//LPD8806_SetPixel(LS_Countdown[j].channelKey & MIDI_MAX_KEY, 0);
-				LS_Countdown[j].channelKey = FREE_ELEMENT;
-				LS_Countdown[j].timer = 0;
-
-				if( LS_CountdownCount )
-				{
-					LS_CountdownCount--;
-				}
-			}
-			else
-			{
-				//Implement Fade here.
-				LPB8806_ReducePercentage(LS_Countdown[j].channelKey & MIDI_MAX_KEY, FADE_RATE, MIN_ON_BRIGHTNESS);
-			}
-
+			LPB8806_ReducePercentage(LS_Countdown[j].channelKey & MIDI_MAX_KEY, FADE_RATE, MIN_ON_BRIGHTNESS);
 			i++;
 		}
 	}
@@ -182,45 +170,108 @@ void LS_TurnOffChannel(uint8_t channel)
 	}
 }
 
+enum {
+	CHANNEL_COLOUR,
+	NOTE_COLOUR,
+};
 
+void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
+{
+	LPD8806_SetPixel(note, colour);
+	if (colour)
+	{
+		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
+	}
+	else
+	{
+		LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
+	}
+}
 
 // eg. x91, x44, x64 for a NoteOn Channel 1, Note x44 Vel = x64
 void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 {
-	uint8_t g, r;
 	uint32_t colour;
-	if( (command & 0xF0) == MIDI_NOTE_OFF )
-	{
-		colour = 0;
-	}
-	else
-	{
-		colour = LS_ChanColours[LS_CHANNEL(command)];
-		if( velocity == 0)
-		{
-			colour = 0;
-		}
-	}
 
+
+	colour = LS_GetColourFromMIDI(command, note, velocity);
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
-		LPD8806_SetPixel(note, colour);
-		if( colour )
-		{
-			LS_AppendLightOn( ((LS_CHANNEL(command) << 8) | note), 50 );
-		}
-		else
-		{
-			LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
-		}
+		note = LS_ApplyTranspose(LS_CHANNEL(command), note);
+		LS_SetPixel(note, colour, command);
 	}
 }
 
 
-
-uint32_t _LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
+uint8_t LS_ApplyTranspose(uint8_t channel, uint8_t note)
 {
-	return 0;
+	int16_t newNote;
+
+	newNote = note + LS_TransposeMap[channel];
+	if( newNote < 0 )
+	{
+		newNote = 0;
+	}
+	if( newNote > MIDI_MAX_KEY)
+	{
+		newNote = MIDI_MAX_KEY;
+	}
+
+
+	return (uint8_t)newNote;
+}
+
+void LS_SetTranspose(uint8_t channel, int8_t semitones)
+{
+	LS_TransposeMap[channel] = semitones;
+	LS_TurnOffChannel(channel);
+}
+
+
+int8_t LS_GetTranspose(uint8_t channel)
+{
+	return LS_TransposeMap[channel];
+}
+
+
+uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
+{
+	uint32_t colour;
+	uint8_t musicNote;
+	uint8_t mode = CHANNEL_COLOUR;
+
+	if( (command & 0xF0) == MIDI_NOTE_OFF )
+	{
+		colour = 0;
+	}
+
+
+	//Currently Note = Pixel Colour, We can also make all C's a type of colour etc.
+	switch( mode )
+	{
+		case CHANNEL_COLOUR:
+		{
+			colour = LS_ChanColours[LS_CHANNEL(command)];
+			if( velocity == 0)
+			{
+				colour = 0;
+			}
+			break;
+		}
+
+		case NOTE_COLOUR:
+		{
+
+			break;
+		}
+
+
+		default:
+		{
+			break;
+		}
+	}
+	return colour;
 }
 
 

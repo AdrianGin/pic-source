@@ -118,12 +118,15 @@ void LPD8806_Write (uint8_t cmd)
 void LPD8806_SetPixel(uint16_t index, uint32_t colour)
 {
 
-	if( index >= LEDCOUNT )
+	uint8_t r,g,b;
+
+
+	if( index >= LED_COUNT )
 	{
 		return;
 	}
 
-	uint8_t r,g,b;
+
 	r = RED(colour) 	>> 1;
 	g = GREEN(colour) 	>> 1;
 	b = BLUE(colour) 	>> 1;

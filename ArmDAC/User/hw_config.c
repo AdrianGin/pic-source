@@ -272,12 +272,9 @@ void dumpData(void)
 *******************************************************************************/
 void ReceiveUSARTData(void)
 {
-  
-	
-
 	//dumpData();
 	
-			USART_Rx_Buffer[USART_Rx_ptr_in] = USART_ReceiveData(USART1);
+  USART_Rx_Buffer[USART_Rx_ptr_in] = USART_ReceiveData(USART1);
 	//printf("%c", USART_Rx_Buffer[USART_Rx_ptr_in]);
   USART_Rx_ptr_in++;
   /* To avoid buffer overflow */
@@ -285,10 +282,6 @@ void ReceiveUSARTData(void)
   {
     USART_Rx_ptr_in = 0;
   }
-
-
-
-
 }
 
 void ProcessUARTBuffer(void)
@@ -316,7 +309,29 @@ void ProcessUARTBuffer(void)
 
 void ToggleActiveChannel(uint8_t byte)
 {
-	printf("%X\n", LS_ToggleChannel(byte) );
+	uint8_t i;
+	if( byte < MIDI_MAX_CHANNELS )
+	{
+		printf("%X\n", LS_ToggleChannel(byte) );
+	}
+
+	if( byte == '+')
+	{
+		for( i = 0; i < MIDI_MAX_CHANNELS; i++)
+		{
+			LS_SetTranspose(i, LS_GetTranspose(i) + 1 );
+		}
+		printf("%d\n", LS_GetTranspose(0));
+	}
+
+	if( byte == '-')
+	{
+		for( i = 0; i < MIDI_MAX_CHANNELS; i++)
+		{
+			LS_SetTranspose(i, LS_GetTranspose(i) - 1 );
+		}
+		printf("%d\n", LS_GetTranspose(0));
+	}
 
 }
 
