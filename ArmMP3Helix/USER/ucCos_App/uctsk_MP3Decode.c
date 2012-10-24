@@ -33,6 +33,9 @@ OS_EVENT *mp3Mbox;				   /* 播放MP3邮箱 */
 /* OS计数信号量 */	
 OS_EVENT *DMAComplete; 
 OS_EVENT *StopMP3Decode;
+OS_EVENT *ReSeek;
+
+uint32_t SeekValue = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 static void uctsk_MP3Decode (void);
@@ -66,6 +69,7 @@ void  App_MP3DecodeTaskCreate (void)
 	StopMP3Decode = OSSemCreate(0);
 
     mp3Mbox = OSMboxCreate( (void *) 0);	/* 创建消息邮箱 */
+    //ReSeek =  OSMboxCreate( (void *) 0);
 }
 
 

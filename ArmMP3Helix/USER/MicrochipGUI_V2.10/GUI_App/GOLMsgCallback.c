@@ -33,6 +33,7 @@ extern OS_EVENT *StopMP3Decode;
 /* MP3²¥·Å×´Ì¬ */
 extern AUDIO_Playback_status_enum AUDIO_Playback_status ;
 
+extern uint32_t SeekValue;
 
 /* Private function prototypes -----------------------------------------------*/
 WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg);
@@ -148,7 +149,8 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 			                  ( (uint32_t)( ( (float)SldGetPos(pSld)/200 ) * ( mp3FileObject.fsize - mp3_info.data_start) ) % READBUF_SIZE ) );
 
 			 //OSTimeDlyHMSM(0, 0, 0, 200);
-			 res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );
+			 SeekValue = mp3_info.data_start + MP3_Data_Index;
+			 //res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );
 			 printf("lseek=%d", res);
 		     //OSTimeDlyHMSM(0, 0, 0, 200);
 		     SetState(pSld,SLD_DRAW_THUMB); 
@@ -250,7 +252,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				    BtnDraw((BUTTON*)pObj); 
 					OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 			
-			        DMA_Cmd(DMA2_Channel4, ENABLE);
+			        DMA_Cmd(DMA2_Channel3, ENABLE);
                     //SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);
                     AUDIO_Playback_status = IS_PLAYING;       
                     codec_send( ACTIVE_CONTROL | ACTIVE );	   /* WM8731 Enable */
@@ -298,7 +300,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				 OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 				 		 
 				 //SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, DISABLE);
-	             DMA_Cmd(DMA2_Channel4, DISABLE);
+	             DMA_Cmd(DMA2_Channel3, DISABLE);
                  AUDIO_Playback_status = NO_SOUND; 
 				 //codec_send( ACTIVE_CONTROL | INACTIVE );    /* WM8731 Disable */
 			    

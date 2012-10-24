@@ -53,6 +53,7 @@ uint32_t MP3_Data_Index;
 /* OS计数信号量 */
 extern OS_EVENT *DMAComplete;
 extern OS_EVENT *StopMP3Decode;
+extern uint32_t SeekValue;
 
 static waveHeader_t Wavefile;
 volatile uint8_t TimeOut;
@@ -86,7 +87,7 @@ AUDIO_PlaybackBuffer_Status AUDIO_PlaybackBuffer_GetStatus(
  *******************************************************************************/
 void AUDIO_Playback_Stop(void)
 {
-	DMA_Cmd(DMA2_Channel4, DISABLE); /* Disable DMA Channel for Audio */
+	DMA_Cmd(DMA2_Channel3, DISABLE); /* Disable DMA Channel for Audio */
 	//SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, DISABLE);   /* Disable I2S DMA REQ */
 	AUDIO_Playback_status = NO_SOUND;
 
@@ -201,7 +202,8 @@ int FillBuffer(FIL *FileObject, uint8_t start)
 	{
 		bytesLeft = 0;
 		readPtr = readBuf;
-		printf("-- MP3Decode Error Occurred %s \r\n", MP3_GetStrResult(err));
+		//printf("-- MP3Decode Error Occurred %s \r\n", MP3_GetStrResult(err));
+
 		/* error occurred */
 		switch (err)
 		/* There is not implemeted any error handling. it will quit the playing in case of error */
@@ -565,8 +567,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 		res = f_lseek(FileObject, mp3_info.data_start);
 
 		/* Read the first data to get info about the MP3 File */
-		while (FillBuffer(FileObject, 1))
-			; /* Must Read MP3 file header information */
+		while (FillBuffer(FileObject, 1)); /* Must Read MP3 file header information */
 		/* Get the length of the decoded data, so we can set correct play length */
 		MP3GetLastFrameInfo(hMP3Decoder, &mp3FrameInfo);
 
@@ -586,7 +587,34 @@ void PlayAudioFile(FIL *FileObject, char *path)
 			/* 获取信号量 */
 			//Here is where we output the decoded WavData
 			OSSemPend(DMAComplete, 0, &err);
+
+//			if (DMA_GetITStatus(DMA2_IT_HT3)) /* DMA1 通道5 半传输中断 */
+//			{
+//				DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_HT3); /* DMA1 通道5 全局中断 */
+//				audio_buffer_fill |= LOW_EMPTY;
+//				FillBuffer(FileObject, 0);
+//				//OSSemPost(DMAComplete); /* 发送信号量 */
+//			}
+//			else if (DMA_GetITStatus(DMA2_IT_TC3)) /* DMA1 通道5 传输完成中断 */
+//			{
+//				DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_TC3); /* DMA1 通道5 全局中断 */
+//				audio_buffer_fill |= HIGH_EMPTY;
+//				FillBuffer(FileObject, 0);
+//				//OSSemPost(DMAComplete); /* 发送信号量 */
+//			}
+//
+
 			FillBuffer(FileObject, 0);
+
+			if( SeekValue != 0 )
+			{
+				f_lseek(FileObject, SeekValue );
+				SeekValue = 0;
+			}
+
+			//OSTimeDlyHMSM(0, 0, 0, 1);
+
+
 
 		}
 
@@ -665,7 +693,7 @@ void DMA_Configuration(s8 * addr, int size)
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE);
 	/* DMA Channel configuration ----------------------------------------------*/
-	DMA_DeInit(DMA2_Channel4);
+	DMA_DeInit(DMA2_Channel3);
 
 	/* Uses the original buffer	*/
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)addr; /* Set the buffer */
@@ -680,12 +708,12 @@ void DMA_Configuration(s8 * addr, int size)
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; /* DMA循环模式 */
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-	DMA_Init(DMA2_Channel4, &DMA_InitStructure);
+	DMA_Init(DMA2_Channel3, &DMA_InitStructure);
 	/* Enable SPI DMA Tx request */
-	DMA_ITConfig(DMA2_Channel4, DMA_IT_TC | DMA_IT_HT, ENABLE);
+	DMA_ITConfig(DMA2_Channel3, DMA_IT_TC | DMA_IT_HT, ENABLE);
 	//DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
 
-	DMA_Cmd(DMA2_Channel4, ENABLE);
+	DMA_Cmd(DMA2_Channel3, ENABLE);
 }
 
 void DMA_ConfigurationMP3(s8 * addr, int size)
@@ -694,13 +722,14 @@ void DMA_ConfigurationMP3(s8 * addr, int size)
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE);
 	/* DMA Channel configuration ----------------------------------------------*/
-	DMA_DeInit(DMA2_Channel4);
+	DMA_DeInit(DMA2_Channel3);
 
 	/* Uses the original buffer	*/
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)addr; /* Set the buffer */
 	DMA_InitStructure.DMA_BufferSize = size/2; /* Set the size */
 
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&DAC->DHR12LD;
+	//DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&DAC->DHR12L1;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
@@ -709,12 +738,12 @@ void DMA_ConfigurationMP3(s8 * addr, int size)
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; /* DMA循环模式 */
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-	DMA_Init(DMA2_Channel4, &DMA_InitStructure);
+	DMA_Init(DMA2_Channel3, &DMA_InitStructure);
 	/* Enable SPI DMA Tx request */
-	DMA_ITConfig(DMA2_Channel4, DMA_IT_TC | DMA_IT_HT, ENABLE);
+	DMA_ITConfig(DMA2_Channel3, DMA_IT_TC | DMA_IT_HT, ENABLE);
 	//DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
 
-	DMA_Cmd(DMA2_Channel4, ENABLE);
+	DMA_Cmd(DMA2_Channel3, ENABLE);
 }
 
 /*******************************************************************************
@@ -734,7 +763,7 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
 
 	/* Once the DAC channel is enabled, the corresponding GPIO pin is automatically
 	 connected to the DAC converter. In order to avoid parasitic consumption,
@@ -743,24 +772,24 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	TIM_DeInit(TIM7);
+	TIM_DeInit(TIM6);
 	/* TIM2 Configuration */
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
 	TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / I2S_AudioFreq;
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
 
 	/* TIM2 TRGO selection */
-	TIM_SetAutoreload(TIM7, (uint32_t)(SystemCoreClock / I2S_AudioFreq));
-	TIM_SelectOutputTrigger(TIM7, TIM_TRGOSource_Update);
+	TIM_SetAutoreload(TIM6, (uint32_t)(SystemCoreClock / I2S_AudioFreq));
+	TIM_SelectOutputTrigger(TIM6, TIM_TRGOSource_Update);
 	//TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
 
 	DAC_DeInit();
 	DAC_StructInit(&DAC_InitStructure);
 	/* DAC channel1 Configuration */
-	DAC_InitStructure.DAC_Trigger = DAC_Trigger_T7_TRGO;
+	DAC_InitStructure.DAC_Trigger = DAC_Trigger_T6_TRGO;
 	DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
 	DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
 	/* DAC channel2 Configuration */
@@ -773,13 +802,16 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 
 	//Setup the DAC DMA on for Channel 2.
 	DAC_DMACmd(DAC_Channel_1, ENABLE);
-	DAC_DMACmd(DAC_Channel_2, ENABLE);
+
+	//DAC2 conflicts with SDIO
+	//DAC_DMACmd(DAC_Channel_2, ENABLE);
 	/* Enable DAC Channel2: Once the DAC channel2 is enabled, PA.05 is
 	 automatically connected to the DAC converter. */
 	DAC_Cmd(DAC_Channel_1, ENABLE);
+	//DAC2 conflicts with SDIO
 	DAC_Cmd(DAC_Channel_2, ENABLE);
 
-	TIM_Cmd(TIM7, ENABLE);
+	TIM_Cmd(TIM6, ENABLE);
 }
 
 /*******************************************************************************
@@ -791,23 +823,22 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
  * Attention		 : in mono mode, stop managed by AUDIO_Cpy_Mono() else it must
  *                  be managed by the application
  *******************************************************************************/
-void DMA2_Channel4_5_IRQHandler(void)
+void DMA2_Channel3_IRQHandler(void)
 {
 	CPU_SR cpu_sr;
 	OS_ENTER_CRITICAL()	;
 	OSIntNesting++;
 	OS_EXIT_CRITICAL()	;
 
-	if (DMA_GetITStatus(DMA2_IT_HT4)) /* DMA1 通道5 半传输中断 */
+	if (DMA_GetITStatus(DMA2_IT_HT3)) /* DMA1 通道5 半传输中断 */
 	{
-		DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_HT4); /* DMA1 通道5 全局中断 */
+		DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_HT3); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
 		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
-
-	if (DMA_GetITStatus(DMA2_IT_TC4)) /* DMA1 通道5 传输完成中断 */
+	else if (DMA_GetITStatus(DMA2_IT_TC3)) /* DMA1 通道5 传输完成中断 */
 	{
-		DMA_ClearITPendingBit(DMA2_IT_GL4 | DMA2_IT_TC4); /* DMA1 通道5 全局中断 */
+		DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_TC3); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
 		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
@@ -819,18 +850,18 @@ void DMA2_Channel4_5_IRQHandler(void)
 
 
 
-void TIM7_IRQHandler(void)
-{
-	CPU_SR cpu_sr;
-	OS_ENTER_CRITICAL()	;
-	OSIntNesting++;
-	OS_EXIT_CRITICAL()	;
-
-	TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
-	TimeOut = 1;
-
-	OSIntExit();
-}
+//void TIM7_IRQHandler(void)
+//{
+//	CPU_SR cpu_sr;
+//	OS_ENTER_CRITICAL()	;
+//	OSIntNesting++;
+//	OS_EXIT_CRITICAL()	;
+//
+//	TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
+//	TimeOut = 1;
+//
+//	OSIntExit();
+//}
 
 
 /*******************************************************************************
@@ -854,7 +885,7 @@ static void WavNVIC_Configuration(void)
 
 	/* DMA IRQ Channel configuration */
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel4_5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;

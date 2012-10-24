@@ -257,9 +257,9 @@ SD_Error SD_Init(void)
   /* Set Device Transfer Mode to DMA */
   if (errorstatus == SD_OK)
   {  
-    //errorstatus = SD_SetDeviceMode(SD_DMA_MODE); //Adrian changed to use non DMA here
+    errorstatus = SD_SetDeviceMode(SD_DMA_MODE); //Adrian changed to use non DMA here
     //errorstatus = SD_SetDeviceMode(SD_POLLING_MODE);
-	errorstatus = SD_SetDeviceMode(SD_INTERRUPT_MODE); //Adrian changed to use non DMA here
+	//errorstatus = SD_SetDeviceMode(SD_INTERRUPT_MODE); //Adrian changed to use non DMA here
   }
   
 
@@ -1201,6 +1201,7 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
     {}
     if (TransferError != SD_OK)
     {
+    	SD_PrintError(TransferError);
       return(TransferError);
     }
   }
@@ -1418,6 +1419,7 @@ SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t Block
       {}
       if (TransferError != SD_OK)
       {
+    	  SD_PrintError(TransferError);
         return(TransferError);
       }
     }

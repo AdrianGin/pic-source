@@ -49,7 +49,7 @@
 #define  APP_TASK_MP3DECODE_PRIO                           3
 #define  APP_TASK_MICROCHIP_GUI_PRIO					   4
 #define  APP_TASK_TOUCHSCREEN_PRIO                         5
-#define  APP_TASK_READBUTTON_PRIO        (OS_LOWEST_PRIO - 4)
+#define  APP_TASK_READBUTTON_PRIO        				   6
 
 #define  APP_TASK_OSVIEW_TERMINAL_PRIO	 (OS_LOWEST_PRIO - 6)
 #define  OS_VIEW_TASK_PRIO               (OS_LOWEST_PRIO - 3)

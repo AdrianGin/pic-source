@@ -161,12 +161,14 @@ void USART1_IRQHandler(void)
 *******************************************************************************/
 void SDIO_IRQHandler(void)
 {
-  /* Process All SDIO Interrupt Sources */
-//  CPU_SR         cpu_sr;
-//  OS_ENTER_CRITICAL();
-//  OSIntNesting++;
-//  OS_EXIT_CRITICAL();
-	SD_Error errorstatus;
+  // Process All SDIO Interrupt Sources
+  CPU_SR         cpu_sr;
+  SD_Error errorstatus;
+
+  OS_ENTER_CRITICAL();
+  OSIntNesting++;
+  OS_EXIT_CRITICAL();
+
   errorstatus = SD_ProcessIRQSrc();
 
   if( errorstatus != SD_OK )
@@ -174,8 +176,7 @@ void SDIO_IRQHandler(void)
 	  SD_PrintError(errorstatus);
   }
 
-
-//  OSIntExit();
+  OSIntExit();
 }
 
 /******************************************************************************/

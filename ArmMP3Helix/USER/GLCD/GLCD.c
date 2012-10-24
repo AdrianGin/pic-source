@@ -139,9 +139,9 @@ static void LCD_FSMCConfig(void)
 	FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &FSMC_NORSRAMTimingInitStructure;
 	FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure); 
 	/* FSMC写速度设置 */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 15;//1;   /* 地址建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 2;//1;   /* 地址建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;	   
-	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 15;//1;	   /* 数据建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 1;//1;	   /* 数据建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0x00;
 	FSMC_NORSRAMTimingInitStructure.FSMC_CLKDivision = 0x00;
 	FSMC_NORSRAMTimingInitStructure.FSMC_DataLatency = 0x00;

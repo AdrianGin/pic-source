@@ -66,14 +66,14 @@ static void uctsk_TouchScreen (void) {
 
    OSFlagPend( Sem_F,(OS_FLAGS)2,OS_FLAG_WAIT_SET_ALL,0,&err );  /* 等待TargetIni初始化完成 */
 
-   //TouchCalibration();
+   TouchCalibration();
 
    OSFlagPost(Sem_F, 1, OS_FLAG_SET, &err);	  /* 触摸屏校准完成 */
 
    	for(;;)
    	{   
-	   OSTimeDlyHMSM(0, 0, 1, 0);	/* 15 MS */
-	   //TouchGetMsg(&msg);   		/* Get message from touch screen */
+	   OSTimeDlyHMSM(0, 0, 0, 50);	/* 15 MS */
+	   TouchGetMsg(&msg);   		/* Get message from touch screen */
     }
 }
 

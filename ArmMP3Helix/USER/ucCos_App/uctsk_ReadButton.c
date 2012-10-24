@@ -36,7 +36,7 @@ extern OS_EVENT *StopMP3Decode;
 /* MP3²¥·Å×´Ì¬ */
 extern AUDIO_Playback_status_enum AUDIO_Playback_status ;
 extern  GOL_MSG msg;        /* GOL message structure to interact with GOL */
-
+extern uint32_t SeekValue;
 
 extern uint8_t Audio_Type;
 
@@ -161,8 +161,9 @@ static void GUI_ReadButton (void)
 		    	 MP3_Data_Index = ( (uint32_t)( ( (float)SldGetPos(pSld)/200 ) * ( mp3FileObject.fsize)));
 		     }
 
-		     res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );		
-		     printf("lseek=%d", mp3_info.data_start + MP3_Data_Index);
+		     SeekValue = mp3_info.data_start + MP3_Data_Index;
+		     //res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );
+		     //printf("lseek=%d", mp3_info.data_start + MP3_Data_Index);
 		     SetState(pSld,SLD_DRAW_THUMB); 
 		  }
 	  }
@@ -191,8 +192,9 @@ static void GUI_ReadButton (void)
 		    	 MP3_Data_Index = ( (uint32_t)( ( (float)SldGetPos(pSld)/200 ) * ( mp3FileObject.fsize)));
 		     }
 
-		     res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );		
-		     printf("lseek=%d", mp3_info.data_start + MP3_Data_Index);
+		     SeekValue = mp3_info.data_start + MP3_Data_Index;
+		     //res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );
+		     //printf("lseek=%d", mp3_info.data_start + MP3_Data_Index);
 		     SetState(pSld,SLD_DRAW_THUMB); 
 		  }
 	  }
@@ -242,7 +244,7 @@ static void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_2 | GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
