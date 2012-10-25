@@ -341,17 +341,18 @@ SD_Error SD_Init(void)
     return(errorstatus);
   }
 
+
   /*!< Configure the SDIO peripheral */
-  /*!< SDIOCLK = HCLK, SDIO_CK = HCLK/(2 + SDIO_TRANSFER_CLK_DIV) */ 
-  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_CLK_DIV; 
+  /*!< SDIOCLK = HCLK, SDIO_CK = HCLK/(2 + SDIO_TRANSFER_CLK_DIV) */
   SDIO_InitStructure.SDIO_ClockEdge = SDIO_ClockEdge_Rising;
   SDIO_InitStructure.SDIO_ClockBypass = SDIO_ClockBypass_Disable;
-  //SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Disable;
-  SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Enable;
+  SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Disable;
   SDIO_InitStructure.SDIO_BusWide = SDIO_BusWide_1b;
   SDIO_InitStructure.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Disable;
   SDIO_Init(&SDIO_InitStructure);
-  
+
+
+
   if (errorstatus == SD_OK)
   {
     /*----------------- Read CSD/CID MSD registers ------------------*/
@@ -363,6 +364,22 @@ SD_Error SD_Init(void)
     /*----------------- Select Card --------------------------------*/
     errorstatus = SD_SelectDeselect((uint32_t) (SDCardInfo.RCA << 16));
   }
+
+//  if (errorstatus == SD_OK)
+//  {
+//    /*----------------- Attempt to set the HS bit --------------------------------*/
+//    errorstatus = SD_SetHighSpeed(0x00);
+//  }
+//
+//  if (errorstatus == SD_OK)
+//  {
+//	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_HSCLK_DIV;
+//  }
+//  else
+//  {
+//	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_CLK_DIV;
+//	  errorstatus = SD_OK;
+//  }
 
   if (errorstatus == SD_OK)
   {
@@ -1293,6 +1310,7 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
     {}
     if (TransferError != SD_OK)
     {
+    	printf("SD ERROR:%d", TransferError);
       return(TransferError);
     }
   }

@@ -15,6 +15,8 @@ extern Semaphore_t Sem_GUIRdy;
 extern Semaphore_t Sem_DMAComplete;
 extern Semaphore_t Sem_StopMP3Decode;
 
+extern uint32_t SeekValue;
+
 extern Queue_t Queue_GUI_MP3_Message;
 
 uint8_t InitInterTaskComms(void);

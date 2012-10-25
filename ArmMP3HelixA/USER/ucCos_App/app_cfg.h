@@ -57,7 +57,7 @@
 
 
 #define  APP_TASK_START_PRIO                               tskIDLE_PRIORITY+5
-#define  APP_TASK_MP3DECODE_PRIO                           tskIDLE_PRIORITY+0
+#define  APP_TASK_MP3DECODE_PRIO                           tskIDLE_PRIORITY+5
 #define APP_TASK_LED_PRIO									( tskIDLE_PRIORITY + 3 )
 #define APP_TASK_LED2_PRIO									( tskIDLE_PRIORITY + 0 )
 #define  APP_TASK_MICROCHIP_GUI_PRIO					   tskIDLE_PRIORITY+2

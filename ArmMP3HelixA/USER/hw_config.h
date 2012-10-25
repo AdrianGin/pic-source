@@ -39,7 +39,11 @@
 #define RCC_APB2Periph_GPIO_DISCONNECT    RCC_APB2Periph_GPIOB
 
 
-#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x02)
+/**
+  * @brief  SDIO Data Transfer Frequency (25MHz max)
+  */
+#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x02) //0x10
+#define SDIO_TRANSFER_HSCLK_DIV            ((uint8_t)0x0) //0x10
 
 #define SD_DETECT_PIN                    GPIO_Pin_2                 /* PB.14 */
 #define SD_DETECT_GPIO_PORT              GPIOE                       /* GPIOB */
@@ -48,9 +52,8 @@
 /**
   * @brief  SDIO Intialization Frequency (400KHz max)
   */
-#define SDIO_INIT_CLK_DIV                ((uint8_t)0xB2)
+#define SDIO_INIT_CLK_DIV                ((uint8_t)0xB2) //B2
 #define SDIO_FIFO_ADDRESS                ((uint32_t)0x40018080)
-
 
 
 #ifdef __GNUC__

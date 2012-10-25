@@ -53,6 +53,8 @@ uint32_t MP3_Data_Index;
 //extern OS_EVENT *DMAComplete;
 //extern OS_EVENT *StopMP3Decode;
 
+extern  xTaskHandle mp3DecodeHandle;
+
 static waveHeader_t Wavefile;
 volatile uint8_t TimeOut;
 
@@ -91,6 +93,7 @@ void AUDIO_Playback_Stop(void)
 	//codec_send( ACTIVE_CONTROL | INACTIVE );    /* WM8731 Disable */
 	MP3_Data_Index = 0;
 	SemaphoreGive(Sem_DMAComplete);
+	vTaskResume(mp3DecodeHandle);
 //	OSSemPost(DMAComplete); /* 发送信号量 */
 }
 
@@ -544,9 +547,16 @@ void PlayAudioFile(FIL *FileObject, char *path)
 		{
 			/* 获取信号量 */
 			//Here is where we output the decoded WavData
-			while( SemaphoreTake(Sem_DMAComplete, 0) == pdFAIL){}
+			//while( SemaphoreTake(Sem_DMAComplete, 0) == pdFAIL){}
 //			OSSemPend(DMAComplete, 0, &err);
 			FillBuffer(FileObject, 0);
+			vTaskSuspend(mp3DecodeHandle);
+
+			if( SeekValue != 0 )
+			{
+				f_lseek(FileObject, SeekValue );
+				SeekValue = 0;
+			}
 
 		}
 
@@ -760,13 +770,16 @@ void DMA2_Channel3_IRQHandler(void)
 //	OSIntNesting++;
 //	OS_EXIT_CRITICAL()	;
 
-	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+	//portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+	portBASE_TYPE xYieldRequired;
 
 	if (DMA_GetITStatus(DAC_DMA_HT)) /* DMA1 通道5 半传输中断 */
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_HT); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
-		xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+		// SemaphoreGive(Sem_DMAComplete);
 //		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
@@ -774,11 +787,22 @@ void DMA2_Channel3_IRQHandler(void)
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_TC); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
-		SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+		//SemaphoreGive(Sem_DMAComplete);
+		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
 //		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
-	portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
+
+	     if( xYieldRequired == pdTRUE )
+	     {
+	         // We should switch context so the ISR returns to a different task.
+	         // NOTE:  How this is done depends on the port you are using.  Check
+	         // the documentation and examples for your port.
+	    	 vPortYieldFromISR();
+	     }
+
+	//portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
 //	OSIntExit();
 }
 
@@ -818,7 +842,7 @@ static void NVIC_Configuration(void)
 //	NVIC_Init(&NVIC_InitStructure);
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	NVIC_InitStructure.NVIC_IRQChannel = DAC_DMA_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;

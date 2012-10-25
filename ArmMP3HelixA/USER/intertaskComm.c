@@ -15,6 +15,7 @@ Semaphore_t Sem_GUIRdy;
 Semaphore_t Sem_DMAComplete;
 Semaphore_t Sem_StopMP3Decode;
 
+uint32_t SeekValue;
 
 Queue_t Queue_GUI_MP3_Message;
 

@@ -70,7 +70,7 @@
 								<option id="arm.rvct.armcc.option.CONFIG_EXCEPTIONS.2126246635" name="Enable C++ exceptions (--exceptions)" superClass="arm.rvct.armcc.option.CONFIG_EXCEPTIONS" value="false" valueType="boolean"/>
 								<option id="arm.rvct.armcc.abstract.debug.option.CONFIG_DEBUG.1158205881" name="Enable debug table generation (--debug)" superClass="arm.rvct.armcc.abstract.debug.option.CONFIG_DEBUG" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armcc.option.OPTTIME.987345948" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.space" valueType="enumerated"/>
-								<option id="arm.rvct.armcc.abstract.debug.option.OPTLEVEL.923563709" name="Optimization&#10;Level (-O)" superClass="arm.rvct.armcc.abstract.debug.option.OPTLEVEL" value="arm.rvct.armcc.option.OPTLEVEL.2" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.abstract.debug.option.OPTLEVEL.923563709" name="Optimization&#10;Level (-O)" superClass="arm.rvct.armcc.abstract.debug.option.OPTLEVEL" value="arm.rvct.armcc.option.OPTLEVEL.0" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.abstract.arm.armcc.input.2082409197" superClass="cdt.managedbuild.tool.abstract.arm.armcc.input"/>
 							</tool>
 							<tool command="armasm" id="cdt.managedbuild.tool.arm.armasm.executable.debug.1378336647" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.executable.debug">

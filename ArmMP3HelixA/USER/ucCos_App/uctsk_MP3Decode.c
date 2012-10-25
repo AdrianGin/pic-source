@@ -30,6 +30,8 @@
 //extern  GOL_MSG msg;               /* GOL message structure to interact with GOL */
 
 
+ xTaskHandle mp3DecodeHandle;
+
 /* Private function prototypes -----------------------------------------------*/
 void uctsk_MP3Decode(void * pvArg);
 
@@ -43,7 +45,7 @@ void uctsk_MP3Decode(void * pvArg);
 *******************************************************************************/
 void  App_MP3DecodeTaskCreate (void)
 {
-	xTaskCreate( uctsk_MP3Decode , ( signed char * ) "MP3Dec" , APP_TASK_MP3DECODE_STK_SIZE , NULL , APP_TASK_MP3DECODE_PRIO , NULL );
+	xTaskCreate( uctsk_MP3Decode , ( signed char * ) "MP3Dec" , APP_TASK_MP3DECODE_STK_SIZE , NULL , APP_TASK_MP3DECODE_PRIO , &mp3DecodeHandle );
 }
 
 

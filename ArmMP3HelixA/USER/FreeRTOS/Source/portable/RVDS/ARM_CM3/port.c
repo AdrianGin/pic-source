@@ -107,9 +107,9 @@ static void prvSetupTimerInterrupt( void );
 /*
  * Exception handlers.
  */
-void PendSV_Handler( void );
-void SysTick_Handler( void );
-void SVC_Handler( void );
+void xPortPendSVHandler( void );
+void xPortSysTickHandler( void );
+void vPortSVCHandler( void );
 
 /*
  * Start first task is a separate function so it can be tested in isolation.
@@ -139,7 +139,7 @@ portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, pdTASK_CODE
 }
 /*-----------------------------------------------------------*/
 
-__asm void SVC_Handler( void )
+__asm void vPortSVCHandler( void )
 {
 	PRESERVE8
 
@@ -228,7 +228,7 @@ void vPortExitCritical( void )
 }
 /*-----------------------------------------------------------*/
 
-__asm void PendSV_Handler( void )
+__asm void xPortPendSVHandler( void )
 {
 	extern uxCriticalNesting;
 	extern pxCurrentTCB;
@@ -261,7 +261,7 @@ __asm void PendSV_Handler( void )
 }
 /*-----------------------------------------------------------*/
 
-void SysTick_Handler( void )
+void xPortSysTickHandler( void )
 {
 unsigned long ulDummy;
 

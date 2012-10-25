@@ -147,7 +147,8 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 			 MP3_Data_Index = ( (uint32_t)( ( (float)SldGetPos(pSld)/200 ) * ( mp3FileObject.fsize - mp3_info.data_start) ) - \
 			                  ( (uint32_t)( ( (float)SldGetPos(pSld)/200 ) * ( mp3FileObject.fsize - mp3_info.data_start) ) % READBUF_SIZE ) );
 
-		     res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );		
+			 SeekValue = mp3_info.data_start + MP3_Data_Index;
+		     //res = f_lseek(&mp3FileObject, mp3_info.data_start + MP3_Data_Index );
 		     SetState(pSld,SLD_DRAW_THUMB); 
 		   } 
 		   return 1;
