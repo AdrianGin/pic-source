@@ -69,7 +69,7 @@ int FillBuffer(FIL *FileObject , uint8_t start)  ;
 void DMA_Configuration( s8 * addr, int size);
 void I2S_Configuration(uint32_t I2S_AudioFreq);
 AUDIO_PlaybackBuffer_Status AUDIO_PlaybackBuffer_GetStatus(AUDIO_PlaybackBuffer_Status value);
-void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint16_t frequency, AUDIO_Format_enum format);
+void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint32_t frequency, AUDIO_Format_enum format);
 
 
 #endif 

@@ -42,7 +42,7 @@
 /**
   * @brief  SDIO Data Transfer Frequency (25MHz max)
   */
-#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x04) //0x10
+#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x02) //0x10
 #define SDIO_TRANSFER_HSCLK_DIV            ((uint8_t)0x0) //0x10
 
 #define SD_DETECT_PIN                    GPIO_Pin_2                 /* PB.14 */

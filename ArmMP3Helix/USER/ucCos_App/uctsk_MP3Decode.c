@@ -70,6 +70,7 @@ void uctsk_MP3Decode(void * pvArg)
        {
 	     printf("-- start decode music %s \r\n", RxedMessage);
          PlayAudioFile( &mp3FileObject , (char*)RxedMessage );
+         QueueSend(Queue_GUI_MP3_Message, &RxedMessage, 0);
 	   }
     }
 }

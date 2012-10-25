@@ -617,9 +617,6 @@ void PlayAudioFile(FIL *FileObject, char *path)
 			}
 
 			//OSTimeDlyHMSM(0, 0, 0, 1);
-
-
-
 		}
 
 
@@ -892,7 +889,7 @@ static void WavNVIC_Configuration(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
@@ -912,7 +909,7 @@ static void WavNVIC_Configuration(void)
  * Return         : None
  * Attention		 : None
  *******************************************************************************/
-void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint16_t frequency,
+void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint32_t frequency,
 		AUDIO_Format_enum format)
 {
 	/* The MONO mode uses working buffer to dupplicate datas on the two channels
