@@ -76,6 +76,8 @@ extern dlink PlayFile;
 /* MP3文件信息 */
 extern struct tag_info mp3_info;
 
+#define MP3HeaderMalloc(size) pvPortMalloc(size)
+
 /* Private function prototypes -----------------------------------------------*/
 void SearchMusic(char* path);
 void TimeFormat(uint32_t srctime,TIME *destime);

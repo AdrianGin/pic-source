@@ -25,6 +25,8 @@
 #include "waveplayer.h"
 #include "hw_config.h"
 
+#include "intertaskComm.h"
+
 /* Private variables ---------------------------------------------------------*/
 AUDIO_PlaybackBuffer_Status BufferStatus; /* Status of buffer */
 s16 AudioBuffer[4608]; /* Playback buffer - Value must be 4608 to hold 2xMp3decoded frames */
@@ -51,9 +53,8 @@ UINT n_Read; /* File R/W count */
 /* MP3已播放字节 */
 uint32_t MP3_Data_Index;
 /* OS计数信号量 */
-extern OS_EVENT *DMAComplete;
-extern OS_EVENT *StopMP3Decode;
-extern uint32_t SeekValue;
+
+extern  xTaskHandle mp3DecodeHandle;
 
 static waveHeader_t Wavefile;
 volatile uint8_t TimeOut;
@@ -94,7 +95,8 @@ void AUDIO_Playback_Stop(void)
 	/* Shutdwon codec in order to avoid non expected voices */
 	//codec_send( ACTIVE_CONTROL | INACTIVE );    /* WM8731 Disable */
 	MP3_Data_Index = 0;
-	OSSemPost(DMAComplete); /* 发送信号量 */
+	SemaphoreGive(Sem_DMAComplete);
+	vTaskResume(mp3DecodeHandle);
 }
 
 /*******************************************************************************
@@ -404,7 +406,7 @@ uint16_t WavePlayer_ConvertPCM(uint8_t nChans, uint8_t bitlength, void* buff, ui
  *******************************************************************************/
 void PlayAudioFile(FIL *FileObject, char *path)
 {
-	INT8U err;
+	uint8_t err;
 	uint16_t i;
 	uint16_t waveReadSize;
 	/* Reset counters */
@@ -444,7 +446,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 		BufferStatus = (AUDIO_PlaybackBuffer_Status) (LOW_EMPTY | HIGH_EMPTY);
 
-		while (!(outOfData == 1) && !OSSemAccept(StopMP3Decode))
+		while (!(outOfData == 1) && SemaphoreTake(Sem_StopMP3Decode,0) == pdFAIL)
 		{
 
 			//Here is where we output the decoded WavData
@@ -506,12 +508,12 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 			if(n_Read == 0)
 			{
-				OSSemPost(StopMP3Decode);
-				OSSemPost(DMAComplete);
+				SemaphoreGive(Sem_StopMP3Decode);
+				SemaphoreGive(Sem_DMAComplete);
 			}
 
-			OSSemPend(DMAComplete, 0, &err);
-
+			//OSSemPend(DMAComplete, 0, &err);
+			vTaskSuspend(mp3DecodeHandle);
 		}
 
 	}
@@ -581,12 +583,12 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 		printf("DataStart = %d", mp3_info.data_start);
 
-		while (!(outOfData == 1) && !OSSemAccept(StopMP3Decode))
+		while (!(outOfData == 1) && (SemaphoreTake(Sem_StopMP3Decode, 0) == pdFAIL))
 		//while(1)
 		{
 			/* 获取信号量 */
 			//Here is where we output the decoded WavData
-			OSSemPend(DMAComplete, 0, &err);
+			//OSSemPend(DMAComplete, 0, &err);
 
 //			if (DMA_GetITStatus(DMA2_IT_HT3)) /* DMA1 通道5 半传输中断 */
 //			{
@@ -604,7 +606,9 @@ void PlayAudioFile(FIL *FileObject, char *path)
 //			}
 //
 
+			vTaskSuspend(mp3DecodeHandle);
 			FillBuffer(FileObject, 0);
+
 
 			if( SeekValue != 0 )
 			{
@@ -619,6 +623,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 		}
 
 
+		SemaphoreTake(Sem_StopMP3Decode, 0);
 		/* release mp3 decoder */
 		MP3FreeDecoder(hMP3Decoder);
 
@@ -825,27 +830,37 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
  *******************************************************************************/
 void DMA2_Channel3_IRQHandler(void)
 {
-	CPU_SR cpu_sr;
-	OS_ENTER_CRITICAL()	;
-	OSIntNesting++;
-	OS_EXIT_CRITICAL()	;
+	portBASE_TYPE xYieldRequired;
 
-	if (DMA_GetITStatus(DMA2_IT_HT3)) /* DMA1 通道5 半传输中断 */
+	if (DMA_GetITStatus(DAC_DMA_HT)) /* DMA1 通道5 半传输中断 */
 	{
-		DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_HT3); /* DMA1 通道5 全局中断 */
+		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_HT); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
-		OSSemPost(DMAComplete); /* 发送信号量 */
+		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+		// SemaphoreGive(Sem_DMAComplete);
+//		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
-	else if (DMA_GetITStatus(DMA2_IT_TC3)) /* DMA1 通道5 传输完成中断 */
+
+	if (DMA_GetITStatus(DAC_DMA_TC)) /* DMA1 通道5 传输完成中断 */
 	{
-		DMA_ClearITPendingBit(DMA2_IT_GL3 | DMA2_IT_TC3); /* DMA1 通道5 全局中断 */
+		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_TC); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
-		OSSemPost(DMAComplete); /* 发送信号量 */
+		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+		//SemaphoreGive(Sem_DMAComplete);
+		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+//		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
 
+	     if( xYieldRequired == pdTRUE )
+	     {
+	         // We should switch context so the ISR returns to a different task.
+	         // NOTE:  How this is done depends on the port you are using.  Check
+	         // the documentation and examples for your port.
+	    	 vPortYieldFromISR();
+	     }
 
-	OSIntExit();
 }
 
 
@@ -876,18 +891,11 @@ static void WavNVIC_Configuration(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-	NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	//NVIC_Init(&NVIC_InitStructure);
-
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }

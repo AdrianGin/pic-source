@@ -399,7 +399,7 @@ void SearchMusic(char* path)
 			  MusicFileCount++;
 			  if( MusicFileCount == 1 )
 			  {
-			 	PlayFile = (dlink) malloc(sizeof( struct PlayFileList ) );
+			 	PlayFile = (dlink) MP3HeaderMalloc(sizeof( struct PlayFileList ) );
 				if( PlayFile == NULL)
 				   return ;
 				memset(PlayFile->filename,' ',sizeof(PlayFile->filename) );	  /* 空格 */
@@ -431,7 +431,7 @@ void SearchMusic(char* path)
               }
 			  else
 			  {
-			    new_node = (dlink) malloc(sizeof( struct PlayFileList ) );
+			    new_node = (dlink) MP3HeaderMalloc(sizeof( struct PlayFileList ) );
 			    if( new_node == NULL)
 			       return ;
 				memset(new_node->filename,' ',sizeof(new_node->filename) );	  /* 空格 */
@@ -468,7 +468,7 @@ void SearchMusic(char* path)
 				  MusicFileCount++;
 				  if( MusicFileCount == 1 )
 				  {
-				 	PlayFile = (dlink) malloc(sizeof( struct PlayFileList ) );
+				 	PlayFile = (dlink) MP3HeaderMalloc(sizeof( struct PlayFileList ) );
 					if( PlayFile == NULL)
 					   return ;
 					memset(PlayFile->filename,' ',sizeof(PlayFile->filename) );	  /* 空格 */
@@ -486,7 +486,7 @@ void SearchMusic(char* path)
 	              }
 				  else
 				  {
-				    new_node = (dlink) malloc(sizeof( struct PlayFileList ) );
+				    new_node = (dlink) MP3HeaderMalloc(sizeof( struct PlayFileList ) );
 				    if( new_node == NULL)
 				       return ;
 					memset(new_node->filename,' ',sizeof(new_node->filename) );	  /* 空格 */

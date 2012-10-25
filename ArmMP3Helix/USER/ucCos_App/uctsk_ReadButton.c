@@ -24,19 +24,13 @@
 #include <includes.h>            
 #include <menu.h>
 
-
+#include "intertaskComm.h"
 
 /* Private variables ---------------------------------------------------------*/
-static  OS_STK         App_TaskReadButtonStk[APP_TASK_READBUTTON_STK_SIZE];
-extern  OS_FLAG_GRP    *Sem_F;	   /* 事件标志 */
 /* 播放MP3邮箱 */
-extern OS_EVENT *mp3Mbox;		
-/* OS计数信号量 */	
-extern OS_EVENT *StopMP3Decode;
 /* MP3播放状态 */
 extern AUDIO_Playback_status_enum AUDIO_Playback_status ;
 extern  GOL_MSG msg;        /* GOL message structure to interact with GOL */
-extern uint32_t SeekValue;
 
 extern uint8_t Audio_Type;
 
@@ -57,28 +51,17 @@ static void GUI_ReadButton     (void);
 *******************************************************************************/
 void  App_ReadButtonTaskCreate (void)
 {
-    CPU_INT08U  os_err;
-
-	os_err = os_err; /* prevent warning... */
-
-	os_err = OSTaskCreate((void (*)(void *)) uctsk_ReadButton,				
-                          (void          * ) 0,							
-                          (OS_STK        * )&App_TaskReadButtonStk[APP_TASK_READBUTTON_STK_SIZE - 1],		
-                          (INT8U           ) APP_TASK_READBUTTON_PRIO  );							
-
-	#if OS_TASK_NAME_EN > 0
-    	OSTaskNameSet(APP_TASK_READBUTTON_PRIO, "Task ReadButton", &os_err);
-	#endif
+	//xTaskCreate( uctsk_ReadButton , ( signed char * ) "ReadButton" , APP_TASK_READBUTTON_STK_SIZE , NULL , APP_TASK_READBUTTON_PRIO , NULL );
 
 }
 
 static void uctsk_ReadButton (void) {  
-  INT8U   err;               
+  uint8_t   err;
   float AD_value;  
   GPIO_Configuration();
   ADC_Configuration();
   LCD_BackLight_Init();
-  OSFlagPend( Sem_F,(OS_FLAGS) 1,OS_FLAG_WAIT_SET_ALL,0,&err );  /* 等待触摸屏校准完成 */
+
    for(;;)
    {   
 //	  if(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC)==SET)
@@ -90,7 +73,7 @@ static void uctsk_ReadButton (void) {
 
 	  GUI_ReadButton();
 
-      OSTimeDlyHMSM(0, 0, 0, 100);
+	  vTaskDelay(50/portTICK_RATE_MS);
    }
 }
 
@@ -111,7 +94,7 @@ static void GUI_ReadButton (void)
 
    if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) )	   /* JOY_LEFT is press */
    {
-	  OSTimeDlyHMSM(0, 0, 0, 100);                      /* 按键防抖动        */
+	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动        */
 	  if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) )  /* 列表框箭头下      */
 	  {
 	      pSld =(SLIDER*)GOLFindObject(ID_SLIDER3);	
@@ -126,7 +109,7 @@ static void GUI_ReadButton (void)
 
    if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) )	   /* JOY_RIGHT is press */
    {
-	  OSTimeDlyHMSM(0, 0, 0, 100);                      /* 按键防抖动         */
+	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动         */
 	  if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) )  /* 列表框箭头上      */
 	  {
 		     pSld =(SLIDER*)GOLFindObject(ID_SLIDER3); 
@@ -141,7 +124,7 @@ static void GUI_ReadButton (void)
 
    if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) )	   /* JOY_UP is press    */
    {
-	   OSTimeDlyHMSM(0, 0, 0, 100);                      /* 按键防抖动         */
+	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动         */
 	  if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) )  /* 快退               */
 	  {
 	      if (LbGetSel(pLb,NULL) != NULL && !( outOfData == 1 ))	 /* 列表框没有选项 */
@@ -171,7 +154,7 @@ static void GUI_ReadButton (void)
 
    if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_3) )	   /* JOY_DOWN is press  */
    {
-	  OSTimeDlyHMSM(0, 0, 0, 100);                      /* 按键防抖动         */
+	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动         */
 	  if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_3) )  /* 快进               */
 	  {
 	      if (LbGetSel(pLb,NULL) != NULL && !( outOfData == 1 ))	 /* 列表框没有选项 */
@@ -202,7 +185,7 @@ static void GUI_ReadButton (void)
 
    if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1) )	   /* JOY_SEL is press   */
    {
-	  OSTimeDlyHMSM(0, 0, 0, 100);                     /* 按键防抖动         */
+	   vTaskDelay(50/portTICK_RATE_MS);                     /* 按键防抖动         */
 	  if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1) )  /* 列表框focus确定    */
 	  {
 		  //msg->type =

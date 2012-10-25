@@ -9,13 +9,6 @@ RM := rm -f
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include USER/ucCos_App/subdir.mk
--include USER/uCOS-VIEW/Source/subdir.mk
--include USER/uCOS-VIEW/Ports/ARM-Cortex-M3/Realview/subdir.mk
--include USER/uCOS-II/Source/subdir.mk
--include USER/uCOS-II/Ports/ARM-Cortex-M3/RealView/subdir.mk
--include USER/uC-LIB/Ports/RealView/subdir.mk
--include USER/uC-LIB/subdir.mk
--include USER/uC-CPU/ARM-Cortex-M3/RealView/subdir.mk
 -include USER/helix/real/arm/subdir.mk
 -include USER/helix/real/subdir.mk
 -include USER/helix/subdir.mk
@@ -32,6 +25,9 @@ RM := rm -f
 -include USER/MicrochipGUI_V2.10/subdir.mk
 -include USER/MP3Header/subdir.mk
 -include USER/GLCD/subdir.mk
+-include USER/FreeRTOS/Source/portable/RVDS/ARM_CM3/subdir.mk
+-include USER/FreeRTOS/Source/portable/MemMang/subdir.mk
+-include USER/FreeRTOS/Source/subdir.mk
 -include USER/FATFS_V0.08A/src/option/subdir.mk
 -include USER/FATFS_V0.08A/src/subdir.mk
 -include USER/Audio/subdir.mk

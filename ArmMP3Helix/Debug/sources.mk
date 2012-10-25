@@ -23,13 +23,6 @@ S_UPPER_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 USER/ucCos_App \
-USER/uCOS-VIEW/Source \
-USER/uCOS-VIEW/Ports/ARM-Cortex-M3/Realview \
-USER/uCOS-II/Source \
-USER/uCOS-II/Ports/ARM-Cortex-M3/RealView \
-USER/uC-LIB \
-USER/uC-LIB/Ports/RealView \
-USER/uC-CPU/ARM-Cortex-M3/RealView \
 USER \
 USER/helix/real \
 USER/helix/real/arm \
@@ -47,6 +40,9 @@ USER/MicrochipGUI_V2.10/GUI_App \
 USER/MicrochipGUI_V2.10/Font \
 USER/MP3Header \
 USER/GLCD \
+USER/FreeRTOS/Source \
+USER/FreeRTOS/Source/portable/RVDS/ARM_CM3 \
+USER/FreeRTOS/Source/portable/MemMang \
 USER/FATFS_V0.08A/src/option \
 USER/FATFS_V0.08A/src \
 USER/Audio \

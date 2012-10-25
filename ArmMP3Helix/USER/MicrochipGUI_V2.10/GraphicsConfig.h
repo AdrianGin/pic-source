@@ -150,7 +150,7 @@
 //#define USE_BITMAP_EXTERNAL		// Support for bitmaps located in external memory
 					
 
-#define GFX_malloc malloc
-#define GFX_free   free
+#define GFX_malloc pvPortMalloc
+#define GFX_free   vPortFree
 
 #endif // _GRAPHICSCONFIG_H

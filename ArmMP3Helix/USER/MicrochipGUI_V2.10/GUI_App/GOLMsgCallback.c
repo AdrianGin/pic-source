@@ -24,16 +24,13 @@
 #include <includes.h>
 #include <menu.h>
 
+#include "intertaskComm.h"
+
 /* Private variables ---------------------------------------------------------*/
 /* 播放MP3邮箱 */
-extern OS_EVENT *mp3Mbox;		
-/* OS计数信号量 */	
-extern OS_EVENT *DMAComplete;
-extern OS_EVENT *StopMP3Decode;
 /* MP3播放状态 */
 extern AUDIO_Playback_status_enum AUDIO_Playback_status ;
 
-extern uint32_t SeekValue;
 
 /* Private function prototypes -----------------------------------------------*/
 WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg);
@@ -60,7 +57,11 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
   LISTITEM *pItem;
   PICTURE  *pPicture;
   char     asci;
-  char     TxedMessage[40];
+  static char     TxedMessage[40];
+  char**	TxedPtr;
+
+  TxedPtr = (char**)&TxedMessage[0];
+
   pLb =(LISTBOX*)GOLFindObject(ID_LISTBOX1);
 
    switch(GetObjID(pObj))
@@ -129,11 +130,11 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 
 			     if(AUDIO_Playback_status == IS_PLAYING)
 			     {		      
-			        OSSemPost(StopMP3Decode);	           /* 停止解码     */	 
+			    	SemaphoreGive(Sem_StopMP3Decode);	           /* 停止解码     */
 				    AUDIO_Playback_Stop();
 			     }
-			     OSTimeDlyHMSM(0, 0, 0, 100);	               /* 1 second     */
-			     OSMboxPost(mp3Mbox,(void*)TxedMessage );  /* 开始解码任务 */	 
+			     //OSTimeDlyHMSM(0, 0, 0, 100);	               /* 1 second     */
+			     QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);
 			   }	 
 		     }
 		   }
@@ -224,18 +225,18 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 
 			       if (outOfData != 1)
 				   {
-				     OSSemPost(StopMP3Decode);	             /* 停止解码     */	 
+			    	   SemaphoreGive(Sem_StopMP3Decode);	             /* 停止解码     */
 				     AUDIO_Playback_Stop();
 				   }
 
 				   BtnSetBitmap(pObj,(void*)&previous_off);
 			       BtnDraw((BUTTON*)pObj); 
 
-			       OSTimeDlyHMSM(0, 0, 1, 0);	             /* 1 second   */
+			       //OSTimeDlyHMSM(0, 0, 1, 0);	             /* 1 second   */
 
                    BtnSetBitmap(pObj,(void*)&previous_on);
 			       
-				   OSMboxPost(mp3Mbox,(void*)TxedMessage );  /* 开始解码任务 */
+                   QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);  /* 开始解码任务 */
 			     }
 			  }
 		   }
@@ -250,13 +251,13 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				 {
 			        BtnSetBitmap(pObj,(void*)&play_off);
 				    BtnDraw((BUTTON*)pObj); 
-					OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
+					//OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 			
 			        DMA_Cmd(DMA2_Channel3, ENABLE);
                     //SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);
                     AUDIO_Playback_status = IS_PLAYING;       
                     codec_send( ACTIVE_CONTROL | ACTIVE );	   /* WM8731 Enable */
-					OSSemPost(DMAComplete);	     /* 发送信号量 */			        
+                    SemaphoreGive(Sem_DMAComplete);	     /* 发送信号量 */
 				 }
 				 else if( ( AUDIO_Playback_status == NO_SOUND ) && ( outOfData == 1 ) )	 /* 播放已经结束 */
 				 {
@@ -288,8 +289,8 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 			           {
 					       TxedMessage[ strstr(TxedMessage,"wav") - TxedMessage + 3 ] = 0;
 					   }
-			           OSTimeDlyHMSM(0, 0, 1, 0);	               /* 1 second     */
-			           OSMboxPost(mp3Mbox,(void*)TxedMessage );  /* 开始解码任务 */	 
+			           //OSTimeDlyHMSM(0, 0, 1, 0);	               /* 1 second     */
+			           QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);  /* 开始解码任务 */
 			        }
 				 }
 			  }
@@ -297,7 +298,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 		      {	
 			     BtnSetBitmap(pObj,(void*)&play_on);
 				 BtnDraw((BUTTON*)pObj); 
-				 OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
+				 //OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 				 		 
 				 //SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, DISABLE);
 	             DMA_Cmd(DMA2_Channel3, DISABLE);
@@ -343,7 +344,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				BtnSetBitmap(pObj,(void*)&stop_off);
 			    BtnDraw((BUTTON*)pObj); 
 
-			    OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
+			    //OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 
                 BtnSetBitmap(pObj,(void*)&stop_on);
 
@@ -406,18 +407,18 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 
 			       if (outOfData != 1)
 				   {
-				     OSSemPost(StopMP3Decode);	             /* 停止解码     */	 
+			    	   SemaphoreGive(Sem_StopMP3Decode);	             /* 停止解码     */
 				     AUDIO_Playback_Stop();
 				   }
 
 				   BtnSetBitmap(pObj,(void*)&next_off);
 			       BtnDraw((BUTTON*)pObj); 
 
-			       OSTimeDlyHMSM(0, 0, 1, 0);	             /* 1 second   */
+			       //OSTimeDlyHMSM(0, 0, 1, 0);	             /* 1 second   */
 
                    BtnSetBitmap(pObj,(void*)&next_on);
 
-			       OSMboxPost(mp3Mbox,(void*)TxedMessage );  /* 开始解码任务 */	 
+                   QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);
 			     }
 			  }
 		   }	       
@@ -436,7 +437,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 			   BtnSetBitmap(pObj,(void*)&UNMUTE_HOVER);
 			   codec_send( ACTIVE_CONTROL | ACTIVE );	   /* WM8731 Enable */
 			 }
-			 OSTimeDlyHMSM(0, 0, 0, 50);  /* delay 50MS */
+			 //OSTimeDlyHMSM(0, 0, 0, 50);  /* delay 50MS */
 		   }
 		   return 1;
       case ID_SLIDER1:	  /* Drag Volume Slider */
@@ -477,7 +478,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 		     BtnSetBitmap(pObj,(void*)&press_down);
 		     BtnDraw((BUTTON*)pObj);
 
-		     OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
+		     //OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 
 	         LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)-1);
     	     SetState(pLb, LB_DRAW_ITEMS);
@@ -497,7 +498,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 		      BtnSetBitmap(pObj,(void*)&rpress_dowm);
 		      BtnDraw((BUTTON*)pObj);		 
 
-		      OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
+		      //OSTimeDlyHMSM(0, 0, 0, 200);  /* delay 200MS */
 
               LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)+1);
               SetState(pLb, LB_DRAW_ITEMS);

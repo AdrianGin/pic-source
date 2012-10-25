@@ -47,6 +47,18 @@ typedef enum { MONO, STEREO}                                    AUDIO_Format_enu
 typedef enum { NO_SOUND, IS_PLAYING }                           AUDIO_Playback_status_enum;
 typedef enum { LG_8_BITS=8, LG_16_BITS=16}  					AUDIO_Length_enum;
 
+#define AUDIO_OUTPUT_TIMER			(TIM6)
+#define AUDIO_OUTPUT_TIMER_IRQn		(TIM6_IRQn)
+#define AUDIO_OUTPUT_TIMER_CLOCK	(RCC_APB1Periph_TIM6)
+#define DAC_TRGO			 		(DAC_Trigger_T6_TRGO)
+
+#define DAC_DMA_CH					(DMA2_Channel3)
+#define DAC_DMA_IRQn				(DMA2_Channel3_IRQn)
+#define DAC_DMA_HT					(DMA2_IT_HT3)
+#define DAC_DMA_TC					(DMA2_IT_TC3)
+#define DAC_DMA_GL					(DMA2_IT_GL3)
+#define DAC_DMA_CLOCK				(RCC_AHBPeriph_DMA2)
+
 
 /* Private function prototypes -----------------------------------------------*/
 void AUDIO_Playback_Stop(void);

@@ -42,7 +42,7 @@
 /**
   * @brief  SDIO Data Transfer Frequency (25MHz max)
   */
-#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x01) //0x10
+#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x04) //0x10
 #define SDIO_TRANSFER_HSCLK_DIV            ((uint8_t)0x0) //0x10
 
 #define SD_DETECT_PIN                    GPIO_Pin_2                 /* PB.14 */
@@ -74,6 +74,7 @@ void SD_LowLevel_DeInit(void);
 void SD_LowLevel_Init(void);
 void SD_LowLevel_DMA_TxConfig(uint32_t *BufferSRC, uint32_t BufferSize);
 void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize);
+uint32_t SD_DMAEndOfTransferStatus(void);
 
 #endif  /*__HW_CONFIG_H*/
 

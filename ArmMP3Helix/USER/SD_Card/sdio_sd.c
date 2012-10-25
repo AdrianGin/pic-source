@@ -223,21 +223,21 @@ SD_Error SD_Init(void)
     errorstatus = SD_SelectDeselect((uint32_t) (SDCardInfo.RCA << 16));
   }
 
-  if (errorstatus == SD_OK)
-  {
-    /*----------------- Attempt to set the HS bit --------------------------------*/
-    errorstatus = SD_SetHighSpeed(0x00);
-  }
-
-  if (errorstatus == SD_OK)
-  {
-	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_HSCLK_DIV;
-  }
-  else
-  {
-	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_CLK_DIV;
-	  errorstatus = SD_OK;
-  }
+//  if (errorstatus == SD_OK)
+//  {
+//    /*----------------- Attempt to set the HS bit --------------------------------*/
+//    errorstatus = SD_SetHighSpeed(0x00);
+//  }
+//
+//  if (errorstatus == SD_OK)
+//  {
+//	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_HSCLK_DIV;
+//  }
+//  else
+//  {
+//	  SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_CLK_DIV;
+//	  errorstatus = SD_OK;
+//  }
   /*!< Configure the SDIO peripheral */
   /*!< SDIOCLK = HCLK, SDIO_CK = HCLK/(2 + SDIO_TRANSFER_CLK_DIV) */
   SDIO_InitStructure.SDIO_ClockEdge = SDIO_ClockEdge_Rising;

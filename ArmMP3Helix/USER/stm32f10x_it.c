@@ -23,11 +23,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h>
 
-#if ( OS_VIEW_MODULE == DEF_ENABLED )
-extern	void OSView_RxTxISRHandler(void);
-#endif
-
-
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -56,9 +51,22 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
+	static uint32_t* temp;
+
+
+
+	temp = (uint32_t*)SCB->BFAR;
+	temp = (uint32_t*)SCB->CFSR;
+	temp = (uint32_t*)SCB->HFSR;
+	temp = (uint32_t*)SCB->DFSR;
+	temp = (uint32_t*)SCB->AFSR;
+	temp = (uint32_t*)SCB->SHCSR;
+
+
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
+	  temp = (uint32_t*)SCB->CFSR;
   }
 }
 
@@ -106,9 +114,9 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-void SVC_Handler(void)
-{
-}
+//void SVC_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -124,17 +132,17 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
-{
-	CPU_SR         cpu_sr;
-	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
-    OSIntNesting++;
-    OS_EXIT_CRITICAL();
-
-    OSTimeTick();                                /* Call uC/OS-II's OSTimeTick()                       */
-
-    OSIntExit();                                 /* Tell uC/OS-II that we are leaving the ISR          */
-}
+//void SysTick_Handler(void)
+//{
+//	CPU_SR         cpu_sr;
+//	OS_ENTER_CRITICAL();                         /* Tell uC/OS-II that we are starting an ISR          */
+//    OSIntNesting++;
+//    OS_EXIT_CRITICAL();
+//
+//    OSTimeTick();                                /* Call uC/OS-II's OSTimeTick()                       */
+//
+//    OSIntExit();                                 /* Tell uC/OS-II that we are leaving the ISR          */
+//}
 
 /*******************************************************************************
 * Function Name  : USART1_IRQHandler
@@ -146,9 +154,6 @@ void SysTick_Handler(void)
 
 void USART1_IRQHandler(void)
 {
-	#if ( OS_VIEW_MODULE == DEF_ENABLED )
-		OSView_RxTxISRHandler();
-	#endif
 }
 
 /*******************************************************************************
@@ -161,22 +166,15 @@ void USART1_IRQHandler(void)
 *******************************************************************************/
 void SDIO_IRQHandler(void)
 {
-  // Process All SDIO Interrupt Sources
-  CPU_SR         cpu_sr;
-  SD_Error errorstatus;
-
-  OS_ENTER_CRITICAL();
-  OSIntNesting++;
-  OS_EXIT_CRITICAL();
-
-  errorstatus = SD_ProcessIRQSrc();
-
-  if( errorstatus != SD_OK )
-  {
-	  SD_PrintError(errorstatus);
-  }
-
-  OSIntExit();
+  /* Process All SDIO Interrupt Sources */
+//  CPU_SR         cpu_sr;
+//  OS_ENTER_CRITICAL();
+//  OSIntNesting++;
+//  OS_EXIT_CRITICAL();
+//
+  SD_ProcessIRQSrc();
+//
+//  OSIntExit();
 }
 
 /******************************************************************************/
