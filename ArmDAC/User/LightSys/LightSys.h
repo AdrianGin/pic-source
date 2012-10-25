@@ -37,6 +37,9 @@ void LS_SetTranspose(uint8_t channel, int8_t semitones);
 int8_t LS_GetTranspose(uint8_t channel);
 uint8_t LS_ApplyTranspose(uint8_t channel, uint8_t note);
 
+uint8_t LS_IncrementColourMode(void);
+uint8_t LS_LookupFifthsColour(uint8_t note);
+
 uint8_t LS_IsChannelActive(uint8_t channel);
 uint16_t LS_ToggleChannel(uint8_t channel);
 void LS_TurnOffChannel(uint8_t channel);

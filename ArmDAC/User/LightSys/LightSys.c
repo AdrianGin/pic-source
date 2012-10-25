@@ -43,6 +43,15 @@ typedef uint32_t LS_ChannelColour_t;
 volatile uint8_t	LS_CountdownCount;
 volatile uint16_t LS_ChannelActive = 0xFFFF;
 
+enum {
+	CHANNEL_COLOUR,
+	NOTE_COLOUR,
+	NOTE_FIFTHS_COLOUR,
+	COLOUR_MODE_COUNT,
+};
+
+static uint8_t mode = NOTE_FIFTHS_COLOUR;
+
 typedef struct
 {
 	//In the format of: CHANNEL << 8 | KEY;
@@ -74,6 +83,41 @@ LS_ChannelColour_t LS_ChanColours[MIDI_MAX_CHANNELS] =
 				RGB(0, 255, 0),
 				RGB(0, 255, 0),
 		};
+
+#define MAX_COLOUR (MAX_LED_BRIGHTNESS)
+#define HALF_COLOUR	(MAX_COLOUR/2)
+
+LS_ChannelColour_t LS_NoteColours[NOTE_COUNT] =
+		{		NORM_RGB(MAX_COLOUR, 	0, 					0),				//C
+				NORM_RGB(MAX_COLOUR,  	HALF_COLOUR, 		0),				//C#
+				NORM_RGB(MAX_COLOUR,  	MAX_COLOUR, 		0),				//D
+				NORM_RGB(HALF_COLOUR, 	MAX_COLOUR, 		0),				//D#
+				NORM_RGB(0, 			MAX_COLOUR, 		0),				//E
+				NORM_RGB(0, 			MAX_COLOUR,			HALF_COLOUR),	//F
+				NORM_RGB(0, 			MAX_COLOUR, 		MAX_COLOUR),	//F#
+				NORM_RGB(0, 			HALF_COLOUR, 		MAX_COLOUR),	//G
+				NORM_RGB(0, 			0, 					MAX_COLOUR),	//G#
+				NORM_RGB(HALF_COLOUR, 	0, 					MAX_COLOUR),	//A
+				NORM_RGB(MAX_COLOUR, 	0, 					MAX_COLOUR),	//A#
+				NORM_RGB(MAX_COLOUR, 	0, 					HALF_COLOUR),	//B
+		};
+
+
+uint8_t LS_FifthsColourMap[] =
+		{ 	MN_C,
+			MN_G,
+			MN_D,
+			MN_A,
+			MN_E,
+			MN_B,
+			MN_FS,
+			MN_CS,
+			MN_GS,
+			MN_DS,
+			MN_AS,
+			MN_F,
+		};
+
 
 
 void LS_Init(void)
@@ -170,10 +214,7 @@ void LS_TurnOffChannel(uint8_t channel)
 	}
 }
 
-enum {
-	CHANNEL_COLOUR,
-	NOTE_COLOUR,
-};
+
 
 void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
 {
@@ -193,12 +234,11 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 {
 	uint32_t colour;
 
-
+	note = LS_ApplyTranspose(LS_CHANNEL(command), note);
 	colour = LS_GetColourFromMIDI(command, note, velocity);
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
-		note = LS_ApplyTranspose(LS_CHANNEL(command), note);
-		LS_SetPixel(note, colour, command);
+		LS_SetPixel((LED_COUNT / 2) - note, colour, command);
 	}
 }
 
@@ -234,34 +274,70 @@ int8_t LS_GetTranspose(uint8_t channel)
 }
 
 
+uint8_t LS_LookupFifthsColour(uint8_t note)
+{
+	uint8_t i = 0;
+
+	for( i = 0; i < NOTE_COUNT; i++ )
+	{
+		if( LS_FifthsColourMap[i] == note )
+		{
+			break;
+		}
+	}
+	return i;
+}
+
 uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
 {
 	uint32_t colour;
 	uint8_t musicNote;
-	uint8_t mode = CHANNEL_COLOUR;
 
 	if( (command & 0xF0) == MIDI_NOTE_OFF )
 	{
 		colour = 0;
 	}
 
-
 	//Currently Note = Pixel Colour, We can also make all C's a type of colour etc.
 	switch( mode )
 	{
 		case CHANNEL_COLOUR:
 		{
-			colour = LS_ChanColours[LS_CHANNEL(command)];
-			if( velocity == 0)
+			if( (command & 0xF0) == MIDI_NOTE_ON )
 			{
-				colour = 0;
+				colour = LS_ChanColours[LS_CHANNEL(command)];
+				if( velocity == 0)
+				{
+					colour = 0;
+				}
 			}
 			break;
 		}
 
 		case NOTE_COLOUR:
 		{
+			if( (command & 0xF0) == MIDI_NOTE_ON )
+			{
+				colour = LS_NoteColours[MIDIUtils_GetMusicNote(note)];
+				if( velocity == 0)
+				{
+					colour = 0;
+				}
+			}
+			break;
+		}
 
+		case NOTE_FIFTHS_COLOUR:
+		{
+			if( (command & 0xF0) == MIDI_NOTE_ON )
+			{
+				musicNote = MIDIUtils_GetMusicNote(note);
+				colour = LS_NoteColours[LS_LookupFifthsColour(musicNote)];
+				if( velocity == 0)
+				{
+					colour = 0;
+				}
+			}
 			break;
 		}
 
@@ -274,6 +350,15 @@ uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
 	return colour;
 }
 
+
+uint8_t LS_IncrementColourMode(void)
+{
+	mode = mode + 1;
+	if( mode >= COLOUR_MODE_COUNT )
+	{
+		mode = CHANNEL_COLOUR;
+	}
+}
 
 uint8_t LS_IsChannelActive(uint8_t channel)
 {

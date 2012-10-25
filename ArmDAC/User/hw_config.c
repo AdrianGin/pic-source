@@ -333,6 +333,12 @@ void ToggleActiveChannel(uint8_t byte)
 		printf("%d\n", LS_GetTranspose(0));
 	}
 
+	if( byte == 'C')
+	{
+		LS_IncrementColourMode();
+	}
+
+
 }
 
 //For Loopback

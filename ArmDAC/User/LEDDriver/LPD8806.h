@@ -36,6 +36,7 @@
 #define BLUE(colour) 	(colour & 0x0000FF)
 #define RGB(r,g,b)		((r << 16) | (g << 8) | (b))
 
+#define NORM_RGB(r,g,b)	RGB( (r * MAX_LED_BRIGHTNESS) / (r+g+b), (g * MAX_LED_BRIGHTNESS) / (r+g+b), (b * MAX_LED_BRIGHTNESS) / (r+g+b))
 
 /* Private function prototypes -----------------------------------------------*/				
 void LPD8806_Init(void);
