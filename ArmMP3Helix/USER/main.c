@@ -135,7 +135,7 @@ size_t heapSize;
 
 			 vTaskList(buffer);
 			 printf("%s", buffer);
-			 vTaskDelay(120000/portTICK_RATE_MS);
+			 vTaskDelay(2000/portTICK_RATE_MS);
 //			 MP3_Data_Index = 1000;
 //			 SeekValue = MP3_Data_Index;
 			 heapSize = xPortGetFreeHeapSize();

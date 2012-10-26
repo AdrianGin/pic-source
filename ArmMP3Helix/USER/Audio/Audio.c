@@ -605,15 +605,22 @@ void PlayAudioFile(FIL *FileObject, char *path)
 //				//OSSemPost(DMAComplete); /* 发送信号量 */
 //			}
 //
-
-			vTaskSuspend(mp3DecodeHandle);
-			FillBuffer(FileObject, 0);
-
-
-			if( SeekValue != 0 )
+			if( SemaphoreTake(Sem_DMAComplete, SEMAPHORE_BLOCK_WAIT) == pdTRUE )
 			{
-				f_lseek(FileObject, SeekValue );
-				SeekValue = 0;
+
+				//vTaskSuspend(mp3DecodeHandle);
+				FillBuffer(FileObject, 0);
+
+				if( AUDIO_PlaybackBuffer_GetStatus(0) != FULL )
+				{
+					printf("Buffer NOT FULL!\n");
+				}
+
+				if( SeekValue != 0 )
+				{
+					f_lseek(FileObject, SeekValue );
+					SeekValue = 0;
+				}
 			}
 
 			//OSTimeDlyHMSM(0, 0, 0, 1);
@@ -827,14 +834,25 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
  *******************************************************************************/
 void DMA2_Channel3_IRQHandler(void)
 {
-	portBASE_TYPE xYieldRequired;
+	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+	portBASE_TYPE xYieldRequired = pdFALSE;
+	uint32_t test;
+
+	test = DMA2->ISR;
 
 	if (DMA_GetITStatus(DAC_DMA_HT)) /* DMA1 通道5 半传输中断 */
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_HT); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
-		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
-		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+//		if( xTaskIsTaskSuspended(mp3DecodeHandle) == pdTRUE )
+//		{
+//			xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+//		}
+//		else
+//		{
+//			prtintf("POT ERROR!!\n");
+//		}
+		xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
 		// SemaphoreGive(Sem_DMAComplete);
 //		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
@@ -843,18 +861,31 @@ void DMA2_Channel3_IRQHandler(void)
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_TC); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
-		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+		//xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
 		//SemaphoreGive(Sem_DMAComplete);
-		//xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
+		xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
 //		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
+	if( xTaskIsTaskSuspended(mp3DecodeHandle) == pdTRUE )
+	{
+		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
+	}
+	else
+	{
+		//printf("POT ERROR!! %X", test);
+	}
 
 	     if( xYieldRequired == pdTRUE )
 	     {
 	         // We should switch context so the ISR returns to a different task.
 	         // NOTE:  How this is done depends on the port you are using.  Check
 	         // the documentation and examples for your port.
+	    	 vPortYieldFromISR();
+	     }
+
+	     if( xHigherPriorityTaskWoken == pdTRUE )
+	     {
 	    	 vPortYieldFromISR();
 	     }
 
@@ -889,9 +920,9 @@ static void WavNVIC_Configuration(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);

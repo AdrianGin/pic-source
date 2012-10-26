@@ -62,9 +62,7 @@ void uctsk_MP3Decode(void * pvArg)
 //
    	for(;;)
    	{
-   	   printf("-- Waiting for Selection");
    	   err = QueueReceive(Queue_GUI_MP3_Message, &RxedMessage, QUEUE_BLOCK_WAIT);
-   	   printf("-- Selection Made");
    	   vTaskDelay(1000/portTICK_RATE_MS);
    	   if( err == QUEUE_SUCCESS )
        {

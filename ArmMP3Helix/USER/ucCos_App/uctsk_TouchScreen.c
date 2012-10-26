@@ -58,7 +58,7 @@ void uctsk_TouchScreen(void * pvArg)
    SemaphoreGive(Sem_SystemRdy);
    	for(;;)
    	{   
-   		vTaskDelay(15);
+   		vTaskDelay(100);
 	   TouchGetMsg(&msg);   		/* Get message from touch screen */
     }
 }

@@ -70,7 +70,7 @@ void uctsk_MicrochipGUI(void * pvArg)
       	{				               
          	GOLMsg(&msg);        		/* Process message */
 		}  
-		vTaskDelay(50/portTICK_RATE_MS);
+		vTaskDelay(100/portTICK_RATE_MS);
     }
 }
 

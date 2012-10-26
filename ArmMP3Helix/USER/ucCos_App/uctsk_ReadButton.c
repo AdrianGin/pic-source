@@ -73,7 +73,7 @@ static void uctsk_ReadButton (void) {
 
 	  GUI_ReadButton();
 
-	  vTaskDelay(50/portTICK_RATE_MS);
+	  vTaskDelay(20/portTICK_RATE_MS);
    }
 }
 

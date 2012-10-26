@@ -839,8 +839,8 @@ SD_Error SD_EnableWideBusOperation(uint32_t WideMode)
         SDIO_InitStructure.SDIO_ClockDiv = SDIO_TRANSFER_CLK_DIV; 
         SDIO_InitStructure.SDIO_ClockEdge = SDIO_ClockEdge_Rising;
         SDIO_InitStructure.SDIO_ClockBypass = SDIO_ClockBypass_Disable;
-        //SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Disable;
-        SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Enable;
+        SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Disable;
+        //SDIO_InitStructure.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Enable;
         SDIO_InitStructure.SDIO_BusWide = SDIO_BusWide_4b;
         SDIO_InitStructure.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Disable;
         SDIO_Init(&SDIO_InitStructure);
