@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 
+
 #include "usb_lib.h"
 #include "usb_desc.h"
 #include "usb_pwr.h"
@@ -12,6 +13,10 @@
 #include "hw_config.h"
 //#include "stm32_eval_sdio_sd.h"
 #include "sdio_sd.h"
+
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 /*******************************************************************************
 * Function Name  : GPIO_Configuration
@@ -102,6 +107,7 @@ void NVIC_Configuration(void)
   NVIC_InitTypeDef NVIC_InitStructure;
 
   /* Configure the NVIC Preemption Priority Bits */
+  NVIC_SetVectorTable( NVIC_VectTab_FLASH, 0x0 );
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
   NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
@@ -314,6 +320,12 @@ uint32_t SD_DMAEndOfTransferStatus(void)
   return (uint32_t)DMA_GetFlagStatus(DMA2_FLAG_TC4);
 }
 
+void vApplicationStackOverflowHook( xTaskHandle xTask, signed portCHAR *pcTaskName )
+{
+
+	printf("STACK OVER FLOW! %s\n", pcTaskName);
+
+}
 
 
 /**

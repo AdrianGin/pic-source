@@ -63,7 +63,7 @@ void uctsk_MP3Decode(void * pvArg)
    	for(;;)
    	{
    	   err = QueueReceive(Queue_GUI_MP3_Message, &RxedMessage, QUEUE_BLOCK_WAIT);
-   	   vTaskDelay(1000/portTICK_RATE_MS);
+   	   //vTaskDelay(1000/portTICK_RATE_MS);
    	   if( err == QUEUE_SUCCESS )
        {
 	     printf("-- start decode music %s \r\n", RxedMessage);

@@ -1,4 +1,8 @@
 
+#ifdef __cplusplus    /* Insert start of extern C construct */
+extern "C" {
+#endif
+
 
 #ifndef __HZLIB_H
 #define __HZLIB_H 
@@ -10,6 +14,11 @@
 void GetGBKCode(unsigned char* pBuffer,unsigned char * c);
 
 #endif 
+
+
+#ifdef __cplusplus    /* Insert start of extern C construct */
+}
+#endif
 
 
 /*********************************************************************************************************

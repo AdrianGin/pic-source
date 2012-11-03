@@ -6,6 +6,7 @@
 * http://scripts.sil.org/OFL
 *************************************************************************************/
 #include "Graphics.h"
+//#include "Font_Gentium25.c"
 
 #ifdef USE_GOL
 
@@ -13,15 +14,18 @@
 extern const char L11903[] ;
 #else
 extern const char L11903[] __attribute__((aligned(2)));
+//extern const char L21553[] __attribute__((aligned(2)));
 #endif
 //FONT NAME CAN BE CHANGED HERE.
 const FONT_FLASH   GOLFontDefault = {(TYPE_MEMORY)0,L11903};
+//const FONT_FLASH   GOLFontDefault = GOLASCII_Gentium35;
 //const struct{short mem; const char* ptr;} GOLFontDefault = {0,L11903};
+
 
 #ifdef WIN32
 const char L11903[]  = 
 #else
-const char L11903[] __attribute__((aligned(2))) = 
+const char L11903[] __attribute__((aligned(2))) =
 #endif
 {
 0x00,0x00,0x1C,0x00,0x7F,0x00,0x1C,0x00,0x0F,0x98,0x01,0x00,0x0F,0xD0,0x01,0x00,0x0F,0x08,0x02,0x00,0x0F,0x40,0x02,0x00,0x05,0x78,0x02,0x00,0x07,0x94,0x02,0x00,0x0A,

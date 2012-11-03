@@ -25,9 +25,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 struct tag_info mp3_info;
-const int Frame_sampfreqs[4] = { 44100, 48000, 32000, 0 };	   /* 采样频率 MPEG1 LAYER3 */
+const int Frame_sampfreqs[4] = { 44100, 48000, 32000, 0 };	   /* MPEG1 LAYER3 */
 const int Frame_bitrates[15] = { 0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 
-				  112000, 128000, 160000, 192000, 224000, 256000, 320000 };	/* 比特率 MPEG1 LAYER3 */
+				  112000, 128000, 160000, 192000, 224000, 256000, 320000 };	/* MPEG1 LAYER3 */
 
 /* 定义回读字节记录 */
 uint8_t  recount = 0; 
@@ -38,6 +38,14 @@ uint8_t MusicFileCount = 0;
 /* MP3链表指针 */
 dlink PlayFile;		   
 
+//Start of Frame Mask
+#define MP3_SOF	(0xFFFA)
+#define MP3_SOF_SIZE (0x24)
+//Location of the 'Xing' header
+#define MP3_VBR_FRAMES_OFFSET (8)
+//Fixed for MPEG1 Layer 3
+#define MP3_SAMPLES_PER_FRAME	(1152)
+enum {CBR, VBR};
 
 /*******************************************************************************
 * Function Name  : GetMP3MaxTime
@@ -52,6 +60,7 @@ dlink PlayFile;
 uint32_t GetMP3MaxTime(uint8_t *MP3buffer, uint16_t buffersize,uint32_t mp3filelen)
 {
    uint32_t count = 0 ;	    /* 记录读过的字节 */
+   uint32_t nFrames;
    uint16_t val ;	        /* 改值用来记录开始帧 */
    uint16_t i ;
    uint8_t  XBR ;           /* XBR=1(VBR) XBR=0(CBR) */
@@ -72,8 +81,8 @@ uint32_t GetMP3MaxTime(uint8_t *MP3buffer, uint16_t buffersize,uint32_t mp3filel
 	  if(MP3buffer[0]==0x30&&MP3buffer[1]==0x26&&MP3buffer[2]==0xb2&&MP3buffer[3]==0x75)
 	     return  1;
 	  else if(MP3buffer[0]!='I'||MP3buffer[1]!='D'||MP3buffer[2]!='3') 
-	     goto decode;                /* 未找到ID3V2.3.0标签头，直接读取开始帧 */
-	  if(MP3buffer[3]!=0x03)         /* 如果不是ID3V2.3.0格式，返回1作为标记 */
+	     goto decode;                /* ID3V2.3.0 */
+	  if(MP3buffer[3]!=0x03)         /* ID3V2.3.0 */
 		 return 1;
       tag2end = 10+(MP3buffer[6]&0x7F)*0x200000+(MP3buffer[7]&0x7F)*0x400+(MP3buffer[8]&0x7F)*0x80+(MP3buffer[9]&0x7F);	/* 计算得到tag2结束位置 */
       count = tag2end;         /* 有TAG2，从TAG2开始读 */  
@@ -86,16 +95,17 @@ uint32_t GetMP3MaxTime(uint8_t *MP3buffer, uint16_t buffersize,uint32_t mp3filel
 	 }
 
 decode:
+	//Find the first MP3_SOF
    val = MP3buffer[count] ;
-   while (((val & 0xfffa) != 0xfffa) && count < buffersize-1)   /* 判断是否为帧头 */
+   while (((val & MP3_SOF) != MP3_SOF) && count < buffersize-1)   /* Locate the first frame */
    {
 	val <<= 8;
 	val |= MP3buffer[++count];
    }
 
-   if(count>=buffersize-1)  /* 为找到帧头 */
+   if(count>=buffersize-1)
     {
-	   if(MP3buffer[buffersize-1]==0xff) /* 如最后一个字节是0XFF，需回读一个字节 */
+	   if(MP3buffer[buffersize-1]==0xff)
 	    {
 		   recount = 1;
 		}
@@ -103,43 +113,55 @@ decode:
 	   return 0;
 	}
 
-   if(count + 47 >=buffersize-1) /* 如果需判断的字节有溢出，需回读48个字节 */
+   if(count + 47 >= buffersize-1)
     {
 	  recount = 48;
 	  return 0;
 	}
    
-    count++;   /* 取下一字节 */
-   	bitrate_index = (MP3buffer[count])>>4;         /* 取高四位，得到比特率索引 */
-    sample_index = ((MP3buffer[count])>>2)&0x03;   /* 取接下来的2位,得到采样频率索引 */
-    padding_bit  = ((MP3buffer[count])>>1)&0x01;   /* 取接下来的1位，得到padding位 */
+    /* The BitRate, SampleRate and Padding Bit reside in the next 8 bits */
+    count++;
+   	bitrate_index = (MP3buffer[count])>>4;
+    sample_index = ((MP3buffer[count])>>2)&0x03;
+    padding_bit  = ((MP3buffer[count])>>1)&0x01;
 
-	count = count + 2 ;          /* 取帧头后的第一个字节 */
+	count = count + 2;
     
-	for(i=count;i<count+36;i++)  /* 读之后的36个字节，看是否有VBR标记	*/
+	/* Determine whether the file is CBR or VBR */
+	XBR=CBR;
+	for(i=count; i < buffersize;i++)
 	 {
 	   if(MP3buffer[i]=='X'&&MP3buffer[i+1]=='i'&&MP3buffer[i+2]=='n'&&MP3buffer[i+3]=='g')
 	    {
-		   XBR = 1;          /* 该MP3文件为VBR */
-		   goto framecount;  /* 转去计算有多少个帧 */
+		   count = i;
+		   XBR = VBR;
+		   break;
 		}
 	 }
-	 XBR=0;	                 /* 该MP3文件为CBR */
-framecount:
-	if(XBR==0)   /* CBR */
+
+//Determine Frame Size:
+//Frame Size = ( (Samples Per Frame / 8 * Bitrate) / Sampling Rate) + Padding Size
+//Duration = File Size / Bitrate * 8 (CBR)
+	if(XBR==CBR)   /* CBR */
 	 {
-	    framesize = (u32)(((144 * Frame_bitrates[bitrate_index]) /
-        Frame_sampfreqs[sample_index])) + padding_bit ;	 /* 计算每一帧的字节数 */
-		maxframe = (mp3filelen/framesize);	             /* 得到有多少帧 */
+	    framesize = (u32)(((144 * Frame_bitrates[bitrate_index]) / Frame_sampfreqs[sample_index])) + padding_bit ;
+		maxframe = (mp3filelen/ (Frame_bitrates[bitrate_index]/8));
 	 }
-      
+//Duration = Number of Frames * Samples Per Frame / Sampling Rate (VBR)
      else  /* VBR */
 	 {
-	     count = count + 40;   /* 从帧头后的第40个字节开始的4字节记录VBR的帧个数 */
-         maxframe=MP3buffer[count+3]+MP3buffer[count+2]*256+MP3buffer[count+1]*256*256+MP3buffer[count]*256*256*256;  /* 得到有多少帧 */
+	     count = count + MP3_VBR_FRAMES_OFFSET;
+	     //Number of Frames is in Big Endian, need to convert.
+	     nFrames = MP3buffer[count+3] << 0 |
+	    		   MP3buffer[count+2] << 8 |
+	    		   MP3buffer[count+1] << 16 |
+	    		   MP3buffer[count]   << 24;
+
+	     maxframe = nFrames * MP3_SAMPLES_PER_FRAME / Frame_sampfreqs[sample_index];
+
       }
- 	  mp3maxtime = maxframe*26;  /* 计算得到文件的播放时间，每帧26ms */
-	  start = 1;                 /* 开始读取标记重新置1，为下一次读TAG2做准备 */
+ 	  mp3maxtime = maxframe*1000;  /* convert seconds to milliseconds */
+	  start = 1;
 	
 	  return mp3maxtime;         /* 返回播放时间 */        
 }
@@ -242,8 +264,8 @@ void Read_ID3V1(FIL *FileObject, struct tag_info *info)
        
     if (strncmp("TAG", (char *) readBuf, 3) == 0)	/* ID3V1 */
     {
-      strncpy(info->title, (char *) readBuf + 3, MIN(30, sizeof(info->title) - 1)); 
- 	  strncpy(info->artist,(char *) readBuf + 3 + 30, MIN(30, sizeof(info->artist) - 1));
+      strncpy(info->title, (char *) readBuf + 3, MIN(MP3_MAX_TITLE_LEN, sizeof(info->title) - 1));
+ 	  strncpy(info->artist,(char *) readBuf + 3 + MP3_MAX_TITLE_LEN, MIN(MP3_MAX_TITLE_LEN, sizeof(info->artist) - 1));
     }
 }
 

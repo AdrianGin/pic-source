@@ -23,9 +23,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h>            
 #include <menu.h>
+#include "GLCD.h"
 
 #include "intertaskComm.h"
-
+#include "app_cfg.h"
 /* Private variables ---------------------------------------------------------*/
 /* 播放MP3邮箱 */
 /* MP3播放状态 */
@@ -51,7 +52,7 @@ static void GUI_ReadButton     (void);
 *******************************************************************************/
 void  App_ReadButtonTaskCreate (void)
 {
-	//xTaskCreate( uctsk_ReadButton , ( signed char * ) "ReadButton" , APP_TASK_READBUTTON_STK_SIZE , NULL , APP_TASK_READBUTTON_PRIO , NULL );
+	xTaskCreate( uctsk_ReadButton , ( signed char * ) "ReadButton" , APP_TASK_READBUTTON_STK_SIZE , NULL , APP_TASK_READBUTTON_PRIO , NULL );
 
 }
 
@@ -61,6 +62,8 @@ static void uctsk_ReadButton (void) {
   GPIO_Configuration();
   ADC_Configuration();
   LCD_BackLight_Init();
+
+  vTaskDelay(1000/portTICK_RATE_MS);
 
    for(;;)
    {   
@@ -90,20 +93,44 @@ static void GUI_ReadButton (void)
    LISTBOX  *pLb;
    SLIDER   *pSld;
 
+   uint32_t i,j,k;
+   uint16_t test;
+
    pLb =(LISTBOX*)GOLFindObject(ID_LISTBOX1);
 
    if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) )	   /* JOY_LEFT is press */
    {
+
+
+
 	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动        */
 	  if( !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) )  /* 列表框箭头下      */
 	  {
-	      pSld =(SLIDER*)GOLFindObject(ID_SLIDER3);	
+//	      pSld =(SLIDER*)GOLFindObject(ID_SLIDER3);
+//
+//		  LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)+1);
+//          SetState(pLb, LB_DRAW_ITEMS);
+//
+//          SldSetPos(pSld,SldGetPos(pSld)-1);
+//          SetState(pSld, SLD_DRAW_THUMB);
 
-		  LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)+1);
-          SetState(pLb, LB_DRAW_ITEMS);
 
-          SldSetPos(pSld,SldGetPos(pSld)-1);
-          SetState(pSld, SLD_DRAW_THUMB);
+		  //for( j = 0; j < 300; j++)
+		  {
+
+
+
+//			  LCD_SetCursor(0,0);
+//			  LCD_WriteIndex(0x0022);
+//			  for( i = 0; i < 320 * 240; i++)
+//			  {
+//				  LCD_WriteData(RGB565CONVERT(255, 0, 255) );
+//			  }
+			  LCD_WriteReg(0x0010,0x001);
+		  }
+
+
+		  //LCD_VerticalScroll(200, 250, 50);
 	  }
    }
 
@@ -112,13 +139,49 @@ static void GUI_ReadButton (void)
 	   vTaskDelay(50/portTICK_RATE_MS);                      /* 按键防抖动         */
 	  if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) )  /* 列表框箭头上      */
 	  {
-		     pSld =(SLIDER*)GOLFindObject(ID_SLIDER3); 
+//		     pSld =(SLIDER*)GOLFindObject(ID_SLIDER3);
+//
+//	         LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)-1);
+//    	     SetState(pLb, LB_DRAW_ITEMS);
+//
+//             SldSetPos(pSld,SldGetPos(pSld)+1);
+//             SetState(pSld, SLD_DRAW_THUMB);
 
-	         LbSetFocusedItem(pLb,LbGetFocusedItem(pLb)-1);
-    	     SetState(pLb, LB_DRAW_ITEMS);
+		  LCD_SetCursor(0,0);
+		  			  LCD_WriteIndex(0x0022);
 
-             SldSetPos(pSld,SldGetPos(pSld)+1);
-             SetState(pSld, SLD_DRAW_THUMB);
+		  for( i = 0; i < 450; i++)
+		  {
+
+			  test = RGB565CONVERT(0, 0, 255);
+			  LCD_DMATxByte(&test, 320*120);
+			  while(DMA_GetITStatus(DMA2_IT_TC5) == RESET)
+			  {}
+			  DMA_ClearITPendingBit(DMA2_IT_GL5 | DMA2_IT_TC5);
+
+
+			  LCD_DMATxByte(&test, 320*120);
+			  while(DMA_GetITStatus(DMA2_IT_TC5) == RESET)
+			  {}
+			  DMA_ClearITPendingBit(DMA2_IT_GL5 | DMA2_IT_TC5);
+
+
+			  test = RGB565CONVERT(255, 0, 0);
+			  LCD_DMATxByte(&test, 320*120);
+			  while(DMA_GetITStatus(DMA2_IT_TC5) == RESET)
+			  {}
+			  DMA_ClearITPendingBit(DMA2_IT_GL5 | DMA2_IT_TC5);
+
+
+			  LCD_DMATxByte(&test, 320*120);
+			  while(DMA_GetITStatus(DMA2_IT_TC5) == RESET)
+			  {}
+			  DMA_ClearITPendingBit(DMA2_IT_GL5 | DMA2_IT_TC5);
+		  }
+
+
+
+		  //LCD_VerticalScroll(120, 200, 80);
 	  }
    }
 

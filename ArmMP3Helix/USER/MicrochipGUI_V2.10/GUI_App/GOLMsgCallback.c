@@ -117,7 +117,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				   }
 		           else	if( (strstr(TxedMessage,"mp3") !=NULL) )
 		           {
-				       TxedMessage[ strstr(TxedMessage,"MP3") - TxedMessage + 3 ] = 0;
+				       TxedMessage[ strstr(TxedMessage,"mp3") - TxedMessage + 3 ] = 0;
 				   }
 		           else	if( (strstr(TxedMessage,"WAV") !=NULL) )
 		           {
@@ -135,6 +135,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 			     }
 			     //OSTimeDlyHMSM(0, 0, 0, 100);	               /* 1 second     */
 			     QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);
+			     vTaskResume(mp3DecodeHandle);
 			   }	 
 		     }
 		   }
@@ -220,7 +221,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				   }
 			       else	if( (strstr(TxedMessage,"mp3") !=NULL) )
 			       {
-				      TxedMessage[ strstr(TxedMessage,"MP3") - TxedMessage + 3 ] = 0; 
+				      TxedMessage[ strstr(TxedMessage,"mp3") - TxedMessage + 3 ] = 0;
 				   }
 
 			       if (outOfData != 1)
@@ -237,6 +238,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
                    BtnSetBitmap(pObj,(void*)&previous_on);
 			       
                    QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);  /* 开始解码任务 */
+                   vTaskResume(mp3DecodeHandle);
 			     }
 			  }
 		   }
@@ -279,7 +281,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 					   }
 			           else	if( (strstr(TxedMessage,"mp3") !=NULL) )
 			           {
-					       TxedMessage[ strstr(TxedMessage,"MP3") - TxedMessage + 3 ] = 0; 
+					       TxedMessage[ strstr(TxedMessage,"mp3") - TxedMessage + 3 ] = 0;
 					   }
 			           else	if( (strstr(TxedMessage,"WAV") !=NULL) )
 			           {
@@ -291,6 +293,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 					   }
 			           //OSTimeDlyHMSM(0, 0, 1, 0);	               /* 1 second     */
 			           QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);  /* 开始解码任务 */
+			           vTaskResume(mp3DecodeHandle);
 			        }
 				 }
 			  }
@@ -402,7 +405,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
 				   }
 			       else	if( (strstr(TxedMessage,"mp3") !=NULL) )
 			       {
-				       TxedMessage[ strstr(TxedMessage,"MP3") - TxedMessage + 3 ] = 0;
+				       TxedMessage[ strstr(TxedMessage,"mp3") - TxedMessage + 3 ] = 0;
 				   } 
 
 			       if (outOfData != 1)
@@ -419,6 +422,7 @@ WORD MsgMP3(WORD objMsg, OBJ_HEADER* pObj, GOL_MSG* pMsg)
                    BtnSetBitmap(pObj,(void*)&next_on);
 
                    QueueSend(Queue_GUI_MP3_Message, (void*)&TxedPtr, QUEUE_BLOCK_WAIT);
+                   vTaskResume(mp3DecodeHandle);
 			     }
 			  }
 		   }	       

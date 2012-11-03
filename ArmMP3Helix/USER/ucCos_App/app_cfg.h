@@ -56,7 +56,7 @@
 #define APP_TASK_LED2_PRIO									( tskIDLE_PRIORITY + 0 )
 #define  APP_TASK_MICROCHIP_GUI_PRIO					   tskIDLE_PRIORITY+2
 #define  APP_TASK_TOUCHSCREEN_PRIO                         tskIDLE_PRIORITY+3
-#define  APP_TASK_READBUTTON_PRIO                         tskIDLE_PRIORITY+1
+#define  APP_TASK_READBUTTON_PRIO                         tskIDLE_PRIORITY+5
 
 /*
 *********************************************************************************************************

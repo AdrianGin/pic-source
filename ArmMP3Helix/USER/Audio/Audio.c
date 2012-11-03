@@ -34,7 +34,7 @@ static HMP3Decoder hMP3Decoder; /* Content is the pointers to all buffers and in
 MP3FrameInfo mp3FrameInfo; /* Content is the output from MP3GetLastFrameInfo,
  we only read this once, and conclude it will be the same in all frames
  Maybe this needs to be changed, for different requirements */
-volatile uint32_t bytesLeft; /* Saves how many bytes left in readbuf	*/
+volatile uint32_t bytesLeft = 0; /* Saves how many bytes left in readbuf	*/
 volatile uint32_t outOfData; /* Used to set when out of data to quit playback */
 volatile AUDIO_PlaybackBuffer_Status audio_buffer_fill;
 AUDIO_Playback_status_enum AUDIO_Playback_status;
@@ -204,7 +204,7 @@ int FillBuffer(FIL *FileObject, uint8_t start)
 	{
 		bytesLeft = 0;
 		readPtr = readBuf;
-		//printf("-- MP3Decode Error Occurred %s \r\n", MP3_GetStrResult(err));
+		printf("-- MP3Decode Error Occurred %s \r\n", MP3_GetStrResult(err));
 
 		/* error occurred */
 		switch (err)
@@ -409,6 +409,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 	uint8_t err;
 	uint16_t i;
 	uint16_t waveReadSize;
+	int32_t startFrameFlag;
 	/* Reset counters */
 	bytesLeft = 0;
 	outOfData = 0;
@@ -531,7 +532,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 		MP3_Data_Index = 0;
 
-		mp3_info.data_start = 0;
+
 
 		/* 播放时间 */
 		if ((strstr(path, "MP3") != NULL) || (strstr(path, "mp3") != NULL))
@@ -564,10 +565,34 @@ void PlayAudioFile(FIL *FileObject, char *path)
 			}
 		}
 
-		mp3_info.position = -1;
+		mp3_info.position = 0;
+		mp3_info.data_start = 0;
 
-		res = f_lseek(FileObject, mp3_info.data_start);
+//		res = f_lseek(FileObject, 0);
+//
+//		mp3_info.data_start = 0;
+//		startFrameFlag = -1;
+//
+//		while(startFrameFlag == -1)
+//		{
+//			res = f_read(FileObject,
+//					(uint8_t *) readBuf,
+//					READBUF_SIZE, &n_Read);
+//
+//			startFrameFlag = MP3FindSyncWord(readPtr, n_Read);
+//
+//			if( startFrameFlag == -1)
+//			{
+//				mp3_info.data_start += READBUF_SIZE;
+//			}
+//			else
+//			{
+//				mp3_info.data_start += startFrameFlag;
+//			}
+//		}
 
+		res = f_lseek(FileObject, 0);
+		printf("DataStart = %X", mp3_info.data_start);
 		/* Read the first data to get info about the MP3 File */
 		while (FillBuffer(FileObject, 1)); /* Must Read MP3 file header information */
 		/* Get the length of the decoded data, so we can set correct play length */
@@ -581,7 +606,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 		/* Start the playback */
 		AUDIO_Playback_status = IS_PLAYING;
 
-		printf("DataStart = %d", mp3_info.data_start);
+
 
 		while (!(outOfData == 1) && (SemaphoreTake(Sem_StopMP3Decode, 0) == pdFAIL))
 		//while(1)
@@ -605,7 +630,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 //				//OSSemPost(DMAComplete); /* 发送信号量 */
 //			}
 //
-			if( SemaphoreTake(Sem_DMAComplete, SEMAPHORE_BLOCK_WAIT) == pdTRUE )
+			if( SemaphoreTake(Sem_DMAComplete, SEMAPHORE_BLOCK_WAIT-1) == pdTRUE )
 			{
 
 				//vTaskSuspend(mp3DecodeHandle);
@@ -613,7 +638,7 @@ void PlayAudioFile(FIL *FileObject, char *path)
 
 				if( AUDIO_PlaybackBuffer_GetStatus(0) != FULL )
 				{
-					printf("Buffer NOT FULL!\n");
+					//printf("Buffer NOT FULL!\n");
 				}
 
 				if( SeekValue != 0 )
@@ -784,14 +809,14 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 	TIM_DeInit(TIM6);
 	/* TIM2 Configuration */
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-	TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / I2S_AudioFreq;
+	TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / I2S_AudioFreq - 1;
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
 
 	/* TIM2 TRGO selection */
-	TIM_SetAutoreload(TIM6, (uint32_t)(SystemCoreClock / I2S_AudioFreq));
+	TIM_SetAutoreload(TIM6, (uint32_t)(SystemCoreClock / I2S_AudioFreq) - 1);
 	TIM_SelectOutputTrigger(TIM6, TIM_TRGOSource_Update);
 	//TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
 
@@ -836,58 +861,33 @@ void DMA2_Channel3_IRQHandler(void)
 {
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 	portBASE_TYPE xYieldRequired = pdFALSE;
-	uint32_t test;
-
-	test = DMA2->ISR;
 
 	if (DMA_GetITStatus(DAC_DMA_HT)) /* DMA1 通道5 半传输中断 */
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_HT); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= LOW_EMPTY;
-//		if( xTaskIsTaskSuspended(mp3DecodeHandle) == pdTRUE )
-//		{
-//			xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
-//		}
-//		else
-//		{
-//			prtintf("POT ERROR!!\n");
-//		}
 		xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
-		// SemaphoreGive(Sem_DMAComplete);
-//		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
 	if (DMA_GetITStatus(DAC_DMA_TC)) /* DMA1 通道5 传输完成中断 */
 	{
 		DMA_ClearITPendingBit(DAC_DMA_GL | DAC_DMA_TC); /* DMA1 通道5 全局中断 */
 		audio_buffer_fill |= HIGH_EMPTY;
-		//xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
-		//SemaphoreGive(Sem_DMAComplete);
 		xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_DMAComplete, &xHigherPriorityTaskWoken);
-//		OSSemPost(DMAComplete); /* 发送信号量 */
 	}
 
 	if( xTaskIsTaskSuspended(mp3DecodeHandle) == pdTRUE )
 	{
 		xYieldRequired = xTaskResumeFromISR(mp3DecodeHandle);
 	}
-	else
-	{
-		//printf("POT ERROR!! %X", test);
-	}
 
-	     if( xYieldRequired == pdTRUE )
-	     {
-	         // We should switch context so the ISR returns to a different task.
-	         // NOTE:  How this is done depends on the port you are using.  Check
-	         // the documentation and examples for your port.
-	    	 vPortYieldFromISR();
-	     }
-
-	     if( xHigherPriorityTaskWoken == pdTRUE )
-	     {
-	    	 vPortYieldFromISR();
-	     }
+	 if( (xYieldRequired == pdTRUE) || (xHigherPriorityTaskWoken == pdTRUE) )
+	 {
+		 // We should switch context so the ISR returns to a different task.
+		 // NOTE:  How this is done depends on the port you are using.  Check
+		 // the documentation and examples for your port.
+		 vPortYieldFromISR();
+	 }
 
 }
 
@@ -920,9 +920,9 @@ static void WavNVIC_Configuration(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Channel3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -963,12 +963,12 @@ void AUDIO_Init_audio_mode(AUDIO_Length_enum length, uint32_t frequency,
 
 	if (strlen(mp3_info.title) == 0)
 	{
-		strcpy(mp3_info.title, "找不到歌曲名");
+		strcpy(mp3_info.title, "No Title");
 	}
 
-	if (strlen(mp3_info.title) > 20)
+	if (strlen(mp3_info.title) > MP3_MAX_TITLE_LEN)
 	{
-		strcpy(mp3_info.title, "歌曲名太长、无法显示");
+		strcpy(mp3_info.title, "Title Too Long");
 	}
 
 	printf("-- MP3 file header information \r\n");

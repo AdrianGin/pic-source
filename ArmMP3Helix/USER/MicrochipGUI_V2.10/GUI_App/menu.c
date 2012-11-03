@@ -53,13 +53,13 @@ void StartMenu(void)
  	}
 	/* 列表框 */
 	{
-	  alt2Scheme->Color0 = WHITE;
+	  alt2Scheme->Color0 = BLACK;
       alt2Scheme->Color1 = RGB565CONVERT(49, 106, 197);
 	  alt2Scheme->EmbossDkColor = WHITE;
 	  alt2Scheme->EmbossLtColor = RGB565CONVERT(0xA9, 0xDB, 0xEF);
-      alt2Scheme->TextColor1 = BLACK;
-      alt2Scheme->TextColor0 = BLACK;
-	  alt2Scheme->pFont = (void*)&externalfont;	
+      alt2Scheme->TextColor1 = WHITE;
+      alt2Scheme->TextColor0 = WHITE;
+	  alt2Scheme->pFont = (void*)&externalfont;
 	}
 	/* 列表框滑动条 */
 	{

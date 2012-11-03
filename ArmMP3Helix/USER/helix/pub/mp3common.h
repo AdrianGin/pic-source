@@ -55,10 +55,10 @@
 #define	SYNCWORDH		0xff
 #define	SYNCWORDL		0xe0
 
-/* 12-bit syncword if MPEG 1,2 only are supported 
- * #define	SYNCWORDH		0xff
- * #define	SYNCWORDL		0xf0
- */
+/* 12-bit syncword if MPEG 1,2 only are supported */
+//#define	SYNCWORDH		0xff
+//#define	SYNCWORDL		0xf0
+
 
 typedef struct _MP3DecInfo {
 	/* pointers to platform-specific data structures */

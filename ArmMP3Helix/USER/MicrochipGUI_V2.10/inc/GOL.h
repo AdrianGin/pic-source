@@ -307,10 +307,13 @@ extern OBJ_HEADER   *_pObjectFocused;
 *********************************************************************/
 
 // Default GOL font.
-extern const FONT_FLASH GOLFontDefault;
+#define FONT_TO_USE	GOLFontDefault
 
+//extern const FONT_FLASH GOLFontDefault;
+extern const FONT_FLASH FONT_TO_USE;
 // Default Font assignement.	
-    #define FONTDEFAULT GOLFontDefault
+//    #define FONTDEFAULT GOLFontDefault
+	#define FONTDEFAULT FONT_TO_USE
 
 #ifdef USE_PALETTE
 

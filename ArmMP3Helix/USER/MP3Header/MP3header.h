@@ -27,6 +27,8 @@
 #include "stm32f10x.h"
 
 
+//http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header#SamplingRate
+
 /* Private typedef -----------------------------------------------------------*/
 struct PlayFileList
 {
@@ -48,11 +50,14 @@ typedef struct time
   uint16_t msecond;
 }TIME;
 
+#define MP3_MAX_TITLE_LEN	(40)
+#define MP3_MAX_ARTIST_LEN	(40)
+
 /* music tag information structure */
 struct tag_info
 {
-	char title [40];        /* music title                     */
-	char artist[40];        /* music artist                    */
+	char title [MP3_MAX_TITLE_LEN];        /* music title                     */
+	char artist[MP3_MAX_ARTIST_LEN];        /* music artist                    */
 
 	int duration;           /* music total duration (second)   */
 	int position;           /* music current position (second) */

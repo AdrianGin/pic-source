@@ -1,3 +1,7 @@
+#ifdef __cplusplus    /* Insert start of extern C construct */
+extern "C" {
+#endif
+
 
 #ifndef __AsciiLib_H
 #define __AsciiLib_H  
@@ -14,6 +18,10 @@ void GetASCIICode(unsigned char* pBuffer,unsigned char ASCII);
 
 #endif 
 
+
+#ifdef __cplusplus    /* Insert start of extern C construct */
+}
+#endif
 
 /*********************************************************************************************************
       END FILE

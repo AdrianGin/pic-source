@@ -135,7 +135,7 @@ size_t heapSize;
 
 			 vTaskList(buffer);
 			 printf("%s", buffer);
-			 vTaskDelay(2000/portTICK_RATE_MS);
+			 vTaskDelay(20000/portTICK_RATE_MS);
 //			 MP3_Data_Index = 1000;
 //			 SeekValue = MP3_Data_Index;
 			 heapSize = xPortGetFreeHeapSize();
@@ -203,7 +203,7 @@ static  void  App_TaskCreate (void)
 //	xTaskCreate( vLEDTask , ( signed char * ) "LEDTask1" , APP_TASK_LED_STK_SIZE , NULL , APP_TASK_LED_PRIO , NULL );
 	xTaskCreate( vLEDTask2 , ( signed char * ) "LEDTask2" , APP_TASK_LED2_STK_SIZE , NULL , APP_TASK_LED2_PRIO , NULL );
 
-//	App_ReadButtonTaskCreate();
+	App_ReadButtonTaskCreate();
 //
 	App_MicrochipGUITaskCreate();
 //
@@ -344,6 +344,7 @@ void assert_failed(uint8_t* file, uint32_t line)
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
+	printf("AssertFailed %s, %d\n", file, line);
   /* Infinite loop */
   while (1)
   {

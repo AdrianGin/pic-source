@@ -549,8 +549,9 @@ void PlayAudioFile(FIL *FileObject, char *path)
 			//Here is where we output the decoded WavData
 			//while( SemaphoreTake(Sem_DMAComplete, 0) == pdFAIL){}
 //			OSSemPend(DMAComplete, 0, &err);
-			FillBuffer(FileObject, 0);
 			vTaskSuspend(mp3DecodeHandle);
+			FillBuffer(FileObject, 0);
+
 
 			if( SeekValue != 0 )
 			{
@@ -842,7 +843,7 @@ static void NVIC_Configuration(void)
 //	NVIC_Init(&NVIC_InitStructure);
 
 	/* DMA IRQ Channel configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	NVIC_InitStructure.NVIC_IRQChannel = DAC_DMA_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;

@@ -2,42 +2,50 @@
 <cdtprojectproperties>
 <section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
 <language name="c,C,cc,cxx,cpp">
-<includepath workspace_path="true">/ArmMP3Helix\Libraries\CMSIS\CM3\CoreSupport</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\Libraries\STM32F10x_StdPeriph_Driver\inc</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\Libraries\STM32F10x_StdPeriph_Driver\src</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\WM8731</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\helix</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\helix\real</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\helix\pub</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\Audio</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\SD_Card</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\FATFS_V0.08A\src</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\MP3Header</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\MicrochipGUI_V2.10\inc</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\uCOS-VIEW</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\GLCD</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\TouchPanel</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\ucCos_App</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\uC-CPU</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\MicrochipGUI_V2.10</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\MicrochipGUI_V2.10\Font</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\uC-LIB</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\uCOS-II</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\MicrochipGUI_V2.10\GUI_App</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\SPI_Flash</includepath>
-<includepath workspace_path="true">/ArmMP3Helix\USER\Unicode</includepath>
+<includepath workspace_path="true">/${ProjName}\Libraries\CMSIS\CM3\CoreSupport</includepath>
+<includepath workspace_path="true">/${ProjName}\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm</includepath>
+<includepath workspace_path="true">/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc</includepath>
+<includepath workspace_path="true">/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src</includepath>
+<includepath workspace_path="true">/${ProjName}\USER</includepath>
+<includepath workspace_path="true">/${ProjName}\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\WM8731</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\helix</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\helix\real</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\helix\pub</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\Audio</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\SD_Card</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\FATFS_V0.08A\src</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\MP3Header</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\MicrochipGUI_V2.10\inc</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\uCOS-VIEW</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\GLCD</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\TouchPanel</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\ucCos_App</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\uC-CPU</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\MicrochipGUI_V2.10</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\MicrochipGUI_V2.10\Font</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\uC-LIB</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\uCOS-II</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\MicrochipGUI_V2.10\GUI_App</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\SPI_Flash</includepath>
+<includepath workspace_path="true">/${ProjName}\USER\Unicode</includepath>
 <includepath>D:\Keil\ARM\RV31\INC</includepath>
 <includepath>D:\Keil\ARM\CMSIS\Include</includepath>
 <includepath>D:\Keil\ARM\Inc\ST\STM32F10x</includepath>
+<includepath workspace_path="true">/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/USB</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/FreeRTOS/Source/include</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/OS_Abstraction</includepath>
 
 </language>
 <language name="s,S">
 <includepath>D:\Keil\ARM\RV31\INC</includepath>
 <includepath>D:\Keil\ARM\CMSIS\Include</includepath>
 <includepath>D:\Keil\ARM\Inc\ST\STM32F10x</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/FreeRTOS/Source/include</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3</includepath>
+<includepath workspace_path="true">/${ProjName}/USER/OS_Abstraction</includepath>
 
 </language>
 </section>
@@ -45,6 +53,15 @@
 <language name="c,C,cc,cxx,cpp">
 <macro>
 <name>__MICROLIB</name><value/>
+</macro>
+<macro>
+<name>STM32F10X_HD</name><value/>
+</macro>
+<macro>
+<name>USE_STDPERIPH_DRIVER</name><value/>
+</macro>
+<macro>
+<name>HSE_VALUE</name><value>8000000UL</value>
 </macro>
 
 </language>

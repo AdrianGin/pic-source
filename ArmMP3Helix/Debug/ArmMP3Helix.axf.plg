@@ -34,7 +34,7 @@ ROMTableAddr = 0xE00FF003
 Target info:
 ------------
 Device: STM32F103VE
-VTarget = 3.455V
+VTarget = 3.261V
 State of Pins: 
 TCK: 1, TDI: 0, TDO: 0, TMS: 0, TRES: 1, TRST: 1
 Hardware-Breakpoints: 6

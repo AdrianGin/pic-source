@@ -12,6 +12,11 @@
 *
 *********************************************************************************************************/
 
+#ifdef __cplusplus    /* Insert start of extern C construct */
+extern "C" {
+#endif
+
+
 #ifndef __LCD_H 
 #define __LCD_H
 
@@ -21,6 +26,10 @@
 
 /* Private define ------------------------------------------------------------*/
 #define USE_16BIT_PMP
+
+#define LCD_REG              (*((volatile unsigned short *) 0x60000000)) /* RS = 0 */
+#define LCD_RAM              (*((volatile unsigned short *) 0x60020000)) /* RS = 1 */
+
 
 /*********************************************************************
 * Overview: Horizontal and vertical display resolution
@@ -106,15 +115,159 @@ void GUI_Chinese(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint
 void LCD_DrawPicture(uint16_t StartX,uint16_t StartY,uint16_t EndX,uint16_t EndY,uint16_t *pic);
 
 
-__inline void LCD_WriteIndex(uint16_t index);
-__inline void LCD_WriteData(uint16_t data);
-__inline uint16_t LCD_ReadData(void);
-__inline uint16_t LCD_ReadReg(uint16_t LCD_Reg);
-__inline void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue);
-static void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
+
+void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
 void delay_ms(uint16_t ms);
 
+void LCD_VerticalScroll(uint16_t start, uint16_t end, uint16_t length);
+void LCD_DMATxByte(uint16_t* buffer, uint16_t size);
+
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : LCD控制器寄存器地址
+* Input          : - index: 寄存器地址
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+__inline void LCD_WriteIndex(uint16_t index)
+{
+	LCD_REG	= index;
+/*
+	Clr_Rs;
+	Set_nRd;
+
+	GPIOE->ODR = index;	 // GPIO_Write(GPIOE,index);
+
+	Clr_nWr;
+	Set_nWr;
+*/
+}
+
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : LCD寄存器数据
+* Input          : - index: 寄存器数据
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+__inline void LCD_WriteData(uint16_t data)
+{
+	LCD_RAM = data;
+/*
+	Set_Rs;
+
+	GPIOE->ODR = data;	 //GPIO_Write(GPIOE,data);
+
+	Clr_nWr;
+	Set_nWr;
+*/
+}
+
+/*******************************************************************************
+* Function Name  : LCD_ReadData
+* Description    : 读取控制器数据
+* Input          : None
+* Output         : None
+* Return         : 返回读取到的数据
+* Attention		 : None
+*******************************************************************************/
+__inline uint16_t LCD_ReadData(void)
+{
+//	uint16_t value;
+
+//	Set_Rs;
+//	Set_nWr;
+//	Clr_nRd;
+
+/*
+    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
+    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
+/*
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+*/
+//	GPIOE->CRH = 0x44444444;
+//	GPIOE->CRL = 0x44444444;
+/*
+    value = GPIO_ReadInputData(GPIOE);
+    value = GPIO_ReadInputData(GPIOE);
+*/
+//    value = GPIOE->IDR;
+//    value = GPIOE->IDR;
+
+/*
+    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
+    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
+/*
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+*/
+//    GPIOE->CRH = 0x33333333;
+//    GPIOE->CRL = 0x33333333;
+
+//    Set_nRd;
+
+//    return value;
+	return LCD_RAM;
+}
+
+
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : Writes to the selected LCD register.
+* Input          : - LCD_Reg: address of the selected register.
+*                  - LCD_RegValue: value to write to the selected register.
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+__inline void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
+{
+	/* Write 16-bit Index, then Write Reg */
+//	Clr_Cs;
+	LCD_WriteIndex(LCD_Reg);
+	/* Write 16-bit Reg */
+	LCD_WriteData(LCD_RegValue);
+//	Set_Cs;
+}
+
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : Reads the selected LCD Register.
+* Input          : None
+* Output         : None
+* Return         : LCD Register Value.
+* Attention		 : None
+*******************************************************************************/
+__inline uint16_t LCD_ReadReg(uint16_t LCD_Reg)
+{
+//	uint16_t LCD_RAM;
+
+	/* Write 16-bit Index (then Read Reg) */
+//	Clr_Cs;
+	LCD_WriteIndex(LCD_Reg);
+//	delay_ms(1);  /* delay 5 ms */
+
+	/* Read 16-bit Reg */
+//	LCD_RAM = LCD_ReadData();
+//	Set_Cs;
+//	return LCD_RAM;
+	return LCD_ReadData();
+}
+
+
 #endif 
+
+#ifdef __cplusplus  /* Insert end of extern C construct. */
+}                   /* The C header file can now be */
+#endif              /* included in either C or C++ code. */
 
 /*********************************************************************************************************
       END FILE

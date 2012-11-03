@@ -62,7 +62,7 @@ void DisplayMP3(void)
 		 if (LbGetSel(pLb,NULL) == NULL)	 /* 列表框没有选项 */
 		 {
 		    SetColor( BLACK );					
-			OutTextXY(150 - ( (float)(strlen("请选择你喜欢的歌曲")/2) * 8 ),30,"请选择你喜欢的歌曲");
+			OutTextXY(150 - ( (float)(strlen("ADRIANMP3")/2) * 8 ),30,"ADRIANMP3");
 		 }		 
 		 else
 		 {	
@@ -78,12 +78,12 @@ void DisplayMP3(void)
 		       if(AUDIO_Playback_status == IS_PLAYING)	          /* 播放中 */
 		       {
 			      SetColor( BLACK );	    
-			      OutTextXY(120,60,"播放中");	
+			      OutTextXY(120,60,"Play");
 		       }
 		       else if( ( AUDIO_Playback_status == NO_SOUND )  )  /* 暂停播放 */ 
 		       {
 			      SetColor( BLACK );
-			      OutTextXY(120,60,"已停止");			  		    
+			      OutTextXY(120,60,"Stop");
 		       }  
 			}
 
@@ -96,12 +96,12 @@ void DisplayMP3(void)
 		       if(AUDIO_Playback_status == IS_PLAYING)	          /* 播放中 */
 		       {
 			      SetColor( BLACK );	    
-			      OutTextXY(120,60,"播放中");			  
+			      OutTextXY(120,60,"PLAY");
 		       }
 		       else if( ( AUDIO_Playback_status == NO_SOUND )  )  /* 暂停播放 */ 
 		       {
 			      SetColor( BLACK );
-			      OutTextXY(120,60,"已停止");			  		    
+			      OutTextXY(120,60,"STOP");
 		       }  
 		       play_state =  AUDIO_Playback_status; 
 		    }
@@ -141,11 +141,13 @@ void DisplayMP3(void)
 			   asci = ( mp3_info.position%60 ) %10 + '0';
 			   OutTextXY(102 , 60 , &asci );
 
-			   /* 显示歌曲码率、歌曲名 */
-		       if ( mp3_info.position == 0 )		 
+			   /* Only need to update this at the start */
+		       if ( mp3_info.position < 10 )
 		       {	
+
 			       pPicture =(PICTURE*)GOLFindObject(ID_PICTURE7);
 			       PictDraw(pPicture);
+
 
 			   	   SetColor( BLACK );
 
