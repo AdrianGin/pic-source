@@ -19,6 +19,10 @@
 ** Descriptions:            
 **
 *********************************************************************************************************/
+#ifdef __cplusplus    /* Insert start of extern C construct */
+extern "C" {
+#endif
+
 
 #ifndef _TOUCHPANEL_H_
 #define _TOUCHPANEL_H_
@@ -57,9 +61,49 @@ extern Coordinate  display ;
 #define	CHY 	0xd0	/* 通道X+的选择控制字 */
 
 
-#define TP_CS(x)	x ? GPIO_SetBits(GPIOB,GPIO_Pin_12): GPIO_ResetBits(GPIOB,GPIO_Pin_12)
 
-#define TP_INT_IN   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
+
+
+//Must choose either TP_USE_SPI1 or SPI2
+#define TP_USE_SPI1
+//#define TP_USE_SPI2
+
+#ifdef TP_USE_SPI1
+
+#define SPI_GPIO_PORT 	GPIOA
+#define SPI_PINS		GPIO_Pin_5  | GPIO_Pin_6 | GPIO_Pin_7
+
+#define TP_CS_GPIO		GPIOA
+#define TP_CS_PIN		GPIO_Pin_4
+
+#define TP_IRQ_GPIO		GPIOB
+#define TP_IRQ_PIN		GPIO_Pin_6
+
+#define RCC_APBxPeriphClockCmd RCC_APB2PeriphClockCmd
+#define SPI_APB		RCC_APB2Periph_SPI1
+#define SPI_MODULE	SPI1
+
+#else
+
+#define SPI_GPIO_PORT 	GPIOB
+#define SPI_PINS		GPIO_Pin_15 | GPIO_Pin_13 | GPIO_Pin_14
+
+#define TP_CS_GPIO		GPIOB
+#define TP_CS_PIN		GPIO_Pin_12
+
+#define TP_IRQ_GPIO		GPIOB
+#define TP_IRQ_PIN		GPIO_Pin_0
+
+#define RCC_APBxPeriphClockCmd RCC_APB1PeriphClockCmd
+#define SPI_APB		RCC_APB1Periph_SPI2
+#define SPI_MODULE	SPI2
+
+#endif
+
+
+#define TP_CS(x)	x ? GPIO_SetBits(TP_CS_GPIO,TP_CS_PIN): GPIO_ResetBits(TP_CS_GPIO,TP_CS_PIN)
+
+#define TP_INT_IN   GPIO_ReadInputDataBit(TP_IRQ_GPIO,TP_IRQ_PIN)
 
 /* Private function prototypes -----------------------------------------------*/				
 void TP_Init(void);	
@@ -75,5 +119,10 @@ FunctionalState getDisplayPoint(Coordinate * displayPtr,Coordinate * screenPtr,M
 /*********************************************************************************************************
       END FILE
 *********************************************************************************************************/
+
+#ifdef __cplusplus  /* Insert end of extern C construct. */
+}                   /* The C header file can now be */
+#endif              /* included in either C or C++ code. */
+
 
 

@@ -24,7 +24,7 @@
 #define _TOUCHPANEL_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
+#include <stdint.h>
 
 /* Private typedef -----------------------------------------------------------*/
 typedef	struct POINT 
@@ -57,9 +57,7 @@ extern Coordinate  display ;
 #define	CHY 	0xd0	/* 通道X+的选择控制字 */
 
 
-#define TP_CS(x)	x ? GPIO_SetBits(GPIOB,GPIO_Pin_12): GPIO_ResetBits(GPIOB,GPIO_Pin_12)
 
-#define TP_INT_IN   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
 
 /* Private function prototypes -----------------------------------------------*/				
 void TP_Init(void);	
@@ -67,8 +65,8 @@ Coordinate *Read_Ads7846(void);
 void TouchPanel_Calibrate(void);
 void DrawCross(uint16_t Xpos,uint16_t Ypos);
 void TP_DrawPoint(uint16_t Xpos,uint16_t Ypos);
-FunctionalState setCalibrationMatrix( Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr);
-FunctionalState getDisplayPoint(Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr );
+uint8_t setCalibrationMatrix( Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr);
+uint8_t getDisplayPoint(Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr );
 
 #endif
 

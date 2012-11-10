@@ -46,8 +46,8 @@
 *********************************************************************************************************
 */ 
 
-
-
+#include "FreeRTOS.h"
+#include "task.h"
 
 
 #define  APP_TASK_START_PRIO                               tskIDLE_PRIORITY+4

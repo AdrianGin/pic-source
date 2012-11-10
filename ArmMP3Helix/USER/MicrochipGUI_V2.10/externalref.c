@@ -21,10 +21,10 @@
 *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include "Graphics.h"
+#include "Graphics\Graphics.h"
 
-FONT_EXTERNAL externalfont = { (TYPE_MEMORY) 0x0001,"HZlib.bin"};
-BITMAP_EXTERNAL externalbitmap = { (TYPE_MEMORY) 0x0001,"external.bin"};
+//FONT_EXTERNAL externalfont = { (TYPE_MEMORY) 0x0001,"HZlib.bin"};
+//BITMAP_EXTERNAL externalbitmap = { (TYPE_MEMORY) 0x0001,"external.bin"};
 
 /*********************************************************************************************************
       END FILE

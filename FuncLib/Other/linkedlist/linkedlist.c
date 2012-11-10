@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include "linkedlist\linkedlist.h"
 
-#include "p24Hxxxx.h"
-#include "hardUart24H/hardUart.h"
+
 
 
 LIST_NODE_t* LL_NewNode(void* data)

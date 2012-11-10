@@ -154,6 +154,26 @@ void SysTick_Handler(void)
 /**
   * @}
   */ 
+/*******************************************************************************
+* Function Name  : SDIO_IRQHandler
+* Description    : This function handles SDIO global interrupt request.
+* Input          : None
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+void SDIO_IRQHandler(void)
+{
+  /* Process All SDIO Interrupt Sources */
+//  CPU_SR         cpu_sr;
+//  OS_ENTER_CRITICAL();
+//  OSIntNesting++;
+//  OS_EXIT_CRITICAL();
+//
+  SD_ProcessIRQSrc();
+//
+//  OSIntExit();
+}
 
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

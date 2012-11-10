@@ -6,7 +6,7 @@
  * FileName:        ProgressBar.h
  * Dependencies:    None 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30 MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,23 +34,27 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Anton Alkhimenok 	11/12/07	Version 1.0 release
+ * 11/12/07		Version 1.0 release
+ * 11/04/11     Added state bit PB_NOPROGRESS to indicate the progress in 
+ *              text will not be shown.
  *****************************************************************************/
 #ifndef _PROGRESSBAR_H
     #define _PROGRESSBAR_H
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
 *********************************************************************/
-    #define PB_DISABLED 0x0002  // Bit to indicate Progress Bar is in a disabled state.
-	#define PB_VERTICAL 0x0004  // Bit for orientation  (0 - horizontal, 1 - vertical)
-    #define PB_HIDE     0x8000  // Bit to indicate Progress Bar must be hidden.
-    #define PB_DRAW_BAR 0x2000  // Bit to indicate Progress Bar must be redrawn.
-    #define PB_DRAW     0x4000  // Bit to indicate Progress Bar must be redrawn.
+    #define PB_DISABLED     0x0002  // Bit to indicate Progress Bar is in a disabled state.
+	#define PB_VERTICAL     0x0004  // Bit for orientation  (0 - horizontal, 1 - vertical)
+    #define PB_NOPROGRESS   0x0008  // Bit to suppress rendering of progress in text
+    #define PB_HIDE         0x8000  // Bit to indicate Progress Bar must be hidden.
+    #define PB_DRAW_BAR     0x2000  // Bit to indicate Progress Bar must be redrawn.
+    #define PB_DRAW         0x4000  // Bit to indicate Progress Bar must be redrawn.
 
 /*****************************************************************************
  * Overview: The structure contains data for the progress bar
@@ -212,7 +216,7 @@ PROGRESSBAR *PbCreate
 WORD        PbTranslateMsg(PROGRESSBAR *pPb, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD PbDraw(PROGRESSBAR *pPb)
+* Function: WORD PbDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 * 			the current parameter settings. Location of the object is 
@@ -241,7 +245,7 @@ WORD        PbTranslateMsg(PROGRESSBAR *pPb, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD        PbDraw(PROGRESSBAR *pPb);
+WORD PbDraw(void *pObj);
 
 /*********************************************************************
 * Function:  PbSetRange(PROGRESSBAR *pPb, WORD range)

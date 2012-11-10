@@ -43,10 +43,10 @@ void delay_init(void)
     RCC_ClocksTypeDef RCC_ClocksStatus;
 
     RCC_GetClocksFreq(&RCC_ClocksStatus);
-    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);  /*选择外部时钟  HCLK/8 */
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);  /*选择外部时钟  HCLK/8 */
 	SysTick_ITConfig(DISABLE);
     delay_fac_us = RCC_ClocksStatus.HCLK_Frequency / 8000000;
-    delay_fac_ms = RCC_ClocksStatus.HCLK_Frequency / 8000;      
+    delay_fac_ms = RCC_ClocksStatus.HCLK_Frequency / 8000;
 }
 					
 /*******************************************************************************

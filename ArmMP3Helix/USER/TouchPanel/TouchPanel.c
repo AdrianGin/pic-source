@@ -41,6 +41,10 @@ Coordinate DisplaySample[3] =   {
 #define THRESHOLD 2   /* 差值门限 */
 
 
+#define TP_CS(x)	x ? GPIO_SetBits(GPIOB,GPIO_Pin_12): GPIO_ResetBits(GPIOB,GPIO_Pin_12)
+
+#define TP_INT_IN   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
+
 /*******************************************************************************
 * Function Name  : ADS7843_SPI_Init
 * Description    : ADS7843 SPI 初始化
@@ -383,12 +387,12 @@ Coordinate *Read_Ads7846(void)
 * Return         : 返回1表示成功 0失败
 * Attention		 : None
 *******************************************************************************/
-FunctionalState setCalibrationMatrix( Coordinate * displayPtr,
+uint8_t setCalibrationMatrix( Coordinate * displayPtr,
                           Coordinate * screenPtr,
                           Matrix * matrixPtr)
 {
 
-  FunctionalState retTHRESHOLD = ENABLE ;
+	uint8_t retTHRESHOLD = ENABLE ;
   /* K＝(X0－X2) (Y1－Y2)－(X1－X2) (Y0－Y2) */
   matrixPtr->Divider = ((screenPtr[0].x - screenPtr[2].x) * (screenPtr[1].y - screenPtr[2].y)) - 
                        ((screenPtr[1].x - screenPtr[2].x) * (screenPtr[0].y - screenPtr[2].y)) ;
@@ -430,11 +434,11 @@ FunctionalState setCalibrationMatrix( Coordinate * displayPtr,
 * Return         : 返回1表示成功 0失败
 * Attention		 : None
 *******************************************************************************/
-FunctionalState getDisplayPoint(Coordinate * displayPtr,
+uint8_t getDisplayPoint(Coordinate * displayPtr,
                      Coordinate * screenPtr,
                      Matrix * matrixPtr )
 {
-  FunctionalState retTHRESHOLD =ENABLE ;
+	uint8_t retTHRESHOLD =ENABLE ;
 
   if( matrixPtr->Divider != 0 )
   {

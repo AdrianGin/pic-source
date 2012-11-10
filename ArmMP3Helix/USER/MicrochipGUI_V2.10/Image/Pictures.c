@@ -144,7 +144,7 @@ const char L1185835973[] /*__attribute__((aligned(2))) */=
 
 extern const char L1191914917[] /*__attribute__ ((space(prog),aligned(2)))*/;
 //BITMAP STRUCTURE. BITMAP NAME CAN BE CHANGED HERE.
-const BITMAP_FLASH bulbon = {0,L1191914917};
+const IMAGE_FLASH bulbon = {0,L1191914917};
 const char L1191914917[] /*__attribute__((aligned(2)))*/ = 
 { 0x00 
 , 0x04 
@@ -259,7 +259,7 @@ const char L1191914917[] /*__attribute__((aligned(2)))*/ =
 
 extern const char L1191264647[] /*__attribute__ ((space(prog),aligned(2)))*/;
 //BITMAP STRUCTURE. BITMAP NAME CAN BE CHANGED HERE.
-const BITMAP_FLASH bulboff = {0,L1191264647};
+const IMAGE_FLASH bulboff = {0,L1191264647};
 const char L1191264647[] /*__attribute__((aligned(2)))*/ = 
 { 0x00 
 , 0x04 

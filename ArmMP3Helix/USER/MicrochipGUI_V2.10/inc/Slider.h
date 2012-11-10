@@ -6,7 +6,7 @@
  * FileName:        Slider.h
  * Dependencies:    none 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,14 +34,16 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Paolo A. Tamayo		11/12/07	Version 1.0 release
+ * 11/12/07    Version 1.0 release
+ * 08/12/10    Added casting to pointers in macros.
  *****************************************************************************/
 #ifndef _SLIDER_H
     #define _SLIDER_H
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
@@ -108,6 +110,30 @@ typedef struct
 void    SldSetRange(SLIDER *pSld, SHORT newRange);
 
 /*********************************************************************
+* Macros:  SldGetRange(pSld)
+*
+* Overview: Returns the current range of the thumb. 
+*
+* PreCondition: none
+*
+* Input: pSld - Pointer to the object.
+*
+* Output: Returns the current range of the slider thumb.
+*
+* Example:
+*   <CODE> 
+*	WORD range;
+*	SLIDER *pSld;
+*
+*		range = SldGetRange(pSld);
+*	</CODE> 
+*
+* Side Effects: none
+*
+********************************************************************/
+    #define SldGetRange(pSld)   (((SLIDER*)pSld)->range)
+
+/*********************************************************************
 * Function: void SldSetPage(SLIDER *pSld, WORD newPage) 
 *
 * Overview: This sets the page size of the object. Page size defines 
@@ -131,36 +157,12 @@ void    SldSetRange(SLIDER *pSld, SHORT newRange);
 void    SldSetPage(SLIDER *pSld, WORD newPage);
 
 /*********************************************************************
-* Macros:  SldGetRange(pSld)
-*
-* Overview: Returns the current slider page. Value is always
-*           in the 1-range/2 inclusive for both slider and 
-*			scrollbar type.
-*
-* PreCondition: none
-*
-* Input: pSld - Pointer to the object.
-*
-* Output: Returns the current value of the slider range.
-*
-* Example:
-*   <CODE> 
-*	WORD range;
-*	SLIDER *pSld;
-*
-*		range = SldGetRange(pSld);
-*	</CODE> 
-*
-* Side Effects: none
-*
-********************************************************************/
-    #define SldGetRange(pSld)   (pSld->range)
-
-/*********************************************************************
 * Macros:  SldGetPage(pSld)
 *
-* Overview: Returns returns the current slider thumb position. 
-*			Value is always in the 1 to range/2 inclusive.
+* Overview: Returns the current page size of the object. Page size defines 
+*			the delta change of the thumb position when incremented 
+*      		via SldIncPos() or decremented via SldDecPos(). Page size 
+*			minimum value is 1. Maximum value is range/2. 
 *
 * PreCondition: none
 *
@@ -179,7 +181,7 @@ void    SldSetPage(SLIDER *pSld, WORD newPage);
 * Side Effects: none
 *
 ********************************************************************/
-    #define SldGetPage(pSld)    (pSld->page)
+    #define SldGetPage(pSld)    (((SLIDER*)pSld)->page)
 
 /*********************************************************************
 * Macros:  SldGetPos(pSld)
@@ -220,7 +222,7 @@ void    SldSetPage(SLIDER *pSld, WORD newPage);
 * Side Effects: none
 *
 ********************************************************************/
-    #define SldGetPos(pSld) (pSld)->pos
+    #define SldGetPos(pSld) (((SLIDER*)pSld)->pos)
 
 /*********************************************************************
 * Function:  SldSetPos(SLIDER *pSld, SHORT newPos)
@@ -291,11 +293,12 @@ void    SldSetPos(SLIDER *pSld, SHORT newPos);
 * Side Effects: none
 *
 ********************************************************************/
-    #define SldIncPos(pSld)                                                                                        \
-    SldSetPos                                                                                                      \
-    (                                                                                                              \
-        pSld,                                                                                                      \
-        (((DWORD) pSld->pos + (DWORD) pSld->page) <= (DWORD) pSld->range) ? (pSld->pos + pSld->page) : pSld->range \
+    #define SldIncPos(pSld)                                                                        \
+    SldSetPos                                                                                      \
+    (                                                                                              \
+        pSld,                                                                                      \
+        (((DWORD) pSld->pos + (DWORD) ((SLIDER*)pSld)->page) <= (DWORD) ((SLIDER*)pSld)->range) ?  \
+        				(((SLIDER*)pSld)->pos + ((SLIDER*)pSld)->page) : ((SLIDER*)pSld)->range    \
     )
 
 /*********************************************************************
@@ -317,7 +320,13 @@ void    SldSetPos(SLIDER *pSld, SHORT newPos);
 * Side Effects: none
 *
 ********************************************************************/
-    #define SldDecPos(pSld) SldSetPos(pSld, (((LONG) pSld->pos - (LONG) pSld->page) >= 0) ? (pSld->pos - pSld->page) : 0)
+    #define SldDecPos(pSld)                                                                        \
+    SldSetPos                                                                                      \
+    (                                                                                              \
+    	pSld,                                                                                      \
+    	(((LONG) ((SLIDER*)pSld)->pos - (LONG) ((SLIDER*)pSld)->page) >= 0) ?                      \
+    					(((SLIDER*)pSld)->pos - ((SLIDER*)pSld)->page) : 0                         \
+	)
 
 /*********************************************************************
 * Function: SLIDER *SldCreate(WORD ID, SHORT left, SHORT top, SHORT right, 
@@ -425,7 +434,7 @@ SLIDER  *SldCreate
         );
 
 /*********************************************************************
-* Function: void SldMsgDefault(WORD translatedMsg, SLIDER* pSld, GOL_MSG* pMsg)
+* Function: void SldMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG* pMsg)
 *
 * Overview: This function performs the actual state change 
 *			based on the translated message given. The following state changes 
@@ -453,10 +462,10 @@ SLIDER  *SldCreate
 * Side Effects: none
 *
 ********************************************************************/
-void    SldMsgDefault(WORD translatedMsg, SLIDER *pSld, GOL_MSG *pMsg);
+void    SldMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD SldTranslateMsg(SLIDER *pSld, GOL_MSG *pMsg)
+* Function: WORD SldTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below 
@@ -470,7 +479,7 @@ void    SldMsgDefault(WORD translatedMsg, SLIDER *pSld, GOL_MSG *pMsg);
 *							 Keyboard 	   EVENT_KEYSCAN				If event occurs and parameter1 passed matches the object’s ID and parameter 2 passed matches SCAN_UP_PRESSED or SCAN_LEFT_PRESSED.
 *		SLD_MSG_DEC			 Touch Screen  EVENT_PRESS, EVENT_MOVE		If events occurs and the x,y position falls in the area of the slider and the slider position is to the RIGHT of the x,y position for a horizontal slider or ABOVE the x,y position for a vertical slider.
 *							 Keyboard	   EVENT_KEYSCAN				If event occurs and parameter1 passed matches the object’s ID and parameter 2 passed matches SCAN_DOWN_PRESSED or SCAN_RIGHT_PRESSED.
-*		OBJ_MSG_PASSIVE		 Touch Screen  EVENT_RELEASE				If event occurs and  the x,y position falls in the area of the slider.
+*		OBJ_MSG_PASSIVE		 Touch Screen  EVENT_RELEASE				If events occurs and the x,y position falls in the area of the slider.
 *		OBJ_MSG_INVALID		 Any		   Any							If the message did not affect the object.
 *	</TABLE>
 *
@@ -484,7 +493,7 @@ void    SldMsgDefault(WORD translatedMsg, SLIDER *pSld, GOL_MSG *pMsg);
 * Output: Returns the translated message depending on the received GOL message:
 *		  - SLD_MSG_INC – Increment slider position
 *         - SLD_MSG_DEC – Decrement slider position
-*		  - OBJ_MSG_PASSIVE - no effect on slider state		 
+*     	  - OBJ_MSG_PASSIVE – Slider is not affected
 *     	  - OBJ_MSG_INVALID – Slider is not affected
 *
 * Example:
@@ -493,10 +502,10 @@ void    SldMsgDefault(WORD translatedMsg, SLIDER *pSld, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD    SldTranslateMsg(SLIDER *pSld, GOL_MSG *pMsg);
+WORD    SldTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD SldDraw(SLIDER *pSld)
+* Function: WORD SldDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 * 			the current parameter settings. Location of the object is 
@@ -524,5 +533,5 @@ WORD    SldTranslateMsg(SLIDER *pSld, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD    SldDraw(SLIDER *pSld);
+WORD SldDraw(void *pObj);
 #endif //_SLIDER_H

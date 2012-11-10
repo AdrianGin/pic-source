@@ -5,7 +5,7 @@
  * FileName:        Grid.h
  * Dependencies:    none
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -33,15 +33,16 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Kim Otten            02/29/08    ...
- * PAT					04/16/10	Added Grid Item as text.
+ * 02/29/08    ...
+ * 04/16/10	   Added Grid Item as text.
  *****************************************************************************/
 #ifndef _GRID_H_
     #define _GRID_H_
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 //******************************************************************************
 // Grid Object State Definitions
@@ -60,7 +61,7 @@
 // Grid Item State Definitions
 //******************************************************************************
 	#define GRIDITEM_SELECTED           0x0001  // The cell is selected.
-    #define GRIDITEM_IS_TEXT            0x0000  // The grid item is a test string.
+    #define GRIDITEM_IS_TEXT            0x0000  // The grid item is a text string.
     #define GRIDITEM_IS_BITMAP          0x0008  // The grid item is a bitmap.
     #define GRIDITEM_TEXTRIGHT          0x0010  // Text in the cell is right aligned.
     #define GRIDITEM_TEXTLEFT           0x0020  // Text in the cell is left aligned.
@@ -171,7 +172,7 @@ void    GridClearCellState(GRID *pGrid, SHORT column, SHORT row, WORD state);
 
 
 /*********************************************************************
-* Function: WORD GridDraw(GRID *pGrid)
+* Function: WORD GridDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 *			the current parameter settings. Location of the object 
@@ -196,10 +197,10 @@ void    GridClearCellState(GRID *pGrid, SHORT column, SHORT row, WORD state);
 * Side Effects: none
 *
 ********************************************************************/
-WORD    GridDraw(GRID *pGrid);
+WORD GridDraw(void *pObj);
 
 /*********************************************************************
-* Function: GridFreeItems(GRID *pGrid)
+* Function: GridFreeItems(void *pObj)
 *
 * Overview: This function removes all grid items for the given Grid
 *			and frees the memory used.
@@ -213,7 +214,7 @@ WORD    GridDraw(GRID *pGrid);
 * Side Effects: none
 *
 ********************************************************************/
-void    GridFreeItems(GRID *pGrid);
+void    GridFreeItems(void *pObj);
 
 /*********************************************************************
 * Function: *GridGetCell(GRID *pGrid, SHORT column, SHORT row, WORD *cellType)
@@ -269,7 +270,7 @@ void    *GridGetCell(GRID *pGrid, SHORT column, SHORT row, WORD *cellType);
 #define GridGetFocusY(pGrid)    pGrid->focusY
 
 /*********************************************************************
-* Function: GridMsgDefault(WORD translatedMsg, GRID *pGrid, GOL_MSG *pMsg)
+* Function: GridMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function performs the actual state change 
 *			based on the translated message given. The following state changes 
@@ -301,10 +302,10 @@ void    *GridGetCell(GRID *pGrid, SHORT column, SHORT row, WORD *cellType);
 * Side Effects: none
 *
 ********************************************************************/
-void    GridMsgDefault(WORD translatedMsg, GRID *pGrid, GOL_MSG *pMsg);
+void    GridMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: GridTranslateMsg(GRID *pGrid, GOL_MSG *pMsg)
+* Function: GridTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below enumerates the translated 
@@ -342,7 +343,7 @@ void    GridMsgDefault(WORD translatedMsg, GRID *pGrid, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD    GridTranslateMsg(GRID *pCb, GOL_MSG *pMsg);
+WORD    GridTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
 * Function: WORD    GridSetCell(GRID *pGrid, SHORT column, SHORT row, WORD state, void *data)

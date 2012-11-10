@@ -23,6 +23,7 @@
 #ifndef _MENU_H
 #define _MENU_H
 
+#include "Graphics\Graphics.h"
 
 /* Private define ------------------------------------------------------------*/
 #define     ID_BUTTON1     1    /* ÉÏÒ»Çú         */
@@ -57,38 +58,38 @@ typedef enum {
 extern SCREEN_STATES  ScreenState;
 
 extern FONT_EXTERNAL  externalfont;
-extern volatile const BITMAP_FLASH previous_on;
-extern volatile const BITMAP_FLASH previous_off;
+extern volatile const IMAGE_FLASH previous_on;
+extern volatile const IMAGE_FLASH previous_off;
 
-extern volatile const BITMAP_FLASH play_on;
-extern volatile const BITMAP_FLASH play_off;
+extern volatile const IMAGE_FLASH play_on;
+extern volatile const IMAGE_FLASH play_off;
 
-extern volatile const BITMAP_FLASH stop_on;
-extern volatile const BITMAP_FLASH stop_off;
+extern volatile const IMAGE_FLASH stop_on;
+extern volatile const IMAGE_FLASH stop_off;
 
-extern volatile const BITMAP_FLASH next_on;
-extern volatile const BITMAP_FLASH next_off ;
+extern volatile const IMAGE_FLASH next_on;
+extern volatile const IMAGE_FLASH next_off ;
 
-extern volatile const BITMAP_FLASH press_up;
-extern volatile const BITMAP_FLASH press_down ;
+extern volatile const IMAGE_FLASH press_up;
+extern volatile const IMAGE_FLASH press_down ;
 
-extern volatile const BITMAP_FLASH rpress_up ;
-extern volatile const BITMAP_FLASH rpress_dowm ;
+extern volatile const IMAGE_FLASH rpress_up ;
+extern volatile const IMAGE_FLASH rpress_dowm ;
 
-extern volatile const BITMAP_FLASH musicon ;
-extern volatile const BITMAP_FLASH musicoff ;
+extern volatile const IMAGE_FLASH musicon ;
+extern volatile const IMAGE_FLASH musicoff ;
 
-extern volatile const BITMAP_FLASH sound_add;
-extern volatile const BITMAP_FLASH sound_delete;
+extern volatile const IMAGE_FLASH sound_add;
+extern volatile const IMAGE_FLASH sound_delete;
 
-extern volatile const BITMAP_FLASH UNMUTE_HOVER;
-extern volatile const BITMAP_FLASH MUTE_HOVER;
+extern volatile const IMAGE_FLASH UNMUTE_HOVER;
+extern volatile const IMAGE_FLASH MUTE_HOVER;
 
-extern volatile const BITMAP_FLASH Smart_MP3; 
-extern volatile const BITMAP_FLASH Smart_MP3_Part1;
-extern volatile const BITMAP_FLASH Smart_MP3_Part2;
-extern volatile const BITMAP_FLASH Smart_MP3_Part3;
-extern volatile const BITMAP_FLASH Smart_MP3_Part4;
+extern volatile const IMAGE_FLASH Smart_MP3;
+extern volatile const IMAGE_FLASH Smart_MP3_Part1;
+extern volatile const IMAGE_FLASH Smart_MP3_Part2;
+extern volatile const IMAGE_FLASH Smart_MP3_Part3;
+extern volatile const IMAGE_FLASH Smart_MP3_Part4;
 
 
 /* Private function prototypes -----------------------------------------------*/

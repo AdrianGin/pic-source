@@ -6,7 +6,7 @@
  * FileName:        GroupBox.h
  * Dependencies:    None
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,14 +34,15 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Paolo A. Tamayo		11/12/07	Version 1.0 release
+ * 11/12/07		Version 1.0 release
  *****************************************************************************/
 #ifndef _GROUPBOX_H
     #define _GROUPBOX_H
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
@@ -92,20 +93,23 @@ typedef struct
 * Overview: This function sets the text used by passing the pointer
 *			to the static string.
 *
-* PreCondition: none
+* PreCondition: The style scheme used for the object MUST be initialized
+*               with a valid font. If font is not valid, textWidth and
+*               textHeight parameter of GROUPBOX will be undefined.
 *
 * Input: pGb - the pointer to the object whose state will be modified.
 *        pText - pointer to the text that will be used.
 *
 * Output: none
 *
-* Side Effects: none
+* Side Effects: Modifies the object width and height depending on the 
+*               selected string width and font height.
 *
 ********************************************************************/
 void        GbSetText(GROUPBOX *pGb, XCHAR *pText);
 
 /*********************************************************************
-* Function: WORD GbTranslateMsg(GROUPBOX *pGb, GOL_MSG *pMsg)
+* Function: WORD GbTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below 
@@ -136,7 +140,7 @@ void        GbSetText(GROUPBOX *pGb, XCHAR *pText);
 * Side Effects: none
 *
 ********************************************************************/
-WORD        GbTranslateMsg(GROUPBOX *pGb, GOL_MSG *pMsg);
+WORD        GbTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
 * Function: GROUPBOX *GbCreate(WORD ID, SHORT left, SHORT top, SHORT right, SHORT bottom, 
@@ -202,7 +206,7 @@ GROUPBOX    *GbCreate
             );
 
 /*********************************************************************
-* Function: WORD GbDraw(GROUPBOX *pGb);
+* Function: WORD GbDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 *			the current parameter settings. Location of the object 
@@ -230,5 +234,5 @@ GROUPBOX    *GbCreate
 * Side Effects: none
 *
 ********************************************************************/
-WORD        GbDraw(GROUPBOX *pGb);
+WORD GbDraw(void *pObj);
 #endif //_GROUPBOX_H

@@ -21,10 +21,11 @@
 *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include <includes.h>            
+//#include <includes.h>
 #include <menu.h>
 #include "GLCD.h"
 
+#include "Audio.h"
 #include "intertaskComm.h"
 #include "app_cfg.h"
 /* Private variables ---------------------------------------------------------*/

@@ -6,7 +6,7 @@
  * FileName:        Meter.h
  * Dependencies:    None 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,51 +34,41 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * PAT					11/12/07	Version 1.0 release
- * Albert Z.			07/31/08	Added arc colors options
- * PAT					08/20/08	Added accuracy option for displaying values
- * PAT					01/18/10	Fixed MtrIncVal() and MtrDecVal() macros
+ * 11/12/07		Version 1.0 release
+ * 07/31/08		Added arc colors options
+ * 08/20/08		Added accuracy option for displaying values
+ * 01/18/10		Fixed MtrIncVal() and MtrDecVal() macros
+ * 08/05/11     - Modified compile time setting macro names. 
+ *              - Relocated internal macros to the Meter.c.
  *****************************************************************************/
 #ifndef _METER_H
     #define _METER_H
 
-    #include "GOL.h"
-
-// Compile time Options for Meter
-    #define METER_DISPLAY_VALUES_ENABLE // This enables the display of the values.
-
-// Displaying the values will have significant
-// drawing time requirement.
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
 *********************************************************************/
     #define MTR_DISABLED    0x0002      // Bit for disabled state.
     #define MTR_RING        0x0004      // Bit for ring type, scales are drawn over the ring
-
-// default is only scales drawn.
+                                        // default is only scales drawn.
     #define MTR_ACCURACY    0x0008      // Sets the meter accuracy to one decimal places
-
-// when displaying the values. Application must multiply
-// the minValue, maxValue and values passed to the widget
-// by RESOLUTION.
+                                        // when displaying the values. Application must multiply
+                                        // the minValue, maxValue and values passed to the widget
+                                        // by RESOLUTION.
     #define MTR_DRAW_UPDATE 0x1000      // Bit to indicate an update only.
     #define MTR_DRAW        0x4000      // Bit to indicate object must be redrawn.
     #define MTR_HIDE        0x8000      // Bit to indicate object must be removed from screen.
 
-/*********************************************************************
-* Used Constants 
-*********************************************************************/
-    #define RADIAN      1144            // Radian definition. Equivalent to sine(1) * 2^16.
-    #define PIIOVER2    102944          // The constant Pii divided by two (pii/2).
-
-// Meter types
+    // Meter types
     #define MTR_WHOLE_TYPE      0
     #define MTR_HALF_TYPE       1
     #define MTR_QUARTER_TYPE    2
 
+#ifndef METER_TYPE
 /*************************************************************************** 
 * Overview: This is a compile time setting to select the type if meter shape.
 *  There are three types:
@@ -97,37 +87,47 @@
 
 //#define METER_TYPE					MTR_HALF_TYPE				// Meter drawn with semi circle shape.
 //#define METER_TYPE					MTR_QUARTER_TYPE			// Meter drawn with quarter circle shape.
-    #define ARC1_DEGREE 180             // defines one arc1 limit (used for determining colors)
-    #define ARC2_DEGREE 135             // defines one arc2 limit (used for determining colors)
-    #define ARC3_DEGREE 90              // defines one arc3 limit (used for determining colors)
-    #define ARC4_DEGREE 45              // defines one arc4 limit (used for determining colors)
-    #define ARC5_DEGREE 0               // defines one arc5 limit (used for determining colors)
+#endif
 
-// These selects the other parameters of the meter that are dependent on the shape.
-    #if (METER_TYPE == MTR_WHOLE_TYPE)
-        #define DEGREE_START    - 45    // Defines the start angle to draw the meter.
-        #define DEGREE_END      225     // Defines the end angle to draw the meter.
-    #elif (METER_TYPE == MTR_HALF_TYPE)
-        #define DEGREE_START    0       // Defines the start angle to draw the meter.
-        #define DEGREE_END      180     // Defines the end angle to draw the meter.
-    #elif (METER_TYPE == MTR_QUARTER_TYPE)
-        #define DEGREE_START    0       // Defines the start angle to draw the meter.
-        #define DEGREE_END      90      // Defines the end angle to draw the meter.
-    #endif
-    #define SCALECHARCOUNT  4           // Defines how many characters will be allocated for the
+/*************************************************************************** 
+* Overview: This is a Meter compile time option to enable the display of the values.
+*           This enables the display of the values. Displaying the values will 
+*           have an effect on the rendering time requirement of the object.
+***************************************************************************/
+    #define MTR_BUILD_OPTION_DISPLAY_VALUES_ENABLE   
 
-// scale labels. Use this define in accordance to
-// the maxValue-minValue. Example: if maxValue-minValue = 500, SCALECHARCOUNT
-// should be 3. if maxValue-minValue = 90, SCALECHARCOUNT = 2
-// You must include the decimal point if this
-// feature is enabled (see MTR_ACCURACY state bit).
-    #define DEGREECOUNT 9               // Defines how many degrees per scale, computed per octant
+#ifndef MTR_BUILD_OPTION_SCALECHARCOUNT
+/*************************************************************************** 
+* Overview: This is a Meter compile time option to define how many characters 
+*           will be allocated for the scale labels. Use this define in 
+*           accordance to the maxValue-minValue. 
+*           Example: 
+*           if maxValue-minValue = 500, SCALECHARCOUNT should be 3. 
+*           if maxValue-minValue = 90, SCALECHARCOUNT = 2
+*           You must include the decimal point if this feature is enabled 
+*           (see MTR_ACCURACY state bit).
+***************************************************************************/
+    #define MTR_BUILD_OPTION_SCALECHARCOUNT  4           
+#endif
+                                        
+#ifndef MTR_BUILD_OPTION_DEGREECOUNT
+/*************************************************************************** 
+* Overview: This is a Meter compile time option to define how many degrees 
+*           per scale, computed per octant 
+*           Example: for 5 division per octant 45/5 = 9.
+*                    So every 9 degrees a scale is drawn
+*                    for a 5 scale division per octant. 
+***************************************************************************/
+    #define MTR_BUILD_OPTION_DEGREECOUNT 9               
+#endif
 
-// Example: for 5 division per octant 45/5 = 9.
-// So every 9 degrees a scale is drawn
-// for a 5 scale division per octant.
-    #define RESOLUTION  10              // Factor that the meter widget will divide minValue, maxValue
-
+#ifndef MTR_BUILD_OPTION_RESOLUTION
+/*************************************************************************** 
+* Overview: This is a Meter compile time option to define the factor 
+*           that the meter widget will divide minValue, maxValue
+***************************************************************************/
+    #define MTR_BUILD_OPTION_RESOLUTION  10               
+#endif
 // and current value. Used only when MTR_ACCURACY state bit is set.
 
 /*********************************************************************
@@ -169,8 +169,9 @@ typedef struct
 * Function: METER  *MtrCreate(WORD ID, SHORT left, SHORT top, SHORT right, 
 *							  SHORT bottom, WORD state, SHORT value, 
 *							  SHORT minValue, SHORT maxValue, 
+*							  void *pTitleFont, void  *pValueFont,				 
 *							  XCHAR *pText, GOL_SCHEME *pScheme)				 
-*
+*           
 * Overview: This function creates a METER object with the parameters given. 
 *			It automatically attaches the new object into a global linked list of 
 *			objects and returns the address of the object.
@@ -186,6 +187,8 @@ typedef struct
 *		 value - Initial value set to the meter.
 *		 minValue - The minimum value the meter will display.
 *		 maxValue - The maximum value the meter will display.
+*        pTitleFont - Pointer to the font used for the Title.
+*        pScheme - Pointer to the font used for the Value.
 *        pText - Pointer to the text label of the meter.
 *        pScheme - Pointer to the style scheme used.
 *
@@ -252,7 +255,7 @@ METER   *MtrCreate
         );
 
 /*********************************************************************
-* Function: WORD MtrTranslateMsg(METER *pMtr, GOL_MSG *pMsg)
+* Function: WORD MtrTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below enumerates the translated 
@@ -279,10 +282,10 @@ METER   *MtrCreate
 * Side Effects: none
 *
 ********************************************************************/
-WORD    MtrTranslateMsg(METER *pMtr, GOL_MSG *pMsg);
+WORD    MtrTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: MtrMsgDefault(WORD translatedMsg, METER *pMtr, GOL_MSG* pMsg)
+* Function: MtrMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG* pMsg)
 *
 * Overview: This function performs the actual state change 
 *			based on the translated message given. Meter value is set
@@ -305,7 +308,7 @@ WORD    MtrTranslateMsg(METER *pMtr, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-void    MtrMsgDefault(WORD translatedMsg, METER *pMtr, GOL_MSG *pMsg);
+void    MtrMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
 * Macros:  MtrGetVal(pMtr)
@@ -429,7 +432,7 @@ void    MtrSetVal(METER *pMtr, SHORT newVal);
     }
 
 /*********************************************************************
-* Function: WORD MtrDraw(METER *pMtr)
+* Function: WORD MtrDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 * 			the current parameter settings. Location of the object is 
@@ -463,7 +466,7 @@ void    MtrSetVal(METER *pMtr, SHORT newVal);
 * Side Effects: none
 *
 ********************************************************************/
-WORD    MtrDraw(METER *pMtr);
+WORD MtrDraw(void *pObj);
 
 /*********************************************************************
 * Macro: MtrSetTitleFont(pMtr, pNewFont)   (((METER*)pMtr)->pTitleFont = pNewFont)

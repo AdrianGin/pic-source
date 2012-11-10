@@ -21,9 +21,10 @@
 *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include <includes.h>
+//#include <includes.h>
 #include <menu.h>
-
+#include <stdint.h>
+#include "Audio.h"
 
 /* Private variables ---------------------------------------------------------*/
 SCREEN_STATES  ScreenState = DISPLAY_MP3; /* current state of play */
@@ -59,14 +60,14 @@ void StartMenu(void)
 	  alt2Scheme->EmbossLtColor = RGB565CONVERT(0xA9, 0xDB, 0xEF);
       alt2Scheme->TextColor1 = WHITE;
       alt2Scheme->TextColor0 = WHITE;
-	  alt2Scheme->pFont = (void*)&externalfont;
+	  //alt2Scheme->pFont = (void*)&externalfont;
 	}
 	/* 列表框滑动条 */
 	{
 	  alt3Scheme->Color0 = RGB565CONVERT(198, 213, 253);
  	  alt3Scheme->EmbossDkColor = RGB565CONVERT(183, 202, 245);
 	  alt3Scheme->EmbossLtColor = WHITE;
-	  alt3Scheme->pFont = (void*)&externalfont;
+	  //alt3Scheme->pFont = (void*)&externalfont;
  	}
 	  
 	BtnCreate(ID_BUTTON1, 				/* button ID             */

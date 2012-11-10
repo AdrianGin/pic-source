@@ -17,14 +17,14 @@
 #include "HzLib.h"
 #include "AsciiLib.h"
 
+
+#include "stm32f10x.h"
+
 /* Private define ------------------------------------------------------------*/
 /* 使用总线方式时定义地址 */
 /* 挂在不同的BANK,使用不同地址线时请自行换算地址 */
 //#define LCD_REG              (*((volatile unsigned short *) 0x6C000000)) /* RS = 0 */
 //#define LCD_RAM              (*((volatile unsigned short *) 0x6C000002)) /* RS = 1 */
-#define LCD_REG              (*((volatile unsigned short *) 0x60000000)) /* RS = 0 */
-#define LCD_RAM              (*((volatile unsigned short *) 0x60020000)) /* RS = 1 */
-
 
 /* Private variables ---------------------------------------------------------*/
 static uint8_t LCD_Code;
@@ -79,6 +79,14 @@ static void LCD_CtrlLinesConfig(void)
 	                            GPIO_Pin_15;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
 
+
+	/* Set PD.12 is the RESET Pin */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+
 }
 
 /*******************************************************************************
@@ -93,14 +101,22 @@ static void LCD_FSMCConfig(void)
 {
 	FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
 	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMTimingInitStructure;
+	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMWriteInitStructure;
 	/* FSMC读速度设置 */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 5;//5;  /* 地址建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0;//5;  /* 地址建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
-	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 10;//5;	   /* 数据建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 0x05;//5;	   /* 数据建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0x00;
 	FSMC_NORSRAMTimingInitStructure.FSMC_CLKDivision = 0x00;
 	FSMC_NORSRAMTimingInitStructure.FSMC_DataLatency = 0x00;
 	FSMC_NORSRAMTimingInitStructure.FSMC_AccessMode = FSMC_AccessMode_A;	/* FSMC 访问模式 */
+
+	FSMC_NORSRAMWriteInitStructure.FSMC_AddressSetupTime = 0;
+	FSMC_NORSRAMWriteInitStructure.FSMC_AddressHoldTime = 0;
+	FSMC_NORSRAMWriteInitStructure.FSMC_DataSetupTime = 0x01;//1;	   /* 数据建立时间  */
+	FSMC_NORSRAMWriteInitStructure.FSMC_CLKDivision = 0x00;
+	FSMC_NORSRAMWriteInitStructure.FSMC_DataLatency = 0x00;
+	FSMC_NORSRAMWriteInitStructure.FSMC_AccessMode = FSMC_AccessMode_A;	/* FSMC 访问模式 */
 
 	FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM1;
 	FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
@@ -113,21 +129,12 @@ static void LCD_FSMCConfig(void)
 	FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;
 	FSMC_NORSRAMInitStructure.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
 	FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait = FSMC_AsynchronousWait_Disable;
-	FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
+	FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Enable;
 	FSMC_NORSRAMInitStructure.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
 	FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &FSMC_NORSRAMTimingInitStructure;
+	FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &FSMC_NORSRAMWriteInitStructure;
 	FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
-	/* FSMC写速度设置 */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 15;//1;   /* 地址建立时间  */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
-	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 15;//1;	   /* 数据建立时间  */
-	FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0x00;
-	FSMC_NORSRAMTimingInitStructure.FSMC_CLKDivision = 0x00;
-	FSMC_NORSRAMTimingInitStructure.FSMC_DataLatency = 0x00;
-	FSMC_NORSRAMTimingInitStructure.FSMC_AccessMode = FSMC_AccessMode_A;	/* FSMC 访问模式 */
-	FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &FSMC_NORSRAMTimingInitStructure;
 
-	FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
 
 	/* Enable FSMC Bank4_SRAM Bank */
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
@@ -145,6 +152,9 @@ static void LCD_Configuration(void)
 {
 	/* Configure the LCD Control pins --------------------------------------------*/
 	LCD_CtrlLinesConfig();
+
+	GPIO_WriteBit(GPIOD, GPIO_Pin_12, Bit_RESET);
+	GPIO_WriteBit(GPIOD, GPIO_Pin_12, Bit_SET);
 
 	/* Configure the FSMC Parallel interface -------------------------------------*/
 	LCD_FSMCConfig();
@@ -601,52 +611,70 @@ void LCD_Initializtion(void)
 	else if( DeviceCode == 0x8989 )
 	{
 	    LCD_Code = SSD1289;
-	    LCD_WriteReg(0x0000,0x0001);    delay_ms(50);   /* 打开晶振 */
-	    LCD_WriteReg(0x0003,0xA8A4);    delay_ms(50);
-	    LCD_WriteReg(0x000C,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x000D,0x080C);    delay_ms(50);
-	    LCD_WriteReg(0x000E,0x2B00);    delay_ms(50);
-	    LCD_WriteReg(0x001E,0x00B0);    delay_ms(50);
-	    LCD_WriteReg(0x0001,0x2B3F);    delay_ms(50);   /* 驱动输出控制320*240 0x2B3F */
-	    LCD_WriteReg(0x0002,0x0600);    delay_ms(50);
-	    LCD_WriteReg(0x0010,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0011,0x6070);    delay_ms(50);   /* 定义数据格式 16位色 横屏 0x6070 */
-	    LCD_WriteReg(0x0005,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0006,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0016,0xEF1C);    delay_ms(50);
-	    LCD_WriteReg(0x0017,0x0003);    delay_ms(50);
-	    LCD_WriteReg(0x0007,0x0133);    delay_ms(50);
-	    LCD_WriteReg(0x000B,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x000F,0x0000);    delay_ms(50);   /* 扫描开始地址 */
-	    LCD_WriteReg(0x0041,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0042,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0048,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0049,0x013F);    delay_ms(50);
-	    LCD_WriteReg(0x004A,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x004B,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0044,0xEF00);    delay_ms(50);
-	    LCD_WriteReg(0x0045,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0046,0x013F);    delay_ms(50);
-	    LCD_WriteReg(0x0030,0x0707);    delay_ms(50);
-	    LCD_WriteReg(0x0031,0x0204);    delay_ms(50);
-	    LCD_WriteReg(0x0032,0x0204);    delay_ms(50);
-	    LCD_WriteReg(0x0033,0x0502);    delay_ms(50);
-	    LCD_WriteReg(0x0034,0x0507);    delay_ms(50);
-	    LCD_WriteReg(0x0035,0x0204);    delay_ms(50);
-	    LCD_WriteReg(0x0036,0x0204);    delay_ms(50);
-	    LCD_WriteReg(0x0037,0x0502);    delay_ms(50);
-	    LCD_WriteReg(0x003A,0x0302);    delay_ms(50);
-	    LCD_WriteReg(0x003B,0x0302);    delay_ms(50);
-	    LCD_WriteReg(0x0023,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0024,0x0000);    delay_ms(50);
-	    LCD_WriteReg(0x0025,0x8000);    delay_ms(50);
+	    LCD_WriteReg(0x0000,0x0001);    delay_ms(100);   /* 打开晶振 */
+	    LCD_WriteReg(0x0003,0xA8A4);    delay_ms(100);
+
+	    LCD_WriteReg(0x000B,0x5308);    delay_ms(100); //0x5308
+
+	    LCD_WriteReg(0x000C,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x000D,0x080C);    delay_ms(100);
+	    LCD_WriteReg(0x000E,0x2B00);    delay_ms(100);
+	    LCD_WriteReg(0x001E,0x00B0);    delay_ms(100);
+	    LCD_WriteReg(0x0001,0x693F);    delay_ms(100);   /* Sets up the rotation, upside down = 0x2B3F */
+	    LCD_WriteReg(0x0002,0x0600);    delay_ms(100);
+	    LCD_WriteReg(0x0010,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0011,0x6060);    delay_ms(100);   /* 定义数据格式 16位色 横屏 0x6070 */
+
+	    //LCD_WriteReg(0x0011,0xE070);    delay_ms(100);   /* 定义数据格式 16位色 横屏 0x6070 */
+
+	    LCD_WriteReg(0x0005,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0006,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0016,0xEF1C);    delay_ms(100);
+	    //LCD_WriteReg(0x0017,0x0003);    delay_ms(100);
+	    LCD_WriteReg(0x0017,0x0003);    delay_ms(100);
+	    LCD_WriteReg(0x0007,0x0133);    delay_ms(100);
+	    LCD_WriteReg(0x000B,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x000F,0x0000);    delay_ms(100);   /* 扫描开始地址 */
+	    LCD_WriteReg(0x0041,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0042,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0048,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0049,0x013F);    delay_ms(100);
+	    LCD_WriteReg(0x004A,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x004B,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0044,0xEF00);    delay_ms(100);
+	    LCD_WriteReg(0x0045,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0046,0x013F);    delay_ms(100);
+	    LCD_WriteReg(0x0030,0x0707);    delay_ms(100);
+	    LCD_WriteReg(0x0031,0x0204);    delay_ms(100);
+	    LCD_WriteReg(0x0032,0x0204);    delay_ms(100);
+	    LCD_WriteReg(0x0033,0x0502);    delay_ms(100);
+	    LCD_WriteReg(0x0034,0x0507);    delay_ms(100);
+	    LCD_WriteReg(0x0035,0x0204);    delay_ms(100);
+	    LCD_WriteReg(0x0036,0x0204);    delay_ms(100);
+	    LCD_WriteReg(0x0037,0x0502);    delay_ms(100);
+	    LCD_WriteReg(0x003A,0x0302);    delay_ms(100);
+	    LCD_WriteReg(0x003B,0x0302);    delay_ms(100);
+	    LCD_WriteReg(0x0023,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0024,0x0000);    delay_ms(100);
+	    LCD_WriteReg(0x0025,0xE000);    delay_ms(100); //Set Oscillator Overclock (POR = 0x8000)
+
+//		LCD_WriteReg(0x0028,0x0006);
+//		LCD_WriteReg(0x002F,0x12BE);
+//		LCD_WriteReg(0x0012,0x6CEB);
+
+
+
 	    LCD_WriteReg(0x004f,0);        /* 行首址0 */
 	    LCD_WriteReg(0x004e,0);        /* 列首址0 */
+
 	}
 	else if( DeviceCode == 0x8999 )
 	{
 		LCD_Code = SSD1298;
-		LCD_WriteReg(0x0028,0x0006);
+//		LCD_WriteReg(0x0028,0x0006);
+//		LCD_WriteReg(0x002F,0x12BE);
+//		LCD_WriteReg(0x0012,0x6CEB);
+
 		LCD_WriteReg(0x0000,0x0001);
 		LCD_WriteReg(0x0003,0xaea4);    /* power control 1---line frequency and VHG,VGL voltage */
 		LCD_WriteReg(0x000c,0x0004);    /* power control 2---VCIX2 output voltage */
@@ -657,6 +685,7 @@ void LCD_Initializtion(void)
 		LCD_WriteReg(0x0002,0x0600);
 		LCD_WriteReg(0x0010,0x0000);
 		LCD_WriteReg(0x0011,0x6830);
+		//LCD_WriteReg(0x0011,0xE830);
 		LCD_WriteReg(0x0005,0x0000);
 		LCD_WriteReg(0x0006,0x0000);
 		LCD_WriteReg(0x0016,0xef1c);
@@ -1108,6 +1137,7 @@ void LCD_Clear(uint16_t Color)
 void LCD_Clear(uint16_t Color)
 {
 	uint32_t index=0;
+	uint16_t x,y;
 
 	if( LCD_Code == HX8347D || LCD_Code == HX8347A )
 	{
@@ -1129,6 +1159,15 @@ void LCD_Clear(uint16_t Color)
 	}
 //	Clr_Cs;
 	LCD_WriteIndex(0x0022);
+
+//	for( y = 0; y < 240; y ++)
+//	{
+//		for( x = 0; x < 320; x++)
+//		{
+//			LCD_SetPoint(x,y, Color);
+//		}
+//	}
+
 	for( index = 0; index < MAX_X * MAX_Y; index++ )
 	{
 		LCD_WriteData(Color);
@@ -1136,7 +1175,7 @@ void LCD_Clear(uint16_t Color)
 //	Set_Cs;
 }
 
-static void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
+void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 {
 
 	  #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )
@@ -1219,6 +1258,12 @@ uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos)
 {
 	uint16_t dummy;
 
+	if( Xpos >= MAX_X || Ypos >= MAX_Y )
+	{
+		return 0x0000;
+	}
+
+
 	LCD_SetCursor(Xpos,Ypos);
 //	Clr_Cs;
 	LCD_WriteIndex(0x0022);
@@ -1274,6 +1319,131 @@ void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
 }
 
 
+//Disable Autoupdate and Enable Vsync
+void LCD_PauseUpdateScreen(void)
+{
+	switch( LCD_Code )
+	{
+		case ST7781:
+		case LGDP4531:
+		case LGDP4535:
+		case SSD1289:
+		case SSD1298:
+			LCD_WriteReg(0x0011,0xE070);
+			break;
+
+	    case HX8347A:
+	    case HX8347D:
+	    	break;
+
+	    default:
+	    	break;
+	}
+}
+
+//Disable Autoupdate and Enable Vsync
+void LCD_ResumeUpdateScreen(void)
+{
+	switch( LCD_Code )
+	{
+		case ST7781:
+		case LGDP4531:
+		case LGDP4535:
+		case SSD1289:
+		case SSD1298:
+			LCD_WriteReg(0x0011,0x6070);
+			break;
+
+	    case HX8347A:
+	    case HX8347D:
+	    	break;
+
+	    default:
+	    	break;
+	}
+}
+
+
+
+void LCD_VSyncHigh(void)
+{
+	switch( LCD_Code )
+	{
+		case ST7781:
+		case LGDP4531:
+		case LGDP4535:
+		case SSD1289:
+		case SSD1298:
+			LCD_WriteReg(0x0015, 0x00D1);
+//			LCD_WriteIndex(0x0015);
+//			LCD_WriteData(0x00D1);
+			//LCD_WriteReg(0x0011,0x6070);
+			break;
+
+	    case HX8347A:
+	    case HX8347D:
+	    	break;
+
+	    default:
+	    	break;
+	}
+}
+
+
+void LCD_VSyncLow(void)
+{
+	switch( LCD_Code )
+	{
+		case ST7781:
+		case LGDP4531:
+		case LGDP4535:
+		case SSD1289:
+		case SSD1298:
+			LCD_WriteReg(0x0015, 0x00D0);
+//			LCD_WriteIndex(0x0015);
+//			LCD_WriteData(0x00D0);
+			//LCD_WriteReg(0x0011,0x6070);
+			break;
+
+	    case HX8347A:
+	    case HX8347D:
+	    default:
+	    	break;
+	}
+}
+
+
+//Clock the Vsync once, re-enable auto update.
+void LCD_UpdateScreen(void)
+{
+	switch( LCD_Code )
+	{
+		case ST7781:
+		case LGDP4531:
+		case LGDP4535:
+		case SSD1289:
+		case SSD1298:
+			LCD_VSyncLow();
+			LCD_VSyncHigh();
+
+//
+//
+//			LCD_WriteIndex(0x0015);
+//			LCD_WriteData(0x00D1);
+//			LCD_WriteData(0x00D0);
+			//LCD_WriteReg(0x0011,0x6070);
+			break;
+
+	    case HX8347A:
+	    case HX8347D:
+	    	break;
+
+	    default:
+	    	break;
+	}
+
+
+}
 
 /******************************************************************************
 * Function Name  : LCD_DrawLine
@@ -1516,146 +1686,133 @@ void GUI_Chinese(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint
     while(*str!=0);
 }  
 
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : LCD控制器寄存器地址
-* Input          : - index: 寄存器地址
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-__inline void LCD_WriteIndex(uint16_t index)
-{
-	LCD_REG	= index;
-/*
-	Clr_Rs;
-	Set_nRd;
-
-	GPIOE->ODR = index;	 // GPIO_Write(GPIOE,index);
-
-	Clr_nWr;
-	Set_nWr;
-*/
-}
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : LCD寄存器数据
-* Input          : - index: 寄存器数据
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-__inline void LCD_WriteData(uint16_t data)
-{
-	LCD_RAM = data;
-/*
-	Set_Rs;
-
-	GPIOE->ODR = data;	 //GPIO_Write(GPIOE,data);
-
-	Clr_nWr;
-	Set_nWr;
-*/
-}
-
-/*******************************************************************************
-* Function Name  : LCD_ReadData
-* Description    : 读取控制器数据
-* Input          : None
-* Output         : None
-* Return         : 返回读取到的数据
-* Attention		 : None
-*******************************************************************************/
-__inline uint16_t LCD_ReadData(void)
-{
-//	uint16_t value;
-
-//	Set_Rs;
-//	Set_nWr;
-//	Clr_nRd;
-
-/*
-    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
-    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
-/*
-    GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIOE, &GPIO_InitStructure);
-*/
-//	GPIOE->CRH = 0x44444444;
-//	GPIOE->CRL = 0x44444444;
-/*
-    value = GPIO_ReadInputData(GPIOE);
-    value = GPIO_ReadInputData(GPIOE);
-*/
-//    value = GPIOE->IDR;
-//    value = GPIOE->IDR;
-
-/*
-    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
-    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
-/*
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOE, &GPIO_InitStructure);
-*/
-//    GPIOE->CRH = 0x33333333;
-//    GPIOE->CRL = 0x33333333;
-
-//    Set_nRd;
-
-//    return value;
-	return LCD_RAM;
-}
-
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : Writes to the selected LCD register.
-* Input          : - LCD_Reg: address of the selected register.
-*                  - LCD_RegValue: value to write to the selected register.
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-__inline void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
-{
-	/* Write 16-bit Index, then Write Reg */
-//	Clr_Cs;
-	LCD_WriteIndex(LCD_Reg);
-	/* Write 16-bit Reg */
-	LCD_WriteData(LCD_RegValue);
-//	Set_Cs;
-}
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : Reads the selected LCD Register.
-* Input          : None
-* Output         : None
-* Return         : LCD Register Value.
-* Attention		 : None
-*******************************************************************************/
-__inline uint16_t LCD_ReadReg(uint16_t LCD_Reg)
-{
-//	uint16_t LCD_RAM;
-
-	/* Write 16-bit Index (then Read Reg) */
-//	Clr_Cs;
-	LCD_WriteIndex(LCD_Reg);
-//	delay_ms(1);  /* delay 5 ms */
-
-	/* Read 16-bit Reg */
-//	LCD_RAM = LCD_ReadData();
-//	Set_Cs;
+//
+//
+///*******************************************************************************
+//* Function Name  : LCD_WriteReg
+//* Description    : LCD控制器寄存器地址
+//* Input          : - index: 寄存器地址
+//* Output         : None
+//* Return         : None
+//* Attention		 : None
+//*******************************************************************************/
+//
+//
+//__inline void LCD_WriteIndex(uint16_t index)
+//{
+//	LCD_REG	= index;
+//}
+//
+///*******************************************************************************
+//* Function Name  : LCD_WriteReg
+//* Description    : LCD寄存器数据
+//* Input          : - index: 寄存器数据
+//* Output         : None
+//* Return         : None
+//* Attention		 : None
+//*******************************************************************************/
+//__inline void LCD_WriteData(uint16_t data)
+//{
+//	LCD_RAM = data;
+//}
+//
+//
+///*******************************************************************************
+//* Function Name  : LCD_ReadData
+//* Description    : 读取控制器数据
+//* Input          : None
+//* Output         : None
+//* Return         : 返回读取到的数据
+//* Attention		 : None
+//*******************************************************************************/
+//__inline uint16_t LCD_ReadData(void)
+//{
+////	uint16_t value;
+//
+////	Set_Rs;
+////	Set_nWr;
+////	Clr_nRd;
+//
+///*
+//    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
+//    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
+///*
+//    GPIO_InitTypeDef GPIO_InitStructure;
+//    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+//    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+//    GPIO_Init(GPIOE, &GPIO_InitStructure);
+//*/
+////	GPIOE->CRH = 0x44444444;
+////	GPIOE->CRL = 0x44444444;
+///*
+//    value = GPIO_ReadInputData(GPIOE);
+//    value = GPIO_ReadInputData(GPIOE);
+//*/
+////    value = GPIOE->IDR;
+////    value = GPIOE->IDR;
+//
+///*
+//    PE.00(D0), PE.01(D1), PE.02(D2), PE.03(D3), PE.04(D4), PE.05(D5), PE.06(D6), PE.07(D7), PE.08(D8)
+//    PE.09(D9), PE.10(D10), PE.11(D11), PE.12(D12), PE.13(D13), PE.14(D14), PE.15(D15)   */
+///*
+//    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+//    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//    GPIO_Init(GPIOE, &GPIO_InitStructure);
+//*/
+////    GPIOE->CRH = 0x33333333;
+////    GPIOE->CRL = 0x33333333;
+//
+////    Set_nRd;
+//
+////    return value;
 //	return LCD_RAM;
-	return LCD_ReadData();
-}
-
+//}
+//
+//
+///*******************************************************************************
+//* Function Name  : LCD_WriteReg
+//* Description    : Writes to the selected LCD register.
+//* Input          : - LCD_Reg: address of the selected register.
+//*                  - LCD_RegValue: value to write to the selected register.
+//* Output         : None
+//* Return         : None
+//* Attention		 : None
+//*******************************************************************************/
+//__inline void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
+//{
+//	/* Write 16-bit Index, then Write Reg */
+////	Clr_Cs;
+//	LCD_WriteIndex(LCD_Reg);
+//	/* Write 16-bit Reg */
+//	LCD_WriteData(LCD_RegValue);
+////	Set_Cs;
+//}
+//
+///*******************************************************************************
+//* Function Name  : LCD_WriteReg
+//* Description    : Reads the selected LCD Register.
+//* Input          : None
+//* Output         : None
+//* Return         : LCD Register Value.
+//* Attention		 : None
+//*******************************************************************************/
+//__inline uint16_t LCD_ReadReg(uint16_t LCD_Reg)
+//{
+////	uint16_t LCD_RAM;
+//
+//	/* Write 16-bit Index (then Read Reg) */
+////	Clr_Cs;
+//	LCD_WriteIndex(LCD_Reg);
+////	delay_ms(1);  /* delay 5 ms */
+//
+//	/* Read 16-bit Reg */
+////	LCD_RAM = LCD_ReadData();
+////	Set_Cs;
+////	return LCD_RAM;
+//	return LCD_ReadData();
+//}
 
 /*********************************************************************************************************
       END FILE

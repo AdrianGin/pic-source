@@ -34,15 +34,15 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Anton Alkhimenok     11/12/07	Version 1.0 release
+ * 11/12/07		Version 1.0 release
  *****************************************************************************/
 #ifndef _CHECKBOX_H
     #define _CHECKBOX_H
 
-    #include "GOL.h"
-
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 // This is indent from outside borders
     #define CB_INDENT   2
 
@@ -162,7 +162,7 @@ CHECKBOX    *CbCreate
             );
 
 /*********************************************************************
-* Function: WORD CbTranslateMsg(CHECKBOX *pCb, GOL_MSG *pMsg)
+* Function: WORD CbTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if 
 *			the message will affect the object or not. The table 
@@ -196,10 +196,10 @@ CHECKBOX    *CbCreate
 * Side Effects: none
 *
 ********************************************************************/
-WORD        CbTranslateMsg(CHECKBOX *pCb, GOL_MSG *pMsg);
+WORD        CbTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: CbMsgDefault(WORD translatedMsg, CHECKBOX *pCb, GOL_MSG* pMsg)
+* Function: CbMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG* pMsg)
 *
 * Overview: This function performs the actual state change 
 *			based on the translated message given. The following state changes 
@@ -224,10 +224,10 @@ WORD        CbTranslateMsg(CHECKBOX *pCb, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-void        CbMsgDefault(WORD translatedMsg, CHECKBOX *pCb, GOL_MSG *pMsg);
+void        CbMsgDefault(WORD translatedMsg, void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD CbDraw(CHECKBOX *pCb)
+* Function: WORD CbDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 *			the current parameter settings. Location of the object 
@@ -256,5 +256,5 @@ void        CbMsgDefault(WORD translatedMsg, CHECKBOX *pCb, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD        CbDraw(CHECKBOX *pCb);
+WORD CbDraw(void *pObj);
 #endif // _CHECKBOX_H

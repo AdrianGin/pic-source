@@ -23,6 +23,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h>
 
+#include "MP3header.h"
+#include "Audio.h"
 /* Private variables ---------------------------------------------------------*/
 struct tag_info mp3_info;
 const int Frame_sampfreqs[4] = { 44100, 48000, 32000, 0 };	   /* MPEG1 LAYER3 */

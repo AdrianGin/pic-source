@@ -24,8 +24,9 @@
 #define __MP3Header_H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
-
+//#include "stm32f10x.h"
+#include <stdint.h>
+#include "ff.h"
 
 //http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header#SamplingRate
 

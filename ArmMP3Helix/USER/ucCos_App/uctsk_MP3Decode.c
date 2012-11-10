@@ -23,6 +23,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include <includes.h>            
 
+#include "Audio.h"
+
 #include "app_cfg.h"
 #include "intertaskComm.h"
 

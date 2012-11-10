@@ -21,8 +21,17 @@
 *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include <includes.h>
+//#include <includes.h>
 #include <menu.h>
+#include "ff.h"
+#include "GLCD.h"
+#include "Audio.h"
+#include "WM8731.h"
+#include "sdio_sd.h"
+#include "MP3Header.h"
+#include "TouchPanel.h"
+#include "FlashDriver.h"
+
 
 /* Private variables ---------------------------------------------------------*/
 extern AUDIO_Playback_status_enum AUDIO_Playback_status ;

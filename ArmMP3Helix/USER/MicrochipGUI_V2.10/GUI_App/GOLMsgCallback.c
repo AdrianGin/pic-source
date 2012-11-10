@@ -24,7 +24,10 @@
 #include <includes.h>
 #include <menu.h>
 
+#include "Audio.h"
+#include "WM8731.h"
 #include "intertaskComm.h"
+
 
 /* Private variables ---------------------------------------------------------*/
 /* ≤•∑≈MP3” œ‰ */

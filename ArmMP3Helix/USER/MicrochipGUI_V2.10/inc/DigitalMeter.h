@@ -6,7 +6,7 @@
  * FileName:        DigitalMeter.h
  * Dependencies:    None 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,15 +34,16 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Arpan kumar		06/11/09	  Version 1.0 release
- * PAT				01/18/10	  Added draw state to redraw only text.
+ * 06/11/09	   Version 1.0 release
+ * 01/18/10	   Added draw state to redraw only text.
  *****************************************************************************/
 #ifndef _DIGITALMETER_H
     #define _DIGITALMETER_H
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
@@ -202,7 +203,7 @@ DIGITALMETER    *DmCreate
                 );
 
 /*********************************************************************
-* Function: WORD DmTranslateMsg(DIGITALMETER *pDm, GOL_MSG *pMsg)
+* Function: WORD DmTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below 
@@ -233,10 +234,10 @@ DIGITALMETER    *DmCreate
 * Side Effects: none
 *
 ********************************************************************/
-WORD            DmTranslateMsg(DIGITALMETER *pDm, GOL_MSG *pMsg);
+WORD            DmTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD DmDraw(DIGITALMETER *pDm)
+* Function: WORD DmDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 *			the current parameter settings. Location of the object 
@@ -265,5 +266,5 @@ WORD            DmTranslateMsg(DIGITALMETER *pDm, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD            DmDraw(DIGITALMETER *pDm); 
+WORD DmDraw(void *pObj); 
 #endif // _DIGITALMETER_H

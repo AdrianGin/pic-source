@@ -18,10 +18,10 @@ RM := rm -f
 -include USER/TouchPanel/subdir.mk
 -include USER/SPI_Flash/subdir.mk
 -include USER/SD_Card/subdir.mk
--include USER/MicrochipGUI_V2.10/src/subdir.mk
 -include USER/MicrochipGUI_V2.10/Image/subdir.mk
 -include USER/MicrochipGUI_V2.10/GUI_App/subdir.mk
 -include USER/MicrochipGUI_V2.10/Font/subdir.mk
+-include USER/MicrochipGUI_V2.10/Drivers/subdir.mk
 -include USER/MicrochipGUI_V2.10/subdir.mk
 -include USER/MP3Header/subdir.mk
 -include USER/GLCD/subdir.mk

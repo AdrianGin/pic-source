@@ -33,11 +33,11 @@ USER/USB \
 USER/TouchPanel \
 USER/SPI_Flash \
 USER/SD_Card \
-USER/MicrochipGUI_V2.10/src \
 USER/MicrochipGUI_V2.10 \
 USER/MicrochipGUI_V2.10/Image \
 USER/MicrochipGUI_V2.10/GUI_App \
 USER/MicrochipGUI_V2.10/Font \
+USER/MicrochipGUI_V2.10/Drivers \
 USER/MP3Header \
 USER/GLCD \
 USER/FreeRTOS/Source \

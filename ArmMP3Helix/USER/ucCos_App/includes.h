@@ -33,18 +33,12 @@
 #include  <math.h>
 
 
-#include  <stm32f10x.h>
-#include  "Graphics.h"
-
 #include "ff.h"	 
-#include "GLCD.h"
-#include "Audio.h"
-#include "WM8731.h"
-#include "sdio_sd.h"
-#include "MP3Header.h"
-#include "TouchPanel.h"
-#include "FlashDriver.h"
-#include "SST25VF016B.h"
+//#include "WM8731.h"
+//#include "sdio_sd.h"
+//#include "FlashDriver.h"
+//#include "SST25VF016B.h"
+
 
 #include "FreeRTOS.h"
 #include "task.h"

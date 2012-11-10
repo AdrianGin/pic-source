@@ -25,6 +25,10 @@
 #include <includes.h>
 #include "hw_config.h"
 
+#include "SD_Card/sdio_sd.h"
+#include "GLCD.h"
+#include "Audio.h"
+
 #include "app_cfg.h"
 #include "intertaskComm.h"
 

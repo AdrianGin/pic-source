@@ -5,7 +5,7 @@
 * Gentium font is licensed under the SIL Open Font License, Version 1.0.
 * http://scripts.sil.org/OFL
 *************************************************************************************/
-#include "Graphics.h"
+#include "Graphics\Graphics.h"
 
 
 #ifdef GOLASCII_GENTIUM35

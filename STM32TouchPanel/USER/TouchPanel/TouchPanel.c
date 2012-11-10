@@ -52,9 +52,9 @@ Coordinate DisplaySample[3] =   {
 static void ADS7843_SPI_Init(void) 
 { 
   SPI_InitTypeDef  SPI_InitStructure;
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  RCC_APBxPeriphClockCmd(SPI_APB, ENABLE);
   /* DISABLE SPI2 */ 
-  SPI_Cmd(SPI2, DISABLE); 
+  SPI_Cmd(SPI_MODULE, DISABLE);
   /* SPI2 Config -------------------------------------------------------------*/ 
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex; 
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master; 
@@ -62,12 +62,12 @@ static void ADS7843_SPI_Init(void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; 
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft; 
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64; 
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; 
   SPI_InitStructure.SPI_CRCPolynomial = 7; 
-  SPI_Init(SPI2, &SPI_InitStructure); 
+  SPI_Init(SPI_MODULE, &SPI_InitStructure);
   /* Enable SPI2 */ 
-  SPI_Cmd(SPI2, ENABLE); 
+  SPI_Cmd(SPI_MODULE, ENABLE);
 } 
 
 /*******************************************************************************
@@ -84,22 +84,22 @@ void TP_Init(void)
   	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);
   	/* Configure SPI2 pins: SCK, MISO and MOSI ---------------------------------*/ 
 
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_15 | GPIO_Pin_13 | GPIO_Pin_14;
+	GPIO_InitStruct.GPIO_Pin = SPI_PINS;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_Init(SPI_GPIO_PORT, &GPIO_InitStruct);
   	/* TP_CS */
-  	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
+  	GPIO_InitStruct.GPIO_Pin = TP_CS_PIN;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	
-	GPIO_Init(GPIOB,&GPIO_InitStruct);
+	GPIO_Init(TP_CS_GPIO,&GPIO_InitStruct);
   	/* TP_IRQ */
-  	GPIO_InitStruct.GPIO_Pin =  GPIO_Pin_0;
+  	GPIO_InitStruct.GPIO_Pin =  TP_IRQ_PIN;
   	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
   	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  	GPIO_Init(GPIOB, &GPIO_InitStruct);
+  	GPIO_Init(TP_IRQ_GPIO, &GPIO_InitStruct);
   
   	TP_CS(1); 
   	ADS7843_SPI_Init(); 
@@ -117,6 +117,7 @@ void TP_Init(void)
 static void DelayUS(vu32 cnt)
 {
   uint16_t i;
+  return;
   for(i = 0;i<cnt;i++)
   {
      uint8_t us = 12; /* 设置值为12，大约延1微秒 */    
@@ -139,13 +140,13 @@ static void DelayUS(vu32 cnt)
 static void WR_CMD (uint8_t cmd)  
 { 
   /* Wait for SPI2 Tx buffer empty */ 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
   /* Send SPI2 data */ 
-  SPI_I2S_SendData(SPI2,cmd); 
+  SPI_I2S_SendData(SPI_MODULE,cmd);
   /* Wait for SPI2 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
   /* Read SPI2 received data */ 
-  SPI_I2S_ReceiveData(SPI2); 
+  SPI_I2S_ReceiveData(SPI_MODULE);
 } 
 
 
@@ -162,22 +163,22 @@ static int RD_AD(void)
 { 
   unsigned short buf,temp; 
   /* Wait for SPI2 Tx buffer empty */ 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
   /* Send SPI2 data */ 
-  SPI_I2S_SendData(SPI2,0x0000); 
+  SPI_I2S_SendData(SPI_MODULE,0x0000);
   /* Wait for SPI2 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
   /* Read SPI2 received data */ 
-  temp=SPI_I2S_ReceiveData(SPI2); 
+  temp=SPI_I2S_ReceiveData(SPI_MODULE);
   buf=temp<<8; 
   DelayUS(1); 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
   /* Send SPI2 data */ 
-  SPI_I2S_SendData(SPI2,0x0000); 
+  SPI_I2S_SendData(SPI_MODULE,0x0000);
   /* Wait for SPI2 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
   /* Read SPI2 received data */ 
-  temp=SPI_I2S_ReceiveData(SPI2); 
+  temp=SPI_I2S_ReceiveData(SPI_MODULE);
   buf |= temp; 
   buf>>=3; 
   buf&=0xfff; 
@@ -197,9 +198,9 @@ int Read_X(void)
 {  
   int i; 
   TP_CS(0); 
-  DelayUS(1); 
+  //DelayUS(1);
   WR_CMD(CHX); 
-  DelayUS(1); 
+  //DelayUS(1);
   i=RD_AD(); 
   TP_CS(1); 
   return i;    
@@ -217,9 +218,9 @@ int Read_Y(void)
 {  
   int i; 
   TP_CS(0); 
-  DelayUS(1); 
+  //DelayUS(1);
   WR_CMD(CHY); 
-  DelayUS(1); 
+  //DelayUS(1);
   i=RD_AD(); 
   TP_CS(1); 
   return i;     
@@ -238,8 +239,8 @@ void TP_GetAdXY(int *x,int *y)
 { 
   int adx,ady; 
   adx=Read_X(); 
-  DelayUS(1); 
-  ady=Read_Y(); 
+  //DelayUS(1);
+  ady=Read_Y();
   *x=adx; 
   *y=ady; 
 } 
@@ -305,14 +306,14 @@ Coordinate *Read_Ads7846(void)
   uint8_t count=0;
   int buffer[2][9]={{0},{0}};  /* 坐标X和Y进行多次采样 */
   
-  do					       /* 循环采样9次 */
+  while((TP_INT_IN == RESET) && count<9)					       /* 循环采样9次 */
   {		   
-    TP_GetAdXY(TP_X,TP_Y);  
+    TP_GetAdXY(TP_X,TP_Y);
 	buffer[0][count]=TP_X[0];  
 	buffer[1][count]=TP_Y[0];
 	count++;  
   }
-  while(!TP_INT_IN&& count<9);  /* TP_INT_IN为触摸屏中断引脚,当用户点击触摸屏时TP_INT_IN会被置低 */
+
   if(count==9)   /* 成功采样9次,进行滤波 */ 
   {  
     /* 为减少运算量,分别分3组取平均值 */

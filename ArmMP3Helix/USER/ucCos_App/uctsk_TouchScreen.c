@@ -21,11 +21,13 @@
 *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include <includes.h>            
+//#include <includes.h>
 
 #include "app_cfg.h"
 #include "intertaskComm.h"
 
+#include "TouchPanel.h"
+#include "Graphics\GOL.h"
 
 /* Private variables ---------------------------------------------------------*/
 extern  GOL_MSG msg;        /* GOL message structure to interact with GOL */

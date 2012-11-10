@@ -47,6 +47,8 @@
 
 typedef enum _BOOL { enFALSE , enTRUE } BOOL;	// Undefined size
 
+
+
 #ifndef NULL
 #define NULL    0//((void *)0)
 #endif

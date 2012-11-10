@@ -6,7 +6,7 @@
  * FileName:        StaticText.h
  * Dependencies:    None 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Linker:          MPLAB LINK30, MPLAB LINK32
  * Company:         Microchip Technology Incorporated
  *
@@ -34,14 +34,15 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Paolo A. Tamayo		11/12/07	Version 1.0 release
+ * 11/12/07		Version 1.0 release
  *****************************************************************************/
 #ifndef _STATICTEXT_H
     #define _STATICTEXT_H
 
-    #include "GOL.h"
+    #include <Graphics/GOL.h>
+    #include "GenericTypeDefs.h"
 
 /*********************************************************************
 * Object States Definition: 
@@ -157,7 +158,7 @@ STATICTEXT  *StCreate
             );
 
 /*********************************************************************
-* Function: WORD StTranslateMsg(STATICTEXT *pSt, GOL_MSG *pMsg)
+* Function: WORD StTranslateMsg(void *pObj, GOL_MSG *pMsg)
 *
 * Overview: This function evaluates the message from a user if the 
 *			message will affect the object or not. The table below 
@@ -188,10 +189,10 @@ STATICTEXT  *StCreate
 * Side Effects: none
 *
 ********************************************************************/
-WORD        StTranslateMsg(STATICTEXT *pSt, GOL_MSG *pMsg);
+WORD        StTranslateMsg(void *pObj, GOL_MSG *pMsg);
 
 /*********************************************************************
-* Function: WORD StDraw(STATICTEXT *pSt)
+* Function: WORD StDraw(void *pObj)
 *
 * Overview: This function renders the object on the screen using 
 *			the current parameter settings. Location of the object 
@@ -220,5 +221,5 @@ WORD        StTranslateMsg(STATICTEXT *pSt, GOL_MSG *pMsg);
 * Side Effects: none
 *
 ********************************************************************/
-WORD        StDraw(STATICTEXT *pSt);
+WORD StDraw(void *pObj);
 #endif // _STATICTEXT_H

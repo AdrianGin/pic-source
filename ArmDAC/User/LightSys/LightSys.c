@@ -238,7 +238,9 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 	colour = LS_GetColourFromMIDI(command, note, velocity);
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
-		LS_SetPixel((LED_COUNT / 2) - note, colour, command);
+		//Reverse on LED Strip
+		//LS_SetPixel((LED_COUNT / 2) - note, colour, command);
+		LS_SetPixel(note, colour, command);
 	}
 }
 

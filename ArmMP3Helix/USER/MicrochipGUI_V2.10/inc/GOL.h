@@ -3,15 +3,13 @@
  *  GOL Layer 
  *****************************************************************************
  * FileName:        GOL.h
- * Dependencies:    None 
  * Processor:       PIC24F, PIC24H, dsPIC, PIC32
- * Compiler:       	MPLAB C30 V3.00, MPLAB C32
- * Linker:          MPLAB LINK30, MPLAB LINK32
+ * Compiler:       	MPLAB C30, MPLAB C32
  * Company:         Microchip Technology Incorporated
  *
  * Software License Agreement
  *
- * Copyright © 2008 Microchip Technology Inc.  All rights reserved.
+ * Copyright © 2010 Microchip Technology Inc.  All rights reserved.
  * Microchip licenses to you the right to use, modify, copy and distribute
  * Software only when embedded on a Microchip microcontroller or digital
  * signal controller, which is integrated into your product or third party
@@ -34,19 +32,30 @@
  * CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF),
  * OR OTHER SIMILAR COSTS.
  *
- * Author               Date        Comment
+ * Date        	Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Anton Alkhimenok and
- * Paolo A. Tamayo	
- *                      11/12/07	Version 1.0 release
- * PAT 					06/29/09	Added BTN_MSG_STILLPRESSED message for 
- *									button object and EVENT_STILLPRESS for
- *									INPUT_DEVICE_EVENT list.
+ * 11/12/07		Version 1.0 release
+ * 06/29/09		Added BTN_MSG_STILLPRESSED message for 
+ *				button object and EVENT_STILLPRESS for
+ *				INPUT_DEVICE_EVENT list.
+ * 10/04/10		FONTDEFAULT can now be modified by the user without 
+ *              modifying the library files. To replace default font
+ *				(GOLFontDefault found in the library supplied GOLFontDefault.c 
+ *				file) user must add this line in the GraphicsConfig.h file:
+ *					#define FONTDEFAULT	userFont where "userFont" is the
+ *				user supplied font.
+ * 02/24/11     Replace color data type to GFX_COLOR
  *****************************************************************************/
 #ifndef _GOL_H
     #define _GOL_H
 
-    #include "Graphics.h"
+/*********************************************************************
+ * Section: Includes
+ *********************************************************************/
+#include "Graphics/Primitive.h"
+#include "GenericTypeDefs.h"
+#include "Graphics/gfxcolors.h"
+#include "GraphicsConfig.h"
 
 /*********************************************************************
 * Overview: GOL scheme defines the style scheme to be used by an object. 
@@ -54,17 +63,30 @@
 *********************************************************************/
 typedef struct
 {
-    WORD    EmbossDkColor;      // Emboss dark color used for 3d effect.
-    WORD    EmbossLtColor;      // Emboss light color used for 3d effect.
-    WORD    TextColor0;         // Character color 0 used for objects that supports text.
-    WORD    TextColor1;         // Character color 1 used for objects that supports text.
-    WORD    TextColorDisabled;  // Character color used when object is in a disabled state.
-    WORD    Color0;             // Color 0 usually assigned to an Object state.
-    WORD    Color1;             // Color 1 usually assigned to an Object state.
-    WORD    ColorDisabled;      // Color used when an Object is in a disabled state.
-    WORD    CommonBkColor;      // Background color used to hide Objects.
-    void    *pFont;             // Font selected for the scheme.
+    GFX_COLOR    EmbossDkColor;     // Emboss dark color used for 3d effect.
+    GFX_COLOR    EmbossLtColor;     // Emboss light color used for 3d effect.
+    GFX_COLOR    TextColor0;        // Character color 0 used for objects that supports text.
+    GFX_COLOR    TextColor1;        // Character color 1 used for objects that supports text.
+    GFX_COLOR    TextColorDisabled; // Character color used when object is in a disabled state.
+    GFX_COLOR    Color0;            // Color 0 usually assigned to an Object state.
+    GFX_COLOR    Color1;            // Color 1 usually assigned to an Object state.
+    GFX_COLOR    ColorDisabled;     // Color used when an Object is in a disabled state.
+    GFX_COLOR    CommonBkColor;     // Background color used to hide Objects.
+    void        *pFont;             // Font selected for the scheme.
+
+    #ifdef USE_ALPHABLEND
+    BYTE 	AlphaValue;				// Alpha value used for alpha blending, this is available only when USE_ALPHABLEND is defined in the GraphicsConfig.h.	
+    #endif
+     
+    #ifdef USE_GRADIENT
+    GFX_GRADIENT_STYLE gradientScheme;   // Gradient Scheme for widgets, this is available only when USE_GRADIENT is defined in the GraphicsConfig.h.
+    #endif
 } GOL_SCHEME;
+
+#ifdef USE_GRADIENT
+extern GFX_GRADIENT_STYLE _gradientScheme;
+#endif
+
 
 /*********************************************************************
 * Overview: Pointer to the GOL default scheme (GOL_SCHEME). This  
@@ -81,25 +103,26 @@ extern GOL_SCHEME   *_pDefaultGolScheme;
 *********************************************************************/
 typedef enum
 {
-    OBJ_BUTTON,                 // Type defined for Button Object.
-    OBJ_WINDOW,                 // Type defined for Window Object.
-    OBJ_CHECKBOX,               // Type defined for Check Box Object.
-    OBJ_RADIOBUTTON,            // Type defined for Radio Button Object.
-    OBJ_EDITBOX,                // Type defined for Edit Box Object.
-    OBJ_LISTBOX,                // Type defined for List Box Object.
-    OBJ_SLIDER,                 // Type defined for Slider and/or Scroll Bar Object.
-    OBJ_PROGRESSBAR,            // Type defined for Progress Object.
-    OBJ_STATICTEXT,             // Type defined for Static Text Object.
-    OBJ_PICTURE,                // Type defined for Picture or Bitmap Object.
-    OBJ_GROUPBOX,               // Type defined for Group Box Object.
-    OBJ_CUSTOM,                 // Type defined for Custom Object.
-    OBJ_ROUNDDIAL,              // Type defined for Dial Object.
-    OBJ_METER,                  // Type defined for Meter Object.
-    OBJ_GRID,                   // Type defined for Grid Object.
-    OBJ_CHART,                  // Type defined for Chart Object.
-    OBJ_TEXTENTRY,              // Type defined for Text-Entry Object.
-    OBJ_DIGITALMETER,           // Type defined for DIGITALMETER Object.
-    OBJ_UNKNOWN                 // Type is undefined and not supported by the library.
+    OBJ_BUTTON,                 	// Type defined for Button Object.
+    OBJ_WINDOW,                 	// Type defined for Window Object.
+    OBJ_CHECKBOX,               	// Type defined for Check Box Object.
+    OBJ_RADIOBUTTON,            	// Type defined for Radio Button Object.
+    OBJ_EDITBOX,                	// Type defined for Edit Box Object.
+    OBJ_LISTBOX,                	// Type defined for List Box Object.
+    OBJ_SLIDER,                 	// Type defined for Slider and/or Scroll Bar Object.
+    OBJ_PROGRESSBAR,            	// Type defined for Progress Object.
+    OBJ_STATICTEXT,             	// Type defined for Static Text Object.
+    OBJ_PICTURE,                	// Type defined for Picture or Bitmap Object.
+    OBJ_GROUPBOX,               	// Type defined for Group Box Object.
+    OBJ_CUSTOM,                 	// Type defined for Custom Object.
+    OBJ_ROUNDDIAL,              	// Type defined for Dial Object.
+    OBJ_METER,                  	// Type defined for Meter Object.
+    OBJ_GRID,                   	// Type defined for Grid Object.
+    OBJ_CHART,                  	// Type defined for Chart Object.
+    OBJ_TEXTENTRY,              	// Type defined for Text-Entry Object.
+    OBJ_DIGITALMETER,           	// Type defined for DIGITALMETER Object.
+    OBJ_ANALOGCLOCK,                // Type defined for ANALOGCLOCK Object.
+    OBJ_UNKNOWN                 	// Type is undefined and not supported by the library.
 } GOL_OBJ_TYPE;
 
 /*********************************************************************
@@ -147,7 +170,7 @@ typedef enum
     TYPE_TOUCHSCREEN,               // Touchscreen.
     TYPE_MOUSE,                     // Mouse.
     TYPE_TIMER,                     // Timer.
-    TYPE_SYSTEM,                     // System Messages.
+    TYPE_SYSTEM                     // System Messages.
 } INPUT_DEVICE_TYPE;
 
 /*********************************************************************
@@ -216,8 +239,15 @@ typedef enum
     TE_MSG_DELETE,                  // TextEntry delete character action ID
     TE_MSG_SPACE,                   // TextEntry add space character action ID
     TE_MSG_ENTER,                   // TextEntry enter action ID
+    AC_MSG_PRESSED,                 // Analog Clock Pressed Action
+    AC_MSG_RELEASED,                // Analog Clock Released Action
     OBJ_MSG_PASSIVE             	// Passive message response. No change in object needed.
 } TRANS_MSG;
+
+typedef WORD(*DRAW_FUNC)(void *);                   		// object draw function pointer typedef
+typedef void(*FREE_FUNC)(void *);                   		// object free function pointer typedef
+typedef WORD(*MSG_FUNC)(void *, GOL_MSG *);         		// object message function pointer typedef
+typedef void(*MSG_DEFAULT_FUNC)(WORD, void *, GOL_MSG *);	// object default message function pointer typedef
 
 /*********************************************************************
 * Overview: This structure defines the first nine fields of the 
@@ -227,15 +257,19 @@ typedef enum
 *********************************************************************/
 typedef struct
 {
-    WORD            ID;                             // Unique id assigned for referencing.
-    void            *pNxtObj;                       // A pointer to the next object.
-    GOL_OBJ_TYPE    type;                           // Identifies the type of GOL object.
-    WORD            state;                          // State of object.
-    SHORT           left;                           // Left position of the Object.
-    SHORT           top;                            // Top position of the Object.
-    SHORT           right;                          // Right position of the Object.
-    SHORT           bottom;                         // Bottom position of the Object.
-    GOL_SCHEME      *pGolScheme;                    // Pointer to the scheme used.
+    WORD                ID;                             	// Unique id assigned for referencing.
+    void                *pNxtObj;                       	// A pointer to the next object.
+    GOL_OBJ_TYPE        type;                           	// Identifies the type of GOL object.
+    WORD                state;                          	// State of object.
+    SHORT               left;                           	// Left position of the Object.
+    SHORT               top;                            	// Top position of the Object.
+    SHORT               right;                          	// Right position of the Object.
+    SHORT               bottom;                         	// Bottom position of the Object.
+    GOL_SCHEME          *pGolScheme;                    	// Pointer to the scheme used.
+    DRAW_FUNC           DrawObj;                        	// function pointer to the object draw function
+    FREE_FUNC           FreeObj;                        	// function pointer to the object free function
+    MSG_FUNC            MsgObj;                         	// function pointer to the object message function
+    MSG_DEFAULT_FUNC    MsgDefaultObj;                  	// function pointer to the object default message function
 } OBJ_HEADER;
 
 /*********************************************************************
@@ -302,132 +336,35 @@ extern OBJ_HEADER   *_pObjectFocused;
     #endif
 
 /*********************************************************************
+* Overview: The default font GOLFontDefault is declared in  
+*           GOLFontDefault.c file included in the Graphics Library. 
+*           To use this default font, USE_GOL must be defined in 
+*           GraphicsConfig.h.
+*           To replace this default font, add this declaration 
+*		    in the GraphicsConfig.h:
+*				#define FONTDEFAULT yourFont
+*           Then in the project the "yourFont" must be added. 
+*           The Graphics Library will then use the font that the user
+*			supplied.
+*********************************************************************/
+	#ifndef FONTDEFAULT
+		// Use the default GOL font in GOLFontDefault.c
+    	#define FONTDEFAULT GOLFontDefault
+	#endif
+
+	// Default GOL font.
+	extern const FONT_FLASH FONTDEFAULT;
+
+/*********************************************************************
 * Overview: The following are the style scheme default settings.
 *
 *********************************************************************/
-
-// Default GOL font.
-#define FONT_TO_USE	GOLFontDefault
-
-//extern const FONT_FLASH GOLFontDefault;
-extern const FONT_FLASH FONT_TO_USE;
-// Default Font assignement.	
-//    #define FONTDEFAULT GOLFontDefault
-	#define FONTDEFAULT FONT_TO_USE
-
-#ifdef USE_PALETTE
-
-    #include "PaletteColorDefines.h"
-
-#else
-    
-// Brown color scheme
-    #define SADDLEBROWN RGB565CONVERT(139, 69, 19)  // Saddle Color
-    #define SIENNA      RGB565CONVERT(160, 82, 45)  // Sienna Color
-    #define PERU        RGB565CONVERT(205, 133, 63) // Peru Color
-    #define BURLYWOOD   RGB565CONVERT(222, 184, 135)    // Burly wood Color
-    #define WHEAT       RGB565CONVERT(245, 245, 220)    // Wheat Color
-    #define TAN         RGB565CONVERT(210, 180, 140)    // Tan Color
-    #define GRAY80      RGB565CONVERT(204, 204, 204)    // Gray80 Color
-    #define GRAY90      RGB565CONVERT(229, 229, 229)    // Gray90 Color
-    #define GRAY95      RGB565CONVERT(242, 242, 242)    // Gray95 Color
-    #if (COLOR_DEPTH == 1)
-
-/* default settings for a monochrome display */
-
-// Emboss dark color default value.
-        #define EMBOSSDKCOLORDEFAULT    0x00
-
-// Emboss light color default value.	
-        #define EMBOSSLTCOLORDEFAULT    0xFF
-
-// Text color 0 default value.	
-        #define TEXTCOLOR0DEFAULT   0xFF
-
-// Text color 1 default value.		
-        #define TEXTCOLOR1DEFAULT   0x00
-
-// Text color disabled default value.							
-        #define TEXTCOLORDISABLEDDEFAULT    0xFF
-
-// Color 0 default value.								
-        #define COLOR0DEFAULT   0x00
-
-// Color 1 default value.	
-        #define COLOR1DEFAULT   0xFF
-
-// Disabled color default value.	
-        #define COLORDISABLEDDEFAULT    0x00
-
-// Common background color default value.	
-        #define COMMONBACKGROUNDCOLORDEFAULT    0x00
-
-    #else
-        #if defined (GFX_PICTAIL_V1)
-
-/* default settings for Microtips display */
-
-// Emboss dark color default value.
-            #define EMBOSSDKCOLORDEFAULT    RGB565CONVERT(0x2B, 0x55, 0x87)
-
-// Emboss light color default value.	
-            #define EMBOSSLTCOLORDEFAULT    RGB565CONVERT(0xD4, 0xE4, 0xF7)
-
-// Text color 0 default value.	
-            #define TEXTCOLOR0DEFAULT   RGB565CONVERT(0x07, 0x1E, 0x48)
-
-// Text color 1 default value.		
-            #define TEXTCOLOR1DEFAULT   WHITE
-
-// Text color disabled default value.							
-            #define TEXTCOLORDISABLEDDEFAULT    WHEAT
-
-// Color 0 default value.								
-            #define COLOR0DEFAULT   RGB565CONVERT(0x93, 0xEF, 0xFF)
-
-// Color 1 default value.	
-            #define COLOR1DEFAULT   RGB565CONVERT(0x26, 0xC7, 0xF2)
-
-// Disabled color default value.	
-            #define COLORDISABLEDDEFAULT    RGB565CONVERT(0xB6, 0xD2, 0xFB)
-
-// Common background color default value.	
-            #define COMMONBACKGROUNDCOLORDEFAULT    RGB565CONVERT(0xEF, 0xFE, 0xFF)
-
-        #else
-
-/* default settings for TRULY display */
-
-// Emboss dark color default value.
-            #define EMBOSSDKCOLORDEFAULT    RGB565CONVERT(0x2B, 0x55, 0x87)
-
-// Emboss light color default value.
-            #define EMBOSSLTCOLORDEFAULT    RGB565CONVERT(0xD4, 0xE4, 0xF7)
-
-// Text color 0 default value.
-            #define TEXTCOLOR0DEFAULT   RGB565CONVERT(0x07, 0x1E, 0x48)
-
-// Text color 1 default value.
-            #define TEXTCOLOR1DEFAULT   WHITE
-
-// Text color disabled default value.
-            #define TEXTCOLORDISABLEDDEFAULT    WHEAT
-
-// Color 0 default value.								
-            #define COLOR0DEFAULT   RGB565CONVERT(0xA9, 0xDB, 0xEF)
-
-// Color 1 default value.
-            #define COLOR1DEFAULT   RGB565CONVERT(0x26, 0xC7, 0xF2)
-
-// Disabled color default value.
-            #define COLORDISABLEDDEFAULT    RGB565CONVERT(0xB6, 0xD2, 0xFB)
-
-// Common background color default value.
-            #define COMMONBACKGROUNDCOLORDEFAULT    RGB565CONVERT(0xD4, 0xED, 0xF7)
-
-        #endif //  #if defined (GFX_PICTAIL_V1)
-    #endif // USE_MONOCHROME
+#ifndef GFX_SCHEMEDEFAULT
+#define GFX_SCHEMEDEFAULT GOLSchemeDefault
 #endif
+
+    extern const GOL_SCHEME GFX_SCHEMEDEFAULT;
+
 
 /*********************************************************************
 * Function: WORD GOLCanBeFocused(OBJ_HEADER* object)
@@ -642,16 +579,10 @@ void        GOLSetFocus(OBJ_HEADER *object);
 *
 *		while(pCurrentObj != NULL){
 *			if(IsObjUpdated(pCurrentObj)){
-*				switch(pCurrentObj->type){
-*					case OBJ_BUTTON:
-*						done = BtnDraw((BUTTON*)pCurrentObj);
-*						break;
-*					case OBJ_WINDOW:
-*						done = WndDraw((WINDOW*)pCurrentObj);
-*						break;
-*				}
-*				// reset state of object if done
-*				if (done)
+*               done = pCurrentObj->draw(pCurrentObj);				
+*                
+*               // reset state of object if done
+*               if (done)
 *					GOLDrawComplete(pCurrentObj)
 *				// Return if not done. This means that BtnDraw()
 *				// was terminated prematurely by device busy status
@@ -706,14 +637,8 @@ void        GOLSetFocus(OBJ_HEADER *object);
 *
 *		while(pCurrentObj != NULL) {
 *			if(IsObjUpdated(pCurrentObj)) {
-*				switch(pCurrentObj->type) {
-*					case OBJ_BUTTON:
-*						done = BtnDraw((BUTTON*)pCurrentObj);
-*						break;
-*					case OBJ_WINDOW:
-*						done = WndDraw((WINDOW*)pCurrentObj);
-*						break;
-*				}
+*				done = pCurrentObj->draw(pCurrentObj);
+*
 *				if(done){
 *					GOLDrawComplete(pCurrentObj);
 *				}else{
@@ -835,6 +760,9 @@ void        GOLSetFocus(OBJ_HEADER *object);
 *
 * Overview: This function creates a new style scheme object 
 *			and initializes the parameters to default values.
+*           Default values are based on the GOLSchemeDefault 
+*           defined in GOLSchemeDefault.c file. Application code
+*           can override this initialization, See GOLSchemeDefault.
 *
 * PreCondition: none
 *
@@ -958,7 +886,7 @@ GOL_SCHEME  *GOLCreateScheme(void);
 *				clipping. This also creates a default style scheme.
 *
 ********************************************************************/
-void GOLInit(void );
+void GOLInit();
 
 /*********************************************************************
 * Function: void GOLAddObject(OBJ_HEADER* object)
@@ -1609,6 +1537,16 @@ extern void     *_pRpnlBitmap;      // Bitmap used in the panel
     _rpnlEmbossDkColor = embossDkClr;                                                              \
     _pRpnlBitmap = pBitmap;                                                                        \
     _rpnlEmbossSize = embossSize;
+
+
+     #ifdef USE_GRADIENT
+
+     #define GOLGradientPanelDraw(pGolScheme)                                                      \
+         _gradientScheme.gradientStartColor = pGolScheme->gradientScheme.gradientStartColor;       \
+         _gradientScheme.gradientEndColor = pGolScheme->gradientScheme.gradientEndColor;           \
+         _gradientScheme.gradientType  = pGolScheme->gradientScheme.gradientType;                  \
+         _gradientScheme.gradientLength = pGolScheme->gradientScheme.gradientLength;                                                                                                                                
+     #endif
 
 /*********************************************************************
 * Function: WORD GOLPanelDrawTsk()
