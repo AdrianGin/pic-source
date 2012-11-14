@@ -44,6 +44,46 @@ void gfxWrite(uint8_t ch)
 }
 
 
+/*********************************************************************
+* Function: WORD Bar(SHORT left, SHORT top, SHORT right, SHORT bottom)
+*
+* PreCondition: none
+*
+
+* Input: left,top - top left corner coordinates,
+*        right,bottom - bottom right corner coordinates
+*
+* Output: For NON-Blocking configuration:
+*         - Returns 0 when device is busy and the shape is not yet completely drawn.
+*         - Returns 1 when the shape is completely drawn.
+*         For Blocking configuration:
+*         - Always return 1.
+*
+* Side Effects: none
+*
+* Overview: draws rectangle filled with current color
+*
+* Note: none
+*
+********************************************************************/
+void gfxDrawRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
+{
+	int16_t   x, y;
+
+    for(y = top; y < bottom + 1; y++)
+    {
+        for(x = left; x < right + 1; x++)
+        {
+            PutPixel(x, y);
+        }
+    }
+}
+
+void gfxDrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1)
+{
+
+}
+
 
 void gfxDrawBMP(char* bmpImgPath)
 {

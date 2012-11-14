@@ -33,8 +33,9 @@
 #include "ff.h"
 #include "Graphics\gfxEngine.h"
 #include "FSUtils\FSUtil.h"
-#include "Graphics\Listbox.h"
 #include "TouchPanel\FluidTouch.h"
+
+#include "UserGUI.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -64,7 +65,7 @@ int main(void)
 
 	DIR dir;
 
-	GFX_Listbox_t GFX_LB;
+
 
 
 	char path[255];
@@ -99,11 +100,7 @@ int main(void)
 
   LCD_PauseUpdateScreen();
 
-  GFX_LB_Init(&GFX_LB, 20, 120 , 0x0F);
-
-  GFX_LB.list.first = (LIST_NODE_t*)NULL;
-  GFX_LB.list.last = (LIST_NODE_t*)NULL;
-
+  UserGUI_Init();
 
 
 	FSUtil_OpenDir(&dir, "/MIDI");
@@ -183,6 +180,7 @@ int main(void)
 			  point = FluidTouchGetPoint();
 			  if( point != 0)
 			  {
+
 				  //TP_BudgetGetDisplayPoint(&TouchPanel, point);
 				  //getDisplayPoint(&display, point, &matrix ) ;
 				  SetTouchPoint(point->x, point->y);
@@ -243,6 +241,7 @@ int main(void)
 				  setPixel(point->x,point->y);
 				  //DrawCross(point->x,point->y);
 
+				  gfxWriteString(point->x, point->y, "Hi");
 				   //LCD_VSyncHigh();
 				   //delay_ms(1);
 				  //PhysicsMain();
