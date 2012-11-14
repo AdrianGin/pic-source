@@ -27,7 +27,9 @@ typedef struct _BMPfile
 
 uint8_t BMP_ReadHeader(BMPFile_t* pBmpDec);
 uint8_t BMP_Print(BMPFile_t* pBmpDec);
-
+void BMP_SetCursor(uint16_t x, uint16_t y);
+void BMP_SetRotation(int16_t dirX, int16_t dirY);
+void BMP_SetScaling(uint16_t scale);
 
 #endif
 

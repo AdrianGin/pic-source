@@ -7,6 +7,14 @@
 
 #include "GLCD.h"
 
+
+static uint16_t BMP_CursorX;
+static uint16_t BMP_CursorY;
+
+static uint16_t BMP_Scale;
+static int16_t BMP_Direction[2];
+
+
 void* _BMP_readbuf(FIL* ptr, void* buf, uint16_t size)
 {
     uint16_t br;
@@ -96,7 +104,28 @@ uint8_t BMP_ReadHeader(BMPFile_t* pBmpDec)
 }
 
 
+
+void BMP_SetCursor(uint16_t x, uint16_t y)
+{
+	BMP_CursorX = x;
+	BMP_CursorY = y;
+}
+
+void BMP_SetRotation(int16_t dirX, int16_t dirY)
+{
+	BMP_Direction[0] = dirX;
+	BMP_Direction[1] = dirY;
+}
+
+
+void BMP_SetScaling(uint16_t scale)
+{
+	BMP_Scale = scale;
+}
+
 #define PIXEL_BUFFER_COUNT (128)
+
+
 
 uint8_t BMP_Print(BMPFile_t* pBmpDec)
 {
@@ -110,6 +139,8 @@ uint8_t BMP_Print(BMPFile_t* pBmpDec)
     uint8_t readBuf[512];
     uint8_t bufferIndex = PIXEL_BUFFER_COUNT;
     uint32_t position = 0;
+
+    uint16_t cursorX,cursorY;
 
     if(pBmpDec->blBmMarkerFlag == 0 || pBmpDec->bHeaderType < 40 || (pBmpDec->blCompressionType != 0))
     {
@@ -130,23 +161,18 @@ uint8_t BMP_Print(BMPFile_t* pBmpDec)
 //    LCD_SetCursor(0,0);
 //    LCD_WriteIndex(0x0022);
 
+    cursorX = BMP_CursorX;
+    cursorY = BMP_CursorY;
+
     for( j = 0; j < pBmpDec->lHeight; j++)
     {
     	for( k = 0; k < pBmpDec->lWidth; k++)
         {
-
-
             if( bufferIndex >= PIXEL_BUFFER_COUNT)
             {
                 IMG_FREAD(readBuf, PIXEL_BUFFER_COUNT*3, 1, pBmpDec->pImageFile);
                 bufferIndex = 0;
             }
-//
-//            if( k > 150 )
-//            {
-//            	bufferIndex++;
-//            	continue;
-//            }
 
             b = readBuf[(3*bufferIndex)+0];
             g = readBuf[(3*bufferIndex)+1];
@@ -158,10 +184,34 @@ uint8_t BMP_Print(BMPFile_t* pBmpDec)
 
 //
             SetColor(pixel);
-            PutPixel(j , k);
+
+            PutPixel(cursorX , cursorY);
+
+            if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
+            {
+            	cursorY = cursorY + BMP_Direction[1];
+            }
+            else
+            {
+            	cursorX = cursorX + BMP_Direction[0];
+            	//PutPixel(cursorY , cursorX);
+            }
             //LCD_WriteData(pixel);
-            bufferIndex++;
+            bufferIndex = bufferIndex + 1;
         }
+
+        if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
+        {
+        	cursorX = cursorX + BMP_Direction[0];
+        	cursorY = BMP_CursorY;
+
+        }
+        else
+        {
+        	cursorY = cursorY + BMP_Direction[1];
+        	cursorX = BMP_CursorX;
+        }
+
     }
 
     return 0;

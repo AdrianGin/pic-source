@@ -11,12 +11,14 @@ LIST_NODE_t* LL_NewNode(void* data)
 {
     LIST_NODE_t* newNode;
 
-    newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
+    newNode = (LIST_NODE_t*)LL_Malloc(sizeof(LIST_NODE_t));
 //    while( newNode == NULL )
 //    {
 //        newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
 //    }
 
+    newNode->next = NULL;
+    newNode->prev = NULL;
     newNode->data = data;
     return (LIST_NODE_t*)newNode;
 }
@@ -134,13 +136,26 @@ void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node)
    }
    if( node != NULL)
    {
-      free(node);
+	   LL_Free(node);
    }
    node = NULL;
 }
 
 
+uint16_t LL_Count(LINKED_LIST_t* linkedList)
+{
+	LIST_NODE_t* tmp;
+	uint16_t count = 0;
 
+	tmp = linkedList->first;
+	while(tmp != NULL)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+
+	return count;
+}
 
 
 

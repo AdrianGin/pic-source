@@ -26,14 +26,14 @@
 
 /* Private variables ---------------------------------------------------------*/
 Matrix matrix ;
-Coordinate  display ;
+Coordinate  TouchPanel;
 
 /* DisplaySample LCD坐标上对应的ads7843采样AD值 如：LCD 坐标45,45 应该的X Y采样ADC分别为3388,920 */	
 Coordinate ScreenSample[3];
 /* LCD上的坐标 */
 Coordinate DisplaySample[3] =   {
-                                          { 120,50 },
-											{ 30, 200},
+                                            { 30,30 },
+											{ 300, 200},
                                             { 190,200}
 	                            } ;
 
@@ -314,21 +314,20 @@ Coordinate *Read_Ads7846(void)
 	count++;  
   }
 
-  if(count==9)   /* 成功采样9次,进行滤波 */ 
+  if(count==9)
   {  
-    /* 为减少运算量,分别分3组取平均值 */
     temp[0]=(buffer[0][0]+buffer[0][1]+buffer[0][2])/3;
 	temp[1]=(buffer[0][3]+buffer[0][4]+buffer[0][5])/3;
 	temp[2]=(buffer[0][6]+buffer[0][7]+buffer[0][8])/3;
-	/* 计算3组数据的差值 */
+
 	m0=temp[0]-temp[1];
 	m1=temp[1]-temp[2];
 	m2=temp[2]-temp[0];
-	/* 对上述差值取绝对值 */
+
 	m0=m0>0?m0:(-m0);
     m1=m1>0?m1:(-m1);
 	m2=m2>0?m2:(-m2);
-	/* 判断绝对差值是否都超过差值门限，如果这3个绝对差值都超过门限值，则判定这次采样点为野点,抛弃采样点，差值门限取为2 */
+
 	if( m0>THRESHOLD  &&  m1>THRESHOLD  &&  m2>THRESHOLD ) return 0;
 	/* 计算它们的平均值，同时赋值给screen */ 
 	if(m0<m1)
@@ -457,6 +456,42 @@ FunctionalState getDisplayPoint(Coordinate * displayPtr,
   return(retTHRESHOLD);
 } 
 
+
+int16_t xGradient;
+int16_t xOffset;
+int16_t yGradient;
+int16_t yOffset;
+
+#define TP_ACCURACY_SCALE	(10)
+
+void TP_BudgetGetDisplayPoint(Coordinate * displayPtr, Coordinate * screenPtr)
+{
+	if( (xGradient != 0) && (yGradient != 0) )
+	{
+		displayPtr->x = (screenPtr->x * TP_ACCURACY_SCALE / xGradient) + xOffset;
+		displayPtr->y = (screenPtr->y * TP_ACCURACY_SCALE / yGradient) + yOffset;
+	}
+}
+
+void TP_BudgetCalibrate(uint8_t axis, Coordinate* a1, Coordinate* d1, Coordinate* a2, Coordinate* d2)
+{
+
+	int16_t gradient;
+
+	if( axis )
+	{
+		yGradient = (a2->y - a1->y) * TP_ACCURACY_SCALE / (d2->y - d1->y);
+		yOffset = d2->y - (a2->y * TP_ACCURACY_SCALE / yGradient);
+		printf("CALIBY: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->y, a1->y, d2->y, d1->y, yGradient);
+	}
+	else
+	{
+		xGradient = (a2->x - a1->x) * TP_ACCURACY_SCALE / (d2->x - d1->x);
+		xOffset = d2->x - (a2->x * TP_ACCURACY_SCALE / xGradient);
+		printf("CALIBX: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->x, a1->x, d2->x, d1->x, xGradient);
+	}
+}
+
 /*******************************************************************************
 * Function Name  : TouchPanel_Calibrate
 * Description    : 校准触摸屏
@@ -470,7 +505,7 @@ void TouchPanel_Calibrate(void)
   uint8_t i;
   Coordinate * Ptr;
 
-  for(i=0;i<3;i++)
+  for(i=0;i<2;i++)
   {
    LCD_Clear(Black);
    GUI_Text((MAX_X - 28 * 8)/2 ,10,"Touch crosshair to calibrate",0xffff,Black);
@@ -481,9 +516,16 @@ void TouchPanel_Calibrate(void)
      Ptr=Read_Ads7846();
    }
    while( Ptr == (void*)0 );
-   ScreenSample[i].x= Ptr->x; ScreenSample[i].y= Ptr->y;
+   ScreenSample[i].x= Ptr->x;
+   ScreenSample[i].y= Ptr->y;
   }
-  setCalibrationMatrix( &DisplaySample[0],&ScreenSample[0],&matrix ) ;  /* 送入值得到参数 */	   
+
+  TP_BudgetCalibrate(0, &ScreenSample[0], &DisplaySample[0], &ScreenSample[1], &DisplaySample[1]);
+  TP_BudgetCalibrate(1, &ScreenSample[0], &DisplaySample[0], &ScreenSample[1], &DisplaySample[1]);
+
+
+
+  //setCalibrationMatrix( &DisplaySample[0],&ScreenSample[0],&matrix ) ;  /* 送入值得到参数 */
   LCD_Clear(Black);
 } 
 

@@ -53,7 +53,7 @@ long double An,
 extern Coordinate ScreenSample[3];
 extern Coordinate DisplaySample[3];
 extern Matrix matrix ;
-extern Coordinate  display ;
+extern Coordinate  TouchPanel;
 
 /* Private define ------------------------------------------------------------*/
 /* AD通道选择命令字和工作寄存器 */
@@ -65,8 +65,8 @@ extern Coordinate  display ;
 
 
 //Must choose either TP_USE_SPI1 or SPI2
-#define TP_USE_SPI1
-//#define TP_USE_SPI2
+//#define TP_USE_SPI1
+#define TP_USE_SPI2
 
 #ifdef TP_USE_SPI1
 
@@ -113,6 +113,8 @@ void DrawCross(uint16_t Xpos,uint16_t Ypos);
 void TP_DrawPoint(uint16_t Xpos,uint16_t Ypos);
 FunctionalState setCalibrationMatrix( Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr);
 FunctionalState getDisplayPoint(Coordinate * displayPtr,Coordinate * screenPtr,Matrix * matrixPtr );
+
+void TP_BudgetGetDisplayPoint(Coordinate * displayPtr, Coordinate * screenPtr);
 
 #endif
 

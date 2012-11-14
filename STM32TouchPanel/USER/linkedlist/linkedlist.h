@@ -32,6 +32,11 @@ void LL_InsertBefore(LINKED_LIST_t* linkedList, LIST_NODE_t* node, LIST_NODE_t* 
 void LL_InsertBeginning(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode);
 void LL_InsertEnd(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode);
 void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node);
+uint16_t LL_Count(LINKED_LIST_t* linkedList);
+
+
+#define LL_Malloc(size)		malloc(size)
+#define LL_Free(handle)		free(handle)
 
 
 #endif

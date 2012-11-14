@@ -32,7 +32,10 @@
 #include "hw_config.h"
 #include "ff.h"
 #include "Graphics\gfxEngine.h"
+#include "FSUtils\FSUtil.h"
+#include "Graphics\Listbox.h"
 
+#include <string.h>
 
 FATFS fs;
 
@@ -47,13 +50,18 @@ FATFS fs;
 int main(void)
 {
 
-	uint16_t i, j, k;
+	int16_t i, j, k;
 	uint8_t ret;
 	uint8_t alternate;
 	Coordinate* point;
 
+	GFX_Listbox_t GFX_LB;
+
+
+	char path[255];
+
 	USART_Configuration();
-	//GPIO_Configuration();
+	GPIO_Configuration();
 	NVIC_Configuration();
 
 	delay_init();
@@ -65,9 +73,11 @@ int main(void)
 
 	gfxEngine_Init();
 
-	//ret = f_mount(0, &fs);
+	ret = f_mount(0, &fs);
 	printf("Mount %d\n", ret);
 
+	strcpy(path, "");
+	scan_files(path);
 
   TP_Init();
   TouchPanel_Calibrate();
@@ -79,6 +89,15 @@ int main(void)
 
   LCD_PauseUpdateScreen();
 
+  GFX_LB_Init(&GFX_LB, 120, 120 , 20);
+
+  GFX_LB.list.first = (LIST_NODE_t*)NULL;
+  GFX_LB.list.last = (LIST_NODE_t*)NULL;
+
+  GFX_LB_AddItem(&GFX_LB, "Hey Leo");
+  GFX_LB_AddItem(&GFX_LB, "What");
+  GFX_LB_AddItem(&GFX_LB, "is up?");
+	
   while (1)	
   {
 	  //LCD_Clear(Black);
@@ -91,16 +110,33 @@ int main(void)
 			  point = Read_Ads7846();
 			  if( point != 0)
 			  {
-				  getDisplayPoint(&display, point, &matrix ) ;
-				  SetTouchPoint(display.x, display.y);
-				  i = display.x;
-				  k = display.y;
-				  //LCD_VSyncLow();
+
+
+				  TP_BudgetGetDisplayPoint(&TouchPanel, point);
+
+				  //getDisplayPoint(&display, point, &matrix ) ;
+				  SetTouchPoint(TouchPanel.x, TouchPanel.y);
+
+				  i = TouchPanel.x;
+				  k = TouchPanel.y;
+				  LCD_VSyncLow();
 
 				  if(alternate)
 				  {
-					  //gfxDrawBMP();
-					  //LCD_Clear(Yellow);
+					  LCD_Clear(Black);
+					  BMP_SetCursor(i, k);
+//					  gfxDrawBMP("folder13.bmp");
+
+
+					  GFX_LB_Scroll(&GFX_LB, k - 120);
+					  printf("PosX=%d\n",i);
+					  printf("PosY=%d\n",k);
+
+					  SetClip(1);
+					  SetClipRgn(0, 100 ,320 ,200);
+
+					  GFX_LB_Draw(&GFX_LB);
+					  SetClip(0);
 					  //gfxWriteString(i, k, "Fuck this world!");
 					  //alternate = 0;
 				  }
@@ -109,7 +145,36 @@ int main(void)
 					  //LCD_Clear(Yellow);
 					  alternate = 1;
 				  }
-				   //LCD_VSyncHigh();
+
+				  BMP_SetRotation(1, -1);
+				  BMP_SetCursor(0, 239);
+
+				  gfxDrawBMP("blueto~1.bmp");
+
+				  BMP_SetCursor(100, 239);
+				  //gfxDrawBMP("phone.bmp");
+
+				  BMP_SetCursor(200, 239);
+				  gfxDrawBMP("sms.bmp");
+
+
+				  BMP_SetRotation(1, -1);
+				  BMP_SetCursor(0, 20);
+				  gfxDrawBMP("folder13.bmp");
+
+				  BMP_SetCursor(0, 50);
+				  gfxDrawBMP("folder13.bmp");
+
+				  BMP_SetCursor(0, 80);
+				  gfxDrawBMP("folder13.bmp");
+
+				  BMP_SetCursor(0, 110);
+				  gfxDrawBMP("folder13.bmp");
+
+				  DrawCross(TouchPanel.x,TouchPanel.y);
+
+				   LCD_VSyncHigh();
+				   delay_ms(35);
 				  //PhysicsMain();
 			  }
 
@@ -140,12 +205,12 @@ int main(void)
 		  }
 		  j++;
 
-		  //LCD_VSyncLow();
+		  LCD_VSyncLow();
 		  //delay_ms(2);
-		  PhysicsMain(DESIRED_FPS);
-		  //LCD_VSyncHigh();
+		  //PhysicsMain(DESIRED_FPS);
+		  LCD_VSyncHigh();
 		  //delay_ms(1);
-		  delay_ms(TIME_BASE / DESIRED_FPS);
+		  delay_ms(10);
 		  //LCD_Clear(Yellow);
 		  ///LCD_UpdateScreen();
 		  //PhysicsTick();

@@ -22,7 +22,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "TouchPanel.h"
-#include "systick.h"
 #include "GLCD.h"
 
 /* Private variables ---------------------------------------------------------*/
@@ -33,9 +32,9 @@ Coordinate  display ;
 Coordinate ScreenSample[3];
 /* LCD上的坐标 */
 Coordinate DisplaySample[3] =   {
-                                            { 45, 45 },
-											{ 45, 270},
-                                            { 190,190}
+                                          { 120,50 },
+											{ 30, 200},
+                                            { 190,200}
 	                            } ;
 
 /* Private define ------------------------------------------------------------*/
@@ -53,22 +52,22 @@ Coordinate DisplaySample[3] =   {
 static void ADS7843_SPI_Init(void) 
 { 
   SPI_InitTypeDef  SPI_InitStructure;
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-  /* DISABLE SPI1 */ 
-  SPI_Cmd(SPI1, DISABLE); 
-  /* SPI1 Config -------------------------------------------------------------*/ 
+  RCC_APBxPeriphClockCmd(SPI_APB, ENABLE);
+  /* DISABLE SPI2 */ 
+  SPI_Cmd(SPI_MODULE, DISABLE);
+  /* SPI2 Config -------------------------------------------------------------*/ 
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex; 
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master; 
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b; 
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; 
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft; 
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256; 
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; 
   SPI_InitStructure.SPI_CRCPolynomial = 7; 
-  SPI_Init(SPI1, &SPI_InitStructure); 
-  /* Enable SPI1 */ 
-  SPI_Cmd(SPI1, ENABLE); 
+  SPI_Init(SPI_MODULE, &SPI_InitStructure);
+  /* Enable SPI2 */ 
+  SPI_Cmd(SPI_MODULE, ENABLE);
 } 
 
 /*******************************************************************************
@@ -81,26 +80,29 @@ static void ADS7843_SPI_Init(void)
 *******************************************************************************/
 void TP_Init(void) 
 { 
-  GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOD, ENABLE);
-  /* Configure SPI1 pins: SCK, MISO and MOSI ---------------------------------*/ 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5  | GPIO_Pin_6 | GPIO_Pin_7; 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;       
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure); 
-  /* TP_CS */
-  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;		 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
-  /* TP_IRQ */
-  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_13 ;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  	GPIO_InitTypeDef GPIO_InitStruct;
+  	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);
+  	/* Configure SPI2 pins: SCK, MISO and MOSI ---------------------------------*/ 
+
+	GPIO_InitStruct.GPIO_Pin = SPI_PINS;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	
+	GPIO_Init(SPI_GPIO_PORT, &GPIO_InitStruct);
+  	/* TP_CS */
+  	GPIO_InitStruct.GPIO_Pin = TP_CS_PIN;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	
+	GPIO_Init(TP_CS_GPIO,&GPIO_InitStruct);
+  	/* TP_IRQ */
+  	GPIO_InitStruct.GPIO_Pin =  TP_IRQ_PIN;
+  	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
+  	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  	GPIO_Init(TP_IRQ_GPIO, &GPIO_InitStruct);
   
-  TP_CS(1); 
-  ADS7843_SPI_Init(); 
+  	TP_CS(1); 
+  	ADS7843_SPI_Init(); 
 } 
 
 
@@ -115,6 +117,7 @@ void TP_Init(void)
 static void DelayUS(vu32 cnt)
 {
   uint16_t i;
+  return;
   for(i = 0;i<cnt;i++)
   {
      uint8_t us = 12; /* 设置值为12，大约延1微秒 */    
@@ -136,14 +139,14 @@ static void DelayUS(vu32 cnt)
 *******************************************************************************/
 static void WR_CMD (uint8_t cmd)  
 { 
-  /* Wait for SPI1 Tx buffer empty */ 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET); 
-  /* Send SPI1 data */ 
-  SPI_I2S_SendData(SPI1,cmd); 
-  /* Wait for SPI1 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET); 
-  /* Read SPI1 received data */ 
-  SPI_I2S_ReceiveData(SPI1); 
+  /* Wait for SPI2 Tx buffer empty */ 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
+  /* Send SPI2 data */ 
+  SPI_I2S_SendData(SPI_MODULE,cmd);
+  /* Wait for SPI2 data reception */ 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
+  /* Read SPI2 received data */ 
+  SPI_I2S_ReceiveData(SPI_MODULE);
 } 
 
 
@@ -159,23 +162,23 @@ static void WR_CMD (uint8_t cmd)
 static int RD_AD(void)  
 { 
   unsigned short buf,temp; 
-  /* Wait for SPI1 Tx buffer empty */ 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET); 
-  /* Send SPI1 data */ 
-  SPI_I2S_SendData(SPI1,0x0000); 
-  /* Wait for SPI1 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET); 
-  /* Read SPI1 received data */ 
-  temp=SPI_I2S_ReceiveData(SPI1); 
+  /* Wait for SPI2 Tx buffer empty */ 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
+  /* Send SPI2 data */ 
+  SPI_I2S_SendData(SPI_MODULE,0x0000);
+  /* Wait for SPI2 data reception */ 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
+  /* Read SPI2 received data */ 
+  temp=SPI_I2S_ReceiveData(SPI_MODULE);
   buf=temp<<8; 
   DelayUS(1); 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET); 
-  /* Send SPI1 data */ 
-  SPI_I2S_SendData(SPI1,0x0000); 
-  /* Wait for SPI1 data reception */ 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET); 
-  /* Read SPI1 received data */ 
-  temp=SPI_I2S_ReceiveData(SPI1); 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_TXE) == RESET);
+  /* Send SPI2 data */ 
+  SPI_I2S_SendData(SPI_MODULE,0x0000);
+  /* Wait for SPI2 data reception */ 
+  while (SPI_I2S_GetFlagStatus(SPI_MODULE, SPI_I2S_FLAG_RXNE) == RESET);
+  /* Read SPI2 received data */ 
+  temp=SPI_I2S_ReceiveData(SPI_MODULE);
   buf |= temp; 
   buf>>=3; 
   buf&=0xfff; 
@@ -195,9 +198,9 @@ int Read_X(void)
 {  
   int i; 
   TP_CS(0); 
-  DelayUS(1); 
+  //DelayUS(1);
   WR_CMD(CHX); 
-  DelayUS(1); 
+  //DelayUS(1);
   i=RD_AD(); 
   TP_CS(1); 
   return i;    
@@ -215,9 +218,9 @@ int Read_Y(void)
 {  
   int i; 
   TP_CS(0); 
-  DelayUS(1); 
+  //DelayUS(1);
   WR_CMD(CHY); 
-  DelayUS(1); 
+  //DelayUS(1);
   i=RD_AD(); 
   TP_CS(1); 
   return i;     
@@ -236,8 +239,8 @@ void TP_GetAdXY(int *x,int *y)
 { 
   int adx,ady; 
   adx=Read_X(); 
-  DelayUS(1); 
-  ady=Read_Y(); 
+  //DelayUS(1);
+  ady=Read_Y();
   *x=adx; 
   *y=ady; 
 } 
@@ -302,15 +305,15 @@ Coordinate *Read_Ads7846(void)
   int m0,m1,m2,TP_X[1],TP_Y[1],temp[3];
   uint8_t count=0;
   int buffer[2][9]={{0},{0}};  /* 坐标X和Y进行多次采样 */
-  ADS7843_SPI_Init(); 		
-  do					       /* 循环采样9次 */
+  
+  while((TP_INT_IN == RESET) && count<9)					       /* 循环采样9次 */
   {		   
-    TP_GetAdXY(TP_X,TP_Y);  
+    TP_GetAdXY(TP_X,TP_Y);
 	buffer[0][count]=TP_X[0];  
 	buffer[1][count]=TP_Y[0];
 	count++;  
   }
-  while(!TP_INT_IN&& count<9);  /* TP_INT_IN为触摸屏中断引脚,当用户点击触摸屏时TP_INT_IN会被置低 */
+
   if(count==9)   /* 成功采样9次,进行滤波 */ 
   {  
     /* 为减少运算量,分别分3组取平均值 */
@@ -470,12 +473,12 @@ void TouchPanel_Calibrate(void)
   for(i=0;i<3;i++)
   {
    LCD_Clear(Black);
-   GUI_Text(10,10,"Touch crosshair to calibrate",0xffff,Black);
+   GUI_Text((MAX_X - 28 * 8)/2 ,10,"Touch crosshair to calibrate",0xffff,Black);
    delay_ms(500);
    DrawCross(DisplaySample[i].x,DisplaySample[i].y);
    do
    {
-   Ptr=Read_Ads7846();
+     Ptr=Read_Ads7846();
    }
    while( Ptr == (void*)0 );
    ScreenSample[i].x= Ptr->x; ScreenSample[i].y= Ptr->y;

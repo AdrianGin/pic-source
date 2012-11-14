@@ -42,20 +42,22 @@ void gfxWrite(uint8_t ch)
 
 
 
-void gfxDrawBMP(void)
+void gfxDrawBMP(char* bmpImgPath)
 {
 	uint8_t ret;
 
 	FIL temp;
     BMPFile.pImageFile = &temp;
 
-    ret = f_open( BMPFile.pImageFile, "bride.bmp", FA_OPEN_EXISTING | FA_READ );
-    printf("retOpen=%d\n", ret);
+    ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
+//    printf("retOpen=%d\n", ret);
     BMP_ReadHeader(&BMPFile);
-    printf("BMP Width: %d\n", BMPFile.lWidth);
-    printf("BMP Length:%d\n", BMPFile.lHeight);
-    printf("BMP Planes:%d\n", BMPFile.bNumOfPlanes);
-    printf("BMP Depth:%d\n", BMPFile.bBitsPerPixel);
-    printf("BMP CompType:%d\n", BMPFile.blCompressionType);
+//    printf("BMP Width: %d\n", BMPFile.lWidth);
+//    printf("BMP Length:%d\n", BMPFile.lHeight);
+//    printf("BMP Planes:%d\n", BMPFile.bNumOfPlanes);
+//    printf("BMP Depth:%d\n", BMPFile.bBitsPerPixel);
+//    printf("BMP CompType:%d\n", BMPFile.blCompressionType);
     ret = BMP_Print(&BMPFile);
+
+    f_close(BMPFile.pImageFile);
 }
