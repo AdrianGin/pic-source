@@ -1,4 +1,7 @@
 
+#ifndef FONT_RENDER_H
+#define FONT_RENDER_H
+
 #include "GenericTypeDefs.h"
 
 /*********************************************************************
@@ -311,3 +314,11 @@ _cursorY += dY;
     #else
         #define GFX_Font_GetAntiAliasType()
     #endif
+
+
+
+
+#endif
+
+
+

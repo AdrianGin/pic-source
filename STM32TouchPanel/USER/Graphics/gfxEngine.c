@@ -7,6 +7,7 @@
 #include "GLCD.h"
 #include "fontRender.h"
 #include "ComicSans.h"
+#include "Tahoma.h"
 
 #include "gfxEngine.h"
 
@@ -22,6 +23,8 @@ void gfxEngine_Init(void)
 
 	_fontOrientation = ORIENT_HOR;
 	SetFontFlash( (void*)&Verdana_24);
+	SetFontFlash( (void*)&Tahoma_12);
+
     SetClip(CLIP_ENABLE);
     SetClipRgn(-300, -400, 400, 300);
 
@@ -44,11 +47,13 @@ void gfxWrite(uint8_t ch)
 
 void gfxDrawBMP(char* bmpImgPath)
 {
+
 	uint8_t ret;
 
 	FIL temp;
     BMPFile.pImageFile = &temp;
 
+    return;
     ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
 //    printf("retOpen=%d\n", ret);
     BMP_ReadHeader(&BMPFile);

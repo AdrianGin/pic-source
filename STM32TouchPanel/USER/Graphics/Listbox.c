@@ -32,14 +32,15 @@ int16_t GFX_LB_GetPosition(GFX_Listbox_t* LB)
 	return LB->y;
 }
 
-#define MIN_HEIGHT	(40)
+#define MIN_HEIGHT	(200)
 #define Y_BOUNDARY	(240)
+
 
 void GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 {
-	if( y > (Y_BOUNDARY - ((LL_Count(&LB->list)+1) * LB->spacing)) )
+	if( y + ((LL_Count(&LB->list)) * LB->spacing) < Y_BOUNDARY )
 	{
-		LB->y = Y_BOUNDARY - (LL_Count(&LB->list)+1) * LB->spacing;
+		LB->y = Y_BOUNDARY - (LL_Count(&LB->list)) * LB->spacing;
 		y = LB->y;
 	}
 	else
@@ -49,11 +50,12 @@ void GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 
 	if( y > MIN_HEIGHT )
 	{
-		LB->y = y;
+		LB->y = MIN_HEIGHT;
+		//LB->y = y;
 	}
 	else
 	{
-		LB->y = MIN_HEIGHT;
+		LB->y = y;
 	}
 }
 

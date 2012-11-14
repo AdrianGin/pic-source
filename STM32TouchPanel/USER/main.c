@@ -34,7 +34,9 @@
 #include "Graphics\gfxEngine.h"
 #include "FSUtils\FSUtil.h"
 #include "Graphics\Listbox.h"
+#include "TouchPanel\FluidTouch.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 FATFS fs;
@@ -51,9 +53,16 @@ int main(void)
 {
 
 	int16_t i, j, k;
+	int16_t counters[10];
 	uint8_t ret;
 	uint8_t alternate;
+
+	char* fnPath;
+
 	Coordinate* point;
+	Coordinate* inertia;
+
+	DIR dir;
 
 	GFX_Listbox_t GFX_LB;
 
@@ -77,26 +86,54 @@ int main(void)
 	printf("Mount %d\n", ret);
 
 	strcpy(path, "");
-	scan_files(path);
+	//scan_files(path);
 
   TP_Init();
   TouchPanel_Calibrate();
   /* Infinite loop */
 
   PhysicsInit();
+  FluidTouchInit();
 
   //while(1);
 
   LCD_PauseUpdateScreen();
 
-  GFX_LB_Init(&GFX_LB, 120, 120 , 20);
+  GFX_LB_Init(&GFX_LB, 20, 120 , 0x0F);
 
   GFX_LB.list.first = (LIST_NODE_t*)NULL;
   GFX_LB.list.last = (LIST_NODE_t*)NULL;
 
-  GFX_LB_AddItem(&GFX_LB, "Hey Leo");
-  GFX_LB_AddItem(&GFX_LB, "What");
-  GFX_LB_AddItem(&GFX_LB, "is up?");
+
+
+	FSUtil_OpenDir(&dir, "/MIDI");
+
+	while( 1 )
+	{
+		fnPath = FSUtil_GetDirObj(&dir);
+		if( fnPath != NULL )
+		{
+			printf("Path:\%s\n", fnPath);
+			GFX_LB_AddItem(&GFX_LB, fnPath);
+			//free(fnPath);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+//  GFX_LB_AddItem(&GFX_LB, "Hey Leo");
+//  GFX_LB_AddItem(&GFX_LB, "What");
+//  GFX_LB_AddItem(&GFX_LB, "is up?");
+//  GFX_LB_AddItem(&GFX_LB, "Serena");
+//  GFX_LB_AddItem(&GFX_LB, "Pang");
+//  GFX_LB_AddItem(&GFX_LB, "is a HOT");
+//  GFX_LB_AddItem(&GFX_LB, "goddess!");
+//  GFX_LB_AddItem(&GFX_LB, "One");
+//  GFX_LB_AddItem(&GFX_LB, "Day");
+//  GFX_LB_AddItem(&GFX_LB, "I will");
+//  GFX_LB_AddItem(&GFX_LB, "marry her!!");
 	
   while (1)	
   {
@@ -105,21 +142,54 @@ int main(void)
 	  //for(i = 0; i < 240; i++ )
 	  {
 
-		  if( j >= 1 )
+		  if( counters[2] >= 10 )
 		  {
-			  point = Read_Ads7846();
+			  FluidTouchMain();
+			  counters[2] = 0;
+		  }
+
+		  if( counters[1] >= 100 )
+		  {
+			  FluidTouch_ApplySlowdown();
+			  counters[1] = 0;
+		  }
+
+		  if( counters[3] >= 50 )
+		  {
+			  LCD_VSyncLow();
+			  delay_ms(1);
+			  LCD_VSyncHigh();
+			  delay_ms(120);
+			  counters[3] = 0;
+		  }
+		  counters[3]++;
+//
+//		  if( counters[4] >= 200 )
+//		  {
+//			  LCD_VSyncHigh();
+//			  counters[4] = 0;
+//		  }
+//		  counters[4]++;
+
+
+
+		  if( counters[0] >= 200 )
+		  {
+
+
+			  //FluidTouchMain();
+
+			  //point = Read_Ads7846();
+			  point = FluidTouchGetPoint();
 			  if( point != 0)
 			  {
-
-
-				  TP_BudgetGetDisplayPoint(&TouchPanel, point);
-
+				  //TP_BudgetGetDisplayPoint(&TouchPanel, point);
 				  //getDisplayPoint(&display, point, &matrix ) ;
-				  SetTouchPoint(TouchPanel.x, TouchPanel.y);
+				  SetTouchPoint(point->x, point->y);
 
-				  i = TouchPanel.x;
-				  k = TouchPanel.y;
-				  LCD_VSyncLow();
+				  i = point->x;
+				  k = point->y;
+				  //LCD_VSyncLow();
 
 				  if(alternate)
 				  {
@@ -127,13 +197,12 @@ int main(void)
 					  BMP_SetCursor(i, k);
 //					  gfxDrawBMP("folder13.bmp");
 
+					  inertia = FluidTouch_GetIntertia();
+					  GFX_LB_Scroll(&GFX_LB, inertia->y);
 
-					  GFX_LB_Scroll(&GFX_LB, k - 120);
-					  printf("PosX=%d\n",i);
-					  printf("PosY=%d\n",k);
 
 					  SetClip(1);
-					  SetClipRgn(0, 100 ,320 ,200);
+					  //SetClipRgn(0, 100 ,320 ,200);
 
 					  GFX_LB_Draw(&GFX_LB);
 					  SetClip(0);
@@ -171,46 +240,42 @@ int main(void)
 				  BMP_SetCursor(0, 110);
 				  gfxDrawBMP("folder13.bmp");
 
-				  DrawCross(TouchPanel.x,TouchPanel.y);
+				  setPixel(point->x,point->y);
+				  //DrawCross(point->x,point->y);
 
-				   LCD_VSyncHigh();
-				   delay_ms(35);
+				   //LCD_VSyncHigh();
+				   //delay_ms(1);
 				  //PhysicsMain();
 			  }
+//			  else
+//			  {
+//				  LCD_VSyncLow();
+//				  delay_ms(50);
+//				  LCD_VSyncHigh();
+//				  delay_ms(50);
+//			  }
 
 
-
-
-			  //delay_ms(1);
-			  //LCD_VSyncLow();
-			  if( i > 320 )
-			  {
-				  i = 0;
-			  }
-			  if( k > 240 )
-			  {
-				  k = 0;
-			  }
-
-			  i++;
-			  k++;
-			  {
-				  //LCD_Clear(Yellow);
-
-			  }
-
-
-			  j = 0;
+			  counters[0] = 0;
+			  //counters[1] = 0;
 			  //LCD_VSyncHigh();
 		  }
-		  j++;
 
-		  LCD_VSyncLow();
-		  //delay_ms(2);
-		  //PhysicsMain(DESIRED_FPS);
-		  LCD_VSyncHigh();
-		  //delay_ms(1);
-		  delay_ms(10);
+//		  if( counters[1] >= 100)
+//		  {
+//			  LCD_VSyncLow();
+//			  //delay_ms(2);
+//			  //PhysicsMain(DESIRED_FPS);
+//			  LCD_VSyncHigh();
+//			  counters[1] = 0;
+//			  //delay_ms(1);
+//		  }
+
+		  delay_us(100);
+		  counters[0]++;
+		  counters[1]++;
+		  counters[2]++;
+
 		  //LCD_Clear(Yellow);
 		  ///LCD_UpdateScreen();
 		  //PhysicsTick();
