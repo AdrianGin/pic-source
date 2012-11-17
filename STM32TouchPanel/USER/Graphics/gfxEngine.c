@@ -33,7 +33,7 @@ void gfxEngine_Init(void)
 
 void gfxWriteString(int16_t x, int16_t y, uint8_t* string)
 {
-	SetColor(Red);
+	SetColor(White);
 	OutTextXY(x,y,string);
 }
 

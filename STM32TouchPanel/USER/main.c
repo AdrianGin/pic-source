@@ -65,6 +65,8 @@ int main(void)
 
 	DIR dir;
 
+    RCC_ClocksTypeDef RCC_ClocksStatus;
+
 
 
 
@@ -103,6 +105,8 @@ int main(void)
   UserGUI_Init();
 
 
+
+
 	FSUtil_OpenDir(&dir, "/MIDI");
 
 	while( 1 )
@@ -139,7 +143,7 @@ int main(void)
 	  //for(i = 0; i < 240; i++ )
 	  {
 
-		  if( counters[2] >= 10 )
+		  if( counters[2] >= 5 )
 		  {
 			  FluidTouchMain();
 			  counters[2] = 0;
@@ -151,12 +155,12 @@ int main(void)
 			  counters[1] = 0;
 		  }
 
-		  if( counters[3] >= 50 )
+		  if( counters[3] >= 200 )
 		  {
 			  LCD_VSyncLow();
-			  delay_ms(1);
+			  delay_us(50);
 			  LCD_VSyncHigh();
-			  delay_ms(120);
+			  delay_ms(16);
 			  counters[3] = 0;
 		  }
 		  counters[3]++;
@@ -196,9 +200,12 @@ int main(void)
 //					  gfxDrawBMP("folder13.bmp");
 
 					  inertia = FluidTouch_GetIntertia();
-					  GFX_LB_Scroll(&GFX_LB, inertia->y);
 
-
+					  //printf("Inert:X=%d, Y=%d\n", inertia->x, inertia->y);
+					  //if( inertia != NULL )
+					  {
+						  GFX_LB_Scroll(&GFX_LB, inertia->y);
+					  }
 					  SetClip(1);
 					  //SetClipRgn(0, 100 ,320 ,200);
 
@@ -206,6 +213,7 @@ int main(void)
 					  SetClip(0);
 					  //gfxWriteString(i, k, "Fuck this world!");
 					  //alternate = 0;
+
 				  }
 				  else
 				  {
@@ -270,7 +278,7 @@ int main(void)
 //			  //delay_ms(1);
 //		  }
 
-		  delay_us(100);
+		  //delay_us(100);
 		  counters[0]++;
 		  counters[1]++;
 		  counters[2]++;

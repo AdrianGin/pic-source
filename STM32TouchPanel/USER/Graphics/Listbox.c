@@ -39,7 +39,10 @@ int16_t GFX_LB_GetPosition(GFX_Listbox_t* LB)
 
 #define MIN_HEIGHT	(200)
 #define Y_BOUNDARY	(240)
-void GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
+
+
+
+uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 {
 
 	FONT_HEADER* fontHdr;
@@ -54,6 +57,7 @@ void GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 	{
 		LB->y = Y_BOUNDARY - (LL_Count(&LB->list)) * totalSpacing;
 		y = LB->y;
+		return LB_OS_BOTTOM;
 	}
 	else
 	{
@@ -63,17 +67,36 @@ void GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 	if( y > MIN_HEIGHT )
 	{
 		LB->y = MIN_HEIGHT;
+		return LB_OS_TOP;
 		//LB->y = y;
 	}
 	else
 	{
 		LB->y = y;
 	}
+
+	return LS_OS_NONE;
 }
+
+
+
+void GFX_LB_DoOvershoot(GFX_Listbox_t* LB, int16_t diff)
+{
+	LB->y = LB->y + diff;
+}
+
+
 
 void GFX_LB_Scroll(GFX_Listbox_t* LB, int16_t diff)
 {
-	GFX_LB_SetPosition(LB, LB->y + diff);
+	uint8_t osState;
+	osState = GFX_LB_SetPosition(LB, LB->y + diff);
+
+	if( osState == LB_OS_BOTTOM || osState == LB_OS_TOP )
+	{
+		GFX_LB_DoOvershoot(LB, diff);
+	}
+
 }
 
 void GFX_LB_Draw(GFX_Listbox_t* LB)
