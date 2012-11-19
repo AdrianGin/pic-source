@@ -41,7 +41,9 @@ void FluidTouchInit(void)
 
 
 #define OFF_COUNT_THRESHOLD	(5)
-#define ON_COUNT_THRESHOLD	(10)
+#define ON_COUNT_THRESHOLD	(30)
+#define ON_COUNT_TAP_THRESHOLD (200)
+#define HOLDING_THRESHOLD	(30)
 #define FT_IS_INERTIA_ZERO() ((FT_Inertia.x == 0) && (FT_Inertia.y == 0))
 #define FT_MOVE_THRES	(1)
 
@@ -50,10 +52,39 @@ void FluidTouchInit(void)
 #define FT_SLOWDOWN_FACTOR	(100)
 #define FT_DRAGGING_MULT_FACTOR	(4)
 //Executes the touch control subsystem.
+
+uint8_t FluidTouchGetState(void)
+{
+
+	static uint8_t offCount = 0xFF;
+	Coordinate* point;
+	uint8_t ret = TOUCH_OFF;
+	point = Read_Ads7846();
+
+	if( point == NULL )
+	{
+		if( offCount > OFF_COUNT_THRESHOLD )
+		{
+			ret = TOUCH_OFF;
+		}
+		else
+		{
+			ret = TOUCH_ON;
+		}
+	}
+	else
+	{
+		ret = TOUCH_ON;
+	}
+
+	return ret;
+}
+
 void FluidTouchMain(void)
 {
 	static uint8_t offCount = 0xFF;
 	static uint8_t onCount  = 0x00;
+	static uint8_t holdingCount = 0x00;
 
 	Coordinate* point;
 	point = Read_Ads7846();
@@ -69,12 +100,10 @@ void FluidTouchMain(void)
 		if( offCount > OFF_COUNT_THRESHOLD )
 		{
 			FT_State = TOUCH_FIRST;
-
 			FT_LastPoint.x = 0;
 			FT_LastPoint.y = 0;
 			FT_CalcPoint.x = 0;
 			FT_CalcPoint.y = 0;
-
 			_FluidTouch_GetDifferential(&TouchPanel);
 		}
 
@@ -88,19 +117,27 @@ void FluidTouchMain(void)
 			if( (abs(TouchPanel.x - FT_LastPoint.x) <  FT_MOVE_THRES) && \
 				(abs(TouchPanel.y - FT_LastPoint.y) <  FT_MOVE_THRES) )
 			{
-				//printf("HOLDING\n");
-				FT_Inertia.x = 0;
-				FT_Inertia.y = 0;
+				holdingCount++;
+
+				if( holdingCount > HOLDING_THRESHOLD )
+				{
+					//printf("HOLDING\n");
+					FT_Inertia.x = 0;
+					FT_Inertia.y = 0;
+					holdingCount = 0;
+				}
 			}
 			_FluidTouch_GetDifferential(&TouchPanel);
-			onCount = 0;
+			//onCount = 0;
 		}
-		else
-		{
-			onCount++;
-		}
+
 		offCount = 0;
 
+		onCount++;
+		if( onCount > ON_COUNT_TAP_THRESHOLD)
+		{
+			onCount = ON_COUNT_TAP_THRESHOLD;
+		}
 
 	}
 	else
@@ -108,6 +145,18 @@ void FluidTouchMain(void)
 		if( offCount > OFF_COUNT_THRESHOLD )
 		{
 			FT_State = TOUCH_OFF;
+
+			//Represents a tap
+			if( (onCount < ON_COUNT_THRESHOLD) && (onCount > 0) )
+			{
+				printf("TAP!\n");
+			}
+
+			if( onCount )
+			{
+				printf("TAP=%d\n", onCount);
+			}
+
 			onCount = 0;
 			point = &FT_LastPoint;
 			_FluidTouch_GetDifferential(point);
