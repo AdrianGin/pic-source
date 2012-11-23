@@ -3,7 +3,7 @@
 #define FONT_RENDER_H
 
 #include "GenericTypeDefs.h"
-
+#include "LCDAbstraction.h"
 /*********************************************************************
 * Overview: Primitive lines are drawn using line type and line thickness.
 *			There are 3 line styles and 2 types of line thickness.

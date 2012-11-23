@@ -57,6 +57,7 @@ int main(void)
 	int16_t counters[10];
 	uint8_t ret;
 	uint8_t alternate;
+	int8_t index = 0;
 
 	char* fnPath;
 
@@ -77,9 +78,9 @@ int main(void)
 	NVIC_Configuration();
 
 	delay_init();
-  LCD_Initializtion();
+    LCD_Initializtion();
   //LCD_BackLight_Init();
-	LCD_Clear(White);
+	LCD_Clear(WHITE);
 	//delay_init();
 	//delay_ms(5000);
 
@@ -114,7 +115,7 @@ int main(void)
 		fnPath = FSUtil_GetDirObj(&dir);
 		if( fnPath != NULL )
 		{
-			printf("Path:\%s\n", fnPath);
+			printf("Path:%s\n", fnPath);
 			GFX_LB_AddItem(&GFX_LB, fnPath);
 			//free(fnPath);
 		}
@@ -145,7 +146,8 @@ int main(void)
 
 		  if( counters[2] >= 5 )
 		  {
-			  FluidTouchMain();
+			  //FluidTouchMain();
+			  FluidTouchMain2();
 			  counters[2] = 0;
 		  }
 
@@ -181,7 +183,8 @@ int main(void)
 			  //FluidTouchMain();
 
 			  //point = Read_Ads7846();
-			  point = FluidTouchGetPoint();
+			  //point = FluidTouchGetPoint();
+			  point = FluidGetTouch();
 			  if( point != 0)
 			  {
 
@@ -195,21 +198,32 @@ int main(void)
 
 				  if(alternate)
 				  {
-					  LCD_Clear(Black);
+					  LCD_Clear(WHITE);
 					  BMP_SetCursor(i, k);
 //					  gfxDrawBMP("folder13.bmp");
 
 					  inertia = FluidTouch_GetIntertia();
 
 					  //printf("Inert:X=%d, Y=%d\n", inertia->x, inertia->y);
-					  //if( inertia != NULL )
+					  if( inertia != NULL )
 					  {
 						  GFX_LB_Scroll(&GFX_LB, inertia->y);
 					  }
 					  SetClip(1);
 					  //SetClipRgn(0, 100 ,320 ,200);
 
+
+
+					  index = GFX_LB_GetSelectedItem(&GFX_LB, point->y);
+					  printf("INDEX=%d\n", index);
+					  GFX_LB_SelectItem(&GFX_LB, index);
+					  if( index > LL_Count(&GFX_LB.list) )
+					  {
+						  index = 0;
+					  }
+
 					  GFX_LB_Draw(&GFX_LB);
+
 					  SetClip(0);
 					  //gfxWriteString(i, k, "Fuck this world!");
 					  //alternate = 0;

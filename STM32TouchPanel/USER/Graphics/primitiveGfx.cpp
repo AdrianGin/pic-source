@@ -6,7 +6,7 @@
 #include "primitiveGfx.h"
 #include "GLCD.h"
 
-uint16_t GlobalColour = Red;
+uint16_t GlobalColour = RED;
 
 void SetGlobalColour(uint16_t colour)
 {

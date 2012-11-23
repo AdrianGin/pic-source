@@ -1,7 +1,8 @@
-
+#ifndef LCD_ABSTRACTION_H
+#define LCD_ABSTRACTION_H
 
 #include "GenericTypeDefs.h"
-
+#include "GLCD.h"
 /*********************************************************************
 * Overview: Clipping region control codes to be used with SetClip(...)
 *           function.
@@ -29,9 +30,41 @@ extern SHORT _clipBottom;
 
 
 
-void PutPixel(SHORT x, SHORT y);
+//void PutPixel(SHORT x, SHORT y);
 WORD    GetPixel(SHORT x, SHORT y);
 
 
 void SetClipRgn(SHORT left, SHORT top, SHORT right, SHORT bottom);
 void SetClip(BYTE control);
+
+__inline void PutPixel(SHORT x, SHORT y)
+{
+    if(_clipRgn)
+    {
+        if(x < _clipLeft)
+            return;
+        if(x > _clipRight)
+            return;
+        if(y < _clipTop)
+            return;
+        if(y > _clipBottom)
+            return;
+    }
+
+//
+//    #if (DISP_ORIENTATION == 0)
+//    address = (long)LINE_MEM_PITCH * y + x;
+//
+//    #else
+//    y = GetMaxY() - y;
+//    address = (long)LINE_MEM_PITCH * x + y;
+//    #endif
+    LCD_SetPoint(x, y, _color);
+
+}
+
+
+
+
+
+#endif

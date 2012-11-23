@@ -40,31 +40,31 @@ SHORT       _clipBottom;
 * Note: none
 *
 ********************************************************************/
-void PutPixel(SHORT x, SHORT y)
-{
-    if(_clipRgn)
-    {
-        if(x < _clipLeft)
-            return;
-        if(x > _clipRight)
-            return;
-        if(y < _clipTop)
-            return;
-        if(y > _clipBottom)
-            return;
-    }
-
+//__inline void PutPixel(SHORT x, SHORT y)
+//{
+//    if(_clipRgn)
+//    {
+//        if(x < _clipLeft)
+//            return;
+//        if(x > _clipRight)
+//            return;
+//        if(y < _clipTop)
+//            return;
+//        if(y > _clipBottom)
+//            return;
+//    }
 //
-//    #if (DISP_ORIENTATION == 0)
-//    address = (long)LINE_MEM_PITCH * y + x;
+////
+////    #if (DISP_ORIENTATION == 0)
+////    address = (long)LINE_MEM_PITCH * y + x;
+////
+////    #else
+////    y = GetMaxY() - y;
+////    address = (long)LINE_MEM_PITCH * x + y;
+////    #endif
+//    LCD_SetPoint(x, y, _color);
 //
-//    #else
-//    y = GetMaxY() - y;
-//    address = (long)LINE_MEM_PITCH * x + y;
-//    #endif
-    LCD_SetPoint(x, y, _color);
-
-}
+//}
 
 
 /*********************************************************************

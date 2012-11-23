@@ -40,7 +40,7 @@ void PhysicsInit(void)
 	RedBall.elasticity = 5;
 	//RedBall.draw = ReDrawBall;
 	RedBall.radius = 10;
-	RedBall.colour = Red;
+	RedBall.colour = RED;
 	RedBall.kFriction = 5;
 
 	RedBall2.acceleration.y = 0;
@@ -48,7 +48,7 @@ void PhysicsInit(void)
 	RedBall2.elasticity = 10.1;
 	//RedBall2.draw = RedBall2.ReDraw;
 	RedBall2.radius = 20;
-	RedBall2.colour = White;
+	RedBall2.colour = WHITE;
 	RedBall2.kFriction = 5;
 
 	RedBall3.acceleration.y = 0;
@@ -56,7 +56,7 @@ void PhysicsInit(void)
 	RedBall3.elasticity = 5;
 	//RedBall3.draw = RedBall3.ReDraw;
 	RedBall3.radius = 10;
-	RedBall3.colour = Red;
+	RedBall3.colour = RED;
 	RedBall3.kFriction = 5;
 
 	RedBall4.acceleration.y = 0;
@@ -64,7 +64,7 @@ void PhysicsInit(void)
 	RedBall4.elasticity = 10.5;
 	//RedBall2.draw = RedBall2.ReDraw;
 	RedBall4.radius = 20;
-	RedBall4.colour = White;
+	RedBall4.colour = WHITE;
 	RedBall4.kFriction = 5;
 
 }
@@ -94,13 +94,13 @@ void PhysicsMain(PHYS_INT dTime)
 		node = node->next;
 	}
 
-	LCD_Clear(Blue);
+	LCD_Clear(BLUE);
 
 	node = ObjectList.first;
 	while(node != NULL )
 	{
 		obj = (PhysCircle*)node->data;
-		obj->colour = White;
+		obj->colour = WHITE;
 		forNode = ObjectList.first;
 		while( (forNode != NULL) )
 		{
@@ -122,7 +122,7 @@ void PhysicsMain(PHYS_INT dTime)
 
 
 					obj->applyForce( Vector2D( tempMassY * cosf(temp), tempMassY * sinf(temp) ) );
-					obj->colour = Black;
+					obj->colour = BLACK;
 				}
 				else
 				{

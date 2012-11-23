@@ -27,23 +27,9 @@
 //#define LCD_RAM              (*((volatile unsigned short *) 0x6C000002)) /* RS = 1 */
 
 /* Private variables ---------------------------------------------------------*/
-static uint8_t LCD_Code;
+uint8_t LCD_Code;
 
-/* Private define ------------------------------------------------------------*/
-#define  ILI9320    0  /* 0x9320 */
-#define  ILI9325    1  /* 0x9325 */
-#define  ILI9328    2  /* 0x9328 */
-#define  ILI9331    3  /* 0x9331 */
-#define  SSD1298    4  /* 0x8999 */
-#define  SSD1289    5  /* 0x8989 */
-#define  ST7781     6  /* 0x7783 */
-#define  LGDP4531   7  /* 0x4531 */
-#define  SPFD5408B  8  /* 0x5408 */
-#define  R61505U    9  /* 0x1505 0x0505 */
-#define  HX8347D    10 /* 0x0047 */
-#define  HX8347A    11 /* 0x0047 */
-#define  LGDP4535   12 /* 0x4535 */
-#define  SSD2119    13 /* 3.5 LCD 0x9919 */
+
 
 /*******************************************************************************
 * Function Name  : LCD_CtrlLinesConfig
@@ -1174,49 +1160,49 @@ void LCD_Clear(uint16_t Color)
 	}
 //	Set_Cs;
 }
-
-void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
-{
-
-	  #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )
-
-		uint16_t temp;
-		Ypos = ( MAX_Y - 1 ) - Ypos;
-		temp = Ypos;
-		Ypos = Xpos;
-		Xpos = temp;
-
-	#elif  ( DISP_ORIENTATION == 0 ) || ( DISP_ORIENTATION == 180 )
-
-		Ypos = ( MAX_Y - 1 ) - Ypos;
-
-	#endif
-  switch( LCD_Code )
-  {
-     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
-          LCD_WriteReg(0x0020, Xpos );
-          LCD_WriteReg(0x0021, Ypos );
-	      break;
-
-     case SSD1298: 	 /* 0x8999 */
-     case SSD1289:   /* 0x8989 */
-	      LCD_WriteReg(0x004e, Xpos );
-        LCD_WriteReg(0x004f, Ypos );
-	      break;
-
-     case HX8347A: 	 /* 0x0047 */
-     case HX8347D: 	 /* 0x0047 */
-	      LCD_WriteReg(0x02, Xpos>>8 );
-	      LCD_WriteReg(0x03, Xpos );
-
-	      LCD_WriteReg(0x06, Ypos>>8 );
-	      LCD_WriteReg(0x07, Ypos );
-
-	      break;
-     case SSD2119:	 /* 3.5 LCD 0x9919 */
-	      break;
-  }
-}
+//
+//__inline void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
+//{
+//
+//	  #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )
+//
+//		uint16_t temp;
+//		Ypos = ( MAX_Y - 1 ) - Ypos;
+//		temp = Ypos;
+//		Ypos = Xpos;
+//		Xpos = temp;
+//
+//	#elif  ( DISP_ORIENTATION == 0 ) || ( DISP_ORIENTATION == 180 )
+//
+//		Ypos = ( MAX_Y - 1 ) - Ypos;
+//
+//	#endif
+//  switch( LCD_Code )
+//  {
+//     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
+//          LCD_WriteReg(0x0020, Xpos );
+//          LCD_WriteReg(0x0021, Ypos );
+//	      break;
+//
+//     case SSD1298: 	 /* 0x8999 */
+//     case SSD1289:   /* 0x8989 */
+//	      LCD_WriteReg(0x004e, Xpos );
+//	      LCD_WriteReg(0x004f, Ypos );
+//	      break;
+//
+//     case HX8347A: 	 /* 0x0047 */
+//     case HX8347D: 	 /* 0x0047 */
+//	      LCD_WriteReg(0x02, Xpos>>8 );
+//	      LCD_WriteReg(0x03, Xpos );
+//
+//	      LCD_WriteReg(0x06, Ypos>>8 );
+//	      LCD_WriteReg(0x07, Ypos );
+//
+//	      break;
+//     case SSD2119:	 /* 3.5 LCD 0x9919 */
+//	      break;
+//  }
+//}
 
 /******************************************************************************
 * Function Name  : LCD_BGR2RGB
@@ -1308,15 +1294,15 @@ uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
-{
-	if( Xpos >= MAX_X || Ypos >= MAX_Y )
-	{
-		return;
-	}
-	LCD_SetCursor(Xpos,Ypos);
-	LCD_WriteReg(0x0022,point);
-}
+//__inline void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
+//{
+//	if( Xpos >= MAX_X || Ypos >= MAX_Y )
+//	{
+//		return;
+//	}
+//	LCD_SetCursor(Xpos,Ypos);
+//	LCD_WriteReg(0x0022,point);
+//}
 
 
 //Disable Autoupdate and Enable Vsync

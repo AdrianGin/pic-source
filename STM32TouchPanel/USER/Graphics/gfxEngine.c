@@ -31,15 +31,14 @@ void gfxEngine_Init(void)
 }
 
 
+
 void gfxWriteString(int16_t x, int16_t y, uint8_t* string)
 {
-	SetColor(White);
 	OutTextXY(x,y,string);
 }
 
 void gfxWrite(uint8_t ch)
 {
-	SetColor(Red);
 	OutChar(ch);
 }
 
@@ -66,7 +65,7 @@ void gfxWrite(uint8_t ch)
 * Note: none
 *
 ********************************************************************/
-void gfxDrawRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
+void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 {
 	int16_t   x, y;
 
@@ -93,7 +92,11 @@ void gfxDrawBMP(char* bmpImgPath)
 	FIL temp;
     BMPFile.pImageFile = &temp;
 
+
     return;
+
+
+
     ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
 //    printf("retOpen=%d\n", ret);
     BMP_ReadHeader(&BMPFile);

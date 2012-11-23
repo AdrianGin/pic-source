@@ -30,7 +30,23 @@ extern "C" {
 #define LCD_REG              (*((volatile unsigned short *) 0x60000000)) /* RS = 0 */
 #define LCD_RAM              (*((volatile unsigned short *) 0x60020000)) /* RS = 1 */
 
+/* Private define ------------------------------------------------------------*/
+#define  ILI9320    0  /* 0x9320 */
+#define  ILI9325    1  /* 0x9325 */
+#define  ILI9328    2  /* 0x9328 */
+#define  ILI9331    3  /* 0x9331 */
+#define  SSD1298    4  /* 0x8999 */
+#define  SSD1289    5  /* 0x8989 */
+#define  ST7781     6  /* 0x7783 */
+#define  LGDP4531   7  /* 0x4531 */
+#define  SPFD5408B  8  /* 0x5408 */
+#define  R61505U    9  /* 0x1505 0x0505 */
+#define  HX8347D    10 /* 0x0047 */
+#define  HX8347A    11 /* 0x0047 */
+#define  LGDP4535   12 /* 0x4535 */
+#define  SSD2119    13 /* 3.5 LCD 0x9919 */
 
+extern uint8_t LCD_Code;
 
 /*********************************************************************
 * Overview: Horizontal and vertical display resolution
@@ -76,16 +92,16 @@ extern "C" {
 
 
 /* LCD color */
-#define White          0xFFFF
-#define Black          0x0000
-#define Grey           0xF7DE
-#define Blue           0x001F
-#define Blue2          0x051F
-#define Red            0xF800
-#define Magenta        0xF81F
-#define Green          0x07E0
-#define Cyan           0x7FFF
-#define Yellow         0xFFE0
+#define WHITE          0xFFFF
+#define BLACK          0x0000
+#define GREY           0xF7DE
+#define BLUE           0x001F
+#define BLUE2          0x051F
+#define RED            0xF800
+#define MAGENTA        0xF81F
+#define GREEN          0x07E0
+#define CYAN           0x7FFF
+#define YELLOW         0xFFE0
 
 #define RGB565CONVERT(red, green, blue) (int) (((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3))
 
@@ -94,7 +110,8 @@ void LCD_Initializtion(void);
 void LCD_Clear(uint16_t Color);	
 //void LCD_SetBacklight(uint8_t intensity);
 uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos);
-void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);
+__inline void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);
+__inline void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
 void PutChar(uint16_t Xpos,uint16_t Ypos,uint8_t c,uint16_t charColor,uint16_t bkColor);
 void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color );
 void PutChinese(uint16_t Xpos,uint16_t Ypos,uint8_t *str,uint16_t Color,uint16_t bkColor);
@@ -116,6 +133,15 @@ __inline void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue);
 __inline uint16_t LCD_ReadReg(uint16_t LCD_Reg);
 
 
+__inline void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
+{
+	if( Xpos >= MAX_X || Ypos >= MAX_Y )
+	{
+		return;
+	}
+	LCD_SetCursor(Xpos,Ypos);
+	LCD_WriteReg(0x0022,point);
+}
 
 /*******************************************************************************
 * Function Name  : LCD_WriteReg
@@ -243,7 +269,52 @@ __inline uint16_t LCD_ReadReg(uint16_t LCD_Reg)
 	return LCD_ReadData();
 }
 
-void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
+
+
+__inline void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
+{
+
+	  #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )
+
+		uint16_t temp;
+		Ypos = ( MAX_Y - 1 ) - Ypos;
+		temp = Ypos;
+		Ypos = Xpos;
+		Xpos = temp;
+
+	#elif  ( DISP_ORIENTATION == 0 ) || ( DISP_ORIENTATION == 180 )
+
+		Ypos = ( MAX_Y - 1 ) - Ypos;
+
+	#endif
+  switch( LCD_Code )
+  {
+     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
+          LCD_WriteReg(0x0020, Xpos );
+          LCD_WriteReg(0x0021, Ypos );
+	      break;
+
+     case SSD1298: 	 /* 0x8999 */
+     case SSD1289:   /* 0x8989 */
+	      LCD_WriteReg(0x004e, Xpos );
+	      LCD_WriteReg(0x004f, Ypos );
+	      break;
+
+     case HX8347A: 	 /* 0x0047 */
+     case HX8347D: 	 /* 0x0047 */
+	      LCD_WriteReg(0x02, Xpos>>8 );
+	      LCD_WriteReg(0x03, Xpos );
+
+	      LCD_WriteReg(0x06, Ypos>>8 );
+	      LCD_WriteReg(0x07, Ypos );
+
+	      break;
+     case SSD2119:	 /* 3.5 LCD 0x9919 */
+	      break;
+  }
+}
+
+//void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
 //void delay_ms(uint16_t ms);
 
 #endif 

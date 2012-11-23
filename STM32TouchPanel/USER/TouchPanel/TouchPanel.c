@@ -507,8 +507,8 @@ void TouchPanel_Calibrate(void)
 
   for(i=0;i<2;i++)
   {
-   LCD_Clear(Black);
-   GUI_Text((MAX_X - 28 * 8)/2 ,10,"Touch crosshair to calibrate",0xffff,Black);
+   LCD_Clear(BLACK);
+   GUI_Text((MAX_X - 28 * 8)/2 ,10,"Touch crosshair to calibrate",0xffff,BLACK);
    delay_ms(500);
    DrawCross(DisplaySample[i].x,DisplaySample[i].y);
    do
@@ -526,7 +526,7 @@ void TouchPanel_Calibrate(void)
 
 
   //setCalibrationMatrix( &DisplaySample[0],&ScreenSample[0],&matrix ) ;  /* 送入值得到参数 */
-  LCD_Clear(Black);
+  LCD_Clear(BLACK);
 } 
 
 /*********************************************************************************************************

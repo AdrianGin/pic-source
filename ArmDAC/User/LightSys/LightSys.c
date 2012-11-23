@@ -134,6 +134,9 @@ void LS_Init(void)
 
 }
 
+
+#define LIGHT_OFFSET (90)
+
 void LS_ProcessAutoTurnOff(void)
 {
 	uint8_t i;
@@ -144,7 +147,7 @@ void LS_ProcessAutoTurnOff(void)
 	{
 		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
 		{
-			LPB8806_ReducePercentage(LS_Countdown[j].channelKey & MIDI_MAX_KEY, FADE_RATE, MIN_ON_BRIGHTNESS);
+			LPB8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, MIN_ON_BRIGHTNESS);
 			i++;
 		}
 	}
@@ -201,7 +204,7 @@ void LS_TurnOffChannel(uint8_t channel)
 	{
 		if( LS_GETCHANNEL(LS_Countdown[j].channelKey) == channel)
 		{
-			LPD8806_SetPixel(LS_Countdown[j].channelKey & MIDI_MAX_KEY, 0);
+			LPD8806_SetPixel( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, 0);
 			LS_Countdown[j].channelKey = FREE_ELEMENT;
 			LS_Countdown[j].timer = 0;
 
@@ -216,9 +219,10 @@ void LS_TurnOffChannel(uint8_t channel)
 
 
 
+
 void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
 {
-	LPD8806_SetPixel(note, colour);
+	LPD8806_SetPixel(note + LIGHT_OFFSET, colour);
 	if (colour)
 	{
 		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
@@ -228,6 +232,8 @@ void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
 		LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
 	}
 }
+
+
 
 // eg. x91, x44, x64 for a NoteOn Channel 1, Note x44 Vel = x64
 void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
