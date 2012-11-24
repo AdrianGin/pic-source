@@ -5,12 +5,11 @@
 
 #include "linkedlist\linkedlist.h"
 #include "gfxEngine.h"
-
 #include "listbox.h"
-
 #include "fontRender.h"
 
-
+#include "Common/InertiaTouch.h"
+#include "TouchPanel\FluidTouch.h"
 
 
 void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_t width, void* fontHdr, uint16_t spacing)
@@ -24,6 +23,8 @@ void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_
 	GFX_LB_SetColour(LB,0,0,0,0,0);
 	LB->selectedItems[0] = NULL;
 	LB->margin = 5;
+
+	FTI_InitInertia(&LB->inertia);
 }
 
 void GFX_LB_SetColour(GFX_Listbox_t* LB, uint16_t font, uint16_t bkground, uint16_t fontSel, uint16_t select, uint16_t sep)
@@ -103,9 +104,13 @@ int8_t GFX_LB_GetSelectedItem(GFX_Listbox_t* LB, int16_t y)
 
 	diff = y - LB->y;
 
+	if( diff < 0 )
+	{
+		return 0xFF;
+	}
 	divisor = (LB->spacing * 2) + fontHeight;
 
-	return (diff / divisor);
+	return (diff / divisor) ;
 }
 
 
@@ -196,5 +201,88 @@ uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB)
 }
 
 
+
+
+void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
+{
+	FT_STATES state;
+	Coordinate* point;
+	Coordinate avgDiff;
+	static uint8_t dragCount = 0;
+	static uint8_t stopDragCount = 0;
+	static uint8_t isDragged = 0;
+
+	state = FluidGetTouch();
+
+	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG)) && (stopDragCount == 0) )
+	{
+		point = FT_GetLastPoint();
+		GFX_LB_SelectItem(LB, GFX_LB_GetSelectedItem(LB, point->y));
+		isDragged = 0;
+		dragCount = 0;
+	}
+
+	if( state == TOUCH_ON )
+	{
+		if( !FTI_InertiaIsZero(&LB->inertia) )
+		{
+			stopDragCount++;
+			if( stopDragCount >= 2 )
+			{
+				FTI_ResetInertia(&LB->inertia);
+				GFX_LB_Scroll(LB, LB->inertia.Value.y);
+			}
+		}
+	}
+
+	if( state == TOUCH_DRAG )
+	{
+		point = FT_GetDiff();
+		//Acts as a filter. So DRAG STOPs result in Inertia being reset.
+		if( Coordinate_IsLessThan(point, 1) )
+		{
+			dragCount++;
+			if( dragCount >= 2 )
+			{
+				FTI_ResetInertia(&LB->inertia);
+			}
+		}
+		else
+		{
+			FTI_ResetInertia(&LB->inertia);
+			dragCount = 0;
+		}
+
+		FTI_UpdateInertia(&LB->inertia, FT_GetDiff());
+		GFX_LB_Scroll(LB, LB->inertia.Value.y);
+		FTI_ApplySlowdown(&LB->inertia);
+		FT_ResetDiff();
+	}
+
+
+	if( state != TOUCH_DRAG )
+	{
+		//The release of the Drag.
+		if( !FTI_InertiaIsZero(&LB->inertia) )
+		{
+			GFX_LB_Scroll(LB, LB->inertia.Value.y);
+			FTI_ApplySlowdown(&LB->inertia);
+			FT_ResetDiff();
+		}
+	}
+
+
+	if( state == TOUCH_OFF )
+	{
+		stopDragCount = 0;
+	}
+
+	if( state != TOUCH_OFF )
+	{
+
+	  //printf("FT_State=%d\n", state);
+	}
+
+}
 
 

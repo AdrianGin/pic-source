@@ -29,14 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-
-/* Private typedef -----------------------------------------------------------*/
-typedef	struct POINT 
-{
-   int16_t x;
-   int16_t y;
-}Coordinate;
-
+#include "Common\Coordinate.h"
 
 typedef struct Matrix 
 {						

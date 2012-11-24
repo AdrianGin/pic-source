@@ -34,6 +34,7 @@
 #include "Graphics\gfxEngine.h"
 #include "FSUtils\FSUtil.h"
 #include "TouchPanel\FluidTouch.h"
+#include "Common/InertiaTouch.h"
 
 #include "UserGUI.h"
 
@@ -62,6 +63,7 @@ int main(void)
 	char* fnPath;
 
 	Coordinate* point;
+	FT_STATES state;
 	Coordinate* inertia;
 
 	DIR dir;
@@ -79,8 +81,6 @@ int main(void)
 
 	delay_init();
 	delay_ms(10);
-
-	printf("STARTING\n");
 
     LCD_Initializtion();
   //LCD_BackLight_Init();
@@ -150,14 +150,13 @@ int main(void)
 
 		  if( counters[2] >= 5 )
 		  {
-			  //FluidTouchMain();
-			  FluidTouchMain2();
+			  FluidTouchMain();
 			  counters[2] = 0;
 		  }
 
 		  if( counters[1] >= 100 )
 		  {
-			  FluidTouch_ApplySlowdown();
+			  //FTI_ApplySlowdown(&GFX_LB.inertia);
 			  counters[1] = 0;
 		  }
 
@@ -187,8 +186,10 @@ int main(void)
 			  //FluidTouchMain();
 
 			  //point = Read_Ads7846();
-			  //point = FluidTouchGetPoint();
-			  point = FluidGetTouch();
+			  point = FT_GetLastPoint();
+			  GFX_LB_ProcessTouchInputs(&GFX_LB);
+
+
 			  if( point != 0)
 			  {
 
@@ -206,21 +207,21 @@ int main(void)
 					  BMP_SetCursor(i, k);
 //					  gfxDrawBMP("folder13.bmp");
 
-					  inertia = FluidTouch_GetIntertia();
+					  //inertia = FTI_GetIntertia();
 
 					  //printf("Inert:X=%d, Y=%d\n", inertia->x, inertia->y);
-					  if( inertia != NULL )
-					  {
-						  GFX_LB_Scroll(&GFX_LB, inertia->y);
-					  }
+//					  if( inertia != NULL )
+//					  {
+//						  GFX_LB_Scroll(&GFX_LB, inertia->y);
+//					  }
 					  SetClip(1);
 					  //SetClipRgn(0, 100 ,320 ,200);
 
 
 
-					  index = GFX_LB_GetSelectedItem(&GFX_LB, point->y);
-					  printf("INDEX=%d\n", index);
-					  GFX_LB_SelectItem(&GFX_LB, index);
+					  //index = GFX_LB_GetSelectedItem(&GFX_LB, point->y);
+					  //printf("INDEX=%d\n", index);
+					  //GFX_LB_SelectItem(&GFX_LB, index);
 					  if( index > LL_Count(&GFX_LB.list) )
 					  {
 						  index = 0;

@@ -23,7 +23,7 @@ void gfxEngine_Init(void)
 
 	_fontOrientation = ORIENT_HOR;
 	SetFontFlash( (void*)&Verdana_24);
-	SetFontFlash( (void*)&Tahoma_12);
+	//SetFontFlash( (void*)&Tahoma_12);
 
     SetClip(CLIP_ENABLE);
     SetClipRgn(-300, -400, 400, 300);

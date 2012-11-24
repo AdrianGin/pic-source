@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 #include "linkedlist\linkedlist.h"
-//Requires some sort of FAT file System
+#include "Common\InertiaTouch.h"
+
+
 
 #define MAX_SELECTED_ITEMS (3)
 
@@ -37,6 +39,8 @@ typedef struct
 	uint8_t selectedItems[MAX_SELECTED_ITEMS];
 	uint8_t margin;
 
+	InertiaElement_t inertia;
+
 } GFX_Listbox_t;
 
 typedef enum {LB_OS_TOP, LB_OS_BOTTOM, LB_OS_LEFT, LB_OS_RIGHT, LS_OS_NONE} LB_OVERSHOOT_STATES;
@@ -57,5 +61,8 @@ void GFX_LB_DrawSeparator(GFX_Listbox_t* LB);
 
 uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB);
 int8_t GFX_LB_GetSelectedItem(GFX_Listbox_t* LB, int16_t y);
+
+
+void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
 
 #endif
