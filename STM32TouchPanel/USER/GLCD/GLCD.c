@@ -100,7 +100,7 @@ static void LCD_FSMCConfig(void)
 
 	FSMC_NORSRAMWriteInitStructure.FSMC_AddressSetupTime = 0;
 	FSMC_NORSRAMWriteInitStructure.FSMC_AddressHoldTime = 0;
-	FSMC_NORSRAMWriteInitStructure.FSMC_DataSetupTime = 0x01;//1;	   /* 数据建立时间  */
+	FSMC_NORSRAMWriteInitStructure.FSMC_DataSetupTime = 0x02;//1;	   /* 数据建立时间  */
 	FSMC_NORSRAMWriteInitStructure.FSMC_CLKDivision = 0x00;
 	FSMC_NORSRAMWriteInitStructure.FSMC_DataLatency = 0x00;
 	FSMC_NORSRAMWriteInitStructure.FSMC_AccessMode = FSMC_AccessMode_A;	/* FSMC 访问模式 */
@@ -293,7 +293,7 @@ void LCD_Initializtion(void)
 	DeviceCode = LCD_ReadReg(0x0000);		/* 读取屏ID	*/
 	//DeviceCode = 0x0123;
 	}
-	delay_ms(10);
+	//delay_ms(10);
 
 	/* 不同屏驱动IC 初始化不同 */
 	if( DeviceCode == 0x9325 || DeviceCode == 0x9328 )
