@@ -78,6 +78,10 @@ int main(void)
 	NVIC_Configuration();
 
 	delay_init();
+	delay_ms(10);
+
+	printf("STARTING\n");
+
     LCD_Initializtion();
   //LCD_BackLight_Init();
 	LCD_Clear(WHITE);

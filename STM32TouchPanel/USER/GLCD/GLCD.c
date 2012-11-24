@@ -17,6 +17,7 @@
 #include "HzLib.h"
 #include "AsciiLib.h"
 
+#include <stdio.h>
 
 #include "stm32f10x.h"
 
@@ -66,8 +67,8 @@ static void LCD_CtrlLinesConfig(void)
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
 
 
-	/* Set PD.12 is the RESET Pin */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+	/* Set PD.12 is the RESET Pin, PD.13 controls the NCE output. */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
@@ -89,7 +90,7 @@ static void LCD_FSMCConfig(void)
 	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMTimingInitStructure;
 	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMWriteInitStructure;
 	/* FSMC读速度设置 */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0;//5;  /* 地址建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0x00;//5;  /* 地址建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
 	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 0x05;//5;	   /* 数据建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0x00;
@@ -141,7 +142,7 @@ static void LCD_Configuration(void)
 
 	GPIO_WriteBit(GPIOD, GPIO_Pin_12, Bit_RESET);
 	GPIO_WriteBit(GPIOD, GPIO_Pin_12, Bit_SET);
-
+	GPIO_WriteBit(GPIOD, GPIO_Pin_13, Bit_RESET);
 	/* Configure the FSMC Parallel interface -------------------------------------*/
 	LCD_FSMCConfig();
 }
@@ -292,6 +293,7 @@ void LCD_Initializtion(void)
 	DeviceCode = LCD_ReadReg(0x0000);		/* 读取屏ID	*/
 	//DeviceCode = 0x0123;
 	}
+	delay_ms(10);
 
 	/* 不同屏驱动IC 初始化不同 */
 	if( DeviceCode == 0x9325 || DeviceCode == 0x9328 )
@@ -597,52 +599,52 @@ void LCD_Initializtion(void)
 	else if( DeviceCode == 0x8989 )
 	{
 	    LCD_Code = SSD1289;
-	    LCD_WriteReg(0x0000,0x0001);    delay_ms(100);   /* 打开晶振 */
-	    LCD_WriteReg(0x0003,0xA8A4);    delay_ms(100);
+	    LCD_WriteReg(0x0000,0x0001);    delay_ms(10);
+	    LCD_WriteReg(0x0003,0xA8A4);    delay_ms(10);
 
-	    LCD_WriteReg(0x000B,0x5308);    delay_ms(100); //0x5308
+	    LCD_WriteReg(0x000B,0x5308);    delay_ms(10); //0x5308
 
-	    LCD_WriteReg(0x000C,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x000D,0x080C);    delay_ms(100);
-	    LCD_WriteReg(0x000E,0x2B00);    delay_ms(100);
-	    LCD_WriteReg(0x001E,0x00B0);    delay_ms(100);
-	    LCD_WriteReg(0x0001,0x693F);    delay_ms(100);   /* Sets up the rotation, upside down = 0x2B3F */
-	    LCD_WriteReg(0x0002,0x0600);    delay_ms(100);
-	    LCD_WriteReg(0x0010,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0011,0x6060);    delay_ms(100);   /* 定义数据格式 16位色 横屏 0x6070 */
+	    LCD_WriteReg(0x000C,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x000D,0x080C);    delay_ms(10);
+	    LCD_WriteReg(0x000E,0x2B00);    delay_ms(10);
+	    LCD_WriteReg(0x001E,0x00B0);    delay_ms(10);
+	    LCD_WriteReg(0x0001,0x693F);    delay_ms(10);   /* Sets up the rotation, upside down = 0x2B3F */
+	    LCD_WriteReg(0x0002,0x0600);    delay_ms(10);
+	    LCD_WriteReg(0x0010,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0011,0x6060);    delay_ms(10);
 
-	    //LCD_WriteReg(0x0011,0xE070);    delay_ms(100);   /* 定义数据格式 16位色 横屏 0x6070 */
+	    //LCD_WriteReg(0x0011,0xE070);    delay_ms(10);
 
-	    LCD_WriteReg(0x0005,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0006,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0016,0xEF1C);    delay_ms(100);
-	    //LCD_WriteReg(0x0017,0x0003);    delay_ms(100);
-	    LCD_WriteReg(0x0017,0x0003);    delay_ms(100);
-	    LCD_WriteReg(0x0007,0x0133);    delay_ms(100);
-	    LCD_WriteReg(0x000B,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x000F,0x0000);    delay_ms(100);   /* 扫描开始地址 */
-	    LCD_WriteReg(0x0041,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0042,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0048,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0049,0x013F);    delay_ms(100);
-	    LCD_WriteReg(0x004A,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x004B,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0044,0xEF00);    delay_ms(100);
-	    LCD_WriteReg(0x0045,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0046,0x013F);    delay_ms(100);
-	    LCD_WriteReg(0x0030,0x0707);    delay_ms(100);
-	    LCD_WriteReg(0x0031,0x0204);    delay_ms(100);
-	    LCD_WriteReg(0x0032,0x0204);    delay_ms(100);
-	    LCD_WriteReg(0x0033,0x0502);    delay_ms(100);
-	    LCD_WriteReg(0x0034,0x0507);    delay_ms(100);
-	    LCD_WriteReg(0x0035,0x0204);    delay_ms(100);
-	    LCD_WriteReg(0x0036,0x0204);    delay_ms(100);
-	    LCD_WriteReg(0x0037,0x0502);    delay_ms(100);
-	    LCD_WriteReg(0x003A,0x0302);    delay_ms(100);
-	    LCD_WriteReg(0x003B,0x0302);    delay_ms(100);
-	    LCD_WriteReg(0x0023,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0024,0x0000);    delay_ms(100);
-	    LCD_WriteReg(0x0025,0xE000);    delay_ms(100); //Set Oscillator Overclock (POR = 0x8000)
+	    LCD_WriteReg(0x0005,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0006,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0016,0xEF1C);    delay_ms(10);
+	    //LCD_WriteReg(0x0017,0x0003);    delay_ms(10);
+	    LCD_WriteReg(0x0017,0x0003);    delay_ms(10);
+	    LCD_WriteReg(0x0007,0x0133);    delay_ms(10);
+	    LCD_WriteReg(0x000B,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x000F,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0041,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0042,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0048,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0049,0x013F);    delay_ms(10);
+	    LCD_WriteReg(0x004A,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x004B,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0044,0xEF00);    delay_ms(10);
+	    LCD_WriteReg(0x0045,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0046,0x013F);    delay_ms(10);
+	    LCD_WriteReg(0x0030,0x0707);    delay_ms(10);
+	    LCD_WriteReg(0x0031,0x0204);    delay_ms(10);
+	    LCD_WriteReg(0x0032,0x0204);    delay_ms(10);
+	    LCD_WriteReg(0x0033,0x0502);    delay_ms(10);
+	    LCD_WriteReg(0x0034,0x0507);    delay_ms(10);
+	    LCD_WriteReg(0x0035,0x0204);    delay_ms(10);
+	    LCD_WriteReg(0x0036,0x0204);    delay_ms(10);
+	    LCD_WriteReg(0x0037,0x0502);    delay_ms(10);
+	    LCD_WriteReg(0x003A,0x0302);    delay_ms(10);
+	    LCD_WriteReg(0x003B,0x0302);    delay_ms(10);
+	    LCD_WriteReg(0x0023,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0024,0x0000);    delay_ms(10);
+	    LCD_WriteReg(0x0025,0xE000);    delay_ms(10); //Set Oscillator Overclock (POR = 0x8000)
 
 //		LCD_WriteReg(0x0028,0x0006);
 //		LCD_WriteReg(0x002F,0x12BE);
@@ -650,8 +652,8 @@ void LCD_Initializtion(void)
 
 
 
-	    LCD_WriteReg(0x004f,0);        /* 行首址0 */
-	    LCD_WriteReg(0x004e,0);        /* 列首址0 */
+	    LCD_WriteReg(0x004f,0);
+	    LCD_WriteReg(0x004e,0);
 
 	}
 	else if( DeviceCode == 0x8999 )
@@ -959,7 +961,9 @@ void LCD_Initializtion(void)
 	else	/* special ID */
 	{
 		DeviceCode = 0x0123;
+		delay_ms(10);
 		DeviceCode = LCD_ReadReg(0x67);
+
 		if( DeviceCode == 0x0047 )
 		{
 	        LCD_Code = HX8347A;
@@ -1035,15 +1039,16 @@ void LCD_Initializtion(void)
 		    LCD_WriteReg(0x0026,0x0024);
 		    LCD_WriteReg(0x0026,0x002C);
 		    delay_ms(40);
-		    LCD_WriteReg(0x0070,0x0008);
+		    //LCD_WriteReg(0x0070,0x0008);
+		    LCD_WriteReg(0x0070,0x0005);
 		    LCD_WriteReg(0x0026,0x003C);
+		    delay_ms(40);
 		    LCD_WriteReg(0x0057,0x0002);
-		    LCD_WriteReg(0x0055,0x0000);
+		    LCD_WriteReg(0x0095,0x0001);
 		    LCD_WriteReg(0x0057,0x0000);
 		}
 	}
     delay_ms(50);   /* delay 50 ms */
-
 }
 
 /******************************************************************************

@@ -67,8 +67,8 @@
 								<option id="arm.rvct.armcc.option.CONFIG_CPU.304583757" name="Architecture or Processor&#10; (--cpu=)" superClass="arm.rvct.armcc.option.CONFIG_CPU" value="arm.rvct.armcc.option.CONFIG_CPU.Cortex-M3" valueType="enumerated"/>
 								<option id="arm.rvct.armcc.thumb.executable.debug.option.CONFIG_ISET.941824100" name="Initial State" superClass="arm.rvct.armcc.thumb.executable.debug.option.CONFIG_ISET" value="arm.rvct.armcc.option.CONFIG_ISET.__DEFAULT" valueType="enumerated"/>
 								<option id="arm.rvct.armcc.option.CONFIG_AREAPERFN.1232077399" name="One ELF section per function (--split_sections)" superClass="arm.rvct.armcc.option.CONFIG_AREAPERFN" value="true" valueType="boolean"/>
-								<option id="arm.rvct.armcc.abstract.debug.option.OPTLEVEL.916097944" name="Optimization&#10;Level (-O)" superClass="arm.rvct.armcc.abstract.debug.option.OPTLEVEL" value="arm.rvct.armcc.option.OPTLEVEL.3" valueType="enumerated"/>
-								<option id="arm.rvct.armcc.option.OPTTIME.476777341" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.time" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.abstract.debug.option.OPTLEVEL.916097944" name="Optimization&#10;Level (-O)" superClass="arm.rvct.armcc.abstract.debug.option.OPTLEVEL" value="arm.rvct.armcc.option.OPTLEVEL.0" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.option.OPTTIME.476777341" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.space" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.abstract.arm.armcc.input.357931858" superClass="cdt.managedbuild.tool.abstract.arm.armcc.input"/>
 							</tool>
 							<tool command="armasm" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="cdt.managedbuild.tool.arm.armasm.thumb.executable.debug.797485167" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.thumb.executable.debug">
@@ -133,24 +133,100 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" name="Release" parent="cdt.managedbuild.config.arm.thumb.executable.release" prebuildStep="make -v">
+				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" name="Release" parent="cdt.managedbuild.config.arm.thumb.executable.release" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" prebuildStep="make -v">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.arm.thumb.executable.release.78760310" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.thumb.executable.release">
 							<targetPlatform id="cdt.managedbuild.target.arm.thumb.executable.release.8717693" superClass="cdt.managedbuild.target.arm.thumb.executable.release"/>
-							<builder buildPath="${workspace_loc:/STM32TouchPanel/Release}" id="cdt.managedbuild.target.arm.builder.thumb.executable.release.1057697031" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make" superClass="cdt.managedbuild.target.arm.builder.thumb.executable.release"/>
+							<builder arguments="-k -j4" buildPath="${workspace_loc:/STM32TouchPanel/Release}" command="make" id="cdt.managedbuild.target.arm.builder.thumb.executable.release.1057697031" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make" superClass="cdt.managedbuild.target.arm.builder.thumb.executable.release"/>
 							<tool id="cdt.managedbuild.tool.arm.armcc.thumb.executable.release.1491054136" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.thumb.executable.release">
 								<option id="arm.rvct.armcc.option.INCLUDE_PATH.2131359565" name="User Include Paths (-I)" superClass="arm.rvct.armcc.option.INCLUDE_PATH" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\CM3\CoreSupport}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\WM8731}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\helix}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\helix\real}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\helix\pub}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\Audio}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\SD_Card}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\FATFS_V0.08A\src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\MP3Header}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\MicrochipGUI_V2.10\inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\uCOS-VIEW}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\GLCD}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\TouchPanel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\ucCos_App}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\uC-CPU}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\MicrochipGUI_V2.10}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\MicrochipGUI_V2.10\Font}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\uCOS-II}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\MicrochipGUI_V2.10\GUI_App}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\SPI_Flash}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\Unicode}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\RV31\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\CMSIS\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\Inc\ST\STM32F10x&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/FreeRTOS/Source/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/OS_Abstraction}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/SysTick}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/USART}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\USER\USB}&quot;"/>
 								</option>
+								<option id="arm.rvct.armcc.option.OPTTIME.1352521867" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.time" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.option.CONFIG_DEFINE.2137614514" name="List of #DEFINEs (-D)" superClass="arm.rvct.armcc.option.CONFIG_DEFINE" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="XX__MICROLIB"/>
+									<listOptionValue builtIn="false" value="STM32F10X_HD"/>
+									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
+									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
+								</option>
+								<option id="arm.rvct.armcc.option.CONFIG_CPU.1297431676" name="Architecture or Processor&#10; (--cpu=)" superClass="arm.rvct.armcc.option.CONFIG_CPU" value="arm.rvct.armcc.option.CONFIG_CPU.Cortex-M3" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.thumb.executable.release.option.CONFIG_ISET.1029469048" name="Initial State" superClass="arm.rvct.armcc.thumb.executable.release.option.CONFIG_ISET" value="arm.rvct.armcc.option.CONFIG_ISET.__DEFAULT" valueType="enumerated"/>
+								<option id="arm.rvct.armcc.option.CONFIG_AREAPERFN.420598678" superClass="arm.rvct.armcc.option.CONFIG_AREAPERFN" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.abstract.arm.armcc.input.2040994167" superClass="cdt.managedbuild.tool.abstract.arm.armcc.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.arm.armasm.thumb.executable.release.1187124203" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.thumb.executable.release">
 								<option id="arm.rvct.armasm.option.INCLUDE.1094382398" name="Include Paths (-I)" superClass="arm.rvct.armasm.option.INCLUDE" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\RV31\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\CMSIS\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\Inc\ST\STM32F10x&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/FreeRTOS/Source/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/OS_Abstraction}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/$(ProjName)/USER/FreeRTOS/Source/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/$(ProjName)/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/$(ProjName)/USER/OS_Abstraction}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ArmMP3Helix/USER/FreeRTOS/Source/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ArmMP3Helix/USER/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ArmMP3Helix/USER/OS_Abstraction}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USER/SysTick}&quot;"/>
 								</option>
+								<option id="arm.rvct.armasm.thumb.executable.release.option.ARM.129064250" name="Initial State" superClass="arm.rvct.armasm.thumb.executable.release.option.ARM" value="arm.rvct.armasm.option.ARM.__DEFAULT" valueType="enumerated"/>
+								<option id="arm.rvct.armasm.option.CONFIG_CPU.580484620" name="Architecture or Processor&#10; (--cpu=)" superClass="arm.rvct.armasm.option.CONFIG_CPU" value="arm.rvct.armasm.option.CONFIG_CPU.Cortex-M3" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.abstract.arm.armasm.input.1094216142" superClass="cdt.managedbuild.tool.abstract.arm.armasm.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.arm.armlink.thumb.executable.release.1914709141" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.thumb.executable.release"/>
+							<tool id="cdt.managedbuild.tool.arm.armlink.thumb.executable.release.1914709141" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.thumb.executable.release">
+								<option id="arm.rvct.armlink.option.SCATTER.433262337" name="Scatter description&#10;file (--scatter=)" superClass="arm.rvct.armlink.option.SCATTER" value="M:\Robotics\Source\ArmTouchPanel\Project.sct" valueType="string"/>
+								<option id="arm.rvct.armlink.option.STRICT.151280706" name="Report &quot;might fail&quot; conditions (--strict)" superClass="arm.rvct.armlink.option.STRICT" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.VERBOSE.150692726" name="Give progress information while linking (--verbose)" superClass="arm.rvct.armlink.option.VERBOSE" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.LIST.2139948258" name="List file name&#10; (--list=)" superClass="arm.rvct.armlink.option.LIST" value="&quot;M:\Robotics\Source\STM32TouchPanel\Project.map&quot;" valueType="string"/>
+								<option id="arm.rvct.armlink.option.XREF.1416342166" name="Section cross-references (--xref)" superClass="arm.rvct.armlink.option.XREF" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.SYMBOLS.1665800154" name="Symbols (--symbols)" superClass="arm.rvct.armlink.option.SYMBOLS" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.MANGLED.764805277" name="Mangled C++ (--mangled)" superClass="arm.rvct.armlink.option.MANGLED" value="false" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.CALL_GRAPH.2007042491" name="Static Callgraph (--callgraph)" superClass="arm.rvct.armlink.option.CALL_GRAPH" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.MAP.1694416749" name="Image map (--map)" superClass="arm.rvct.armlink.option.MAP" value="true" valueType="boolean"/>
+								<option id="arm.rvct.armlink.option.LIB_PATH.755412907" name="Library Search Path (--libpath=)" superClass="arm.rvct.armlink.option.LIB_PATH" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\RV31\Lib&quot;"/>
+								</option>
+								<option id="arm.rvct.armlink.option.IDE_UNKNOWN_OPTIONS.954819724" name="Extra options" superClass="arm.rvct.armlink.option.IDE_UNKNOWN_OPTIONS" valueType="stringList">
+									<listOptionValue builtIn="false" value="--cpu Cortex-M3"/>
+									<listOptionValue builtIn="false" value="--info sizes,totals,unused"/>
+								</option>
+							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
