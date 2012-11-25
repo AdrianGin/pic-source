@@ -8,6 +8,10 @@
 
 
 #define MAX_SELECTED_ITEMS (3)
+#define NO_SELECTION		(0xFF)
+#define LB_REQUIRES_REDRAW	(1)
+#define	LB_NO_REDRAW		(0)
+
 
 typedef struct
 {
@@ -60,9 +64,9 @@ void GFX_LB_Scroll(GFX_Listbox_t* LB, int16_t diff);
 void GFX_LB_DrawSeparator(GFX_Listbox_t* LB);
 
 uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB);
-int8_t GFX_LB_GetSelectedItem(GFX_Listbox_t* LB, int16_t y);
+int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y);
 
 
-void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
+uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
 
 #endif

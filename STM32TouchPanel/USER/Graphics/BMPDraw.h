@@ -5,6 +5,13 @@
 //Requires some sort of FAT file System
 #include "ff.h"
 
+
+/*
+ * 				  BMP_SetRotation(1, -1);
+				  BMP_SetCursor(0, 239);
+				  gfxDrawBMP("blueto~1.bmp");
+ */
+
 typedef struct _BMPfile
 {
         FIL* pImageFile;      /* Image file pointer */

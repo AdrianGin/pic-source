@@ -7,19 +7,21 @@
 
 
 
-
 LIST_NODE_t* LL_NewNode(void* data)
 {
     LIST_NODE_t* newNode;
-    newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
-    while( newNode == NULL )
-    {
-        newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
-    }   
-    
+
+    newNode = (LIST_NODE_t*)LL_Malloc(sizeof(LIST_NODE_t));
+//    while( newNode == NULL )
+//    {
+//        newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
+//    }
+
+    newNode->next = NULL;
+    newNode->prev = NULL;
     newNode->data = data;
     return (LIST_NODE_t*)newNode;
-}    
+}
 
 void* LL_PopData(LINKED_LIST_t* linkedList)
 {
@@ -29,17 +31,17 @@ void* LL_PopData(LINKED_LIST_t* linkedList)
     if( retNode )
     {
         data = retNode->data;
-    }    
-    
+    }
+
     LL_Remove(linkedList, retNode);
     return data;
-}    
+}
 
 void LL_AppendData(LINKED_LIST_t* linkedList, void* data)
 {
     LIST_NODE_t* newNode = LL_NewNode(data);
     LL_InsertEnd(linkedList, newNode);
-}    
+}
 
 
 void LL_InsertAfter(LINKED_LIST_t* linkedList, LIST_NODE_t* node, LIST_NODE_t* newNode)
@@ -105,7 +107,7 @@ void LL_InsertEnd(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode)
 
 void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node)
 {
-   
+
    if( node == NULL)
    {
       return;
@@ -134,15 +136,63 @@ void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node)
    }
    if( node != NULL)
    {
-      free(node);
-   } 
+	   LL_Free(node);
+   }
    node = NULL;
 }
 
 
+uint16_t LL_Count(LINKED_LIST_t* linkedList)
+{
+	LIST_NODE_t* tmp;
+	uint16_t count = 0;
+
+	tmp = linkedList->first;
+	while(tmp != NULL)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+
+	return count;
+}
+
+
+LIST_NODE_t* LL_ReturnNodeFromIndex(LINKED_LIST_t* linkedList, uint16_t item)
+{
+	LIST_NODE_t* tmp;
+	uint16_t count = LL_Count(linkedList);
+
+	if(item >= count)
+	{
+		return NULL;
+	}
+
+
+	tmp = linkedList->first;
+	while( (tmp != NULL) && (item) )
+	{
+		item--;
+		tmp = tmp->next;
+	}
+
+	return tmp;
+}
 
 
 
+void* LL_ReturnNodeDataFromIndex(LINKED_LIST_t* linkedList, uint16_t item)
+{
+	LIST_NODE_t* tmp;
+
+	tmp = LL_ReturnNodeFromIndex(linkedList, item);
+
+	if( tmp != NULL )
+	{
+		return tmp->data;
+	}
+	return NULL;
+}
 
 
 

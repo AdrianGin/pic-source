@@ -41,6 +41,18 @@ void GFX_LB_SelectItem(GFX_Listbox_t* LB, uint8_t index)
 	LB->selectedItems[0] = index;
 }
 
+uint8_t GFX_LB_ReturnSelectedItemIndex(GFX_Listbox_t* LB)
+{
+	return LB->selectedItems[0];
+}
+
+void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB)
+{
+	return LL_ReturnNodeDataFromIndex(&LB->list, GFX_LB_ReturnSelectedItemIndex(LB));
+}
+
+
+
 void GFX_LB_AddItem(GFX_Listbox_t* LB, char* item)
 {
 	LL_AppendData(&LB->list, item);
@@ -94,7 +106,7 @@ uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 }
 
 
-int8_t GFX_LB_GetSelectedItem(GFX_Listbox_t* LB, int16_t y)
+int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y)
 {
 	uint8_t selItem = 0xFF;
 	int16_t diff;
@@ -112,6 +124,8 @@ int8_t GFX_LB_GetSelectedItem(GFX_Listbox_t* LB, int16_t y)
 
 	return (diff / divisor) ;
 }
+
+
 
 
 void GFX_LB_DoOvershoot(GFX_Listbox_t* LB, int16_t diff)
@@ -203,35 +217,49 @@ uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB)
 
 
 
-void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
+uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 {
 	FT_STATES state;
 	Coordinate* point;
-	Coordinate avgDiff;
+	uint8_t ret = LB_NO_REDRAW;
 	static uint8_t dragCount = 0;
 	static uint8_t stopDragCount = 0;
 	static uint8_t isDragged = 0;
 
+	static uint8_t counters[5];
+
 	state = FluidGetTouch();
 
-	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG)) && (stopDragCount == 0) )
+	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG)) )
 	{
 		point = FT_GetLastPoint();
-		GFX_LB_SelectItem(LB, GFX_LB_GetSelectedItem(LB, point->y));
+		GFX_LB_SelectItem(LB, GFX_LB_CalculateSelectedItem(LB, point->y));
 		isDragged = 0;
 		dragCount = 0;
+		ret = LB_REQUIRES_REDRAW;
 	}
 
 	if( state == TOUCH_ON )
 	{
+
+
 		if( !FTI_InertiaIsZero(&LB->inertia) )
 		{
-			stopDragCount++;
-			if( stopDragCount >= 2 )
+			counters[TOUCH_ON]++;
+			if( counters[TOUCH_ON] >= 2 )
 			{
 				FTI_ResetInertia(&LB->inertia);
 				GFX_LB_Scroll(LB, LB->inertia.Value.y);
+				ret = LB_REQUIRES_REDRAW;
 			}
+		}
+		else
+		{
+//			if( (counters[TOUCH_ON] >= 2) && (dragCount == 0))
+//			{
+//				point = FT_GetLastPoint();
+//				GFX_LB_SelectItem(LB, GFX_LB_GetSelectedItem(LB, point->y));
+//			}
 		}
 	}
 
@@ -253,10 +281,13 @@ void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 			dragCount = 0;
 		}
 
+		//Deselect while dragging
+		GFX_LB_SelectItem(LB, NO_SELECTION);
 		FTI_UpdateInertia(&LB->inertia, FT_GetDiff());
 		GFX_LB_Scroll(LB, LB->inertia.Value.y);
 		FTI_ApplySlowdown(&LB->inertia);
 		FT_ResetDiff();
+		ret = LB_REQUIRES_REDRAW;
 	}
 
 
@@ -268,13 +299,16 @@ void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 			GFX_LB_Scroll(LB, LB->inertia.Value.y);
 			FTI_ApplySlowdown(&LB->inertia);
 			FT_ResetDiff();
+			ret = LB_REQUIRES_REDRAW;
 		}
 	}
 
 
 	if( state == TOUCH_OFF )
 	{
-		stopDragCount = 0;
+		//GFX_LB_SelectItem(LB, NO_SELECTION);
+		counters[TOUCH_ON] = 0;
+		dragCount = 0;
 	}
 
 	if( state != TOUCH_OFF )
@@ -282,6 +316,9 @@ void GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 
 	  //printf("FT_State=%d\n", state);
 	}
+
+
+	return ret;
 
 }
 

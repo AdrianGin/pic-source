@@ -1,12 +1,19 @@
 
 
+#ifdef __cplusplus    /* Insert start of extern C construct */
+extern "C" {
+#endif
+
+#ifndef _LINKEDLIST_H
+#define _LINKEDLIST_H
 
 #include <stdint.h>
 
-typedef struct
+
+typedef struct LIST_NODE_t
 {
-   struct LIST_NODE_t* next;
-   struct LIST_NODE_t* prev;
+	struct LIST_NODE_t* next;
+	struct LIST_NODE_t* prev;
    void* data;
 } LIST_NODE_t;
 
@@ -25,4 +32,18 @@ void LL_InsertBefore(LINKED_LIST_t* linkedList, LIST_NODE_t* node, LIST_NODE_t* 
 void LL_InsertBeginning(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode);
 void LL_InsertEnd(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode);
 void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node);
+uint16_t LL_Count(LINKED_LIST_t* linkedList);
+LIST_NODE_t* LL_ReturnNodeFromIndex(LINKED_LIST_t* linkedList, uint16_t item);
+void* LL_ReturnNodeDataFromIndex(LINKED_LIST_t* linkedList, uint16_t item);
 
+
+
+#define LL_Malloc(size)		malloc(size)
+#define LL_Free(handle)		free(handle)
+
+
+#endif
+
+#ifdef __cplusplus  /* Insert end of extern C construct. */
+}                   /* The C header file can now be */
+#endif              /* included in either C or C++ code. */

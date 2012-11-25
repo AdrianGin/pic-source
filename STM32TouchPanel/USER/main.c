@@ -60,6 +60,8 @@ int main(void)
 	uint8_t alternate;
 	int8_t index = 0;
 
+	char* LBItem;
+
 	char* fnPath;
 
 	Coordinate* point;
@@ -154,11 +156,6 @@ int main(void)
 			  counters[2] = 0;
 		  }
 
-		  if( counters[1] >= 100 )
-		  {
-			  //FTI_ApplySlowdown(&GFX_LB.inertia);
-			  counters[1] = 0;
-		  }
 
 		  if( counters[3] >= 200 )
 		  {
@@ -168,143 +165,42 @@ int main(void)
 			  delay_ms(16);
 			  counters[3] = 0;
 		  }
-		  counters[3]++;
-//
-//		  if( counters[4] >= 200 )
-//		  {
-//			  LCD_VSyncHigh();
-//			  counters[4] = 0;
-//		  }
-//		  counters[4]++;
-
-
 
 		  if( counters[0] >= 200 )
 		  {
-
-
-			  //FluidTouchMain();
-
-			  //point = Read_Ads7846();
 			  point = FT_GetLastPoint();
-			  GFX_LB_ProcessTouchInputs(&GFX_LB);
-
-
-			  if( point != 0)
+			  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)
 			  {
-
-				  //TP_BudgetGetDisplayPoint(&TouchPanel, point);
-				  //getDisplayPoint(&display, point, &matrix ) ;
 				  SetTouchPoint(point->x, point->y);
+
+				  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(&GFX_LB);
+
+				  if( LBItem )
+				  {
+					  printf("SELECTED:: %s\n", LBItem);
+				  }
 
 				  i = point->x;
 				  k = point->y;
-				  //LCD_VSyncLow();
 
-				  if(alternate)
-				  {
-					  LCD_Clear(WHITE);
-					  BMP_SetCursor(i, k);
-//					  gfxDrawBMP("folder13.bmp");
+				  LCD_Clear(WHITE);
 
-					  //inertia = FTI_GetIntertia();
-
-					  //printf("Inert:X=%d, Y=%d\n", inertia->x, inertia->y);
-//					  if( inertia != NULL )
-//					  {
-//						  GFX_LB_Scroll(&GFX_LB, inertia->y);
-//					  }
-					  SetClip(1);
-					  //SetClipRgn(0, 100 ,320 ,200);
-
-
-
-					  //index = GFX_LB_GetSelectedItem(&GFX_LB, point->y);
-					  //printf("INDEX=%d\n", index);
-					  //GFX_LB_SelectItem(&GFX_LB, index);
-					  if( index > LL_Count(&GFX_LB.list) )
-					  {
-						  index = 0;
-					  }
-
-					  GFX_LB_Draw(&GFX_LB);
-
-					  SetClip(0);
-					  //gfxWriteString(i, k, "Fuck this world!");
-					  //alternate = 0;
-
-				  }
-				  else
-				  {
-					  //LCD_Clear(Yellow);
-					  alternate = 1;
-				  }
-
-				  BMP_SetRotation(1, -1);
-				  BMP_SetCursor(0, 239);
-
-				  gfxDrawBMP("blueto~1.bmp");
-
-				  BMP_SetCursor(100, 239);
-				  //gfxDrawBMP("phone.bmp");
-
-				  BMP_SetCursor(200, 239);
-				  gfxDrawBMP("sms.bmp");
-
-
-				  BMP_SetRotation(1, -1);
-				  BMP_SetCursor(0, 20);
-				  gfxDrawBMP("folder13.bmp");
-
-				  BMP_SetCursor(0, 50);
-				  gfxDrawBMP("folder13.bmp");
-
-				  BMP_SetCursor(0, 80);
-				  gfxDrawBMP("folder13.bmp");
-
-				  BMP_SetCursor(0, 110);
-				  gfxDrawBMP("folder13.bmp");
-
+				  SetClip(1);
+				  GFX_LB_Draw(&GFX_LB);
+				  SetClip(0);
 				  setPixel(point->x,point->y);
-				  //DrawCross(point->x,point->y);
-
 				  gfxWriteString(point->x, point->y, "Hi");
-				   //LCD_VSyncHigh();
-				   //delay_ms(1);
-				  //PhysicsMain();
 			  }
-//			  else
-//			  {
-//				  LCD_VSyncLow();
-//				  delay_ms(50);
-//				  LCD_VSyncHigh();
-//				  delay_ms(50);
-//			  }
 
 
 			  counters[0] = 0;
-			  //counters[1] = 0;
-			  //LCD_VSyncHigh();
 		  }
 
-//		  if( counters[1] >= 100)
-//		  {
-//			  LCD_VSyncLow();
-//			  //delay_ms(2);
-//			  //PhysicsMain(DESIRED_FPS);
-//			  LCD_VSyncHigh();
-//			  counters[1] = 0;
-//			  //delay_ms(1);
-//		  }
 
-		  //delay_us(100);
 		  counters[0]++;
 		  counters[1]++;
 		  counters[2]++;
-
-		  //LCD_Clear(Yellow);
-		  ///LCD_UpdateScreen();
-		  //PhysicsTick();
+		  counters[3]++;
 	  }
 
 

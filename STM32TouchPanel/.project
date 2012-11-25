@@ -23,4 +23,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Other</name>
+			<type>2</type>
+			<location>M:/Robotics/Source/FuncLib/Other</location>
+		</link>
+	</linkedResources>
 </projectDescription>
