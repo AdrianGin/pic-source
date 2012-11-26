@@ -42,7 +42,7 @@
 #define PRODUCT_STRINGID	(2)
 #define SERIAL_STRINGID		(3)
 
-#define USB_MIDI_CABLE_COUNT	(16)
+
 #define USB_MIDI_MAX_CABLE_COUNT (16)
 #define USBDESC_DEVICE_SIZE                       18
 #define USBDESC_CONFIG_SIZE                       USBDESC_INTERFACE_SIZE*3 + \

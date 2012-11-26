@@ -195,7 +195,7 @@ void SOF_Callback(void)
 
 void CTR_Callback(void)
 {
-	printf("CTR Callback!\n");
+	//printf("CTR Callback!\n");
 }
 
 void ERR_Callback(void)

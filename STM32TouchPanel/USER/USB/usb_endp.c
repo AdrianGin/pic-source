@@ -61,19 +61,18 @@ void EP1_OUT_Callback(void)
 
 	Data_Len = USB_SIL_Read(EP1_OUT, Bulk_Data_Buff);
 
-	for( i = 0; i < Data_Len; i++ )
-	{
-		printf("%x ", Bulk_Data_Buff[i]);
-	}
-	printf("\n");
-	//ProcessUSBMIDI_Out(Bulk_Data_Buff, Data_Len);
-	
+//	for( i = 0; i < Data_Len; i++ )
+//	{
+//		printf("%x ", Bulk_Data_Buff[i]);
+//	}
+//	printf("\n");
+//
 
-	
-#ifndef STM32F10X_CL
+
+	ProcessUSBMIDI_Out(Bulk_Data_Buff, Data_Len);
+
   /* Enable the receive of data on EP1 */
   SetEPRxValid(ENDP1);
-#endif /* STM32F10X_CL */
 	
 //   if (GetENDPOINT(ENDP1) & EP_DTOG_TX)
 //   {
