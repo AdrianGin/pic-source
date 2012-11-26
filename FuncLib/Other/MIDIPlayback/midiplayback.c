@@ -8,7 +8,7 @@
 
 #include "hardwareSpecific.h"
 
-#include "LEDArray/LEDArray.h"
+//#include "LEDArray/LEDArray.h"
 
 void* MPBarray[sizeof (void*)* MPB_EVENT_STACK_SIZE];
 STACK_t MPBStack = {MPBarray, 0, 0, MPB_EVENT_STACK_SIZE};
@@ -32,18 +32,18 @@ void MPB_ResetMIDI(void)
     for (i = 0; i<MAX_MIDI_CHANNELS; i++)
     {
         event.eventType = MIDI_CONTROL_CHANGE|i;
-        event.chanEvent.parameter1 = ALL_NOTES_OFF;
-        event.chanEvent.parameter2 = 0;
+        event.event.chanEvent.parameter1 = ALL_NOTES_OFF;
+        event.event.chanEvent.parameter2 = 0;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
 
-        event.chanEvent.parameter1 = ALL_SOUND_OFF;
+        event.event.chanEvent.parameter1 = ALL_SOUND_OFF;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
 
-        event.chanEvent.parameter1 = ALL_CONTROLLERS_OFF;
+        event.event.chanEvent.parameter1 = ALL_CONTROLLERS_OFF;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
 
-        event.chanEvent.parameter1 = PORTAMENTO_TOGGLE;
-        event.chanEvent.parameter2 = 0x00;
+        event.event.chanEvent.parameter1 = PORTAMENTO_TOGGLE;
+        event.event.chanEvent.parameter2 = 0x00;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
     }
 
@@ -70,6 +70,7 @@ uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
 void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint8_t i;
+    uint32_t* maxLength;
 
     MIDIHdr->masterClock = 0xFFFFFFFF;
     while(MPB_ContinuePlay(MIDIHdr, MPB_PB_ALL_OFF) != MPB_FILE_FINISHED)
@@ -79,7 +80,7 @@ void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
             break;
         }
     }
-    uint32_t* maxLength = &MIDIHdr->currentState.maxLength;
+    maxLength = &MIDIHdr->currentState.maxLength;
     for (i = 0; i<MIDIHdr->trackCount; i++)
     {
         if( MIDIHdr->Track[i].trackClock > *maxLength )
@@ -139,7 +140,6 @@ void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
     MIDIHdr->currentState.maxLength = maxLength;
 
     MIDIHdr->NoteOnTime = MIDIHdr->PPQ/8;
-
 }
 
 void _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
@@ -151,7 +151,7 @@ void _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
     
     memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
     MPB_ReadToBuffer(position, buf);
-    ptr = findSubString(buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
+    ptr = findSubString( (char*)buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
     if( ptr )
     {
         if( (ptr - buf + MIDI_HEADER_SIZE) > MIDI_TRACK_BUFFER_SIZE)
@@ -266,15 +266,17 @@ uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t mode)
 #define MPB_ON_TIME (1)
 void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t mode)
 {
+	uint8_t midiChannel;
+
     MPB_PlayEvent(event, mode);
     track->eventCount = MPB_PLAY_NEXT_EVENT;
 
-    uint8_t midiChannel = (event->eventType & 0x0F);
+    midiChannel = (event->eventType & 0x0F);
     
     if( (event->eventType & 0xF0) == MIDI_NOTE_ON )
     {
         //A note on with a velocity of 0, can be NOTE_OFFs.
-        if(event->chanEvent.parameter2 == 0)
+        if(event->event.chanEvent.parameter2 == 0)
         {
             if(MIDIHdr->channelPolyphony[midiChannel])
             {
@@ -294,7 +296,7 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
         //might not be any offnotes. etc
         if( midiChannel == MIDI_DRUM_CHANNEL)
         {
-            MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] = MIDIHdr->NoteOnTime;
+            MIDIHdr->NoteOnTimer[event->event.chanEvent.parameter1] = MIDIHdr->NoteOnTime;
         }
     }
     else if( (event->eventType & 0xF0) == MIDI_NOTE_OFF )
@@ -311,7 +313,7 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
         //elapsed, then reset it all.
         if( midiChannel == MIDI_DRUM_CHANNEL)
         {
-            MIDIHdr->NoteOnTimer[event->chanEvent.parameter1] = 0;
+            MIDIHdr->NoteOnTimer[event->event.chanEvent.parameter1] = 0;
         }
         //Turn off the respective LED.
         //LEDArray_SetLED(0, 0, 0, 0);
@@ -319,7 +321,7 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
     
     if (event->eventType==MIDI_META_MSG)
     {
-        MPB_ProcessMetaEvent(MIDIHdr, track, event);
+    	MPB_ProcessMetaEvent(MIDIHdr, track, event);
     }
 }
 
@@ -397,16 +399,16 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             //We skip if the lengths are too long
             if (event->eventType==MIDI_META_MSG)
             {
-                if (event->metaEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
+                if (event->event.metaEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
                 {
-                    MPB_ProcessMetaEvent(MIDIHdr, track, event);
+                	MPB_ProcessMetaEvent(MIDIHdr, track, event);
                     position = (position+(uint32_t)(readPtr)-oldPosition);
                     track->startPtr = position;
                 }
             }
             if (event->eventType==MIDI_SYSEX_START)
             {
-                if (event->sysExEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
+                if (event->event.sysExEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
                 {
                    
                     position = (position+(uint32_t)(readPtr)-oldPosition);
@@ -447,12 +449,15 @@ void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
     //*to send a Timing signal we need to send 24 0xF8's per quarter note
     uint16_t usPerTick;
     usPerTick = ((US_PER_MINUTE/64)/(bpm)/PPQ);
-    PR1 = 41*usPerTick;
-    T1CONbits.TCKPS0 = 0;
-    T1CONbits.TCKPS1 = 1;
-    //myprintfd("BPM: ", bpm);
-    //myprintfd("PPQ: ", PPQ);
-    //myprintfd("usPerTick: ", PR1);
+
+    SET_TIMER_INTERVAL(usPerTick);
+
+    //PR1 = 41*usPerTick;
+    //T1CONbits.TCKPS0 = 0;
+    //T1CONbits.TCKPS1 = 1;
+    myprintfd("BPM: ", bpm);
+    myprintfd("PPQ: ", PPQ);
+    myprintfd("usPerTick: ", usPerTick);
 }
 
 void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event)
@@ -460,15 +465,15 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 
     uint8_t length = TRACK_MAX_NAME_LENGTH;
     uint16_t existingBPM;
-    if( TRACK_MAX_NAME_LENGTH > event->metaEvent.length )
+    if( TRACK_MAX_NAME_LENGTH > event->event.metaEvent.length )
     {
-        length = event->metaEvent.length;
+        length = event->event.metaEvent.length;
     }
 
-    switch(event->metaEvent.type)
+    switch(event->event.metaEvent.type)
     {
         case MIDI_META_TRACK_NAME:
-            memcpy(&track->name, event->metaEvent.data, event->metaEvent.length);
+            memcpy(&track->name, event->event.metaEvent.data, event->event.metaEvent.length);
             DEBUG("Track ");
             myprintfd("", track->trackIndex);
             DEBUGn(&track->name, length);
@@ -477,8 +482,8 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 
         case MIDI_META_TEMPO:
             existingBPM = MIDIHdr->currentState.BPM;
-            reverseOrder(event->metaEvent.data, event->metaEvent.length);
-            memcpy(&MIDIHdr->currentState.BPM, event->metaEvent.data, event->metaEvent.length); //*bpmptr;
+            reverseOrder(event->event.metaEvent.data, event->event.metaEvent.length);
+            memcpy(&MIDIHdr->currentState.BPM, event->event.metaEvent.data, event->event.metaEvent.length); //*bpmptr;
 
             MIDIHdr->currentState.BPM = BPM(MIDIHdr->currentState.BPM);
             MPB_SetTickRate(MIDIHdr->currentState.BPM, MIDIHdr->PPQ);
@@ -494,21 +499,21 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 
         case MIDI_META_LYRICS:
             //Lyrics parsed in play events.
-            //DEBUGn(event->metaEvent.data, event->metaEvent.length);
+            //DEBUGn(event->event.metaEvent.data, event->event.metaEvent.length);
             break;
 
         case MIDI_META_TIME_SIG:
             MIDIHdr->currentState.timeSignature = 0;
-            MIDIHdr->currentState.timeSignature |= event->metaEvent.data[0] << 4;
-            MIDIHdr->currentState.timeSignature |= 1 << event->metaEvent.data[1];
+            MIDIHdr->currentState.timeSignature |= event->event.metaEvent.data[0] << 4;
+            MIDIHdr->currentState.timeSignature |= 1 << event->event.metaEvent.data[1];
             myprintfd("Numerator: ", MIDIHdr->currentState.timeSignature >> 4);
             myprintfd("Denominator: ", MIDIHdr->currentState.timeSignature & 0x0F);
             break;
             
         case MIDI_META_KEY_SIG:
-            MIDIHdr->currentState.keySignature = event->metaEvent.data[0];
+            MIDIHdr->currentState.keySignature = event->event.metaEvent.data[0];
             //The major or minor scale
-            MIDIHdr->currentState.keyScale = event->metaEvent.data[1];
+            MIDIHdr->currentState.keyScale = event->event.metaEvent.data[1];
             DEBUG("Key Signature: ");
             DEBUG(MIDIParse_KeySignature(MIDIHdr->currentState.keySignature, MIDIHdr->currentState.keyScale));
             DEBUG("\n");
@@ -528,27 +533,27 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
 {
     static uint8_t runningStatus;
     
+
     if( mode == MPB_PB_ALL_OFF)
     {
         return;
     }
 
-    uint8_t i;
-
     switch (event->eventType)
     {
+    	uint8_t i;
         case MIDI_SYSEX_START:
             MIDI_Tx(MIDI_SYSEX_START);
-            //MIXI_TxDump(event->sysExEvent.data, event->sysExEvent.length);
-            myprintf("MIDISYSX FOUND:", event->sysExEvent.length);
+            //MIXI_TxDump(event->event.sysExEvent.data, event->event.sysExEvent.length);
+            myprintf("MIDISYSX FOUND:", event->event.sysExEvent.length);
 
-            for(i = 0; i < event->sysExEvent.length; i++)
+            for(i = 0; i < event->event.sysExEvent.length; i++)
             {
-                MIDI_Tx(event->sysExEvent.data[i]);
-                myprintf("B:", event->sysExEvent.data[i]);
+                MIDI_Tx(event->event.sysExEvent.data[i]);
+                myprintf("B:", event->event.sysExEvent.data[i]);
             }
 
-            //DEBUGn(event->sysExEvent.data, event->sysExEvent.length);
+            //DEBUGn(event->event.sysExEvent.data, event->event.sysExEvent.length);
 
             break;
 
@@ -559,11 +564,11 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
                 return;
             }
             
-            switch(event->metaEvent.type)
+            switch(event->event.metaEvent.type)
             {
                 case MIDI_META_LYRICS:
-                    DEBUGn(event->metaEvent.data, event->metaEvent.length);
-                    //myprintf(event->metaEvent.data, event->metaEvent.length);
+                    DEBUGn(event->event.metaEvent.data, event->event.metaEvent.length);
+                    //myprintf(event->event.metaEvent.data, event->event.metaEvent.length);
 
                     break;
             }
@@ -598,21 +603,21 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
                 {
 
 
-                    if( (event->chanEvent.parameter1 == BASS_DRUM1) )
+                    if( (event->event.chanEvent.parameter1 == BASS_DRUM1) )
                     {
-                        LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS-1, 0, 0);
+                        //LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS-1, 0, 0);
                         //myprintfd("YES:", 3);
                     }
 
-                    if( (event->chanEvent.parameter1 == ELECTRIC_SNARE) )
+                    if( (event->event.chanEvent.parameter1 == ELECTRIC_SNARE) )
                     {
-                        LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS-1, 0);
+                        //LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS-1, 0);
                         //myprintfd("YES:", 7);
                     }
 
-                    if( (event->chanEvent.parameter1 == RIDE_CYMBAL2) )
+                    if( (event->event.chanEvent.parameter1 == RIDE_CYMBAL2) )
                     {
-                        LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS-1);
+                        //LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS-1);
                         //myprintfd("YES:", 7);
                     }
 
@@ -620,19 +625,19 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
                 else
                 {
 
-                    if( (event->chanEvent.parameter1 == BASS_DRUM1) )
+                    if( (event->event.chanEvent.parameter1 == BASS_DRUM1) )
                     {
                         //LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS, 0, 0);
                         //myprintfd("YES:", 3);
                     }
 
-                    if( (event->chanEvent.parameter1 == ELECTRIC_SNARE) )
+                    if( (event->event.chanEvent.parameter1 == ELECTRIC_SNARE) )
                     {
                         //LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS, 0);
                         //myprintfd("YES:", 7);
                     }
 
-                    if( (event->chanEvent.parameter1 == RIDE_CYMBAL2) )
+                    if( (event->event.chanEvent.parameter1 == RIDE_CYMBAL2) )
                     {
                         //LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS);
                         //myprintfd("YES:", 7);
@@ -641,10 +646,10 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             }
 
 
-            MIDI_Tx(event->chanEvent.parameter1);
+            MIDI_Tx(event->event.chanEvent.parameter1);
             if (MIDI_CommandSize(event->eventType&0xF0)==3)
             {
-                MIDI_Tx(event->chanEvent.parameter2);
+                MIDI_Tx(event->event.chanEvent.parameter2);
             }
             
             break;
@@ -661,7 +666,7 @@ void* _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size)
 {
     uint16_t br;
     f_lseek(&midifile, position);
-    f_read(&midifile, buf, size, &br);
+    f_read(&midifile, buf, size, (UINT*)&br);
     return buf;
 }
 

@@ -123,16 +123,16 @@ uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size
     if (ptr)
     {
         uint16_t* tmp;
-        tmp = &ptr[MIDI_HEADER_FMT];
-        reverseOrder(tmp, 2);
+        tmp = (uint16_t*)&ptr[MIDI_HEADER_FMT];
+        reverseOrder( (char*)tmp, 2);
         header->format = *tmp;
 
-        tmp = &ptr[MIDI_HEADER_TRACK_COUNT];
-        reverseOrder(tmp, 2);
+        tmp = (uint16_t*)&ptr[MIDI_HEADER_TRACK_COUNT];
+        reverseOrder((char*)tmp, 2);
         header->trackCount = *tmp;
 
-        tmp = &ptr[MIDI_HEADER_PPQ];
-        reverseOrder(tmp, 2);
+        tmp = (uint16_t*)&ptr[MIDI_HEADER_PPQ];
+        reverseOrder((char*)tmp, 2);
         header->PPQ = *tmp;
         return (uint16_t)ptr - (uint16_t)data;
     }
@@ -166,8 +166,8 @@ void* MIDIParse_Track(MIDI_TRACK_CHUNK_t* track, void* data, uint32_t size)
     if (ptr)
     {
         uint32_t* tmp;
-        tmp = &ptr[MIDI_TRACK_LENGTH];
-        reverseOrder(tmp, 4);
+        tmp = (uint32_t*)&ptr[MIDI_TRACK_LENGTH];
+        reverseOrder( (char*)tmp, 4);
         track->length = *tmp;
         //myprintf("TRACKLENG: ", track->length);
         return &ptr[MIDI_TRACK_LENGTH+4];
@@ -179,7 +179,7 @@ void* MIDIParse_Track(MIDI_TRACK_CHUNK_t* track, void* data, uint32_t size)
 void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* data)
 {
     uint32_t byteOffset = 0;
-
+    uint8_t bytesToSend;
     //uint8_t runningStatus;
     
     if( ((event->eventType & 0xF0) >= MIDI_NOTE_OFF) &&
@@ -199,37 +199,37 @@ void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* d
 
     if (event->eventType==MIDI_SYSEX_START)
     {
-        midiparse_variableLength(&data[byteOffset+1], &event->sysExEvent.length);
+        midiparse_variableLength(&data[byteOffset+1], &event->event.sysExEvent.length);
         
-        event->sysExEvent.data = &data[byteOffset+2];
-        //rawDump(event->sysExEvent.data, event->sysExEvent.length);
-        return &data[byteOffset+2+event->sysExEvent.length];
+        event->event.sysExEvent.data = &data[byteOffset+2];
+        //rawDump(event->event.sysExEvent.data, event->event.sysExEvent.length);
+        return &data[byteOffset+2+event->event.sysExEvent.length];
     }
 
     if (event->eventType==MIDI_META_MSG)
     {
-        event->metaEvent.type = data[byteOffset+1];
+        event->event.metaEvent.type = data[byteOffset+1];
         
-        midiparse_variableLength(&data[byteOffset+2], &event->metaEvent.length);
+        midiparse_variableLength(&data[byteOffset+2], &event->event.metaEvent.length);
         
-        event->metaEvent.data = &data[byteOffset+3];
-        //myprintf("DATA: %s\n",event->metaEvent.data);
-        //rawDumpStr(event->metaEvent.data, event->metaEvent.length);
-        return &data[byteOffset+3+event->metaEvent.length];
+        event->event.metaEvent.data = &data[byteOffset+3];
+        //myprintf("DATA: %s\n",event.event->metaEvent.data);
+        //rawDumpStr(event.event->metaEvent.data, event.event->metaEvent.length);
+        return &data[byteOffset+3+event->event.metaEvent.length];
     }
 
 
 
 
-    uint8_t bytesToSend = MIDI_CommandSize(event->eventType&0xF0);
+    bytesToSend = MIDI_CommandSize(event->eventType&0xF0);
     if (bytesToSend>1)
     {
         //runningStatus = event->eventType;
 
-        event->chanEvent.parameter1 = data[byteOffset+1];
+        event->event.chanEvent.parameter1 = data[byteOffset+1];
         if (bytesToSend>2)
         {
-            event->chanEvent.parameter2 = data[byteOffset+2];
+            event->event.chanEvent.parameter2 = data[byteOffset+2];
         }
     }
 
@@ -245,20 +245,20 @@ void MIDI_PrintEventInfo(MIDI_EVENT_t* event)
     switch (event->eventType)
     {
         case MIDI_SYSEX_START:
-            myprintf("LEN: ", event->sysExEvent.length);
+            myprintf("LEN: ", event->event.sysExEvent.length);
             break;
             
         case MIDI_META_MSG:
-            myprintf("TYPE: ", event->metaEvent.type);
-            myprintf("LEN: ", event->metaEvent.length);
-            myprintf("DATA0: ", event->metaEvent.data[0]);
-            myprintf("DATA1: ", event->metaEvent.data[1]);
-            myprintf("DATA2: ", event->metaEvent.data[2]);
+            myprintf("TYPE: ", event->event.metaEvent.type);
+            myprintf("LEN: ", event->event.metaEvent.length);
+            myprintf("DATA0: ", event->event.metaEvent.data[0]);
+            myprintf("DATA1: ", event->event.metaEvent.data[1]);
+            myprintf("DATA2: ", event->event.metaEvent.data[2]);
             break;
 
         default:
-            myprintf("P1: ", event->chanEvent.parameter1);
-            myprintf("P2: ", event->chanEvent.parameter2);
+            myprintf("P1: ", event->event.chanEvent.parameter1);
+            myprintf("P2: ", event->event.chanEvent.parameter2);
             break;
     }
 }

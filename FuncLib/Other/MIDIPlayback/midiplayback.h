@@ -65,8 +65,9 @@ uint8_t _MIDI_fileopen(uint8_t* filename);
 #define MPB_ReadToBuffer(position, buf) _MIDI_readbuf(position, buf, MIDI_TRACK_BUFFER_SIZE)
 #define MPB_OpenFile(x) _MIDI_fileopen(x)
 
-#define MIDI_Tx(x)          uartTx(PrimaryUART, x)
-#define MIXI_TxDump(x, n)   uartTxDump(PrimaryUART, x, n)
+//Define in hardwareSpecific.h
+//#define MIDI_Tx(x)          uartTx(PrimaryUART, x)
+//#define MIXI_TxDump(x, n)   uartTxDump(PrimaryUART, x, n)
 
 MIDI_EVENT_t* MPB_GetNextEvent(void);
 MIDI_EVENT_t* MPB_ConfirmEventTx(void);

@@ -105,7 +105,7 @@ typedef struct
        MIDI_CHAN_EVENT_t  chanEvent;
        MIDI_SYSEX_EVENT_t sysExEvent;
        MIDI_META_EVENT_t  metaEvent;
-    } ;
+    } event;
     
 } MIDI_EVENT_t;
 
