@@ -23,10 +23,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include "LEDDriver/LPD8806.h"
 #include "MIDICodes/MIDICodes.h"
 #include "MIDIUtils.h"
-#include "hw_config.h"
+
 
 
 uint8_t MIDIUtils_GetMusicNote(uint8_t note)

@@ -5,7 +5,7 @@
 
 
 #include <stdint.h>
-#include "MIDIParser/MIDICodes.h"
+#include "MIDICodes/MIDICodes.h"
 
 #define MIDI_HEADER_STRING   "MThd"
 #define MIDI_TRACK_STRING    "MTrk"
@@ -161,7 +161,7 @@ typedef struct
     uint16_t  NoteOnTime;
     //Just for the drum track.
     uint8_t  NoteOnList[MIDI_MAX_POLYPHONY];
-    uint8_t  channelPolyphony[MAX_MIDI_CHANNELS];
+    uint8_t  channelPolyphony[MIDI_MAX_CHANNELS];
     uint8_t  totalPolyphony;
 
 } MIDI_HEADER_CHUNK_t;

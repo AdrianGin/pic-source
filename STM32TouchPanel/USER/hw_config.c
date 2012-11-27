@@ -14,6 +14,14 @@
 //#include "stm32_eval_sdio_sd.h"
 #include "sdio_sd.h"
 
+#include "USBMIDI\USBMIDI.h"
+
+
+volatile uint8_t rxReadPtr[USB_MIDI_CABLE_COUNT];
+uint8_t USB_Connected;
+volatile uint8_t RxBuffer[USB_MIDI_CABLE_COUNT][RX_BUFFER_SIZE];
+volatile uint8_t rxWritePtr[USB_MIDI_CABLE_COUNT];
+
 
 
 /*******************************************************************************
@@ -36,22 +44,27 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
   GPIO_SetBits(GPIOB, GPIO_Pin_1);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_12 | GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  GPIO_SetBits(GPIOB, GPIO_Pin_5);
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_12 | GPIO_Pin_14;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//  GPIO_Init(GPIOB, &GPIO_InitStructure);
+//  GPIO_SetBits(GPIOB, GPIO_Pin_5);
 
+  //For debugging purposes
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-
+  /* Configure USB pull-up */
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_DISCONNECT, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
 
 /**
  *	Configure SD_CD pin: SD Card detect pin
@@ -60,6 +73,10 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
   GPIO_Init(SD_DETECT_GPIO_PORT, &GPIO_InitStructure);
+
+
+  USB_Cable_Config(DISABLE);
+  USB_Cable_Config(ENABLE);
 }
 
 
@@ -80,11 +97,316 @@ void NVIC_Configuration(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
   NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 13;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 10;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+
+  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
+
+
+void TIM_MIDI_Configuration(void)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(MIDI_TIM_RCC_APB, ENABLE);
+	TIM_DeInit(MIDI_TIM);
+	/* TIM2 Configuration */
+	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+	TIM_TimeBaseStructure.TIM_Period = 10000;
+	//due to the MIDI playback being 64 prescaled.
+	TIM_TimeBaseStructure.TIM_Prescaler = DEFAULT_MIDI_TIMER_PRESCALER;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInit(MIDI_TIM, &TIM_TimeBaseStructure);
+
+
+	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+	TIM_Cmd(MIDI_TIM, ENABLE);
+}
+
+
+void AUX_TIM_Configuration(void)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	TIM_DeInit(TIM3);
+	/* TIM2 Configuration */
+	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+	TIM_TimeBaseStructure.TIM_Period = 50;
+	//due to the MIDI playback being 64 prescaled.
+	TIM_TimeBaseStructure.TIM_Prescaler = 72;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+
+
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM3, ENABLE);
+}
+
+
+
+
+
+/*******************************************************************************
+* Function Name  : USB_Interrupts_Config
+* Description    : Configures the USB interrupts
+* Input          : None.
+* Return         : None.
+*******************************************************************************/
+void USB_Config(void)
+{
+  NVIC_InitTypeDef NVIC_InitStructure;
+
+  /* Enable and configure the priority of the USB_LP IRQ Channel*/
+  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  /* Enable and configure the priority of the USB_HP IRQ Channel*/
+  NVIC_InitStructure.NVIC_IRQChannel = USB_HP_CAN1_TX_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
+
+
+
+/*******************************************************************************
+* Function Name  : Set_USBClock
+* Description    : Configures USB Clock input (48MHz)
+* Input          : None.
+* Return         : None.
+*******************************************************************************/
+void Set_USBClock(void)
+{
+  /* Select USBCLK source */
+  RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+
+  /* Enable the USB clock */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+}
+
+/*******************************************************************************
+* Function Name  : USB_Cable_Config
+* Description    : Software Connection/Disconnection of USB Cable
+* Input          : None.
+* Return         : Status
+*******************************************************************************/
+void USB_Cable_Config (FunctionalState NewState)
+{
+
+  if (NewState != DISABLE)
+  {
+    GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+  }
+  else
+  {
+    GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+  }
+}
+
+
+
+//For Loopback
+void ProcessUSBMIDIBuffer_Loopback(void)
+{
+	uint8_t byte;
+	uint16_t ret;
+
+	while( USBMIDI_GetByte(&byte, 0) != NO_DATA_BYTE )
+	{
+		USBMIDI_PutByte(byte, 0);
+	}
+	ret = GetEPRxStatus(ENDP1);
+	if( ret != EP_RX_VALID )
+	{
+		SetEPRxValid(ENDP1);
+	}
+}
+
+
+void ProcessUSBMIDIBuffer_LightSys(void)
+{
+	uint8_t byte;
+	uint16_t ret;
+	static uint8_t lsBuf[3];
+	static uint8_t bufCount = 0;
+
+	while( USBMIDI_GetByte(&byte, 0) != NO_DATA_BYTE )
+	{
+		if( ((byte & 0xF0) == MIDI_NOTE_ON) || ((byte & 0xF0) == MIDI_NOTE_OFF) || (bufCount))
+		{
+			lsBuf[bufCount] = byte;
+			bufCount++;
+		}
+		else
+		{
+			bufCount = 0;
+		}
+
+		if( bufCount == 3)
+		{
+			bufCount = 0;
+			//LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
+		}
+	}
+
+
+
+	ret = GetEPRxStatus(ENDP1);
+	if( ret != EP_RX_VALID )
+	{
+		SetEPRxValid(ENDP1);
+	}
+}
+
+
+
+
+//call this to put all the data into the USB->MIDI rxbuffer
+void ProcessUSBMIDI_Out(uint8_t* data, uint16_t len)
+{
+   /* Route it all to the UART port at 31250 baud */
+   uint8_t codeIndexNumber;
+   uint8_t messageSize = 0;
+   uint8_t cableNo = 0;
+   uint8_t i = 0;
+   uint8_t j = 0;
+
+   for( i = 0 ; i < len ; i = i + sizeof(usbMIDIMessage_t) )
+   {
+      if( data[i] )
+      {
+         codeIndexNumber = data[i] & (0x0F);
+         messageSize = (MIDIResponseMap[codeIndexNumber]);
+         cableNo = data[i] >> 4;
+
+         for(j = 0; j < messageSize; j++)
+         {
+            uint8_t buffer = data[i+j+1];
+            RxBuffer[cableNo][rxWritePtr[cableNo]] = buffer;
+            rxWritePtr[cableNo] = ((rxWritePtr[cableNo] + 1) & RX_BUFFER_MASK);
+         }
+      }
+   }
+}
+
+
+/* This reads the MIDI data received from USB */
+uint8_t USBMIDI_GetByte(uint8_t* inByte, uint8_t cableNo)
+{
+   /* Process messages in the UART Rx buffer is there are any */
+   if( rxReadPtr[cableNo] != rxWritePtr[cableNo] )
+   {
+      *inByte = RxBuffer[cableNo][rxReadPtr[cableNo]];
+      rxReadPtr[cableNo] = ((rxReadPtr[cableNo] + 1) & RX_BUFFER_MASK);
+      return 1;
+   }
+   return NO_DATA_BYTE;
+}
+
+
+
+
+
+/* This here makes the process Buffer redundant */
+void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo)
+{
+   uint8_t midiReady;
+   uint16_t retry;
+
+   midiReady = MIDIDataReady(byte, &MIDICable[cableNo]);
+   /* Copy it out, so the tempbuffer is ready again */
+   if( midiReady )
+   {
+
+		 if( midiReady == MIDI_DATA_READY)
+		{
+			memcpy(&MIDImsgComplete[wMIDImsgCount], &MIDICable[cableNo].msg, sizeof(usbMIDIMessage_t));
+		}
+	    MIDImsgComplete[wMIDImsgCount].header = MIDImsgComplete[wMIDImsgCount].header | (cableNo << 4);
+		  wMIDImsgCount = (wMIDImsgCount + 1) & MIDI_OUT_MASK;
+
+			while( GetEPTxStatus(ENDP1) == EP_TX_VALID )
+			{
+				//printf("!");
+			}
+
+       if( usbMIDI_bufferLen() == 1 )
+       {
+          /* Send 1 byte */
+				  USB_SIL_Write(EP1_IN, (uint8_t*)&MIDImsgComplete[rMIDImsgCount], sizeof(usbMIDIMessage_t));
+				  retry = GetEPTxStatus(ENDP1);
+					SetEPTxValid(ENDP1);
+          rMIDImsgCount = (rMIDImsgCount + 1) & MIDI_OUT_MASK;
+       }
+       else
+       {
+          /* Send 2 bytes */
+				 	USB_SIL_Write(EP1_IN, (uint8_t*)&MIDImsgComplete[rMIDImsgCount], sizeof(usbMIDIMessage_t)*2);
+					SetEPTxValid(ENDP1);
+          rMIDImsgCount = (rMIDImsgCount + 2) & MIDI_OUT_MASK;
+
+       }
+	 }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -125,24 +447,6 @@ void Leave_LowPowerMode(void)
 }
 
 
-/*******************************************************************************
-* Function Name  : USB_Cable_Config
-* Description    : Software Connection/Disconnection of USB Cable
-* Input          : None.
-* Return         : Status
-*******************************************************************************/
-void USB_Cable_Config (FunctionalState NewState)
-{
-
-  if (NewState != DISABLE)
-  {
-    GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
-  }
-  else
-  {
-    GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
-  }
-}
 
 
 

@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include <stdint.h>
 #include "MIDICodes/MIDICodes.h"
+#include "USBMIDIConf.h"
 
 /* To be defined in hardwareSpecific.h */
 #ifdef  __USE_PROGMEM
@@ -53,6 +54,24 @@ THE SOFTWARE.
 #define MIDI_OUT_MASK      (MIDI_OUT_BUFFER - 1)
 #define SYS_COMMON_MSG (22)
 #define NO_DATA_BYTE    (0xFF)
+
+#define _USB_MIDI_USE_LINKED_FUNCTION
+
+#ifndef _USB_MIDI_USE_LINKED_FUNCTION
+//Must be a power of two
+#define RX_BUFFER_SIZE (128)
+#define RX_BUFFER_MASK (RX_BUFFER_SIZE - 1)
+/* After 200 times to retry sending a message, we assume the USB is
+   disconnected */
+#define USB_CONNECT_TIMEOUT (1500)
+#define CABLE_NO_COUNT (2)
+
+volatile uint8_t rxReadPtr[CABLE_NO_COUNT];
+uint8_t USB_Connected;
+volatile uint8_t RxBuffer[CABLE_NO_COUNT][RX_BUFFER_SIZE];
+volatile uint8_t rxWritePtr[CABLE_NO_COUNT];
+#endif
+
 
 typedef struct usbMIDIMessage
 {
@@ -79,7 +98,7 @@ extern uint8_t wMIDImsgCount;
 extern uint8_t rMIDImsgCount; 
 
 extern const uint8_t MIDIResponseMap[] PROGRAM_SPACE;
-
+extern usbMIDIcable_t MIDICable[USB_MIDI_CABLE_COUNT+1];
 
 /* Returns the number of USB-MIDIMessages in the buffer */
 uint8_t usbMIDI_bufferLen(void);

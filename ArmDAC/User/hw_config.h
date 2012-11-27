@@ -75,15 +75,18 @@ uint32_t I2SCodec_WriteRegister(uint32_t RegisterAddr, uint32_t RegisterValue, u
 uint32_t Codec_SpeakerConfig(uint16_t I2S_Standard, uint8_t volume, uint32_t verif, uint8_t pll);
 void Get_SerialNum(void);
 void ReceiveUSARTData(void);
-void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo);
+
 void ProcessUARTBuffer(void);
 void ProcessUSBMIDIBuffer_Loopback(void);
 void ProcessUSBMIDIBuffer_LightSys(void);
+void ProcessUSBMIDI_Out(uint8_t* data, uint16_t len);
+void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo);
+uint8_t USBMIDI_GetByte(uint8_t* inByte, uint8_t cableNo);
+
 
 void ToggleActiveChannel(uint8_t byte);
 
-void ProcessUSBMIDI_Out(uint8_t* data, uint16_t len);
-uint8_t USBMIDI_GetByte(uint8_t* inByte, uint8_t cableNo);
+
 void dumpData(void);
 #endif  /*__HW_CONFIG_H*/
 

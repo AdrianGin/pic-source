@@ -21,7 +21,16 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+
+#include <stdio.h>
+
 #include "stm32f10x_it.h"
+#include "hw_config.h"
+#include "UARTProcessor/UARTProcessor.h"
+#include "SD_Card/sdio_sd.h"
+#include "usb_lib.h"
+#include "usb_istr.h"
+#include "usb_pwr.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -151,6 +160,36 @@ void SysTick_Handler(void)
 {
 }*/
 
+
+
+
+
+/*******************************************************************************
+* Function Name  : USART1_IRQHandler
+* Description    : This function handles USART1 global interrupt request.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+void USART1_IRQHandler(void)
+{
+	 if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+  {
+    /* Send the received data to the PC Host*/
+    ReceiveUSARTData();
+  }
+
+	if (USART_GetITStatus(USART1, USART_IT_ORE) != RESET)
+  {
+		ReceiveUSARTData();
+		printf("X");
+	}
+}
+
+
+
+
 /**
   * @}
   */ 
@@ -174,6 +213,80 @@ void SDIO_IRQHandler(void)
 //
 //  OSIntExit();
 }
+
+
+
+void TIM2_IRQHandler(void)
+{
+	static uint8_t state = 0;
+
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+
+	globalFlag |= 1;
+
+}
+
+void TIM3_IRQHandler(void)
+{
+	static uint16_t cntr = 0;
+	static uint16_t cntr2 = 0;
+	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+
+
+	cntr2++;
+
+	if( cntr2 == 3000)
+	{
+		globalFlag |= 0x08;
+		cntr2 = 0;
+	}
+
+	cntr++;
+	if( cntr == 1 )
+	{
+		//GPIO_SetBits(GPIOC, GPIO_Pin_13);
+		globalFlag |= 0x04;
+		globalFlag &= ~0x02;
+	}
+
+	if( cntr == 320*2 )
+	{
+		//GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+		globalFlag |= 0x02;
+		globalFlag &= ~0x04;
+		cntr = 0;
+	}
+
+
+}
+
+
+/*******************************************************************************
+* Function Name  : USB_HP_CAN1_TX_IRQHandler
+* Description    : This function handles USB High Priority or CAN1 TX interrupts
+*                  requests.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void USB_HP_CAN1_TX_IRQHandler(void)
+{
+  CTR_HP();
+}
+
+/*******************************************************************************
+* Function Name  : USB_LP_CAN1_RX0_IRQHandler
+* Description    : This function handles USB Low Priority or CAN RX0 interrupts
+*                  requests.
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+  USB_Istr();
+}
+
 
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

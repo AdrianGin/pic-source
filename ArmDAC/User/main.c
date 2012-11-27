@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "USART\\usart.h"
-#include "LEDDriver/LPD8806.h"
+#include "LPD8806/LPD8806.h"
 
 #include "hw_config.h"
 #include "usb_lib.h"
@@ -183,10 +183,12 @@ int main(void)
 	USB_Config();
 	USB_Init();
 
+
+
 	USART_Configuration();
-	
+
 	ADC_Configuration();
-	DACint();
+	//DACint();
 	LPD8806_Init();
 	LS_Init();
 
@@ -194,9 +196,11 @@ int main(void)
 	printf("\r\n****************************************************************\r\n");
 	/* Infinite loop */
 
-	LPD8806_SetPixel(0, RGB(0,0,255) );
+	LPD8806_SetPixel(0, RGB(255,0,0) );
 	LPD8806_SetPixel(LED_COUNT-1, RGB(0,255,0) );
 	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255) );
+
+
 
 	while (1)
 	{
@@ -220,7 +224,8 @@ int main(void)
 		}
 
 		LPD8806_Update();
-		LPB8806_SetBrightness(ADC_ConvertedValue[0] >> 4);
+		LPD8806_SetBrightness(ADC_ConvertedValue[0] >> 4);
+		//LPD8806_SetBrightness(MAX_LED_BRIGHTNESS);
 		//LPD8806_Write(0);
 		//LPD8806_Write(0);
 		//dumpData();

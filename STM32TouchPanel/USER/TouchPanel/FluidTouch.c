@@ -179,7 +179,7 @@ void FT_DecodeTouchGesture(void)
 		//If the cursor has moved less than the threshold.
 		if( FT_IS_MAG_LESS_THAN(point, FT_MOVE_THRES) && (HasMoved == 0) )
 		{
-			if( (OnCount) && (OnCount <= ON_COUNT_TAP_THRESHOLD) && (OffCount >= OFF_COUNT_THRESHOLD) )
+			if( (OnCount >= ON_COUNT_TAP_MIN_THRESHOLD) && (OnCount <= ON_COUNT_TAP_THRESHOLD) && (OffCount >= OFF_COUNT_THRESHOLD) )
 			{
 				OnCount = 0;
 				FT_State = TOUCH_TAP;

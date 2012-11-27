@@ -23,7 +23,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include "LEDDriver/LPD8806.h"
+#include <string.h>
+
+#include "LPD8806/LPD8806.h"
 #include "MIDICodes/MIDICodes.h"
 #include "LightSys.h"
 #include "hw_config.h"
@@ -135,19 +137,18 @@ void LS_Init(void)
 }
 
 
-#define LIGHT_OFFSET (90)
+
 
 void LS_ProcessAutoTurnOff(void)
 {
 	uint8_t i;
 	uint8_t j;
-	uint32_t colour;
 
 	for( i=0, j=0; (i < LS_CountdownCount) && (j < MAX_POLYPHONY); j++ )
 	{
 		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
 		{
-			LPB8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, MIN_ON_BRIGHTNESS);
+			LPD8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, MIN_ON_BRIGHTNESS);
 			i++;
 		}
 	}
@@ -156,7 +157,6 @@ void LS_ProcessAutoTurnOff(void)
 //When a note on is received.
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 {
-	uint8_t i;
 	uint16_t j;
 
 	for( j=0; j < MAX_POLYPHONY; j++ )
@@ -169,13 +169,11 @@ void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 			break;
 		}
 	}
-
 }
 
 //When a Note Off is received
 void LS_DeactivateTimer(uint16_t channelKey)
 {
-	uint8_t i;
 	uint16_t j;
 
 	for( j=0; j < MAX_POLYPHONY; j++ )
@@ -366,6 +364,7 @@ uint8_t LS_IncrementColourMode(void)
 	{
 		mode = CHANNEL_COLOUR;
 	}
+	return mode;
 }
 
 uint8_t LS_IsChannelActive(uint8_t channel)

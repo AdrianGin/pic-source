@@ -29,7 +29,7 @@ void MPB_ResetMIDI(void)
     MIDI_Tx(0x01);
     MIDI_Tx(MIDI_SYSEX_STOP);
 
-    for (i = 0; i<MAX_MIDI_CHANNELS; i++)
+    for (i = 0; i< MIDI_MAX_CHANNELS ; i++)
     {
         event.eventType = MIDI_CONTROL_CHANGE|i;
         event.event.chanEvent.parameter1 = ALL_NOTES_OFF;
@@ -410,7 +410,6 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
             {
                 if (event->event.sysExEvent.length>(MIDI_TRACK_BUFFER_SIZE-6))
                 {
-                   
                     position = (position+(uint32_t)(readPtr)-oldPosition);
                     track->startPtr = position;
                 }
@@ -444,11 +443,27 @@ MIDI_EVENT_t* MPB_ConfirmEventTx(void)
     return event;
 }
 
+#define MIN_PPQ	(48)
+#define MIN_BMP	(20)
+#define MIN_BMP_PPQ_PRODUCT (MIN_BMP*MIN_PPQ)
+#define MIN_BMP_PPQ_PRESCALER	(64)
 void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
 {
     //*to send a Timing signal we need to send 24 0xF8's per quarter note
     uint16_t usPerTick;
-    usPerTick = ((US_PER_MINUTE/64)/(bpm)/PPQ);
+    //Use a 1x prescaler.
+    usPerTick = ((US_PER_MINUTE)/(bpm)/PPQ);
+
+    //Use a 64x prescaler if the speed is too slow
+    if( (bpm * PPQ) < MIN_BMP_PPQ_PRODUCT)
+    {
+    	usPerTick = ((US_PER_MINUTE/MIN_BMP_PPQ_PRESCALER)/(bpm)/PPQ);
+    	SET_TIMER_PRESCALER(64);
+    }
+    else
+    {
+    	SET_TIMER_PRESCALER(1);
+    }
 
     SET_TIMER_INTERVAL(usPerTick);
 
@@ -473,7 +488,7 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
     switch(event->event.metaEvent.type)
     {
         case MIDI_META_TRACK_NAME:
-            memcpy(&track->name, event->event.metaEvent.data, event->event.metaEvent.length);
+            memcpy(&track->name, event->event.metaEvent.data, length);
             DEBUG("Track ");
             myprintfd("", track->trackIndex);
             DEBUGn(&track->name, length);

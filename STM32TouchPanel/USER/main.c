@@ -38,10 +38,20 @@
 
 #include "UserGUI.h"
 
+#include "MIDIPlayback/midiplayback.h"
+#include "LightSys\LightSys.h"
+#include "LPD8806\LPD8806.h"
+
+#include "MIDILightLogic/MIDILightLogic.h"
+
+#include "usb_lib.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 FATFS fs;
+MIDI_HEADER_CHUNK_t MIDIHdr;
+volatile uint8_t globalFlag;
 
 /*******************************************************************************
 * Function Name  : main
@@ -59,11 +69,8 @@ int main(void)
 	uint8_t ret;
 	uint8_t alternate;
 	int8_t index = 0;
-
 	char* LBItem;
-
 	char* fnPath;
-
 	Coordinate* point;
 	FT_STATES state;
 	Coordinate* inertia;
@@ -72,14 +79,26 @@ int main(void)
 
     RCC_ClocksTypeDef RCC_ClocksStatus;
 
-
-
-
 	char path[255];
+	uint16_t tickCounter = 0;
+	static uint8_t Togstate = 0;
+
+	Set_USBClock();
+	USB_Config();
+	USB_Init();
+
+	LPD8806_Init();
+	LS_Init();
+
+	MLL_Init();
 
 	USART_Configuration();
 	GPIO_Configuration();
 	NVIC_Configuration();
+	TIM_MIDI_Configuration();
+	AUX_TIM_Configuration();
+
+	GPIO_SetBits(GPIOC, GPIO_Pin_13);
 
 	delay_init();
 	delay_ms(10);
@@ -110,6 +129,10 @@ int main(void)
   LCD_PauseUpdateScreen();
 
   UserGUI_Init();
+
+	LPD8806_SetPixel(0, RGB(0,255,255) );
+	LPD8806_SetPixel(LED_COUNT-1, RGB(0,255,0) );
+	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255) );
 
 
 
@@ -154,20 +177,46 @@ int main(void)
 		  {
 			  FluidTouchMain();
 			  counters[2] = 0;
+
+			  //LPD8806_Update();
 		  }
 
+		  ProcessUARTBuffer();
+		  //
 
-		  if( counters[3] >= 200 )
+//
+		  if( globalFlag & 0x02 )
 		  {
 			  LCD_VSyncLow();
-			  delay_us(50);
-			  LCD_VSyncHigh();
-			  delay_ms(16);
-			  counters[3] = 0;
+			  GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+			  globalFlag &= ~0x02;
 		  }
 
-		  if( counters[0] >= 200 )
+		  if( globalFlag & 0x04 )
 		  {
+			  LCD_VSyncHigh();
+			  LPD8806_Update();
+			  GPIO_SetBits(GPIOC, GPIO_Pin_13);
+			  globalFlag &= ~0x04;
+		  }
+
+//		  if( counters[3] >= 200 )
+//		  {
+//			  LCD_VSyncLow();
+//			  GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+//			  delay_us(50);
+//			  LCD_VSyncHigh();
+//			  GPIO_SetBits(GPIOC, GPIO_Pin_13);
+//			  delay_ms(16);
+//			  counters[3] = 0;
+//		  }
+
+		  //if( counters[0] >= 200 )
+		  if( globalFlag & 0x08 )
+		  {
+			  LS_ProcessAutoTurnOff();
+
+			  globalFlag &= ~0x08;
 			  point = FT_GetLastPoint();
 			  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)
 			  {
@@ -177,7 +226,17 @@ int main(void)
 
 				  if( LBItem )
 				  {
-					  printf("SELECTED:: %s\n", LBItem);
+					  FRESULT tmp;
+					  strcpy(path, "/MIDI/");
+					  strcat(path, LBItem);
+					  MPB_ResetMIDI();
+
+					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+					  printf("SELECTED:: %s, FR=%d\n", path, tmp);
+					  if(tmp == FR_OK)
+					  {
+						  printf("SUCCESS!!\n");
+					  }
 				  }
 
 				  i = point->x;
@@ -194,6 +253,40 @@ int main(void)
 
 
 			  counters[0] = 0;
+		  }
+
+
+		  if (globalFlag & 0x01)
+		  {
+			  //if( tickCounter == 4)
+			  {
+				  MIDIHdr.masterClock++;
+				  globalFlag &= ~1;
+				  if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
+				  {
+					  myprintf("End of MIDI File:  ", 1);
+
+					  //TimerStop();
+				  }
+			  }
+			  Togstate = Togstate ^ 1;
+
+				if( Togstate )
+				{
+					//GPIO_SetBits(GPIOC, GPIO_Pin_13);
+
+				}
+				else
+				{
+					//GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+				}
+			  tickCounter++;
+              if( (tickCounter >= ((MIDIHdr.PPQ / 24)) ) )
+              //if(tickCounter == 255)
+              {
+                  tickCounter = 0;
+                  //MIDI_Tx(0xF8);
+              }
 		  }
 
 

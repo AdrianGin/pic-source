@@ -26,6 +26,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
+#define LIGHT_OFFSET (0)
+
 void LS_Init(void);
 void LS_ProcessAutoTurnOff(void);
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer);

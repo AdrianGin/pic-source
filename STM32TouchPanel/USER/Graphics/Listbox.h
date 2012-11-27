@@ -66,6 +66,8 @@ void GFX_LB_DrawSeparator(GFX_Listbox_t* LB);
 uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB);
 int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y);
 
+uint8_t GFX_LB_ReturnSelectedItemIndex(GFX_Listbox_t* LB);
+void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB);
 
 uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
 

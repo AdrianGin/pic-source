@@ -1,9 +1,9 @@
 
-
-
 #include "midiparser.h"
+
 #include <string.h>
 #include "hardwareSpecific.h"
+
 
 PROGRAM_CHAR MIDI_NOTE_OFF_STRING[] PROGRAM_SPACE = "NOTE OFF";
 PROGRAM_CHAR MIDI_NOTE_ON_STRING[] PROGRAM_SPACE = "NOTE ON";

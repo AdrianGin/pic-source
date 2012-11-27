@@ -57,7 +57,7 @@ usbMIDIMessage_t MIDImsgComplete[MIDI_OUT_BUFFER];
 uint8_t wMIDImsgCount = 0;
 uint8_t rMIDImsgCount = 0; 
 
-
+usbMIDIcable_t MIDICable[USB_MIDI_CABLE_COUNT+1];
 
 uint8_t usbMIDI_bufferLen(void)
 {  
@@ -280,4 +280,103 @@ uint8_t MIDIDataReady(uint8_t inByte, usbMIDIcable_t* usbMIDIcable)
    }
    return MIDI_DATA_NOT_READY;
 }
+
+
+
+#ifndef _USB_MIDI_USE_LINKED_FUNCTION
+
+
+/* This reads the MIDI data received from USB */
+uint8_t USBMIDI_GetByte(uint8_t* inByte, uint8_t cableNo)
+{
+   /* Process messages in the UART Rx buffer is there are any */
+   if( rxReadPtr[cableNo] != rxWritePtr[cableNo] )
+   {
+      *inByte = RxBuffer[cableNo][rxReadPtr[cableNo]];
+      rxReadPtr[cableNo] = ((rxReadPtr[cableNo] + 1) & RX_BUFFER_MASK);
+      return 1;
+   }
+   return NO_DATA_BYTE;
+}
+
+
+
+usbMIDIcable_t MIDICable[2];
+
+/* This here makes the process Buffer redundant */
+void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo)
+{
+   uint8_t midiReady;
+   uint16_t retry;
+
+   midiReady = MIDIDataReady(byte, &MIDICable[cableNo]);
+   /* Copy it out, so the tempbuffer is ready again */
+   if( midiReady )
+   {
+
+		 if( midiReady == MIDI_DATA_READY)
+		{
+			memcpy(&MIDImsgComplete[wMIDImsgCount], &MIDICable[cableNo].msg, sizeof(usbMIDIMessage_t));
+		}
+	    MIDImsgComplete[wMIDImsgCount].header = MIDImsgComplete[wMIDImsgCount].header | (cableNo << 4);
+		  wMIDImsgCount = (wMIDImsgCount + 1) & MIDI_OUT_MASK;
+
+			while( GetEPTxStatus(ENDP1) == EP_TX_VALID )
+			{
+				//printf("!");
+			}
+
+       if( usbMIDI_bufferLen() == 1 )
+       {
+          /* Send 1 byte */
+				  USB_SIL_Write(EP1_IN, (uint8_t*)&MIDImsgComplete[rMIDImsgCount], sizeof(usbMIDIMessage_t));
+				  retry = GetEPTxStatus(ENDP1);
+					SetEPTxValid(ENDP1);
+          rMIDImsgCount = (rMIDImsgCount + 1) & MIDI_OUT_MASK;
+       }
+       else
+       {
+          /* Send 2 bytes */
+				 	USB_SIL_Write(EP1_IN, (uint8_t*)&MIDImsgComplete[rMIDImsgCount], sizeof(usbMIDIMessage_t)*2);
+					SetEPTxValid(ENDP1);
+          rMIDImsgCount = (rMIDImsgCount + 2) & MIDI_OUT_MASK;
+
+       }
+	 }
+
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  

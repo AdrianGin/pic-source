@@ -337,8 +337,6 @@ void ToggleActiveChannel(uint8_t byte)
 	{
 		LS_IncrementColourMode();
 	}
-
-
 }
 
 //For Loopback

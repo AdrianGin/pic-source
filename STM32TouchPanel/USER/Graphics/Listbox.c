@@ -65,10 +65,7 @@ int16_t GFX_LB_GetPosition(GFX_Listbox_t* LB)
 }
 
 #define MIN_HEIGHT	(200)
-#define Y_BOUNDARY	(240)
-
-
-
+#define Y_BOUNDARY	(200)
 uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 {
 
@@ -230,7 +227,7 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 
 	state = FluidGetTouch();
 
-	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG)) )
+	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG))  && (counters[TOUCH_ON]==0)  )
 	{
 		point = FT_GetLastPoint();
 		GFX_LB_SelectItem(LB, GFX_LB_CalculateSelectedItem(LB, point->y));
@@ -241,8 +238,7 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 
 	if( state == TOUCH_ON )
 	{
-
-
+		//This here is a STOP while dragging.
 		if( !FTI_InertiaIsZero(&LB->inertia) )
 		{
 			counters[TOUCH_ON]++;
@@ -267,7 +263,7 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 	{
 		point = FT_GetDiff();
 		//Acts as a filter. So DRAG STOPs result in Inertia being reset.
-		if( Coordinate_IsLessThan(point, 1) )
+		if( Coordinate_IsLessThan(point, FT_MOVE_THRES) )
 		{
 			dragCount++;
 			if( dragCount >= 2 )

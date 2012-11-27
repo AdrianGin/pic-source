@@ -12,6 +12,8 @@ typedef enum {TOUCH_ON=0, TOUCH_OFF, TOUCH_FIRST, TOUCH_TAP, TOUCH_DRAG, TOUCH_L
 
 #define OFF_COUNT_THRESHOLD	(5)
 #define ON_COUNT_THRESHOLD	(5)
+
+#define ON_COUNT_TAP_MIN_THRESHOLD (20)
 #define ON_COUNT_TAP_THRESHOLD (330)
 #define MAX_ON_COUNT		(10000)
 #define MAX_OFF_COUNT		(10000)
@@ -20,7 +22,7 @@ typedef enum {TOUCH_ON=0, TOUCH_OFF, TOUCH_FIRST, TOUCH_TAP, TOUCH_DRAG, TOUCH_L
 
 
 #define FT_IS_MAG_LESS_THAN( point , magnitude )  ((abs(point->x) < magnitude) && (abs(point->y) < magnitude))
-#define FT_MOVE_THRES	(5)
+#define FT_MOVE_THRES	(10)
 
 
 

@@ -24,7 +24,7 @@
 #define _MIDI_UTILS_
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
+#include <stdint.h>
 
 
 uint8_t MIDIUtils_GetMusicNote(uint8_t note);

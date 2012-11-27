@@ -4,6 +4,7 @@
 
 #define OCTAVE_OFFSET      (1)
 #define MIDI_SYSTEM_COMMON_MSG (0xF0)
+#define MIDI_CHANNEL_MASK	(0x0F)
 #define MIDI_DATA_READY     (0x01)
 #define MIDI_DATA_NOT_READY (0x00)
 
@@ -15,9 +16,9 @@
 #define MIDI_MAX_DATA   (127)
 #define MIDI_MAX_KEY    (127)
 
+#define MIDI_DRUM_CHANNEL   (0x09)
 
-
-enum {
+typedef enum {
    MIDI_NOTE_OFF = 0x80,
    MIDI_NOTE_ON = 0x90,
    MIDI_AFTERTOUCH = 0xA0,
@@ -42,7 +43,7 @@ enum {
 
 #define MIDI_COMMAND_COUNT (20)
 
-enum {
+typedef enum {
    MN_C = 0,
    MN_CS,
    MN_D,
@@ -58,7 +59,7 @@ enum {
    NOTE_COUNT
 } MIDI_KEYS;
 
-enum {
+typedef enum {
    NO_ITEM = 0,
    ACOUSTIC_BASS_DRUM = 35,
    BASS_DRUM1,
@@ -109,7 +110,7 @@ enum {
    OPEN_TRIANGLE // 83
 } GENERAL_MIDI_PERCUSSION;
 
-enum {
+typedef enum {
 	BANK_SELECT_MSB = 0,
 	MODULATION_WHEEL,
 	BREATH_CONTROLLER,
