@@ -37,13 +37,15 @@ typedef uint32_t LS_ChannelColour_t;
 #define MAX_POLYPHONY (256)
 #define FREE_ELEMENT  (0xFFFF)
 #define FADE_RATE	  (15)
-#define MIN_ON_BRIGHTNESS (1)
+#define MIN_ON_BRIGHTNESS (1<<1)
 
 #define LS_CHANNEL(x)	(x & 0x0F)
 #define LS_GETCHANNEL(x)	(x >> 8)
 
 volatile uint8_t	LS_CountdownCount;
 volatile uint16_t LS_ChannelActive = 0xFFFF;
+
+uint8_t LS_MinBrightness;
 
 enum {
 	CHANNEL_COLOUR,
@@ -133,11 +135,20 @@ void LS_Init(void)
 	LS_CountdownCount = 0;
 
 	memset(LS_TransposeMap, 0, sizeof(LS_TransposeMap));
-
+	LS_MinBrightness = MIN_ON_BRIGHTNESS;
 }
 
 
+void LS_SetMinBrightness(uint8_t minBrightness)
+{
+	LS_MinBrightness = minBrightness;
+}
 
+
+void LS_SetMaxBrightness(uint8_t maxBrightness)
+{
+	LPD8806_SetBrightness(maxBrightness);
+}
 
 void LS_ProcessAutoTurnOff(void)
 {
@@ -148,7 +159,7 @@ void LS_ProcessAutoTurnOff(void)
 	{
 		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
 		{
-			LPD8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, MIN_ON_BRIGHTNESS);
+			LPD8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, LS_MinBrightness);
 			i++;
 		}
 	}

@@ -26,8 +26,12 @@
 
 
 //holds 21bit colour data in the format brg
-uint8_t LPD8806_GFXRAM[LED_COUNT*3];
+//uint8_t LPD8806_GFXRAM[LED_COUNT*3];
+
 uint8_t LPD8806_DMABUFFER[LED_COUNT*3+2];
+
+uint8_t* LPD8806_GFXRAM = &LPD8806_DMABUFFER[1];
+
 uint8_t LPD8806_Brightness;
 
 #define LPD8806_USE_DMA
@@ -71,25 +75,62 @@ uint8_t LPD8806_Brightness;
 #endif
 
 
-#define _Apply_Brightness(value)   ((value * LPD8806_Brightness) / MAX_LED_BRIGHTNESS)
 
-uint8_t _Revert_Brightness(uint16_t value)
+
+uint8_t _Apply_Brightness(uint8_t value)
 {
+	if( value )
+	{
+		value = ((value * LPD8806_Brightness) / MAX_LED_BRIGHTNESS);
+		if( value == 0 )
+		{
+			value = 1;
+		}
+	}
+	return value;
+}
+
+uint8_t _Revert_Brightness(uint8_t value)
+{
+
+	uint8_t oldValue;
+
+	oldValue = value;
+
 	if( value == 0 )
 	{
 		return value;
 	}
 
-	if( (value + 1) > MAX_LED_BRIGHTNESS )
+	if( (value + 1) > LPD8806_MAX_RES )
 	{
+		value = LPD8806_MAX_RES;
 	}
 	else
 	{
-		value = value + 1;
+		if( LPD8806_Brightness != MAX_LED_BRIGHTNESS)
+		{
+			//value = value + 1;
+		}
 	}
 
-	return (value * MAX_LED_BRIGHTNESS) / LPD8806_Brightness;
+	value = (value * MAX_LED_BRIGHTNESS) / LPD8806_Brightness;
+	if( value > oldValue )
+	{
+		value = oldValue;
+	}
 
+
+	if( value > 127 )
+	{
+		value = 127;
+	}
+	if( value == 0 )
+	{
+		value = 1;
+	}
+
+	return value;
 }
 
 /*******************************************************************************
@@ -149,10 +190,8 @@ void LPD8806_Init(void)
   GPIO_Init(LPD_SPI_PORT, &GPIO_InitStructure);
   LPD8806_SPI_Init();
 
-  memset(LPD8806_GFXRAM, 0x00 , sizeof(LPD8806_GFXRAM));
+  memset(LPD8806_DMABUFFER, 0x00 , sizeof(LPD8806_DMABUFFER));
   LPD8806_SetBrightness(MAX_LED_BRIGHTNESS);
-
-  LPD8806_ProcessForDMA();
 
   LPD8806_DMA_Init();
   //Have to enable the SPI DMA.
@@ -285,7 +324,7 @@ void LPD8806_SetPixel(uint16_t index, uint32_t colour)
 
 
 
-INLINE_FUNCTION uint32_t LPD8806_GetPixel(uint16_t index)
+uint32_t LPD8806_GetPixel(uint16_t index)
 {
 
 
@@ -316,9 +355,6 @@ void LPD8806_ReducePercentage(uint16_t index, uint8_t percent, uint8_t minVal)
 	g = LPD_GREEN(colour);
 	b = LPD_BLUE(colour);
 
-//	r = LPD8806_GFXRAM[(index*3)+1] & LPD8806_MAX_RES;
-//	g = LPD8806_GFXRAM[(index*3)+2] & LPD8806_MAX_RES;
-//	b = LPD8806_GFXRAM[index*3] 	& LPD8806_MAX_RES;
 
 	//Multiply values by 100, and then divide 100.
 	nr = r * 100;
@@ -329,15 +365,15 @@ void LPD8806_ReducePercentage(uint16_t index, uint8_t percent, uint8_t minVal)
 	ng = (ng - g*percent) / 100;
 	nb = (nb - b*percent) / 100;
 
-	if( nr < minVal && r != 0 )
+	if( nr <= minVal && r != 0 )
 	{
 		nr = minVal;
 	}
-	if( ng < minVal && g != 0)
+	if( ng <= minVal && g != 0)
 	{
 		ng = minVal;
 	}
-	if( nb < minVal && b != 0)
+	if( nb <= minVal && b != 0)
 	{
 		nb = minVal;
 	}
@@ -345,20 +381,17 @@ void LPD8806_ReducePercentage(uint16_t index, uint8_t percent, uint8_t minVal)
 	//Have to upscale the 7bits to 8bits.
 	colour = RGB(nr, ng, nb);
 	LPD8806_SetPixel(index, colour);
-//	LPD8806_GFXRAM[(index*3)+1] = nr | LPD8806_FLAG;
-//	LPD8806_GFXRAM[(index*3)+2] = ng | LPD8806_FLAG;
-//	LPD8806_GFXRAM[(index*3)] = nb | LPD8806_FLAG;
 }
 
 
 
 void LPD8806_Update(void)
 {
-	uint16_t i;
-	uint16_t outputValue;
 
 	//Should use DMA here.
 #ifndef LPD8806_USE_DMA
+	uint16_t i;
+	uint16_t outputValue;
 	LPD8806_Write(0);
 	for( i = 0; i < LED_COUNT*3; i++ )
 	{
@@ -369,25 +402,8 @@ void LPD8806_Update(void)
 #else
 	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)
 	{}
-	LPD8806_ProcessForDMA();
 	LPB8806_DMA_Start();
 #endif
-}
-
-
-void LPD8806_ProcessForDMA(void)
-{
-	uint16_t i;
-	uint16_t outputValue;
-
-	LPD8806_DMABUFFER[0] = 0;
-	for( i = 1; i < LED_COUNT*3+1; i++ )
-	{
-		//outputValue = (LPD8806_GFXRAM[i-1] & LPD8806_MAX_RES) * LPD8806_Brightness / MAX_LED_BRIGHTNESS;
-		outputValue = LPD8806_GFXRAM[i-1];
-		LPD8806_DMABUFFER[i] = outputValue | LPD8806_FLAG;
-	}
-	LPD8806_DMABUFFER[LED_COUNT*3+1] = 0;
 }
 
 
@@ -397,19 +413,22 @@ void LPD8806_SetBrightness(uint8_t brightness)
 	uint32_t colour;
 	uint8_t oldBrightness;
 
-
 	oldBrightness = LPD8806_Brightness;
+
+	printf("LED1 = %d\n", LPD8806_GFXRAM[1] & 0x7F);
+
+	if( brightness == oldBrightness )
+	{
+		return;
+	}
 
 	for( i = 0; i < LED_COUNT*3; i++ )
 	{
-
 		LPD8806_Brightness = oldBrightness;
 		colour = LPD8806_GetPixel(i);
 		LPD8806_Brightness = brightness;
 		LPD8806_SetPixel(i, colour);
 	}
-
-
 }
 
 

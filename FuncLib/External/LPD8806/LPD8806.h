@@ -52,13 +52,12 @@ void LPD8806_Update(void);
 void LPD8806_SetPixel(uint16_t index, uint32_t colour);
 
 
-INLINE_FUNCTION uint32_t LPD8806_GetPixel(uint16_t index);
+uint32_t LPD8806_GetPixel(uint16_t index);
 
 
 void LPD8806_SetBrightness(uint8_t brightness);
 void LPD8806_ReducePercentage(uint16_t index, uint8_t percent, uint8_t minVal);
 void LPD8806_DMA_Init(void);
-void LPD8806_ProcessForDMA(void);
 
 
 #endif

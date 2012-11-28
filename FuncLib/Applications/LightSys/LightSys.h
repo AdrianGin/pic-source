@@ -46,6 +46,10 @@ uint8_t LS_IsChannelActive(uint8_t channel);
 uint16_t LS_ToggleChannel(uint8_t channel);
 void LS_TurnOffChannel(uint8_t channel);
 
+
+void LS_SetMinBrightness(uint8_t minBrightness);
+void LS_SetMaxBrightness(uint8_t maxBrightness);
+
 #endif
 
 /*********************************************************************************************************

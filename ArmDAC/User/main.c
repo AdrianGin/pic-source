@@ -224,7 +224,10 @@ int main(void)
 		}
 
 		LPD8806_Update();
-		LPD8806_SetBrightness(ADC_ConvertedValue[0] >> 4);
+		LS_SetMaxBrightness(ADC_ConvertedValue[0] >> 4);
+		LS_SetMinBrightness(ADC_ConvertedValue[1] >> 4);
+		printf("Brightness = %d, B2=%d\n", ADC_ConvertedValue[0] >> 4, ADC_ConvertedValue[1] >> 4);
+
 		//LPD8806_SetBrightness(MAX_LED_BRIGHTNESS);
 		//LPD8806_Write(0);
 		//LPD8806_Write(0);
