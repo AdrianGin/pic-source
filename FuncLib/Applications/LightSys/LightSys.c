@@ -42,6 +42,9 @@ typedef uint32_t LS_ChannelColour_t;
 #define LS_CHANNEL(x)	(x & 0x0F)
 #define LS_GETCHANNEL(x)	(x >> 8)
 
+#define LS_SETPIXEL(index, colour)	LPD8806_SetPixel( index, colour);
+
+
 volatile uint8_t	LS_CountdownCount;
 volatile uint16_t LS_ChannelActive = 0xFFFF;
 
@@ -126,16 +129,36 @@ uint8_t LS_FifthsColourMap[] =
 
 void LS_Init(void)
 {
+	LS_ClearLightTimers();
+	LS_ClearLights();
+
+	memset(LS_TransposeMap, 0, sizeof(LS_TransposeMap));
+	LS_MinBrightness = MIN_ON_BRIGHTNESS;
+}
+
+
+//Deactive ALL timers.
+void LS_ClearLightTimers(void)
+{
 	uint16_t i;
+
 	for( i = 0; i < MAX_POLYPHONY; i++)
 	{
 		LS_Countdown[i].channelKey = FREE_ELEMENT;
 		LS_Countdown[i].timer = 0;
 	}
 	LS_CountdownCount = 0;
+}
 
-	memset(LS_TransposeMap, 0, sizeof(LS_TransposeMap));
-	LS_MinBrightness = MIN_ON_BRIGHTNESS;
+//Turns off all the lights
+void LS_ClearLights(void)
+{
+	uint16_t i;
+
+	for( i = 0; i < LIGHT_COUNT; i++)
+	{
+		LS_SETPIXEL( i+LIGHT_OFFSET , 0x00)
+	}
 }
 
 
@@ -166,6 +189,7 @@ void LS_ProcessAutoTurnOff(void)
 }
 
 //When a note on is received.
+//Because we must remember which lights have been on for how long
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 {
 	uint16_t j;
@@ -183,6 +207,8 @@ void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 }
 
 //When a Note Off is received
+//channelKey =  channel | note;
+// eg. 0x0165 = Channel x1, note x65
 void LS_DeactivateTimer(uint16_t channelKey)
 {
 	uint16_t j;
@@ -213,7 +239,7 @@ void LS_TurnOffChannel(uint8_t channel)
 	{
 		if( LS_GETCHANNEL(LS_Countdown[j].channelKey) == channel)
 		{
-			LPD8806_SetPixel( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, 0);
+			LS_SETPIXEL( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, 0);
 			LS_Countdown[j].channelKey = FREE_ELEMENT;
 			LS_Countdown[j].timer = 0;
 
@@ -231,7 +257,7 @@ void LS_TurnOffChannel(uint8_t channel)
 
 void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
 {
-	LPD8806_SetPixel(note + LIGHT_OFFSET, colour);
+	LS_SETPIXEL(note + LIGHT_OFFSET, colour);
 	if (colour)
 	{
 		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);

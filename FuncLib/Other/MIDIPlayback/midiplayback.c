@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include "stack/stack.h"
 
+#include "ReplaceChar/replacechar.h"
+
 #include "hardwareSpecific.h"
 
 //#include "LEDArray/LEDArray.h"
@@ -581,8 +583,13 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             
             switch(event->event.metaEvent.type)
             {
+            	case MIDI_META_TEXT:
                 case MIDI_META_LYRICS:
-                    DEBUGn(event->event.metaEvent.data, event->event.metaEvent.length);
+
+                	replace_char(event->event.metaEvent.data, '\\', '\n');
+                	replace_char(event->event.metaEvent.data, '/', '\n');
+
+                	DEBUGn(event->event.metaEvent.data, event->event.metaEvent.length);
                     //myprintf(event->event.metaEvent.data, event->event.metaEvent.length);
 
                     break;
@@ -611,56 +618,6 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
                 MIDI_Tx(event->eventType);
             }
 
-            if( ( (event->eventType & 0x0F) == 0x09))
-            {
-
-                if( (event->eventType & 0xF0) == MIDI_NOTE_ON )
-                {
-
-
-                    if( (event->event.chanEvent.parameter1 == BASS_DRUM1) )
-                    {
-                        //LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS-1, 0, 0);
-                        //myprintfd("YES:", 3);
-                    }
-
-                    if( (event->event.chanEvent.parameter1 == ELECTRIC_SNARE) )
-                    {
-                        //LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS-1, 0);
-                        //myprintfd("YES:", 7);
-                    }
-
-                    if( (event->event.chanEvent.parameter1 == RIDE_CYMBAL2) )
-                    {
-                        //LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS-1);
-                        //myprintfd("YES:", 7);
-                    }
-
-                }
-                else
-                {
-
-                    if( (event->event.chanEvent.parameter1 == BASS_DRUM1) )
-                    {
-                        //LEDArray_AppendLED(0, LA_MAX_BRIGHTNESS, 0, 0);
-                        //myprintfd("YES:", 3);
-                    }
-
-                    if( (event->event.chanEvent.parameter1 == ELECTRIC_SNARE) )
-                    {
-                        //LEDArray_AppendLED(0, 0, LA_MAX_BRIGHTNESS, 0);
-                        //myprintfd("YES:", 7);
-                    }
-
-                    if( (event->event.chanEvent.parameter1 == RIDE_CYMBAL2) )
-                    {
-                        //LEDArray_AppendLED(87, 0, 0, LA_MAX_BRIGHTNESS);
-                        //myprintfd("YES:", 7);
-                    }
-                }
-            }
-
-
             MIDI_Tx(event->event.chanEvent.parameter1);
             if (MIDI_CommandSize(event->eventType&0xF0)==3)
             {
@@ -670,6 +627,8 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, uint8_t mode)
             break;
     }
 }
+
+
 
 
 uint8_t _MIDI_fileopen(uint8_t* filename)

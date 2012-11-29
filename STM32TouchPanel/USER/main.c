@@ -83,6 +83,10 @@ int main(void)
 	uint16_t tickCounter = 0;
 	static uint8_t Togstate = 0;
 
+	USART_Configuration();
+	GPIO_Configuration();
+	NVIC_Configuration();
+
 	Set_USBClock();
 	USB_Config();
 	USB_Init();
@@ -92,9 +96,7 @@ int main(void)
 
 	MLL_Init();
 
-	USART_Configuration();
-	GPIO_Configuration();
-	NVIC_Configuration();
+
 	TIM_MIDI_Configuration();
 	AUX_TIM_Configuration();
 
@@ -182,6 +184,7 @@ int main(void)
 		  }
 
 		  ProcessUARTBuffer();
+		  ProcessUSBMIDIBuffer_LightSys();
 		  //
 
 //
@@ -195,7 +198,7 @@ int main(void)
 		  if( globalFlag & 0x04 )
 		  {
 			  LCD_VSyncHigh();
-			  LPD8806_Update();
+			  LS_ProcessAutoTurnOff();
 			  GPIO_SetBits(GPIOC, GPIO_Pin_13);
 			  globalFlag &= ~0x04;
 		  }
@@ -214,7 +217,7 @@ int main(void)
 		  //if( counters[0] >= 200 )
 		  if( globalFlag & 0x08 )
 		  {
-			  LS_ProcessAutoTurnOff();
+
 
 			  globalFlag &= ~0x08;
 			  point = FT_GetLastPoint();
@@ -230,6 +233,9 @@ int main(void)
 					  strcpy(path, "/MIDI/");
 					  strcat(path, LBItem);
 					  MPB_ResetMIDI();
+
+					  LS_ClearLightTimers();
+					  LS_ClearLights();
 
 					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
 					  printf("SELECTED:: %s, FR=%d\n", path, tmp);
@@ -255,6 +261,11 @@ int main(void)
 			  counters[0] = 0;
 		  }
 
+		  if( globalFlag & 0x10 )
+		  {
+			  //LPD8806_Update();
+			  globalFlag &= ~0x10;
+		  }
 
 		  if (globalFlag & 0x01)
 		  {
@@ -268,6 +279,7 @@ int main(void)
 
 					  //TimerStop();
 				  }
+				  LPD8806_Update();
 			  }
 			  Togstate = Togstate ^ 1;
 
@@ -287,6 +299,7 @@ int main(void)
                   tickCounter = 0;
                   //MIDI_Tx(0xF8);
               }
+
 		  }
 
 

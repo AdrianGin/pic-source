@@ -205,6 +205,9 @@ void LPD8806_Init(void)
 void LPD8806_DMA_Init(void)
 {
 	DMA_InitTypeDef DMA_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	/* DMA Channel configuration ----------------------------------------------*/
@@ -236,30 +239,11 @@ void LPD8806_DMA_Init(void)
 
 void LPB8806_DMA_Start(void)
 {
-	DMA_InitTypeDef DMA_InitStructure;
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	/* DMA Channel configuration ----------------------------------------------*/
-	DMA_DeInit(LPB8806_DMA_CHANNEL);
-
-	/* Uses the original buffer	*/
-	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&LPD8806_DMABUFFER[0]; /* Set the buffer */
-	DMA_InitStructure.DMA_BufferSize = (LED_COUNT*3)+2; /* Set the size */
-
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&LPD_SPI->DR;
-	//DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&DAC->DHR12L1;
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal; /* DMAÑ­»·Ä£Ê½ */
-	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-	DMA_Init(LPB8806_DMA_CHANNEL, &DMA_InitStructure);
-	/* Enable SPI DMA Tx request */
-	DMA_ITConfig(LPB8806_DMA_CHANNEL, DMA_IT_TC, ENABLE);
+	DMA_Cmd(LPB8806_DMA_CHANNEL, DISABLE);
+	DMA_SetCurrDataCounter(LPB8806_DMA_CHANNEL, (LED_COUNT*3)+2);
 	//DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
-
 	DMA_Cmd(LPB8806_DMA_CHANNEL, ENABLE);
 }
 
@@ -402,7 +386,9 @@ void LPD8806_Update(void)
 #else
 	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)
 	{}
+
 	LPB8806_DMA_Start();
+
 #endif
 }
 
@@ -414,9 +400,6 @@ void LPD8806_SetBrightness(uint8_t brightness)
 	uint8_t oldBrightness;
 
 	oldBrightness = LPD8806_Brightness;
-
-	printf("LED1 = %d\n", LPD8806_GFXRAM[1] & 0x7F);
-
 	if( brightness == oldBrightness )
 	{
 		return;

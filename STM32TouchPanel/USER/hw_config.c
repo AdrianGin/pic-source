@@ -269,7 +269,7 @@ void ProcessUSBMIDIBuffer_LightSys(void)
 		if( bufCount == 3)
 		{
 			bufCount = 0;
-			//LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
+			LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
 		}
 	}
 

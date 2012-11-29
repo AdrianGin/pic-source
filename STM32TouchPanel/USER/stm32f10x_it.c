@@ -108,14 +108,6 @@ void UsageFault_Handler(void)
   }
 }
 
-/**
-  * @brief  This function handles SVCall exception.
-  * @param  None
-  * @retval None
-  */
-void SVC_Handler(void)
-{
-}
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -126,23 +118,35 @@ void DebugMon_Handler(void)
 {
 }
 
-/**
-  * @brief  This function handles PendSVC exception.
-  * @param  None
-  * @retval None
-  */
-void PendSV_Handler(void)
-{
-}
 
-/**
-  * @brief  This function handles SysTick Handler.
-  * @param  None
-  * @retval None
-  */
-void SysTick_Handler(void)
-{
-}
+//Used by FreeRTOS
+///**
+//  * @brief  This function handles PendSVC exception.
+//  * @param  None
+//  * @retval None
+//  */
+//void PendSV_Handler(void)
+//{
+//}
+//
+///**
+//  * @brief  This function handles SysTick Handler.
+//  * @param  None
+//  * @retval None
+//  */
+//void SysTick_Handler(void)
+//{
+//}
+//
+//
+///**
+//  * @brief  This function handles SVCall exception.
+//  * @param  None
+//  * @retval None
+//  */
+//void SVC_Handler(void)
+//{
+//}
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
@@ -216,6 +220,12 @@ void SDIO_IRQHandler(void)
 
 
 
+void DMA1_Channel3_IRQHandler(void)
+{
+	//DMA_ClearITPendingBit(DMA1_FLAG_TC3 | DMA1_FLAG_GL3);
+}
+
+
 void TIM2_IRQHandler(void)
 {
 	static uint8_t state = 0;
@@ -223,18 +233,23 @@ void TIM2_IRQHandler(void)
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
 	globalFlag |= 1;
-
 }
 
 void TIM3_IRQHandler(void)
 {
 	static uint16_t cntr = 0;
 	static uint16_t cntr2 = 0;
+	static uint16_t cntr3 = 0;
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
 
-	cntr2++;
+	if( cntr3++ == 500)
+	{
+		globalFlag |= 0x10;
+		cntr3 = 0;
+	}
 
+	cntr2++;
 	if( cntr2 == 3000)
 	{
 		globalFlag |= 0x08;

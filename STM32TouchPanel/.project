@@ -44,5 +44,10 @@
 			<type>2</type>
 			<location>M:/Robotics/Source/FuncLib/Other</location>
 		</link>
+		<link>
+			<name>Util</name>
+			<type>2</type>
+			<location>M:/Robotics/Source/FuncLib/Util</location>
+		</link>
 	</linkedResources>
 </projectDescription>
