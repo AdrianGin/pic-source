@@ -201,7 +201,7 @@ void CTR_Callback(void)
 void ERR_Callback(void)
 {
 	static uint8_t lastIntPackSOF;
-	printf("USB Error\n");
+	//xprintf("USB Error\n");
 	SetCNTR(GetCNTR() & ~CNTR_ERRM);
 	lastIntPackSOF = bIntPackSOF;
 }
@@ -209,7 +209,7 @@ void ERR_Callback(void)
 
 void ESOF_Callback(void)
 {
-	printf("USB DC\n");
+	//printf("USB DC\n");
 	SetCNTR(GetCNTR() & ~CNTR_ESOFM);
 }
 

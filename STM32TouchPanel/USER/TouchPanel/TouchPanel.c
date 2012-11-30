@@ -24,6 +24,8 @@
 #include "TouchPanel.h"
 #include "GLCD.h"
 
+#include "printf/printf.h"
+
 /* Private variables ---------------------------------------------------------*/
 Matrix matrix ;
 Coordinate  TouchPanel;
@@ -482,13 +484,13 @@ void TP_BudgetCalibrate(uint8_t axis, Coordinate* a1, Coordinate* d1, Coordinate
 	{
 		yGradient = (a2->y - a1->y) * TP_ACCURACY_SCALE / (d2->y - d1->y);
 		yOffset = d2->y - (a2->y * TP_ACCURACY_SCALE / yGradient);
-		printf("CALIBY: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->y, a1->y, d2->y, d1->y, yGradient);
+		xprintf("CALIBY: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->y, a1->y, d2->y, d1->y, yGradient);
 	}
 	else
 	{
 		xGradient = (a2->x - a1->x) * TP_ACCURACY_SCALE / (d2->x - d1->x);
 		xOffset = d2->x - (a2->x * TP_ACCURACY_SCALE / xGradient);
-		printf("CALIBX: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->x, a1->x, d2->x, d1->x, xGradient);
+		xprintf("CALIBX: A2=%d, A1=%d, D2=%d, D1=%d GRAD=%d\n", a2->x, a1->x, d2->x, d1->x, xGradient);
 	}
 }
 

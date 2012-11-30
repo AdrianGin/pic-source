@@ -85,7 +85,7 @@ void ToggleActiveChannel(uint8_t byte)
 	uint8_t i;
 	if( byte < MIDI_MAX_CHANNELS )
 	{
-		printf("%X\n", LS_ToggleChannel(byte) );
+		xprintf("%X\n", LS_ToggleChannel(byte) );
 	}
 
 	if( byte == '+')
@@ -94,7 +94,7 @@ void ToggleActiveChannel(uint8_t byte)
 		{
 			LS_SetTranspose(i, LS_GetTranspose(i) + 1 );
 		}
-		printf("%d\n", LS_GetTranspose(0));
+		xprintf("%d\n", LS_GetTranspose(0));
 	}
 
 	if( byte == '-')
@@ -103,7 +103,7 @@ void ToggleActiveChannel(uint8_t byte)
 		{
 			LS_SetTranspose(i, LS_GetTranspose(i) - 1 );
 		}
-		printf("%d\n", LS_GetTranspose(0));
+		xprintf("%d\n", LS_GetTranspose(0));
 	}
 
 	if( byte == 'C')

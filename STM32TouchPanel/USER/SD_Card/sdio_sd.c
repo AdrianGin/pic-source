@@ -1145,7 +1145,6 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
       SDIO_ClearFlag(SDIO_FLAG_DTIMEOUT);
       errorstatus = SD_DATA_TIMEOUT;
       SD_PrintError(errorstatus);
-      printf("RSB %d\n", BlockSize);
       return(errorstatus);
     }
     else if (SDIO_GetFlagStatus(SDIO_FLAG_DCRCFAIL) != RESET)
@@ -1153,7 +1152,6 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
       SDIO_ClearFlag(SDIO_FLAG_DCRCFAIL);
       errorstatus = SD_DATA_CRC_FAIL;
       SD_PrintError(errorstatus);
-      printf("RSB %d\n", BlockSize);
       return(errorstatus);
     }
     else if (SDIO_GetFlagStatus(SDIO_FLAG_RXOVERR) != RESET)
@@ -1161,7 +1159,6 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
       SDIO_ClearFlag(SDIO_FLAG_RXOVERR);
       errorstatus = SD_RX_OVERRUN;
       SD_PrintError(errorstatus);
-      printf("RSB %d\n", BlockSize);
       return(errorstatus);
     }
     else if (SDIO_GetFlagStatus(SDIO_FLAG_STBITERR) != RESET)
@@ -1170,7 +1167,6 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
       errorstatus = SD_START_BIT_ERR;
 
       SD_PrintError(errorstatus);
-      printf("RSB %d\n", BlockSize);
       return(errorstatus);
     }
     while (SDIO_GetFlagStatus(SDIO_FLAG_RXDAVL) != RESET)
@@ -1392,7 +1388,6 @@ SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t Block
 
           if (errorstatus != SD_OK)
           {
-        	  printf("ERROR:%d\n", errorstatus);
             return(errorstatus);
           }
         }
@@ -3071,7 +3066,6 @@ static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
 
 void SD_PrintError(SD_Error errorstatus)
 {
-	printf("\n!!!SDError=%d\n", errorstatus);
 }
 
 SD_Error SD_ReceiveData(uint32_t* tempbuff)

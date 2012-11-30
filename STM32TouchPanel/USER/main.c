@@ -46,6 +46,9 @@
 
 #include "usb_lib.h"
 
+
+#include "printf/printf.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -114,7 +117,7 @@ int main(void)
 	gfxEngine_Init();
 
 	ret = f_mount(0, &fs);
-	printf("Mount %d\n", ret);
+	xprintf("Mount %d\n", ret);
 
 	strcpy(path, "");
 	//scan_files(path);
@@ -138,7 +141,6 @@ int main(void)
 
 
 
-
 	FSUtil_OpenDir(&dir, "/MIDI");
 
 	while( 1 )
@@ -146,7 +148,7 @@ int main(void)
 		fnPath = FSUtil_GetDirObj(&dir);
 		if( fnPath != NULL )
 		{
-			printf("Path:%s\n", fnPath);
+			xprintf("Path:%s\n", fnPath);
 			GFX_LB_AddItem(&GFX_LB, fnPath);
 			//free(fnPath);
 		}
@@ -238,10 +240,10 @@ int main(void)
 					  LS_ClearLights();
 
 					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
-					  printf("SELECTED:: %s, FR=%d\n", path, tmp);
+					  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
 					  if(tmp == FR_OK)
 					  {
-						  printf("SUCCESS!!\n");
+						  xprintf("SUCCESS!!\n");
 					  }
 				  }
 

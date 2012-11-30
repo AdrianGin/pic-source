@@ -54,8 +54,6 @@ void PhysCircle::applyFloor (PHYS_INT dTime)
 
 			//velocity.y = velocity.y * 0.9;
 			position.y = GROUND_LEVEL + radius;
-
-			printf("BC\n");
 		}
 		else
 		{
@@ -68,7 +66,6 @@ void PhysCircle::applyFloor (PHYS_INT dTime)
 		//if( ((position.y - radius) + (velocity.y - (GRAVITY_CONST*dTime/TIME_BASE))) > GROUND_LEVEL)
 		{
 			velocity.y = velocity.y - (GRAVITY_CONST*dTime/TIME_BASE);
-			printf("GV\n");
 		}
 		//else
 		{
@@ -77,7 +74,6 @@ void PhysCircle::applyFloor (PHYS_INT dTime)
 		}
 		//applyForce( Vector2D(0, -mass) );
 	}
-	printf("Vel = %f\n", velocity.y);
 }
 
 
@@ -96,10 +92,6 @@ float PhysCircle::CollisionAngle(PhysCircle* obj)
 
 	knownAngle = (PI / 2) - theta;
 	knownAngle = knownAngle - velAngle;
-
-	printf("Theta=%f\n", theta*180/PI);
-	printf("KnownAngle=%f\n", knownAngle*180/PI);
-
 	return knownAngle;
 }
 

@@ -1,0 +1,1 @@
+USBMIDIconf.h is project specific

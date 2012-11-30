@@ -1,6 +1,7 @@
 
 #include <stdint.h>
-#include <stdio.h>
+#include "printf/printf.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include "FatFS/ff.h"
@@ -34,12 +35,12 @@ FRESULT scan_files (char* path)
             fn = fno.fname;
 #endif
             if (fno.fattrib & AM_DIR) {                    /* It is a directory */
-                sprintf(&path[i], "/%s", fn);
+                xsprintf(&path[i], "/%s", fn);
                 res = scan_files(path);
                 if (res != FR_OK) break;
                 path[i] = 0;
             } else {                                       /* It is a file. */
-                printf("%s/%s\n", path, fn);
+                xprintf("%s/%s\n", path, fn);
             }
         }
     }

@@ -22,8 +22,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include <stdio.h>
-
 #include "stm32f10x_it.h"
 #include "hw_config.h"
 #include "UARTProcessor/UARTProcessor.h"
@@ -187,7 +185,6 @@ void USART1_IRQHandler(void)
 	if (USART_GetITStatus(USART1, USART_IT_ORE) != RESET)
   {
 		ReceiveUSARTData();
-		printf("X");
 	}
 }
 

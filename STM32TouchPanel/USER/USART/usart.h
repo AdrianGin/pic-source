@@ -25,4 +25,7 @@ void USART_Configuration(void);
 void UsartGPIO_CTRT_Configuration(void);
 void USART_CTRT_Configuartion(void);
 
+
+void DebugDump(char* string, uint8_t n);
+
 #endif /*_USART_H*/

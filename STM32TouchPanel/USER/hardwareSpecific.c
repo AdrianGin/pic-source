@@ -11,7 +11,7 @@ char* itoa(int val, int base)
 	static char buf[32] = {0};
 
 
-	sprintf(buf, "%d", val);
+	xsprintf(buf, "%d", val);
 
 	return buf;
 
@@ -27,7 +27,7 @@ char* itoa(int val, int base)
 
 void SetMIDITickTimer(uint16_t usPerTick)
 {
-	printf("MicroSec / Tick = %d\n", usPerTick);
+	xprintf("MicroSec / Tick = %d\n", usPerTick);
 	TIM_SetAutoreload(MIDI_TIM, (usPerTick) - 1);
 }
 

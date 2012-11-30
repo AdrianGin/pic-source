@@ -14,13 +14,13 @@
 
 #include "usart.h"
 
-#ifdef __GNUC__
-  /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
-     set to 'Yes') calls __io_putchar() */
-  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+//#ifdef __GNUC__
+//  /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
+//     set to 'Yes') calls __io_putchar() */
+//  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+//#else
+//  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+//#endif /* __GNUC__ */
 
 
 /*******************************************************************************
@@ -116,7 +116,7 @@ void USART_CTRT_Configuartion(void)
 }
 
 /* Use no semihosting */
-#if 1
+#if 0
 #pragma import(__use_no_semihosting)
 struct __FILE
 {  
@@ -138,20 +138,40 @@ void _ttywrch(int ch) { putchar(ch); }
   * @param  None
   * @retval None
   */
-PUTCHAR_PROTOTYPE
+//PUTCHAR_PROTOTYPE
+//{
+//  /* Place your implementation of fputc here */
+//  /* e.g. write a character to the USART */
+//  while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
+//  {}
+//  USART_SendData(USART1, (uint8_t) ch);
+//  /* Loop until the end of transmission */
+//  //while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
+//  return ch;
+//}
+
+void DebugDump(char* string, uint8_t n)
 {
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART */
-  USART_SendData(USART1, (uint8_t) ch);
-
-  /* Loop until the end of transmission */
-  while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
-	//while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
-  {}
-
-  return ch;
+	while(n)
+	{
+		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
+		{}
+		USART_SendData(USART1, (uint8_t) *string++);
+		n--;
+	}
 }
 
+int outbyte(int ch)
+{
+	/* Place your implementation of fputc here */
+	/* e.g. write a character to the USART */
+	while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
+	{}
+	USART_SendData(USART1, (uint8_t) ch);
+	/* Loop until the end of transmission */
+	//while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
+	return ch;
+}
 
 
 

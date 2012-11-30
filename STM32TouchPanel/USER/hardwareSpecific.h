@@ -4,7 +4,8 @@
 
 
 #include <string.h>
-#include <stdio.h>
+
+#include "printf/printf.h"
 
 #include "FatFS/ff.h"
 #include "USART/usart.h"
@@ -12,8 +13,8 @@
 
 #include "MIDILightLogic/MIDILightLogic.h"
 
-#define DEBUG(string)  printf("%s", string) //LCDInterface_Print(&PrimaryDisplay, string, 0)
-#define DEBUGn(string,n) printf("%.*s", n, string) //LCDInterface_Print(&PrimaryDisplay, string, n)
+#define DEBUG(string)  xprintf("%s", string) //LCDInterface_Print(&PrimaryDisplay, string, 0)
+#define DEBUGn(string,n) DebugDump(string, n) //LCDInterface_Print(&PrimaryDisplay, string, n)
 
 
 void myprintf(char* string, uint32_t num);
