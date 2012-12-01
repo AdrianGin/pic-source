@@ -38,8 +38,8 @@ void* LL_ReturnNodeDataFromIndex(LINKED_LIST_t* linkedList, uint16_t item);
 
 
 
-#define LL_Malloc(size)		malloc(size)
-#define LL_Free(handle)		free(handle)
+#define LL_Malloc(size)		pvPortMalloc(size)
+#define LL_Free(handle)		vPortFree(handle)
 
 
 #endif
