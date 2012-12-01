@@ -493,7 +493,7 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
             memcpy(&track->name, event->event.metaEvent.data, length);
             DEBUG("Track ");
             myprintfd("", track->trackIndex);
-            DEBUGn(&track->name, length);
+            DEBUGn((char*)&track->name, length);
             DEBUG("\n");
             break;
 

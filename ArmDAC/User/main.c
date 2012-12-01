@@ -159,6 +159,13 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_5;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  //For debugging purposes
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
 
 
@@ -172,9 +179,11 @@ void GPIO_Configuration(void)
 *******************************************************************************/
 int main(void)
 {
+
 	uint16_t i;
 	uint16_t j, k;
 	uint32_t timer;
+
 	Delay_Init();
 	
 

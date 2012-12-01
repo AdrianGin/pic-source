@@ -205,8 +205,6 @@ void LPD8806_Init(void)
 void LPD8806_DMA_Init(void)
 {
 	DMA_InitTypeDef DMA_InitStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
-
 
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);

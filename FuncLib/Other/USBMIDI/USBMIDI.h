@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 #include <stdint.h>
 #include "MIDICodes/MIDICodes.h"
-#include "USBMIDIConf.h"
+#include "USBMIDI/USBMIDIConf.h"
 
 /* To be defined in hardwareSpecific.h */
 #ifdef  __USE_PROGMEM
