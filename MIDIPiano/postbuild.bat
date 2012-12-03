@@ -12,6 +12,7 @@ SET OBJCOPY= %TOOLCHAIN%-objcopy
 
 copy %FILENAME% %NEWNAME%
 
+REM %STRIP% -R=.common %NEWNAME%
+
+%OBJCOPY% -O ihex %FILENAME%  %PRJNAME%.hex
 %SIZE% %FILENAME%
-%STRIP% -R=.common %NEWNAME%
-%OBJCOPY% -O ihex %NEWNAME%  %PRJNAME%.hex

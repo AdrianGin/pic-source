@@ -1,0 +1,1 @@
+copy flash.bat and postbuild.bat into the GCC and GCC_DBG folders

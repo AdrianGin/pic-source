@@ -76,14 +76,12 @@ int main(void)
 	Coordinate* point;
 	FT_STATES state;
 	Coordinate* inertia;
-
 	DIR dir;
-
     RCC_ClocksTypeDef RCC_ClocksStatus;
-
 	char path[255];
 	uint16_t tickCounter = 0;
 	static uint8_t Togstate = 0;
+
 
 	USART_Configuration();
 	GPIO_Configuration();
@@ -93,11 +91,11 @@ int main(void)
 	USB_Config();
 	USB_Init();
 
+
 	LPD8806_Init();
 	LS_Init();
 
 	MLL_Init();
-
 
 	TIM_MIDI_Configuration();
 	AUX_TIM_Configuration();

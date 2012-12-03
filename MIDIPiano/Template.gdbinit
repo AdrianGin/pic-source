@@ -5,10 +5,10 @@
 # for commands on localhost at tcp port 2331
 target remote localhost:2331
 
-monitor interface SWD
+#monitor interface SWD
 
 #Speed to 2MHz
-monitor speed 4000
+monitor speed 100000
 
 #Monitoring Device
 monitor flash device = STM32F103VE
