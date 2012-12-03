@@ -59,7 +59,7 @@ void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
 uint16_t MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
 uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
 
-void*   _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
+void   _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size);
 uint8_t _MIDI_fileopen(uint8_t* filename);
 
 #define MPB_ReadToBuffer(position, buf) _MIDI_readbuf(position, buf, MIDI_TRACK_BUFFER_SIZE)

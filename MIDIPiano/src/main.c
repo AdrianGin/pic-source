@@ -219,7 +219,6 @@ int main(void)
 		  if( globalFlag & 0x08 )
 		  {
 
-
 			  globalFlag &= ~0x08;
 			  point = FT_GetLastPoint();
 			  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)

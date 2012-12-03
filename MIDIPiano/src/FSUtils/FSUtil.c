@@ -101,7 +101,7 @@ char* FSUtil_GetDirObj(DIR* dir)
 		else
 		{
 			/* It is a file. */
-			buffer = (char*)malloc(strlen(fn)+1);
+			buffer = (char*)pvPortMalloc(strlen(fn)+1);
 			if( buffer )
 			{
 				strcpy(buffer, fn);

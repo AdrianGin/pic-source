@@ -41,13 +41,12 @@ uint8_t LPD8806_Brightness;
 
 #ifdef  LPD8806_USE_SPI1
 
-#define LPB_USE_ALTERNATE_SPI1
+//#define LPD_USE_ALTERNATE_SPI1
 
 #define LPD_SPI			SPI1
 #define LPB_SPI_RCC		RCC_APB2Periph_SPI1
 
-
-#ifdef LPB_USE_ALTERNATE_SPI1
+#ifdef LPD_USE_ALTERNATE_SPI1
 #define LPB_GPIO_RCC	 RCC_APB2Periph_GPIOB
 #define LPD_SPI_PORT	 (GPIOB)
 #define LPD_SPI_PINS	 (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5)
@@ -147,7 +146,7 @@ static void LPD8806_SPI_Init(void)
   LPD_SPI_RCC_APBeriphClockCmd(LPB_SPI_RCC, ENABLE);
   /* DISABLE SPI1 */
 
-#ifdef LPB_USE_ALTERNATE_SPI1
+#ifdef LPD_USE_ALTERNATE_SPI1
   //Need to perform a remap of pins.
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
   GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE);

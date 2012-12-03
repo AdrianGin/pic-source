@@ -17,10 +17,8 @@ static int16_t BMP_Direction[2];
 
 void* _BMP_readbuf(FIL* ptr, void* buf, uint16_t size)
 {
-    uint16_t br;
-    
+	UINT br;
     f_read(ptr, buf, size, (UINT*)&br);
-    
     return buf;
 }
 

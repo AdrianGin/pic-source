@@ -148,11 +148,13 @@ void _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint8_t i;
     uint32_t position = 0;
-    uint8_t* buf = &MIDIHdr->Track[0].buffer[0];
+    uint8_t* buf;
     uint8_t* ptr;
     
+    buf = (uint8_t*)&MIDIHdr->Track[0].buffer;
     memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
     MPB_ReadToBuffer(position, buf);
+
     ptr = findSubString( (char*)buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
     if( ptr )
     {
@@ -364,7 +366,8 @@ uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, u
         //Or if we are requested for new data.
         if( (track->eventCount==MPB_NEW_DATA) || ((track->bufferOffset+6)>MIDI_TRACK_BUFFER_SIZE) )
         {
-            originPtr = MPB_ReadToBuffer(track->startPtr, &track->buffer[0]);
+            MPB_ReadToBuffer(track->startPtr, &track->buffer[0]);
+            originPtr = &track->buffer[0];
             readPtr = originPtr;
             track->bufferOffset = 0;
         }
@@ -636,12 +639,13 @@ uint8_t _MIDI_fileopen(uint8_t* filename)
     return f_open(&midifile, filename, FA_OPEN_EXISTING|FA_READ);
 }
 
-void* _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size)
+void _MIDI_readbuf(uint32_t position, uint8_t* buf, uint16_t size)
 {
-    uint16_t br;
+	//Ouch a nasty bug here :(
+	UINT br;
     f_lseek(&midifile, position);
     f_read(&midifile, buf, size, (UINT*)&br);
-    return buf;
+    //return buf;
 }
 
 
