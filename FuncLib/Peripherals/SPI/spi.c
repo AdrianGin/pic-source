@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 volatile uint8_t spiTransferComplete = TRANSFER_COMPLETE;
 
-ISR(SIG_SPI)
+ISR(SPI_STC_vect)
 {
    spiTransferComplete = TRANSFER_COMPLETE;
 }

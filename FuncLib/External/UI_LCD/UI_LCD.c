@@ -208,7 +208,7 @@ uint8_t UI_LCD_MainLoop(HD44780lcd_t* lcd)
     }
     return LCD_OUTPUT_BUFFER_EMPTY;
 }
-#endif
+
 
 void UI_LCD_FlushBuffer(HD44780lcd_t* lcd)
 {
@@ -217,6 +217,9 @@ void UI_LCD_FlushBuffer(HD44780lcd_t* lcd)
         _delay_us(MIN_EXECUTION_TIME);
     }
 }
+#endif
+
+
 
 void UI_LCD_Char(HD44780lcd_t* lcd, char data)
 {

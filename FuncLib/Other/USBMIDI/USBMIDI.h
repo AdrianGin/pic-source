@@ -34,9 +34,9 @@ THE SOFTWARE.
 
 /* To be defined in hardwareSpecific.h */
 #ifdef  __USE_PROGMEM
-#define PROGRAM_SPACE PROGMEM
-#define FLASH_GET_PGM_WORD(address) pgm_read_word(&address)
-#define FLASH_GET_PGM_BYTE(address) pgm_read_byte(&address)
+//#define PROGRAM_SPACE PROGMEM
+//#define FLASH_GET_PGM_WORD(address) pgm_read_word(&address)
+//#define FLASH_GET_PGM_BYTE(address) pgm_read_byte(&address)
 
 
 #else

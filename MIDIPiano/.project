@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MIDIPiano_ARM</name>
+	<name>MIDIPiano</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -49,11 +49,6 @@
 			<name>Util</name>
 			<type>2</type>
 			<location>M:/Robotics/Source/FuncLib/Util</location>
-		</link>
-		<link>
-			<name>src</name>
-			<type>2</type>
-			<location>M:/Robotics/Source/MIDIPiano/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
