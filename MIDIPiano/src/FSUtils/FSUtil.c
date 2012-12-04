@@ -92,7 +92,7 @@ char* FSUtil_GetDirObj(DIR* dir)
 		/* It is a directory */
 		if (fno.fattrib & AM_DIR)
 		{
-			break;
+			continue;
 			//sprintf(&path[i], "/%s", fn);
 			//res = scan_files(path);
 			//if (res != FR_OK) break;

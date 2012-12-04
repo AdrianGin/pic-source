@@ -51,7 +51,8 @@ void LPD8806_Write (uint8_t cmd);
 void LPD8806_Update(void);
 void LPD8806_SetPixel(uint16_t index, uint32_t colour);
 
-
+void LPD8806_Clear(void);
+void LPD8806_Test(void);
 uint32_t LPD8806_GetPixel(uint16_t index);
 
 

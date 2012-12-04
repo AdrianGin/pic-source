@@ -92,11 +92,30 @@ void gfxDrawBMP(char* bmpImgPath)
 	FIL temp;
     BMPFile.pImageFile = &temp;
 
+    ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
+//    printf("retOpen=%d\n", ret);
+    BMP_ReadHeader(&BMPFile);
+    xprintf("BMP Offset: %d\n", BMPFile.lImageOffset);
 
-    return;
+    xprintf("BMP Width: %d\n", BMPFile.lWidth);
+    xprintf("BMP Length:%d\n", BMPFile.lHeight);
+    xprintf("BMP Planes:%d\n", BMPFile.bNumOfPlanes);
+    xprintf("BMP Depth:%d\n", BMPFile.bBitsPerPixel);
+    xprintf("BMP CompType:%d\n", BMPFile.blCompressionType);
+    //ret = BMP_Print(&BMPFile);
+    BMP_PrintToLCD(&BMPFile);
+    f_close(BMPFile.pImageFile);
+}
 
 
 
+void gfxDrawBMPonLED(char* bmpImgPath)
+{
+
+	uint8_t ret;
+
+	FIL temp;
+    BMPFile.pImageFile = &temp;
     ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
 //    printf("retOpen=%d\n", ret);
     BMP_ReadHeader(&BMPFile);
@@ -105,7 +124,11 @@ void gfxDrawBMP(char* bmpImgPath)
 //    printf("BMP Planes:%d\n", BMPFile.bNumOfPlanes);
 //    printf("BMP Depth:%d\n", BMPFile.bBitsPerPixel);
 //    printf("BMP CompType:%d\n", BMPFile.blCompressionType);
-    ret = BMP_Print(&BMPFile);
+    ret = DALED_BMP_Print(&BMPFile);
 
     f_close(BMPFile.pImageFile);
 }
+
+
+
+

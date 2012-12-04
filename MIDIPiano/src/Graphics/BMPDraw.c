@@ -8,12 +8,12 @@
 #include "GLCD.h"
 
 
-static uint16_t BMP_CursorX;
-static uint16_t BMP_CursorY;
+uint16_t BMP_CursorX;
+uint16_t BMP_CursorY;
 
-static uint16_t BMP_Scale;
-static int16_t BMP_Direction[2];
-
+uint16_t BMP_Scale;
+int16_t BMP_Direction[2];
+uint16_t BMP_Rotation;
 
 void* _BMP_readbuf(FIL* ptr, void* buf, uint16_t size)
 {
@@ -109,10 +109,11 @@ void BMP_SetCursor(uint16_t x, uint16_t y)
 	BMP_CursorY = y;
 }
 
-void BMP_SetRotation(int16_t dirX, int16_t dirY)
+void BMP_SetRotation(int16_t dirX, int16_t dirY, uint16_t rotation)
 {
 	BMP_Direction[0] = dirX;
 	BMP_Direction[1] = dirY;
+	BMP_Rotation = rotation;
 }
 
 
@@ -121,97 +122,128 @@ void BMP_SetScaling(uint16_t scale)
 	BMP_Scale = scale;
 }
 
-#define PIXEL_BUFFER_COUNT (128)
 
-
-
-uint8_t BMP_Print(BMPFile_t* pBmpDec)
+void BMP_PrintToLCD(BMPFile_t* pBmpDec)
 {
-    
-    uint16_t i,j,k;
 
-    uint8_t byte;
+	uint16_t j,k;
+	uint16_t pixelsRead;
+	uint16_t cursorX,cursorY;
+	uint8_t readBuf[512];
 
-    uint8_t r,g,b;
-    uint16_t pixel;
-    uint8_t readBuf[512];
-    uint8_t bufferIndex = PIXEL_BUFFER_COUNT;
-    uint32_t position = 0;
-
-    uint16_t cursorX,cursorY;
-
-    if(pBmpDec->blBmMarkerFlag == 0 || pBmpDec->bHeaderType < 40 || (pBmpDec->blCompressionType != 0))
-    {
-        return BMP_BADFILE_FORMAT;
-    }
-
-    IMG_FSEEK(pBmpDec->pImageFile, pBmpDec->lImageOffset, 0);
-
-    if( pBmpDec->lHeight < pBmpDec->lWidth)
-    {
-        //SSD1289_SendCommand(0x0011,0x6040 | (1<<3));    DELAY_US(1);
-    }
-    else
-    {
-        //SSD1289_SendCommand(0x0011,0x6040);    DELAY_US(1);
-    }
-
-//    LCD_SetCursor(0,0);
-//    LCD_WriteIndex(0x0022);
+	uint16_t rowPos = 0;
 
     cursorX = BMP_CursorX;
     cursorY = BMP_CursorY;
 
-    for( j = 0; j < pBmpDec->lHeight; j++)
+    for( j = 0; j < pBmpDec->lHeight; )
     {
-    	for( k = 0; k < pBmpDec->lWidth; k++)
-        {
-            if( bufferIndex >= PIXEL_BUFFER_COUNT)
-            {
-                IMG_FREAD(readBuf, PIXEL_BUFFER_COUNT*3, 1, pBmpDec->pImageFile);
-                bufferIndex = 0;
-            }
+    	//Keep getting data until no more row data is left.
+    	pixelsRead = BMP_GetRowData_24BPP(pBmpDec, &readBuf[0], PIXEL_BUFFER_COUNT*BMP_24BPP, rowPos, j);
+    	if( pixelsRead )
+    	{
+    		for(k = 0; k < pixelsRead; k++)
+    		{
+    			uint8_t r,g,b;
+    			uint32_t pixel;
 
-            b = readBuf[(3*bufferIndex)+0];
-            g = readBuf[(3*bufferIndex)+1];
-            r = readBuf[(3*bufferIndex)+2];
+                b = readBuf[(3*k)+0];
+                g = readBuf[(3*k)+1];
+                r = readBuf[(3*k)+2];
 
-            pixel = b >> 3;
-            pixel = pixel | ((g>>2)<<5);
-            pixel = pixel | ((r>>3)<<11);
+                pixel = b >> 3;
+                pixel = pixel | ((g>>2)<<5);
+                pixel = pixel | ((r>>3)<<11);
 
-//
-            SetColor(pixel);
+                SetColor(pixel);
+                if( BMP_Rotation == 90 )
+                {
+                	PutPixel(cursorY, cursorX);
+                }
+                else
+                {
+                	PutPixel(cursorX , cursorY);
+                }
 
-            PutPixel(cursorX , cursorY);
 
+                if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
+                {
+                	cursorY = cursorY + BMP_Direction[1];
+                }
+                else
+                {
+                	cursorX = cursorX + BMP_Direction[0];
+                }
+    		}
+    		rowPos = rowPos + pixelsRead;
+    	}
+    	else
+    	{
+    		//New row
+    		rowPos = 0;
             if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
             {
-            	cursorY = cursorY + BMP_Direction[1];
+            	cursorX = cursorX + BMP_Direction[0];
+            	cursorY = BMP_CursorY;
+
             }
             else
             {
-            	cursorX = cursorX + BMP_Direction[0];
-            	//PutPixel(cursorY , cursorX);
+            	cursorY = cursorY + BMP_Direction[1];
+            	cursorX = BMP_CursorX;
             }
-            //LCD_WriteData(pixel);
-            bufferIndex = bufferIndex + 1;
-        }
-
-        if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
-        {
-        	cursorX = cursorX + BMP_Direction[0];
-        	cursorY = BMP_CursorY;
-
-        }
-        else
-        {
-        	cursorY = cursorY + BMP_Direction[1];
-        	cursorX = BMP_CursorX;
-        }
-
+    		j++;
+    	}
     }
-
-    return 0;
 }
+
+
+uint16_t BMP_GetRowData_24BPP(BMPFile_t* pBmpDec, uint8_t* readBuf, uint16_t bufSize, uint16_t rowPos, uint16_t height)
+{
+
+	uint8_t pixelsToRead;
+	if( rowPos >=  pBmpDec->lWidth)
+	{
+		return 0;
+	}
+
+	if( BMP_SetHeightPointer_24BPP(pBmpDec, height) )
+	{
+		//Goto requested row start position.
+		IMG_FSEEK(pBmpDec->pImageFile, IMG_FTELL(pBmpDec->pImageFile)+(rowPos*BMP_24BPP), 0);
+		//Read in a maximum of 'bufSize' bytes or until the end of row, whichever is greater.
+		pixelsToRead = pBmpDec->lWidth - rowPos;
+		if( pixelsToRead >= bufSize/BMP_24BPP)
+		{
+			pixelsToRead = bufSize/BMP_24BPP;
+		}
+		IMG_FREAD(readBuf, pixelsToRead*BMP_24BPP, 1, pBmpDec->pImageFile);
+		return pixelsToRead;
+	}
+
+	return 0;
+}
+
+
+uint8_t BMP_SetHeightPointer_24BPP(BMPFile_t* pBmpDec, uint16_t height)
+{
+	uint32_t imgOffset;
+
+	imgOffset = pBmpDec->lImageOffset;
+	if( height )
+	{
+		imgOffset = imgOffset + (height * (pBmpDec->lWidth*BMP_24BPP + (pBmpDec->lWidth & 0x03)));
+	}
+
+
+	if( height < pBmpDec->lHeight)
+	{
+		IMG_FSEEK(pBmpDec->pImageFile, imgOffset, 0);
+		return 1;
+	}
+
+	//Invalid height. Height overrun!
+	return 0;
+}
+
 

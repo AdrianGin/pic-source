@@ -45,6 +45,8 @@
 
 #include "usb_lib.h"
 
+#include "Graphics/BMPDraw.h"
+#include "MiscApps/DA_LEDDisplay.h"
 
 #include "printf/printf.h"
 
@@ -126,19 +128,21 @@ int main(void)
   //PhysicsInit();
   FluidTouchInit();
 
-  //while(1);
-
-  LCD_PauseUpdateScreen();
 
   UserGUI_Init();
+
 
 	LPD8806_SetPixel(0, RGB(0,255,255) );
 	LPD8806_SetPixel(LED_COUNT-1, RGB(0,255,0) );
 	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255) );
 
+	LPD8806_Test();
+	LPD8806_Update();
 
 
-	FSUtil_OpenDir(&dir, "/MIDI");
+	//FSUtil_OpenDir(&dir, "/MIDI");
+	xprintf("OpenDir=%d\n", FSUtil_OpenDir(&dir, "/"));
+	LCD_PauseUpdateScreen();
 
 	while( 1 )
 	{
@@ -155,18 +159,6 @@ int main(void)
 		}
 	}
 
-//  GFX_LB_AddItem(&GFX_LB, "Hey Leo");
-//  GFX_LB_AddItem(&GFX_LB, "What");
-//  GFX_LB_AddItem(&GFX_LB, "is up?");
-//  GFX_LB_AddItem(&GFX_LB, "Serena");
-//  GFX_LB_AddItem(&GFX_LB, "Pang");
-//  GFX_LB_AddItem(&GFX_LB, "is a HOT");
-//  GFX_LB_AddItem(&GFX_LB, "goddess!");
-//  GFX_LB_AddItem(&GFX_LB, "One");
-//  GFX_LB_AddItem(&GFX_LB, "Day");
-//  GFX_LB_AddItem(&GFX_LB, "I will");
-//  GFX_LB_AddItem(&GFX_LB, "marry her!!");
-	
   while (1)	
   {
 	  //LCD_Clear(Black);
@@ -228,19 +220,49 @@ int main(void)
 				  if( LBItem )
 				  {
 					  FRESULT tmp;
-					  strcpy(path, "/MIDI/");
-					  strcat(path, LBItem);
-					  MPB_ResetMIDI();
 
-					  LS_ClearLightTimers();
-					  LS_ClearLights();
+						strcat(path, "/");
+						strcat(path, LBItem);
 
-					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
-					  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
-					  if(tmp == FR_OK)
-					  {
-						  xprintf("SUCCESS!!\n");
-					  }
+						BMP_SetCursor(200,120);
+						BMP_SetRotation(-1,1, 90);
+						gfxDrawBMP(path);
+						LCD_ResumeUpdateScreen();
+
+						//while(1)
+						{
+							LPD8806_Clear();
+							//LPD8806_SetPixel(LED_COUNT-3, RGB(0,0,0) );
+							//LPD8806_SetPixel(LED_COUNT-2, RGB(0,0,0) );
+							//LPD8806_SetPixel(LED_COUNT-1, RGB(0,0,0) );
+
+
+							delay_ms(10);
+							LPD8806_Update();
+							delay_ms(1000);
+							//LPD8806_Update();
+							//delay_ms(1000);
+
+							BMP_SetCursor(0,LED_COUNT / 2);
+
+							gfxDrawBMPonLED(path);
+						}
+
+
+						memset(path, 0, sizeof(path));
+//					  strcpy(path, "/MIDI/");
+//					  strcat(path, LBItem);
+//					  MPB_ResetMIDI();
+//
+//					  LS_ClearLightTimers();
+//					  LS_ClearLights();
+//
+//					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+//					  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
+//					  if(tmp == FR_OK)
+//					  {
+//						  xprintf("SUCCESS!!\n");
+//					  }
 				  }
 
 				  i = point->x;
@@ -265,7 +287,7 @@ int main(void)
 			  globalFlag &= ~0x10;
 		  }
 
-		  if (globalFlag & 0x01)
+		  if (globalFlag & 0x80)
 		  {
 			  //if( tickCounter == 4)
 			  {

@@ -28,9 +28,14 @@
 //holds 21bit colour data in the format brg
 //uint8_t LPD8806_GFXRAM[LED_COUNT*3];
 
-uint8_t LPD8806_DMABUFFER[LED_COUNT*3+2];
+#define GFXRAM_OFFSET	(1)
+#define TRAILING_ZEROS	(10)
 
-uint8_t* LPD8806_GFXRAM = &LPD8806_DMABUFFER[1];
+uint8_t LPD8806_DMABUFFER[LED_COUNT*3+GFXRAM_OFFSET+TRAILING_ZEROS];
+
+
+
+uint8_t* LPD8806_GFXRAM = &LPD8806_DMABUFFER[GFXRAM_OFFSET];
 
 uint8_t LPD8806_Brightness;
 
@@ -161,7 +166,7 @@ static void LPD8806_SPI_Init(void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; 
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft; 
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; 
   SPI_InitStructure.SPI_CRCPolynomial = 7; 
 
@@ -198,7 +203,17 @@ void LPD8806_Init(void)
 
 } 
 
+void LPD8806_Clear(void)
+{
+	memset(LPD8806_GFXRAM, 0x80 , (LED_COUNT*3));
 
+}
+
+void LPD8806_Test(void)
+{
+	LPD8806_SetBrightness(MAX_LED_BRIGHTNESS);
+	memset(LPD8806_GFXRAM, 0xFF , (LED_COUNT*3));
+}
 
 
 void LPD8806_DMA_Init(void)
@@ -212,7 +227,7 @@ void LPD8806_DMA_Init(void)
 
 	/* Uses the original buffer	*/
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&LPD8806_DMABUFFER[0]; /* Set the buffer */
-	DMA_InitStructure.DMA_BufferSize = (LED_COUNT*3)+2; /* Set the size */
+	DMA_InitStructure.DMA_BufferSize = sizeof(LPD8806_DMABUFFER); /* Set the size */
 
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&LPD_SPI->DR;
 	//DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&DAC->DHR12L1;
@@ -239,7 +254,7 @@ void LPB8806_DMA_Start(void)
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	/* DMA Channel configuration ----------------------------------------------*/
 	DMA_Cmd(LPB8806_DMA_CHANNEL, DISABLE);
-	DMA_SetCurrDataCounter(LPB8806_DMA_CHANNEL, (LED_COUNT*3)+2);
+	DMA_SetCurrDataCounter(LPB8806_DMA_CHANNEL, sizeof(LPD8806_DMABUFFER));
 	//DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
 	DMA_Cmd(LPB8806_DMA_CHANNEL, ENABLE);
 }
@@ -379,6 +394,16 @@ void LPD8806_Update(void)
 		outputValue = (LPD8806_GFXRAM[i] & LPD8806_MAX_RES) * LPD8806_Brightness / MAX_LED_BRIGHTNESS;
 		LPD8806_Write(outputValue | LPD8806_FLAG );
 	}
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
+	LPD8806_Write(0);
 	LPD8806_Write(0);
 #else
 	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)

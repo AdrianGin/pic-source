@@ -30,6 +30,8 @@
 #include "usb_istr.h"
 #include "usb_pwr.h"
 
+#include "MiscApps/DA_LEDDisplay.h"
+
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -176,14 +178,15 @@ void DebugMon_Handler(void)
 
 void USART1_IRQHandler(void)
 {
-	 if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-  {
-    /* Send the received data to the PC Host*/
-    ReceiveUSARTData();
-  }
+	if (USART_GetITStatus(USART1, USART_IT_RXNE ) != RESET)
+	{
+		/* Send the received data to the PC Host*/
+		ReceiveUSARTData();
+		DALED_NextInput |= 1;
+	}
 
-	if (USART_GetITStatus(USART1, USART_IT_ORE) != RESET)
-  {
+	if (USART_GetITStatus(USART1, USART_IT_ORE ) != RESET)
+	{
 		ReceiveUSARTData();
 	}
 }
@@ -237,7 +240,15 @@ void TIM3_IRQHandler(void)
 	static uint16_t cntr = 0;
 	static uint16_t cntr2 = 0;
 	static uint16_t cntr3 = 0;
+	static uint16_t cntr4 = 0;
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+
+
+	if( cntr4++ == (277/2))
+	{
+		DALED_NextInput |= 1;
+		cntr4 = 0;
+	}
 
 
 	if( cntr3++ == 500)

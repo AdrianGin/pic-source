@@ -155,7 +155,7 @@
 								<option id="arm.rvct.armlink.option.XREF.1074168359" name="Section cross-references (--xref)" superClass="arm.rvct.armlink.option.XREF" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.STRICT.1633800772" name="Report &quot;might fail&quot; conditions (--strict)" superClass="arm.rvct.armlink.option.STRICT" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.VERBOSE.621469875" name="Give progress information while linking (--verbose)" superClass="arm.rvct.armlink.option.VERBOSE" value="true" valueType="boolean"/>
-								<option id="arm.rvct.armlink.option.LIST.938054816" name="List file name&#10; (--list=)" superClass="arm.rvct.armlink.option.LIST" value="&quot;M:\Robotics\Source\STM32TouchPanel\Project.map&quot;" valueType="string"/>
+								<option id="arm.rvct.armlink.option.LIST.938054816" name="List file name&#10; (--list=)" superClass="arm.rvct.armlink.option.LIST" value="M:\Robotics\Source\MIDIPiano\ARM_DBG\Project.lst" valueType="string"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
