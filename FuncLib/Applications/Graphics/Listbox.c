@@ -8,8 +8,8 @@
 #include "listbox.h"
 #include "fontRender.h"
 
-#include "Common/InertiaTouch.h"
-#include "TouchPanel\FluidTouch.h"
+#include "InertiaTouch/InertiaTouch.h"
+#include "FluidTouch\FluidTouch.h"
 
 
 void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_t width, void* fontHdr, uint16_t spacing)
@@ -251,11 +251,6 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 		}
 		else
 		{
-//			if( (counters[TOUCH_ON] >= 2) && (dragCount == 0))
-//			{
-//				point = FT_GetLastPoint();
-//				GFX_LB_SelectItem(LB, GFX_LB_GetSelectedItem(LB, point->y));
-//			}
 		}
 	}
 

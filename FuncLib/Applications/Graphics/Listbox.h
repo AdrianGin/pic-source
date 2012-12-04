@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "linkedlist\linkedlist.h"
-#include "Common\InertiaTouch.h"
+#include "InertiaTouch\InertiaTouch.h"
 
 
 

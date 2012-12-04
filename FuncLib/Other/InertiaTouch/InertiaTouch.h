@@ -1,7 +1,7 @@
 #ifndef _INERTIA_TOUCH_H
 #define _INERTIA_TOUCH_H
 
-#include "Common\Coordinate.h"
+#include "Coordinate\Coordinate.h"
 #include <stdint.h>
 
 
@@ -25,7 +25,7 @@ void FTI_InitInertia(InertiaElement_t* inertia);
 void FTI_ApplySlowdown(InertiaElement_t* inertia);
 Coordinate* FTI_GetPoint(InertiaElement_t* inertia, Coordinate* lastPoint);
 
-
+uint8_t FTI_InertiaIsZero(InertiaElement_t* inertia);
 void FTI_ResetInertia(InertiaElement_t* inertia);
 void FTI_UpdateInertia(InertiaElement_t* inertia, Coordinate* diff);
 

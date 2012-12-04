@@ -5,8 +5,8 @@
 #include <math.h>
 
 #include "physics.h"
-#include "GLCD.h"
-#include "TouchPanel.h"
+#include "GLCD/GLCD.h"
+#include "TouchPanel/TouchPanel.h"
 
 #include "PhysBase.h"
 #include "PhysCircle.h"

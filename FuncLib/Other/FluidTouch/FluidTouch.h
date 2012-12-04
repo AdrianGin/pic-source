@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "TouchPanel.h"
+
+#include "Coordinate/Coordinate.h"
+#include "TouchPanel/TouchPanel.h"
 
 //Requires some sort of FAT file System
 

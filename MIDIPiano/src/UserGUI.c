@@ -7,7 +7,7 @@
 #include "Graphics/ComicSans.h"
 #include "Graphics/arial.h"
 #include "Graphics/droidsansAA.h"
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 
 GFX_Listbox_t GFX_LB;
 

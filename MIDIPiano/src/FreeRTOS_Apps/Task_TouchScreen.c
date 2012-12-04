@@ -26,7 +26,7 @@
 #include "app_cfg.h"
 #include "intertaskComm.h"
 
-#include "TouchPanel.h"
+#include "TouchPanel/TouchPanel.h"
 
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

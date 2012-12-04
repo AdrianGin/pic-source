@@ -70,6 +70,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
 								</option>
 								<option id="arm.rvct.armcc.option.CONFIG_DEFINE.1241747713" name="List of #DEFINEs (-D)" superClass="arm.rvct.armcc.option.CONFIG_DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="XX__MICROLIB"/>
@@ -232,6 +233,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
 								</option>
 								<option id="arm.rvct.armcc.option.OPTTIME.1352521867" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.time" valueType="enumerated"/>
 								<option id="arm.rvct.armcc.option.CONFIG_DEFINE.2137614514" name="List of #DEFINEs (-D)" superClass="arm.rvct.armcc.option.CONFIG_DEFINE" valueType="definedSymbols">
@@ -488,6 +490,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\GUI_App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SPI_Flash}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Unicode}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\RV31\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\CMSIS\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\Inc\ST\STM32F10x&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/SysTick}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/USART}&quot;"/>
@@ -504,6 +509,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
@@ -715,6 +721,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\GUI_App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SPI_Flash}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Unicode}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\RV31\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\CMSIS\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\Keil\ARM\Inc\ST\STM32F10x&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/SysTick}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/USART}&quot;"/>
@@ -731,6 +740,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.314890902" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
@@ -784,6 +794,12 @@
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191;cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191.;cdt.managedbuild.tool.gnu.cross.c.compiler.1864912978;cdt.managedbuild.tool.gnu.c.compiler.input.88949737">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191;cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.860269100;cdt.managedbuild.tool.gnu.cpp.compiler.input.2038596168">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;cdt.managedbuild.tool.gnu.cross.c.compiler.1089196536;cdt.managedbuild.tool.gnu.c.compiler.input.198740861">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>

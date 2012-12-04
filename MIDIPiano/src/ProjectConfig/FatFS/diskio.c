@@ -22,7 +22,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FatFS/diskio.h"
-#include "sdio_sd.h"
+#include "SDIO/sdio_sd.h"
 //#include "stm32_eval_sdio_sd.h"
 
 

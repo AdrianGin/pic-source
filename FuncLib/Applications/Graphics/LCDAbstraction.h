@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #include "GenericTypeDefs.h"
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 /*********************************************************************
 * Overview: Clipping region control codes to be used with SetClip(...)
 *           function.

@@ -5,7 +5,7 @@
 
 #include "fontRender.h"
 
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 
 
 uint16_t BMP_CursorX;

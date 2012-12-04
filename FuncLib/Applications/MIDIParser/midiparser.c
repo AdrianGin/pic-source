@@ -117,7 +117,7 @@ char* MIDIParse_KeySignature(int8_t keySig, uint8_t keyScale)
 
 uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size)
 {
-    char* ptr = (char*)data;
+    uint8_t* ptr = (uint8_t*)data;
     ptr = findSubString(data, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
 
     if (ptr)
@@ -152,10 +152,8 @@ uint16_t MIDIParse_Header(MIDI_HEADER_CHUNK_t* header, void* data, uint32_t size
 /* Returns the position of the MIDI file that the top level should read to */
 uint32_t MIDIPopulate_HeaderTrack(MIDI_HEADER_CHUNK_t* header, uint8_t trackNo, uint32_t filePos, void* data, uint32_t size)
 {
-    uint8_t* temp;
-    uint8_t i;
     header->Track[trackNo].startPtr = filePos + MIDI_TRACK_LENGTH + 4;
-    temp = MIDIParse_Track(&header->Track[trackNo], data, size);
+    MIDIParse_Track(&header->Track[trackNo], data, size);
     return filePos + MIDI_TRACK_HEADER_SIZE + header->Track[trackNo].length;
 }
 

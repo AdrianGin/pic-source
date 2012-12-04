@@ -29,7 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "Common\Coordinate.h"
+#include "Coordinate\Coordinate.h"
 
 typedef struct Matrix 
 {						

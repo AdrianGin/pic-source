@@ -22,7 +22,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "TouchPanel.h"
-#include "GLCD.h"
+#include "HY32D_LCD/GLCD/GLCD.h"
 
 #include "printf/printf.h"
 
@@ -477,9 +477,6 @@ void TP_BudgetGetDisplayPoint(Coordinate * displayPtr, Coordinate * screenPtr)
 
 void TP_BudgetCalibrate(uint8_t axis, Coordinate* a1, Coordinate* d1, Coordinate* a2, Coordinate* d2)
 {
-
-	int16_t gradient;
-
 	if( axis )
 	{
 		yGradient = (a2->y - a1->y) * TP_ACCURACY_SCALE / (d2->y - d1->y);

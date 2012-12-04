@@ -4,7 +4,7 @@
 
 
 #include "GenericTypeDefs.h"
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 #include "fontRender.h"
 #include "ComicSans.h"
 #include "Tahoma.h"
@@ -15,6 +15,8 @@
 
 #include "FatFS/ff.h"
 #include "BMPDraw.h"
+
+#include "printf/printf.h"
 
 BMPFile_t BMPFile;
 

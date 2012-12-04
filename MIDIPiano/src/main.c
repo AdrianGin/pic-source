@@ -22,9 +22,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "TouchPanel.h"
+#include "TouchPanel/TouchPanel.h"
 #include "systick.h"
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 
 #include "USART/usart.h"
 #include "Physics/physics.h"
@@ -33,8 +33,10 @@
 #include "FatFS\ff.h"
 #include "Graphics\gfxEngine.h"
 #include "FSUtils\FSUtil.h"
-#include "TouchPanel\FluidTouch.h"
-#include "Common/InertiaTouch.h"
+
+
+#include "InertiaTouch/InertiaTouch.h"
+#include "FluidTouch/FluidTouch.h"
 
 #include "UserGUI.h"
 #include "MIDIPlayback/midiplayback.h"
@@ -56,6 +58,17 @@
 FATFS fs;
 MIDI_HEADER_CHUNK_t MIDIHdr;
 volatile uint8_t globalFlag;
+
+
+void FlashLEDs(uint16_t abit)
+{
+	LPD8806_Test();
+	LPD8806_Update();
+	delay_ms(abit);
+	LPD8806_Clear();
+	LPD8806_Update();
+	delay_ms(abit);
+}
 
 /*******************************************************************************
 * Function Name  : main
@@ -136,7 +149,7 @@ int main(void)
 	LPD8806_SetPixel(LED_COUNT-1, RGB(0,255,0) );
 	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255) );
 
-	LPD8806_Test();
+	//LPD8806_Test();
 	LPD8806_Update();
 
 
@@ -209,6 +222,18 @@ int main(void)
 		  if( globalFlag & 0x08 )
 		  {
 
+				if( !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) )	   /* JOY_RIGHT is press */
+				{
+					DALED_BlurMode = 1;
+				}
+				else
+				{
+					DALED_BlurMode = 0;
+				}
+
+
+
+
 			  globalFlag &= ~0x08;
 			  point = FT_GetLastPoint();
 			  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)
@@ -231,21 +256,28 @@ int main(void)
 
 						//while(1)
 						{
-							LPD8806_Clear();
-							//LPD8806_SetPixel(LED_COUNT-3, RGB(0,0,0) );
-							//LPD8806_SetPixel(LED_COUNT-2, RGB(0,0,0) );
-							//LPD8806_SetPixel(LED_COUNT-1, RGB(0,0,0) );
 
+							FlashLEDs(1000);
+							FlashLEDs(1000);
+							FlashLEDs(500);
+							FlashLEDs(500);
+							FlashLEDs(500);
+							FlashLEDs(500);
+							FlashLEDs(250);
+							FlashLEDs(250);
+							FlashLEDs(250);
+							FlashLEDs(250);
 
-							delay_ms(10);
-							LPD8806_Update();
-							delay_ms(1000);
 							//LPD8806_Update();
 							//delay_ms(1000);
 
 							BMP_SetCursor(0,LED_COUNT / 2);
 
 							gfxDrawBMPonLED(path);
+
+							LPD8806_Clear();
+							LPD8806_Update();
+							delay_ms(1000);
 						}
 
 

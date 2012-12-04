@@ -7,7 +7,7 @@
 
 #include "LCDAbstraction.h"
 
-#include "GLCD.h"
+#include "GLCD/GLCD.h"
 #include "fontRender.h"
 
 

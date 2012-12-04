@@ -5,7 +5,6 @@
 
 #include "physics.h"
 #include "GLCD/GLCD.h"
-#include "TouchPanel.h"
 
 #include "PhysBase.h"
 #include "PhysCircle.h"
@@ -16,6 +15,7 @@
 #include "Graphics\primitiveGfx.h"
 
 #include "linkedlist\linkedlist.h"
+#include "Coordinate/Coordinate.h"
 
 Coordinate BallLocation;
 

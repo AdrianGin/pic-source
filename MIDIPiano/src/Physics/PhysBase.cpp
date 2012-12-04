@@ -4,8 +4,6 @@
 #include <stdlib.h>
 
 #include "physics.h"
-#include "GLCD/GLCD.h"
-#include "TouchPanel.h"
 
 #include "PhysBase.h"
 

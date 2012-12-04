@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "TouchPanel.h"
+
 #include "fluidtouch.h"
 
 //Holds the inertia movement of X & Y CoOrdinates
@@ -56,7 +56,7 @@ FT_STATES FluidTouchGetState_FromPanel(Coordinate* point)
 {
 	static uint8_t offCount = OFF_COUNT_THRESHOLD;
 	FT_STATES ret = TOUCH_OFF;
-	point = Read_Ads7846();
+	point = GET_RAW_TOUCH_POINT();
 
 	if( point == NULL )
 	{
@@ -75,7 +75,7 @@ FT_STATES FluidTouchGetState_FromPanel(Coordinate* point)
 	{
 		offCount = 0;
 		ret = TOUCH_ON;
-		TP_BudgetGetDisplayPoint(&FT_CurrentPoint, point);
+		GET_NORMALISED_TOUCH_POINT(&FT_CurrentPoint, point);
 	}
 	return ret;
 }

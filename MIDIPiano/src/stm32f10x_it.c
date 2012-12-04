@@ -25,7 +25,7 @@
 #include "stm32f10x_it.h"
 #include "hw_config.h"
 #include "UARTProcessor/UARTProcessor.h"
-#include "SD_Card/sdio_sd.h"
+#include "SDIO/sdio_sd.h"
 #include "usb_lib.h"
 #include "usb_istr.h"
 #include "usb_pwr.h"

@@ -7,6 +7,8 @@
 
 volatile uint8_t DALED_NextInput;
 
+uint8_t DALED_BlurMode = 0;
+
 uint8_t DALED_WaitForInput(void)
 {
 	while(DALED_NextInput==0)
@@ -61,13 +63,23 @@ void DALED_BMP_Print(BMPFile_t* pBmpDec)
     		cursorY = Ystart;
     		j++;
 
-        	//Have new pictures
-        	LPD8806_Update();
-        	delay_ms(1170);
+    		if( DALED_BlurMode )
+    		{
+            	//Have new pictures
+            	LPD8806_Update();
+            	delay_ms(175);
+    		}
+    		else
+    		{
+            	//Have new pictures
+            	LPD8806_Update();
+            	delay_ms(117);
 
-    		LPD8806_Clear();
-    		LPD8806_Update();
-    		delay_ms(58);
+        		LPD8806_Clear();
+        		LPD8806_Update();
+        		delay_ms(58);
+    		}
+
 
 
     	}
