@@ -8,7 +8,7 @@ extern "C" {
 #define _LINKEDLIST_H
 
 #include <stdint.h>
-
+#include "linkedlistconf.h"
 
 typedef struct LIST_NODE_t
 {
@@ -38,8 +38,8 @@ void* LL_ReturnNodeDataFromIndex(LINKED_LIST_t* linkedList, uint16_t item);
 
 
 //For FreeRTOS
-#define LL_Malloc(size)		pvPortMalloc(size)
-#define LL_Free(handle)		vPortFree(handle)
+//#define LL_Malloc(size)		pvPortMalloc(size)
+//#define LL_Free(handle)		vPortFree(handle)
 
 //#define LL_Malloc(size)		malloc(size)
 //#define LL_Free(handle)		free(handle)

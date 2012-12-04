@@ -1154,7 +1154,6 @@ void LCD_Clear(uint16_t Color)
 void LCD_Clear(uint16_t Color)
 {
 	uint32_t index=0;
-	uint16_t x,y;
 
 	if( LCD_Code == HX8347D || LCD_Code == HX8347A )
 	{
@@ -1174,22 +1173,14 @@ void LCD_Clear(uint16_t Color)
 	{
 		LCD_SetCursor(0,0);
 	}
-//	Clr_Cs;
-	LCD_WriteIndex(0x0022);
 
-//	for( y = 0; y < 240; y ++)
-//	{
-//		for( x = 0; x < 320; x++)
-//		{
-//			LCD_SetPoint(x,y, Color);
-//		}
-//	}
+	LCD_WriteIndex(0x0022);
 
 	for( index = 0; index < MAX_X * MAX_Y; index++ )
 	{
 		LCD_WriteData(Color);
 	}
-//	Set_Cs;
+
 }
 //
 //__inline void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
@@ -1578,7 +1569,7 @@ void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, ui
         tmp_char = buffer[i];
         for( j=0; j<8; j++ )
         {
-            if( (tmp_char >> 7 - j) & 0x01 == 0x01 )
+            if( ((tmp_char >> (7 - j)) & 0x01) == 0x01 )
             {
                 LCD_SetPoint( Xpos + j, Ypos + i, charColor );  /* ×Ö·ûÑÕÉ« */
             }
@@ -1655,7 +1646,7 @@ void PutChinese(uint16_t Xpos,uint16_t Ypos,uint8_t *str,uint16_t Color,uint16_t
 		tmp_char |= buffer[2*i+1];
 		for (j = 0; j < 16; j++ )
 		{
-		    if ( (tmp_char >> 15-j ) & 0x01 == 0x01 )
+		    if ( ((tmp_char >> (15-j) ) & 0x01) == 0x01 )
 	        {
 		        LCD_SetPoint(Xpos+j,Ypos+i,Color);  /* ×Ö·ûÑÕÉ« */
 	        }

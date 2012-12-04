@@ -24,12 +24,8 @@
 
 #include "stm32f10x_it.h"
 #include "hw_config.h"
-#include "UARTProcessor/UARTProcessor.h"
-#include "SDIO/sdio_sd.h"
-#include "usb_lib.h"
-#include "usb_istr.h"
-#include "usb_pwr.h"
 
+#include "SDIO/sdio_sd.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -180,12 +176,11 @@ void USART1_IRQHandler(void)
 	if (USART_GetITStatus(USART1, USART_IT_RXNE ) != RESET)
 	{
 		/* Send the received data to the PC Host*/
-		ReceiveUSARTData();
 	}
 
 	if (USART_GetITStatus(USART1, USART_IT_ORE ) != RESET)
 	{
-		ReceiveUSARTData();
+
 	}
 }
 
@@ -280,32 +275,6 @@ void TIM3_IRQHandler(void)
 
 }
 
-
-/*******************************************************************************
-* Function Name  : USB_HP_CAN1_TX_IRQHandler
-* Description    : This function handles USB High Priority or CAN1 TX interrupts
-*                  requests.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void USB_HP_CAN1_TX_IRQHandler(void)
-{
-  CTR_HP();
-}
-
-/*******************************************************************************
-* Function Name  : USB_LP_CAN1_RX0_IRQHandler
-* Description    : This function handles USB Low Priority or CAN RX0 interrupts
-*                  requests.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-  USB_Istr();
-}
 
 
 

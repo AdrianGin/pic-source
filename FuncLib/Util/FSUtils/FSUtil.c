@@ -1,6 +1,7 @@
 
 #include <stdint.h>
 #include "printf/printf.h"
+#include "FSUtil.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -101,7 +102,7 @@ char* FSUtil_GetDirObj(DIR* dir)
 		else
 		{
 			/* It is a file. */
-			buffer = (char*)pvPortMalloc(strlen(fn)+1);
+			buffer = (char*)FS_UTIL_MALLOC(strlen(fn)+1);
 			if( buffer )
 			{
 				strcpy(buffer, fn);

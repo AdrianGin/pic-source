@@ -105,7 +105,6 @@ uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 
 int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y)
 {
-	uint8_t selItem = 0xFF;
 	int16_t diff;
 	int16_t divisor;
 	uint16_t fontHeight;
@@ -150,7 +149,6 @@ void GFX_LB_Draw(GFX_Listbox_t* LB)
 	LIST_NODE_t* node;
 	int16_t initPosition;
 
-	uint16_t x,y;
 	uint8_t index = 0;
 	uint16_t fontHeight;
 
@@ -220,8 +218,6 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 	Coordinate* point;
 	uint8_t ret = LB_NO_REDRAW;
 	static uint8_t dragCount = 0;
-	static uint8_t stopDragCount = 0;
-	static uint8_t isDragged = 0;
 
 	static uint8_t counters[5];
 
@@ -231,7 +227,6 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 	{
 		point = FT_GetLastPoint();
 		GFX_LB_SelectItem(LB, GFX_LB_CalculateSelectedItem(LB, point->y));
-		isDragged = 0;
 		dragCount = 0;
 		ret = LB_REQUIRES_REDRAW;
 	}
