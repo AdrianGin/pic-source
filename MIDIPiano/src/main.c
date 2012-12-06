@@ -34,7 +34,6 @@
 #include "Graphics\gfxEngine.h"
 #include "FSUtils\FSUtil.h"
 
-
 #include "InertiaTouch/InertiaTouch.h"
 #include "FluidTouch/FluidTouch.h"
 
@@ -50,6 +49,9 @@
 #include "Graphics/BMPDraw.h"
 
 #include "printf/printf.h"
+
+#include "app_cfg.h"
+#include "intertaskComm.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -80,22 +82,20 @@ void FlashLEDs(uint16_t abit)
 int main(void)
 {
 
-	int16_t i, j, k;
 	int16_t counters[10];
 	uint8_t ret;
-	uint8_t alternate;
-	int8_t index = 0;
+
 	char* LBItem;
 	char* fnPath;
 	Coordinate* point;
-	FT_STATES state;
-	Coordinate* inertia;
+
 	DIR dir;
-    RCC_ClocksTypeDef RCC_ClocksStatus;
+
 	char path[255];
 	uint16_t tickCounter = 0;
 	static uint8_t Togstate = 0;
 
+	InitInterTaskComms();
 
 	USART_Configuration();
 	GPIO_Configuration();
@@ -152,6 +152,7 @@ int main(void)
 	LPD8806_Update();
 
 
+
 	FSUtil_OpenDir(&dir, "/MIDI");
 	LCD_PauseUpdateScreen();
 
@@ -169,6 +170,16 @@ int main(void)
 			break;
 		}
 	}
+
+
+
+
+	App_TouchScreenTaskCreate();
+	App_GLCDScreenTaskCreate(&MIDIHdr);
+	App_MIDIPlaybackTaskCreate(&MIDIHdr);
+
+    /* Start the scheduler. */
+	vTaskStartScheduler();
 
   while (1)	
   {
@@ -234,9 +245,6 @@ int main(void)
 						  xprintf("SUCCESS!!\n");
 					  }
 				  }
-
-				  i = point->x;
-				  k = point->y;
 
 				  LCD_Clear(WHITE);
 

@@ -232,7 +232,7 @@ void TIM3_IRQHandler(void)
 {
 	static uint16_t cntr = 0;
 	static uint16_t cntr2 = 0;
-	static uint16_t cntr3 = 0;
+	static uint32_t cntr3 = 0;
 	static uint16_t cntr4 = 0;
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
@@ -243,7 +243,7 @@ void TIM3_IRQHandler(void)
 	}
 
 
-	if( cntr3++ == 500)
+	if( cntr3++ == 100000)
 	{
 		globalFlag |= 0x10;
 		cntr3 = 0;

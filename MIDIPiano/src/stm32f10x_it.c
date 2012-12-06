@@ -30,6 +30,7 @@
 #include "usb_istr.h"
 #include "usb_pwr.h"
 
+#include "intertaskComm.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -227,8 +228,24 @@ void DMA1_Channel3_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
 	static uint8_t state = 0;
+	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+	portBASE_TYPE xYieldRequired = pdFALSE;
 
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+
+	xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_MIDITick, &xHigherPriorityTaskWoken);
+	if( xTaskIsTaskSuspended(MIDIPlayBackHandle) == pdTRUE )
+	{
+		xYieldRequired = xTaskResumeFromISR(MIDIPlayBackHandle);
+	}
+
+	 if( (xYieldRequired == pdTRUE) || (xHigherPriorityTaskWoken == pdTRUE) )
+	 {
+		 // We should switch context so the ISR returns to a different task.
+		 // NOTE:  How this is done depends on the port you are using.  Check
+		 // the documentation and examples for your port.
+		 vPortYieldFromISR();
+	 }
 
 	globalFlag |= 1;
 }

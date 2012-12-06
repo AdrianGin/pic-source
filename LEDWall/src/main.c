@@ -42,6 +42,8 @@
 #include "Graphics/BMPDraw.h"
 #include "LEDArrayBMP/DA_LEDDisplay.h"
 
+#include "LEDWall/LEDWall.h"
+
 #include "printf/printf.h"
 
 #include <stdlib.h>
@@ -172,6 +174,7 @@ int main(void)
 
 
 
+
 		  if( globalFlag & 0x02 )
 		  {
 			  LCD_VSyncLow();
@@ -279,6 +282,7 @@ int main(void)
 
 		  if( globalFlag & 0x10 )
 		  {
+			  //Show1();
 			  //LPD8806_Update();
 			  globalFlag &= ~0x10;
 		  }

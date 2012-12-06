@@ -119,13 +119,7 @@ void gfxDrawBMPonLED(char* bmpImgPath)
 	FIL temp;
     BMPFile.pImageFile = &temp;
     ret = f_open( BMPFile.pImageFile, bmpImgPath, FA_OPEN_EXISTING | FA_READ );
-//    printf("retOpen=%d\n", ret);
     BMP_ReadHeader(&BMPFile);
-//    printf("BMP Width: %d\n", BMPFile.lWidth);
-//    printf("BMP Length:%d\n", BMPFile.lHeight);
-//    printf("BMP Planes:%d\n", BMPFile.bNumOfPlanes);
-//    printf("BMP Depth:%d\n", BMPFile.bBitsPerPixel);
-//    printf("BMP CompType:%d\n", BMPFile.blCompressionType);
     ret = DALED_BMP_Print(&BMPFile);
 
     f_close(BMPFile.pImageFile);

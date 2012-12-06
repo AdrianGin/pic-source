@@ -19,10 +19,15 @@ extern Semaphore_t Sem_StopMP3Decode;
 extern Queue_t Queue_GUI_MP3_Message;
 extern xTaskHandle mp3DecodeHandle;
 
+extern Semaphore_t Sem_MIDITick;
+extern xTaskHandle MIDIPlayBackHandle;
+
 extern uint32_t SeekValue;
 extern uint32_t MP3_Data_Index;
 
 uint8_t InitInterTaskComms(void);
+
+#define WAIT_FOR_MIDI_TICK()	while( SemaphoreTake(Sem_MIDITick, SEMAPHORE_BLOCK_WAIT) == pdFAIL){}
 
 #endif
 

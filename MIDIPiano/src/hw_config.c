@@ -118,26 +118,26 @@ void NVIC_Configuration(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
   NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 13;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 11;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 10;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 11;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
   NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 11;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
 
   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 14;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
@@ -159,8 +159,8 @@ void TIM_MIDI_Configuration(void)
 	TIM_TimeBaseInit(MIDI_TIM, &TIM_TimeBaseStructure);
 
 
-	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-	TIM_Cmd(MIDI_TIM, ENABLE);
+	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+	TIM_Cmd(MIDI_TIM, DISABLE);
 }
 
 
@@ -199,14 +199,14 @@ void USB_Config(void)
 
   /* Enable and configure the priority of the USB_LP IRQ Channel*/
   NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
   /* Enable and configure the priority of the USB_HP IRQ Channel*/
   NVIC_InitStructure.NVIC_IRQChannel = USB_HP_CAN1_TX_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
@@ -567,6 +567,8 @@ void SD_LowLevel_DMA_TxConfig(uint32_t *BufferSRC, uint32_t BufferSize)
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
   DMA_Init(DMA2_Channel4, &DMA_InitStructure);
 
+  DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
+
   /*!< DMA2 Channel4 enable */
   DMA_Cmd(DMA2_Channel4, ENABLE);
 }
@@ -600,6 +602,8 @@ void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize)
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
   DMA_Init(DMA2_Channel4, &DMA_InitStructure);
 
+  //DMA_ITConfig(DMA2_Channel4, DMA_IT_TC, ENABLE);
+
   /*!< DMA2 Channel4 enable */
   DMA_Cmd(DMA2_Channel4, ENABLE);
 }
@@ -611,6 +615,7 @@ void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize)
   */
 uint32_t SD_DMAEndOfTransferStatus(void)
 {
+	//return (uint32_t)SET;
   return (uint32_t)DMA_GetFlagStatus(DMA2_FLAG_TC4);
 }
 
