@@ -34,11 +34,16 @@ if
 3: List all directories and ..'s
 
 */
-#define INCLUDE_DIRS		(0x01)
-#define INCLUDE_DOT_DIR		(0x02)
+
+#define UP_LEVEL_TAG "<- Up one level"
+#define DIR_TAG		 "<DIR>"
+
+typedef enum {NO_DIRECTORIES 	= 0x00,
+			  INC_SELF_DIR  	= (1<<0),
+			  INC_ALL_DIRS		= (1<<1)} INCLUDE_MODE;
 
 void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilter);
-
+void GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item);
 
 
 #endif

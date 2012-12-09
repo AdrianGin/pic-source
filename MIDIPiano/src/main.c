@@ -63,7 +63,7 @@
 
 FATFS fs;
 MIDI_HEADER_CHUNK_t MIDIHdr;
-GFX_FB_t GFX_FB;
+
 volatile uint8_t globalFlag;
 
 void FlashLEDs(uint16_t abit)
@@ -142,7 +142,7 @@ int main(void)
 
 	GFX_FB_Init(&GFX_FB);
 	GFX_FB_OpenDirRel(&GFX_FB, "/");
-	GFX_FB_RepopulateList(&GFX_FB, INCLUDE_DIRS | INCLUDE_DOT_DIR, NULL);
+	GFX_FB_RepopulateList(&GFX_FB, INC_ALL_DIRS, NULL);
 
 //	//GFX_LB_AddItem(&GFX_FB.GFXLB, "<DIR>ABC");
 //	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAA");
@@ -150,8 +150,6 @@ int main(void)
 //	GFX_LB_AddItem(&GFX_FB.GFXLB, "AZV");
 //	GFX_LB_AddItem(&GFX_FB.GFXLB, "AG");
 //	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAV");
-
-
 
 	alphasort_linkedList(&GFX_FB.GFXLB.list, SORT_ASCENDING);
 

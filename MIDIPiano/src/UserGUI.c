@@ -9,8 +9,10 @@
 #include "Graphics/droidsansAA.h"
 #include "GLCD/GLCD.h"
 
-GFX_Listbox_t* GFX_LB;
+#include "Graphics/gfxFileBrowser.h"
 
+GFX_Listbox_t* GFX_LB;
+GFX_FB_t GFX_FB;
 
 void UserGUI_Init(void* gfxLB)
 {

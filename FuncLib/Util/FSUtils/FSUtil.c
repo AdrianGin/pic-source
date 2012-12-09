@@ -92,9 +92,14 @@ FSUTIL_t FSUtil_GetDirObj(DIR* dir, char* buffer)
 			strcpy(buffer, fn);
 			/* It is a directory */
 			/* Ignore dot entry */
-			if (fno.fname[0] == '.')
+			if ((fno.fname[0] == '.') && (fno.fname[1] == 0))
 			{
 				return DOT_DIRECTORY;
+			}
+
+			if ((fno.fname[0] == '.') && (fno.fname[1] == '.') && (fno.fname[2] == 0))
+			{
+				return DDOT_DIRECTORY;
 			}
 
 			if (fno.fattrib & AM_DIR)

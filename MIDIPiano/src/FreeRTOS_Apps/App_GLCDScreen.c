@@ -92,29 +92,30 @@ void Task_GLCDScreen(void * pvArg)
 
 			  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(GFX_LB);
 
+
 			  if( LBItem )
 			  {
 				  FRESULT tmp;
+				  GFX_FB_ProcessRequest(&GFX_FB, LBItem);
 
-
-				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-				  TIM_Cmd(MIDI_TIM, DISABLE);
-
-				  vTaskDelay(10);
-
-				  strcpy(path, "/MIDI/");
-				  strcat(path, LBItem);
-				  MPB_ResetMIDI();
-
-				  LS_ClearLightTimers();
-				  LS_ClearLights();
-
-				  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
-
-				  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
-
-				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-				  TIM_Cmd(MIDI_TIM, ENABLE);
+//				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+//				  TIM_Cmd(MIDI_TIM, DISABLE);
+//
+//				  vTaskDelay(10);
+//
+//				  strcpy(path, "/MIDI/");
+//				  strcat(path, LBItem);
+//				  MPB_ResetMIDI();
+//
+//				  LS_ClearLightTimers();
+//				  LS_ClearLights();
+//
+//				  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+//
+//				  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
+//
+//				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+//				  TIM_Cmd(MIDI_TIM, ENABLE);
 
 
 				  if(tmp == FR_OK)

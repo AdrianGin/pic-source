@@ -47,7 +47,7 @@
 
 #define  APP_TASK_PROCESSINPUTS_PRIO                         	tskIDLE_PRIORITY+2
 
-#define  APP_TASK_SYSTEMMONITOR_PRIO                         	tskIDLE_PRIORITY+5
+#define  APP_TASK_SYSTEMMONITOR_PRIO                         	tskIDLE_PRIORITY+1
 
 /*
 *********************************************************************************************************

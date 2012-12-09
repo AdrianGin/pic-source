@@ -8,9 +8,10 @@
 
 #include "gfxFileBrowser.h"
 #include "FSUtils/FSUtil.h"
+#include "Alphasort/alphasort.h"
 
-
-
+const char UP_ONE_LEVEL_TAG[] = UP_LEVEL_TAG;
+const char DIRECTORY_TAG[]	  = DIR_TAG;
 
 void GFX_FB_Init(GFX_FB_t* FB)
 {
@@ -34,6 +35,24 @@ void GFX_FB_OpenDirRel(GFX_FB_t* FB, char* relPath)
 }
 
 
+void GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item)
+{
+	if( strcmp(item, UP_ONE_LEVEL_TAG) == 0)
+	{
+		f_chdir("..");
+	}
+
+	if( strstr(item, DIRECTORY_TAG) )
+	{
+		f_chdir( &item[sizeof(DIRECTORY_TAG)-1] );
+		xprintf("Changing Dir... %s", &item[sizeof(DIRECTORY_TAG)-1]);
+	}
+
+	GFX_LB_DeleteListboxItems(&FB->GFXLB);
+	GFX_FB_RepopulateList(FB, INC_ALL_DIRS, NULL);
+	alphasort_linkedList(&FB->GFXLB.list, SORT_ASCENDING);
+}
+
 /*Include DIR
 
 if
@@ -56,16 +75,18 @@ void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilt
 
 		switch(ret)
 		{
-
 			case DOT_DIRECTORY:
-				if( !(includeDir & INCLUDE_DOT_DIR) )
+				if( !(includeDir & INC_SELF_DIR) )
 				{
 					ret = NO_PRINT;
 				}
 				break;
 
+			case DDOT_DIRECTORY:
+				strcpy(fnPath, UP_ONE_LEVEL_TAG);
+				ret = VALID_FILE;
 			case DIRECTORY:
-				if( !(includeDir & INCLUDE_DIRS) )
+				if( !(includeDir & INC_ALL_DIRS) )
 				{
 					ret = NO_PRINT;
 				}
@@ -92,8 +113,8 @@ void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilt
 			{
 				if(ret == DOT_DIRECTORY || ret == DIRECTORY)
 				{
-					memmove(&fnPath[5], fnPath, strlen(fnPath)+1);
-					strncpy(fnPath, "<DIR>", 5);
+					memmove(&fnPath[sizeof(DIRECTORY_TAG)-1], fnPath, strlen(fnPath)+1);
+					strncpy(fnPath, DIRECTORY_TAG, sizeof(DIRECTORY_TAG)-1);
 				}
 
 				xprintf("Path:%s\n", fnPath);

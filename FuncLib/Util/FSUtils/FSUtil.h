@@ -13,7 +13,8 @@
 //#define FS_UTIL_MALLOC(size)	 malloc(size)
 //#define FS_UTIL_MALLOC(size)	 pvPortMalloc(size)
 
-typedef enum {NO_PRINT, END_OF_LIST, VALID_FILE, DIRECTORY, DOT_DIRECTORY} FSUTIL_t;
+//DDOT = '..'
+typedef enum {NO_PRINT, END_OF_LIST, VALID_FILE, DIRECTORY, DOT_DIRECTORY, DDOT_DIRECTORY} FSUTIL_t;
 
 /* Start node to be scanned (also used as work area) */
 FRESULT scan_files ( char* path );
