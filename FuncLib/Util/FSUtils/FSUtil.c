@@ -57,13 +57,14 @@ FRESULT FSUtil_OpenDir(DIR* dir, char* path)
 	return res;
 }
 
-//This function mallocs memory
-char* FSUtil_GetDirObj(DIR* dir)
+
+
+FSUTIL_t FSUtil_GetDirObj(DIR* dir, char* buffer)
 {
     FILINFO fno;
     FRESULT res;
     int i;
-    char* buffer;
+
     char *fn;   /* This function is assuming non-Unicode cfg. */
 #if _USE_LFN
     static char lfn[_MAX_LFN + 1];
@@ -76,43 +77,39 @@ char* FSUtil_GetDirObj(DIR* dir)
 		res = f_readdir(dir, &fno);                   /* Read a directory item */
 		if (res != FR_OK || fno.fname[0] == 0)
 		{
-			return 0;  /* Break on error or end of dir */
+			return END_OF_LIST;  /* Break on error or end of dir */
 		}
 
-		/* Ignore dot entry */
-		if (fno.fname[0] == '.')
-		{
-			continue;
-		}
+
 		#if _USE_LFN
 		fn = *fno.lfname ? fno.lfname : fno.fname;
 		#else
 		fn = fno.fname;
 		#endif
 
-		/* It is a directory */
-		if (fno.fattrib & AM_DIR)
+		if( buffer )
 		{
-			continue;
-			//sprintf(&path[i], "/%s", fn);
-			//res = scan_files(path);
-			//if (res != FR_OK) break;
-			//path[i] = 0;
-		}
-		else
-		{
-			/* It is a file. */
-			buffer = (char*)FS_UTIL_MALLOC(strlen(fn)+1);
-			if( buffer )
+			strcpy(buffer, fn);
+			/* It is a directory */
+			/* Ignore dot entry */
+			if (fno.fname[0] == '.')
 			{
-				strcpy(buffer, fn);
+				return DOT_DIRECTORY;
 			}
-			return buffer;
-			//printf("%s/%s\n", path, fn);
+
+			if (fno.fattrib & AM_DIR)
+			{
+				return DIRECTORY;
+			}
+			else
+			{
+				/* It is a file. */
+				return VALID_FILE;
+			}
 		}
     }
 
-    return 0;
+    return END_OF_LIST;
 }
 
 

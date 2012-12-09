@@ -53,9 +53,9 @@ void Task_GLCDScreen(void * pvArg);
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void  App_GLCDScreenTaskCreate (MIDI_HEADER_CHUNK_t* MIDIHdr)
+void  App_GLCDScreenTaskCreate (void)
 {
-    xTaskCreate( Task_GLCDScreen , ( signed char * ) "GLCD" , APP_TASK_GLCDSCREEN_STK_SIZE , (void*)MIDIHdr , APP_TASK_GLCDSCREEN_PRIO , NULL );
+    xTaskCreate( Task_GLCDScreen , ( signed char * ) "GLCD" , APP_TASK_GLCDSCREEN_STK_SIZE , NULL , APP_TASK_GLCDSCREEN_PRIO , NULL );
 }
 
 
@@ -67,9 +67,6 @@ void Task_GLCDScreen(void * pvArg)
 	char* LBItem;
 	char* fnPath;
 	char path[255];
-	MIDI_HEADER_CHUNK_t* MIDIHdr;
-	MIDIHdr = (MIDI_HEADER_CHUNK_t*) pvArg;
-
 
 	counter = 0;
 
@@ -89,11 +86,11 @@ void Task_GLCDScreen(void * pvArg)
 	  //if( counter == 2 )
 	  {
 		  point = FT_GetLastPoint();
-		  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)
+		  if( GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW)
 		  {
 			  //SetTouchPoint(point->x, point->y);
 
-			  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(&GFX_LB);
+			  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(GFX_LB);
 
 			  if( LBItem )
 			  {
@@ -112,7 +109,7 @@ void Task_GLCDScreen(void * pvArg)
 				  LS_ClearLightTimers();
 				  LS_ClearLights();
 
-				  tmp =  MPB_PlayMIDIFile(MIDIHdr, (uint8_t*)path);
+				  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
 
 				  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
 
@@ -129,7 +126,7 @@ void Task_GLCDScreen(void * pvArg)
 			  LCD_Clear(WHITE);
 
 			  SetClip(1);
-			  GFX_LB_Draw(&GFX_LB);
+			  GFX_LB_Draw(GFX_LB);
 			  SetClip(0);
 			  setPixel(point->x,point->y);
 			  gfxWriteString(point->x, point->y, "Hi");

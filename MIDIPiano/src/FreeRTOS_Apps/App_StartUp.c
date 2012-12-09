@@ -25,18 +25,19 @@
 #include "app_cfg.h"
 #include "intertaskComm.h"
 
-#include "MIDIPlayback/midiplayback.h"
-#include "LightSys\LightSys.h"
-#include "LPD8806\LPD8806.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
-#include "MIDILightLogic/MIDILightLogic.h"
+#include "FSUtils/FSUtil.h"
 
-#include "LightSys/LightSys.h"
+#include "Graphics\gfxEngine.h"
+#include "UserGUI.h"
+
 #include "stm32f10x.h"
 
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-void Task_MIDIPlayback(void * pvArg);
+void Task_StartUp(void * pvArg);
 
 /*******************************************************************************
  * Function Name  : void Task_GLCDScreen(void * pvArg)
@@ -46,42 +47,36 @@ void Task_MIDIPlayback(void * pvArg);
  * Return         : None
  * Attention		 : None
  *******************************************************************************/
-void App_MIDIPlaybackTaskCreate(void)
+void App_StartUpTaskCreate(void)
 {
-	xTaskCreate( Task_MIDIPlayback, ( signed char * ) "MidiPB",
-			APP_TASK_MIDIPLAYBACK_STK_SIZE, NULL, APP_TASK_MIDIPLAYBACK_PRIO,
-			&MIDIPlayBackHandle);
+	xTaskCreate( Task_StartUp, ( signed char * ) "StartUp",
+			APP_TASK_STARTUP_STK_SIZE, NULL, APP_TASK_STARTUP_PRIO,
+			NULL);
 }
 
-void Task_MIDIPlayback(void * pvArg)
+void Task_StartUp(void * pvArg)
 {
-	uint16_t tickCounter = 0;
+
+
+	App_LightSystemTaskCreate();
+	App_MIDIPlaybackTaskCreate();
+
+	App_GLCDScreenTaskCreate();
+
+	App_TouchScreenTaskCreate();
+	App_ProcessInputsTaskCreate();
+
+	App_SystemMonitorTaskCreate();
+
+	App_DummyTaskCreate();
+
+
+
 
 	for (;;)
 	{
-
-		WAIT_FOR_MIDI_TICK();
-
-		MIDIHdr.masterClock++;
-		if (MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED)
-		{
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-			TIM_Cmd(MIDI_TIM, DISABLE);
-
-			myprintf("End of MIDI File:  ", 1);
-		}
-
-		//LPD8806_Update();
-		SemaphoreGive(Sem_LightSysUpdate);
-		vTaskResume(LightSystemHandle);
-
-		tickCounter++;
-		if ((tickCounter >= ((MIDIHdr.PPQ / 24))))
-		{
-			tickCounter = 0;
-			//MIDI_Tx(0xF8);
-		}
-
+		vTaskDelay(1000);
+		//vTaskDelete(NULL);
 	}
 }
 

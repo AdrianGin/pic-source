@@ -51,11 +51,30 @@ void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB)
 	return LL_ReturnNodeDataFromIndex(&LB->list, GFX_LB_ReturnSelectedItemIndex(LB));
 }
 
+void GFX_LB_DeleteListboxItems(GFX_Listbox_t* LB)
+{
+	uint16_t i;
+	LIST_NODE_t* node;
 
+	uint16_t count = LL_Count(&LB->list);
+
+	for( i = 0; i < count; i++ )
+	{
+		node = LB->list.first;
+		if( node )
+		{
+			LL_Free(node->data);
+			LL_Remove(&LB->list, node);
+		}
+	}
+}
 
 void GFX_LB_AddItem(GFX_Listbox_t* LB, char* item)
 {
-	LL_AppendData(&LB->list, item);
+	char* newLBItem;
+	newLBItem = LL_Malloc(strlen(item)+1);
+	strcpy(newLBItem, item);
+	LL_AppendData(&LB->list, newLBItem);
 }
 
 

@@ -13,6 +13,8 @@
 
 #include "MIDILightLogic/MIDILightLogic.h"
 
+#include "FreeRTOS.h"
+
 #define DEBUG(string)  xprintf("%s", string) //LCDInterface_Print(&PrimaryDisplay, string, 0)
 #define DEBUGn(string,n) DebugDump(string, n) //LCDInterface_Print(&PrimaryDisplay, string, n)
 
@@ -20,7 +22,6 @@
 void myprintf(char* string, uint32_t num);
 void myprintfd(char* string, uint32_t num);
 void myPrintNum(uint32_t num, uint8_t base);
-
 
 
 

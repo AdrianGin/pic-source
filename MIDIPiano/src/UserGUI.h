@@ -6,9 +6,9 @@
 #include "Graphics/Listbox.h"
 
 
-extern GFX_Listbox_t GFX_LB;
+extern GFX_Listbox_t* GFX_LB;
 
-void UserGUI_Init(void);
+void UserGUI_Init(void* gfxLB);
 
 
 #endif

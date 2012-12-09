@@ -36,7 +36,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-void Task_MIDIPlayback(void * pvArg);
+void Task_LightSystem(void * pvArg);
 
 /*******************************************************************************
  * Function Name  : void Task_GLCDScreen(void * pvArg)
@@ -46,42 +46,19 @@ void Task_MIDIPlayback(void * pvArg);
  * Return         : None
  * Attention		 : None
  *******************************************************************************/
-void App_MIDIPlaybackTaskCreate(void)
+void App_LightSystemTaskCreate(void)
 {
-	xTaskCreate( Task_MIDIPlayback, ( signed char * ) "MidiPB",
-			APP_TASK_MIDIPLAYBACK_STK_SIZE, NULL, APP_TASK_MIDIPLAYBACK_PRIO,
-			&MIDIPlayBackHandle);
+	xTaskCreate( Task_LightSystem, ( signed char * ) "LiSys",
+			APP_TASK_LIGHTSYS_STK_SIZE, NULL, APP_TASK_LIGHTSYS_PRIO,
+			&LightSystemHandle);
 }
 
-void Task_MIDIPlayback(void * pvArg)
+void Task_LightSystem(void * pvArg)
 {
-	uint16_t tickCounter = 0;
-
 	for (;;)
 	{
-
-		WAIT_FOR_MIDI_TICK();
-
-		MIDIHdr.masterClock++;
-		if (MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED)
-		{
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-			TIM_Cmd(MIDI_TIM, DISABLE);
-
-			myprintf("End of MIDI File:  ", 1);
-		}
-
-		//LPD8806_Update();
-		SemaphoreGive(Sem_LightSysUpdate);
-		vTaskResume(LightSystemHandle);
-
-		tickCounter++;
-		if ((tickCounter >= ((MIDIHdr.PPQ / 24))))
-		{
-			tickCounter = 0;
-			//MIDI_Tx(0xF8);
-		}
-
+		WAIT_FOR_LIGHTSYS_UPDATE();
+		LPD8806_Update();
 	}
 }
 

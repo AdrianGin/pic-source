@@ -277,6 +277,9 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 
 	note = LS_ApplyTranspose(LS_CHANNEL(command), note);
 	colour = LS_GetColourFromMIDI(command, note, velocity);
+
+	colour = SCALE_COLOUR(colour , velocity, MIDI_MAX_KEY);
+
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
 		//Reverse on LED Strip

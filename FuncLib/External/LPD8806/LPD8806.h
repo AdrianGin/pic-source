@@ -42,6 +42,12 @@
 
 #define NORM_RGB(r,g,b)	RGB( (r * MAX_LED_BRIGHTNESS) / (r+g+b), (g * MAX_LED_BRIGHTNESS) / (r+g+b), (b * MAX_LED_BRIGHTNESS) / (r+g+b))
 
+
+#define SCALE(number, factor, divisor)	((number * factor) / divisor )
+#define SCALE_COLOUR(colour, factor, divisor)	RGB( SCALE(LPD_RED(colour), factor, divisor), \
+													 SCALE(LPD_GREEN(colour), factor, divisor), \
+													 SCALE(LPD_BLUE(colour), factor, divisor))
+
 #define INLINE_FUNCTION	__inline
 
 /* Private function prototypes -----------------------------------------------*/				

@@ -4,8 +4,6 @@
 #include <stdint.h>
 //Requires some sort of FAT file System
 #include "FatFS/ff.h"
-#include "hardwareSpecific.h"
-
 
 #ifndef FS_UTIL_MALLOC
 #define FS_UTIL_MALLOC(size) malloc(size)
@@ -15,11 +13,13 @@
 //#define FS_UTIL_MALLOC(size)	 malloc(size)
 //#define FS_UTIL_MALLOC(size)	 pvPortMalloc(size)
 
+typedef enum {NO_PRINT, END_OF_LIST, VALID_FILE, DIRECTORY, DOT_DIRECTORY} FSUTIL_t;
+
 /* Start node to be scanned (also used as work area) */
 FRESULT scan_files ( char* path );
 FRESULT FSUtil_OpenDir(DIR* dir, char* path);
 //This function mallocs memory
-char* FSUtil_GetDirObj(DIR* dir);
+FSUTIL_t FSUtil_GetDirObj(DIR* dir, char* buffer);
 
 #endif
 

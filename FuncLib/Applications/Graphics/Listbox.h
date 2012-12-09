@@ -54,7 +54,7 @@ void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_
 void GFX_LB_SetColour(GFX_Listbox_t* LB, uint16_t font, uint16_t bkground, uint16_t fontSel, uint16_t select, uint16_t sep);
 void GFX_LB_SelectItem(GFX_Listbox_t* LB, uint8_t index);
 
-
+void GFX_LB_DeleteListboxItems(GFX_Listbox_t* LB);
 void GFX_LB_AddItem(GFX_Listbox_t* LB, char* item);
 void GFX_LB_Draw(GFX_Listbox_t* LB);
 

@@ -406,8 +406,13 @@ void LPD8806_Update(void)
 	LPD8806_Write(0);
 	LPD8806_Write(0);
 #else
-	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)
-	{}
+
+	if( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET )
+	{
+		return;
+	}
+//	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)
+//	{}
 
 	LPB8806_DMA_Start();
 

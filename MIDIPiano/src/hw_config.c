@@ -16,6 +16,11 @@
 
 #include "USBMIDI\USBMIDI.h"
 
+#ifdef __GNUC__
+#include <malloc.h>
+#else
+#endif /* __GNUC__ */
+
 
 volatile uint8_t rxReadPtr[USB_MIDI_CABLE_COUNT];
 uint8_t USB_Connected;
@@ -184,6 +189,23 @@ void AUX_TIM_Configuration(void)
 }
 
 
+void display_mallinfo(void)
+{
+    struct mallinfo mi;
+
+    mi = mallinfo();
+
+    xprintf("Total non-mmapped bytes (arena):       %d\n", mi.arena);
+    xprintf("# of free chunks (ordblks):            %d\n", mi.ordblks);
+    xprintf("# of free fastbin blocks (smblks):     %d\n", mi.smblks);
+    xprintf("# of mapped regions (hblks):           %d\n", mi.hblks);
+    xprintf("Bytes in mapped regions (hblkhd):      %d\n", mi.hblkhd);
+    xprintf("Max. total allocated space (usmblks):  %d\n", mi.usmblks);
+    xprintf("Free bytes held in fastbins (fsmblks): %d\n", mi.fsmblks);
+    xprintf("Total allocated space (uordblks):      %d\n", mi.uordblks);
+    xprintf("Total free space (fordblks):           %d\n", mi.fordblks);
+    xprintf("Topmost releasable block (keepcost):   %d\n", mi.keepcost);
+}
 
 
 

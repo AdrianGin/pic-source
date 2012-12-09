@@ -1,24 +1,24 @@
 /****************************************Copyright (c)****************************************************
-**                                      
-**                                 http://www.powermcu.com
-**
-**--------------File Info---------------------------------------------------------------------------------
-** File name:               main.c
-** Descriptions:            The TouchPanel application function
-**
-**--------------------------------------------------------------------------------------------------------
-** Created by:              AVRman
-** Created date:            2010-11-7
-** Version:                 v1.0
-** Descriptions:            The original version
-**
-**--------------------------------------------------------------------------------------------------------
-** Modified by:             
-** Modified date:           
-** Version:                 
-** Descriptions:            
-**
-*********************************************************************************************************/
+ **
+ **                                 http://www.powermcu.com
+ **
+ **--------------File Info---------------------------------------------------------------------------------
+ ** File name:               main.c
+ ** Descriptions:            The TouchPanel application function
+ **
+ **--------------------------------------------------------------------------------------------------------
+ ** Created by:              AVRman
+ ** Created date:            2010-11-7
+ ** Version:                 v1.0
+ ** Descriptions:            The original version
+ **
+ **--------------------------------------------------------------------------------------------------------
+ ** Modified by:
+ ** Modified date:
+ ** Version:
+ ** Descriptions:
+ **
+ *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
@@ -53,13 +53,18 @@
 #include "app_cfg.h"
 #include "intertaskComm.h"
 
+#include "Graphics/gfxFileBrowser.h"
+
+#include "Alphasort/alphasort.h"
+
 #include <stdlib.h>
 #include <string.h>
 
+
 FATFS fs;
 MIDI_HEADER_CHUNK_t MIDIHdr;
+GFX_FB_t GFX_FB;
 volatile uint8_t globalFlag;
-
 
 void FlashLEDs(uint16_t abit)
 {
@@ -72,28 +77,16 @@ void FlashLEDs(uint16_t abit)
 }
 
 /*******************************************************************************
-* Function Name  : main
-* Description    : Main program
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
+ * Function Name  : main
+ * Description    : Main program
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ * Attention		 : None
+ *******************************************************************************/
 int main(void)
 {
-
-	int16_t counters[10];
 	uint8_t ret;
-
-	char* LBItem;
-	char* fnPath;
-	Coordinate* point;
-
-	DIR dir;
-
-	char path[255];
-	uint16_t tickCounter = 0;
-	static uint8_t Togstate = 0;
 
 	InitInterTaskComms();
 
@@ -105,22 +98,20 @@ int main(void)
 	USB_Config();
 	USB_Init();
 
-
 	LPD8806_Init();
 	LS_Init();
-
 	MLL_Init();
 
 	TIM_MIDI_Configuration();
 	AUX_TIM_Configuration();
 
-	GPIO_SetBits(GPIOC, GPIO_Pin_13);
+	GPIO_SetBits(GPIOC, GPIO_Pin_13 );
 
 	delay_init();
 	delay_ms(10);
 
-    LCD_Initializtion();
-  //LCD_BackLight_Init();
+	LCD_Initializtion();
+	//LCD_BackLight_Init();
 	LCD_Clear(WHITE);
 	//delay_init();
 	//delay_ms(5000);
@@ -130,212 +121,117 @@ int main(void)
 	ret = f_mount(0, &fs);
 	xprintf("Mount %d\n", ret);
 
-	strcpy(path, "");
 	//scan_files(path);
 
-  TP_Init();
-  TouchPanel_Calibrate();
-  /* Infinite loop */
+	TP_Init();
+	TouchPanel_Calibrate();
+	/* Infinite loop */
 
-  //PhysicsInit();
-  FluidTouchInit();
+	//PhysicsInit();
+	FluidTouchInit();
 
+	UserGUI_Init(&GFX_FB.GFXLB);
 
-  UserGUI_Init();
-
-
-	LPD8806_SetPixel(0, RGB(0,255,255) );
-	LPD8806_SetPixel(LED_COUNT-1, RGB(0,255,0) );
-	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255) );
+	LPD8806_SetPixel(0, RGB(0,255,255));
+	LPD8806_SetPixel(LED_COUNT - 1, RGB(0,255,0));
+	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255));
 
 	//LPD8806_Test();
 	LPD8806_Update();
-
-
-
-	FSUtil_OpenDir(&dir, "/MIDI");
 	LCD_PauseUpdateScreen();
 
-	while( 1 )
-	{
-		fnPath = FSUtil_GetDirObj(&dir);
-		if( fnPath != NULL )
-		{
-			xprintf("Path:%s\n", fnPath);
-			GFX_LB_AddItem(&GFX_LB, fnPath);
-			//free(fnPath);
-		}
-		else
-		{
-			break;
-		}
-	}
+	GFX_FB_Init(&GFX_FB);
+	GFX_FB_OpenDirRel(&GFX_FB, "/");
+	GFX_FB_RepopulateList(&GFX_FB, INCLUDE_DIRS | INCLUDE_DOT_DIR, NULL);
+
+//	//GFX_LB_AddItem(&GFX_FB.GFXLB, "<DIR>ABC");
+//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAA");
+//	//GFX_LB_AddItem(&GFX_FB.GFXLB, "04 AA");
+//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AZV");
+//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AG");
+//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAV");
 
 
 
-
-	App_TouchScreenTaskCreate();
-	App_GLCDScreenTaskCreate(&MIDIHdr);
-	App_MIDIPlaybackTaskCreate(&MIDIHdr);
-
-    /* Start the scheduler. */
-	vTaskStartScheduler();
-
-  while (1)	
-  {
-	  //LCD_Clear(Black);
-
-	  //for(i = 0; i < 240; i++ )
-	  {
-
-		  if( counters[2] >= 5 )
-		  {
-			  FluidTouchMain();
-			  counters[2] = 0;
-
-			  //LPD8806_Update();
-		  }
-
-		  ProcessUARTBuffer();
-		  ProcessUSBMIDIBuffer_LightSys();
-		  //
+	alphasort_linkedList(&GFX_FB.GFXLB.list, SORT_ASCENDING);
 
 //
-		  if( globalFlag & 0x02 )
-		  {
-			  LCD_VSyncLow();
-			  GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-			  globalFlag &= ~0x02;
-		  }
+//	{
+//		DIR dir;
+//		FSUTIL_t ret;
+//		char fnPath[100];
+//
+//		f_chdir("/MIDI");
+//		f_chdir("..");
+//		FSUtil_OpenDir(&dir, ".");
+//		while (1)
+//		{
+//			ret = FSUtil_GetDirObj(&dir, fnPath);
+//
+//			switch(ret)
+//			{
+//				case DIRECTORY:
+//					memmove(&fnPath[5], fnPath, strlen(fnPath)+1);
+//					strncpy(fnPath, "<DIR>", 5);
+//					break;
+//
+//				case VALID_FILE:
+//
+//				case NO_FILE:
+//				default:
+//					break;
+//			}
+//
+//			if (ret != NO_FILE)
+//			{
+//				xprintf("Path:%s\n", fnPath);
+//				GFX_LB_AddItem(&GFX_LB, fnPath);
+//				//free(fnPath);
+//			}
+//			else
+//			{
+//				break;
+//			}
+//		}
+//	}
 
-		  if( globalFlag & 0x04 )
-		  {
-			  LCD_VSyncHigh();
-			  LS_ProcessAutoTurnOff();
-			  GPIO_SetBits(GPIOC, GPIO_Pin_13);
-			  globalFlag &= ~0x04;
-		  }
+	//App_StartUpTaskCreate();
+	App_LightSystemTaskCreate();
+	App_MIDIPlaybackTaskCreate();
 
-		  //if( counters[0] >= 200 )
-		  if( globalFlag & 0x08 )
-		  {
-			  globalFlag &= ~0x08;
-			  point = FT_GetLastPoint();
-			  if( GFX_LB_ProcessTouchInputs(&GFX_LB) == LB_REQUIRES_REDRAW)
-			  {
-				  //SetTouchPoint(point->x, point->y);
+	App_GLCDScreenTaskCreate();
 
-				  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(&GFX_LB);
+	//App_TouchScreenTaskCreate();
+	App_ProcessInputsTaskCreate();
+	App_SystemMonitorTaskCreate();
 
-				  if( LBItem )
-				  {
-					  FRESULT tmp;
+	//App_DummyTaskCreate();
+	/* Start the scheduler. */
+	vTaskStartScheduler();
 
-					  strcpy(path, "/MIDI/");
-					  strcat(path, LBItem);
-					  MPB_ResetMIDI();
-
-					  LS_ClearLightTimers();
-					  LS_ClearLights();
-
-					  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
-					  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
-					  if(tmp == FR_OK)
-					  {
-						  xprintf("SUCCESS!!\n");
-					  }
-				  }
-
-				  LCD_Clear(WHITE);
-
-				  SetClip(1);
-				  GFX_LB_Draw(&GFX_LB);
-				  SetClip(0);
-				  setPixel(point->x,point->y);
-				  gfxWriteString(point->x, point->y, "Hi");
-			  }
-
-
-			  counters[0] = 0;
-		  }
-
-		  if( globalFlag & 0x10 )
-		  {
-			  //LPD8806_Update();
-			  globalFlag &= ~0x10;
-		  }
-
-		  if (globalFlag & 0x01)
-		  {
-			  //if( tickCounter == 4)
-			  {
-				  MIDIHdr.masterClock++;
-				  globalFlag &= ~1;
-				  if( MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED )
-				  {
-					  myprintf("End of MIDI File:  ", 1);
-
-					  //TimerStop();
-				  }
-				  LPD8806_Update();
-			  }
-			  Togstate = Togstate ^ 1;
-
-				if( Togstate )
-				{
-					//GPIO_SetBits(GPIOC, GPIO_Pin_13);
-
-				}
-				else
-				{
-					//GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-				}
-			  tickCounter++;
-              if( (tickCounter >= ((MIDIHdr.PPQ / 24)) ) )
-              //if(tickCounter == 255)
-              {
-                  tickCounter = 0;
-                  //MIDI_Tx(0xF8);
-              }
-
-		  }
-
-
-		  counters[0]++;
-		  counters[1]++;
-		  counters[2]++;
-		  counters[3]++;
-	  }
-
-
-
-
-  }
 }
-
 
 #ifdef  USE_FULL_ASSERT
 
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *   where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *   where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t* file, uint32_t line)
-{ 
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+{
+	/* User can add his own implementation to report the file name and line number,
+	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
-  /* Infinite loop */
-  while (1)
-  {
-  }
+	/* Infinite loop */
+	while (1)
+	{
+	}
 }
 #endif
 
-
 /*********************************************************************************************************
-      END FILE
-*********************************************************************************************************/
+ END FILE
+ *********************************************************************************************************/

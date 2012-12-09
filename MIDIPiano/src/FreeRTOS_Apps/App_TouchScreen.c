@@ -43,7 +43,7 @@ void Task_TouchScreen(void * pvArg);
 *******************************************************************************/
 void  App_TouchScreenTaskCreate (void)
 {
-    xTaskCreate( Task_TouchScreen , ( signed char * ) "TouchScreen" , APP_TASK_TOUCHSCREEN_STK_SIZE , NULL , APP_TASK_TOUCHSCREEN_PRIO , NULL );
+    xTaskCreate( Task_TouchScreen , ( signed char * ) "TouchS" , APP_TASK_TOUCHSCREEN_STK_SIZE , NULL , APP_TASK_TOUCHSCREEN_PRIO , NULL );
 }
 
 

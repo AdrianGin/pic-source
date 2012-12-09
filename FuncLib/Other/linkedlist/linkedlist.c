@@ -6,12 +6,25 @@
 #include "linkedlist\linkedlist.h"
 
 
+void LL_DeleteList(LINKED_LIST_t* linkedList)
+{
+	LIST_NODE_t* node;
+	LIST_NODE_t* nextNode;
+	node = linkedList->first;
+
+	while(node)
+	{
+		LL_Remove(linkedList, node);
+		node = linkedList->first;
+	}
+}
 
 LIST_NODE_t* LL_NewNode(void* data)
 {
     LIST_NODE_t* newNode;
 
     newNode = (LIST_NODE_t*)LL_Malloc(sizeof(LIST_NODE_t));
+
 //    while( newNode == NULL )
 //    {
 //        newNode = (LIST_NODE_t*)malloc(sizeof(LIST_NODE_t));
@@ -74,8 +87,8 @@ void LL_InsertBefore(LINKED_LIST_t* linkedList, LIST_NODE_t* node, LIST_NODE_t* 
        LIST_NODE_t* tmp;
        tmp = (LIST_NODE_t*)node->prev;
        tmp->next = (struct LIST_NODE_t*)newNode;
-       node->prev = (struct LIST_NODE_t*)newNode;
    }
+   node->prev = (struct LIST_NODE_t*)newNode;
 }
 
 void LL_InsertBeginning(LINKED_LIST_t* linkedList, LIST_NODE_t* newNode)
@@ -116,6 +129,10 @@ void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node)
    if( node->prev == NULL )
    {
       linkedList->first = (LIST_NODE_t*)node->next;
+      if( node->next )
+      {
+    	  node->prev = NULL;
+      }
    }
    else
    {
@@ -123,10 +140,15 @@ void LL_Remove(LINKED_LIST_t* linkedList, LIST_NODE_t* node)
       tmp = (LIST_NODE_t*)node->prev;
       tmp->next = (struct LIST_NODE_t*)node->next;
    }
+
    //If we are removing the tail
    if( node->next == NULL)
    {
       linkedList->last = (LIST_NODE_t*)node->prev;
+      if( node->prev )
+      {
+    	  node->next = NULL;
+      }
    }
    else
    {

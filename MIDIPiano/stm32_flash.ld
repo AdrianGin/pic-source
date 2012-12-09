@@ -36,7 +36,7 @@ ENTRY(Reset_Handler)
 _estack = 0x20010000;    /* end of 64K RAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
+_Min_Heap_Size = 0x2800;      /* required amount of heap  */
 _Min_Stack_Size = 0xF00; /* required amount of stack */
 
 /* Specify the memory areas */
@@ -147,9 +147,12 @@ SECTIONS
   {
     . = ALIGN(4);
     . = . + _Min_Heap_Size;
+    __heap_limit = .;
     . = . + _Min_Stack_Size;
     . = ALIGN(4);
   } >RAM
+
+  PROVIDE ( __heap_limit = __heap_limit );
 
   /* MEMORY_bank1 section, code must be located here explicitly            */
   /* Example: extern int foo(void) __attribute__ ((section (".mb1text"))); */
