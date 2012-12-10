@@ -35,22 +35,36 @@ void GFX_FB_OpenDirRel(GFX_FB_t* FB, char* relPath)
 }
 
 
-void GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item)
+GFX_FB_SELECT_ITEM GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item)
 {
+
+	uint8_t refreshList = 0;
+
 	if( strcmp(item, UP_ONE_LEVEL_TAG) == 0)
 	{
 		f_chdir("..");
+		refreshList = 1;
 	}
 
 	if( strstr(item, DIRECTORY_TAG) )
 	{
 		f_chdir( &item[sizeof(DIRECTORY_TAG)-1] );
+		refreshList = 1;
 		xprintf("Changing Dir... %s", &item[sizeof(DIRECTORY_TAG)-1]);
+
 	}
 
-	GFX_LB_DeleteListboxItems(&FB->GFXLB);
-	GFX_FB_RepopulateList(FB, INC_ALL_DIRS, NULL);
-	alphasort_linkedList(&FB->GFXLB.list, SORT_ASCENDING);
+
+	if( refreshList == 1)
+	{
+		GFX_LB_DeleteListboxItems(&FB->GFXLB);
+		GFX_FB_RepopulateList(FB, INC_ALL_DIRS, NULL);
+		alphasort_linkedList(&FB->GFXLB.list, SORT_ASCENDING);
+		return GFX_FB_DIR_SELECTED;
+	}
+
+	return GFX_FB_NO_DIR_SELECTED;
+
 }
 
 /*Include DIR

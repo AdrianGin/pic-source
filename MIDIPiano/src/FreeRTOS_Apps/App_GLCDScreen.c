@@ -1,28 +1,27 @@
 /****************************************Copyright (c)****************************************************
-**                                      
-**                                 http://www.powermcu.com
-**
-**--------------File Info---------------------------------------------------------------------------------
-** File name:               uctsk_TouchScreen.c
-** Descriptions:            The uctsk_TouchScreen application function
-**
-**--------------------------------------------------------------------------------------------------------
-** Created by:              AVRman
-** Created date:            2010-11-26
-** Version:                 v1.0
-** Descriptions:            The original version
-**
-**--------------------------------------------------------------------------------------------------------
-** Modified by:             
-** Modified date:           
-** Version:                 
-** Descriptions:            
-**
-*********************************************************************************************************/
+ **
+ **                                 http://www.powermcu.com
+ **
+ **--------------File Info---------------------------------------------------------------------------------
+ ** File name:               uctsk_TouchScreen.c
+ ** Descriptions:            The uctsk_TouchScreen application function
+ **
+ **--------------------------------------------------------------------------------------------------------
+ ** Created by:              AVRman
+ ** Created date:            2010-11-26
+ ** Version:                 v1.0
+ ** Descriptions:            The original version
+ **
+ **--------------------------------------------------------------------------------------------------------
+ ** Modified by:
+ ** Modified date:
+ ** Version:
+ ** Descriptions:
+ **
+ *********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
 //#include <includes.h>
-
 #include "app_cfg.h"
 #include "intertaskComm.h"
 #include "Graphics/LCDAbstraction.h"
@@ -46,18 +45,20 @@
 void Task_GLCDScreen(void * pvArg);
 
 /*******************************************************************************
-* Function Name  : void Task_GLCDScreen(void * pvArg)
-* Description    :
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-void  App_GLCDScreenTaskCreate (void)
+ * Function Name  : void Task_GLCDScreen(void * pvArg)
+ * Description    :
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ * Attention		 : None
+ *******************************************************************************/
+void App_GLCDScreenTaskCreate(void)
 {
-    xTaskCreate( Task_GLCDScreen , ( signed char * ) "GLCD" , APP_TASK_GLCDSCREEN_STK_SIZE , NULL , APP_TASK_GLCDSCREEN_PRIO , NULL );
+	xTaskCreate( Task_GLCDScreen, ( signed char * ) "GLCD",
+			APP_TASK_GLCDSCREEN_STK_SIZE, NULL, APP_TASK_GLCDSCREEN_PRIO, NULL);
 }
 
+#define TIME_TO_REDRAW	(10)
 
 void Task_GLCDScreen(void * pvArg)
 {
@@ -68,35 +69,55 @@ void Task_GLCDScreen(void * pvArg)
 	char* fnPath;
 	char path[255];
 
+	uint8_t redrawFlag;
+
 	counter = 0;
 
-   	for(;;)
-   	{   
-	  LCD_VSyncLow();
-	  GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-	  vTaskDelay(1);
+	for (;;)
+	{
+		LCD_VSyncLow();
+		GPIO_ResetBits(GPIOC, GPIO_Pin_13 );
+		vTaskDelay(1);
 
-	  LCD_VSyncHigh();
-	  LS_ProcessAutoTurnOff();
-	  GPIO_SetBits(GPIOC, GPIO_Pin_13);
-	  vTaskDelay(32);
+		LCD_VSyncHigh();
+		LS_ProcessAutoTurnOff();
+		GPIO_SetBits(GPIOC, GPIO_Pin_13 );
+		vTaskDelay(32);
 
-	  counter++;
+		point = FT_GetLastPoint();
+		if (GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW)
+		{
+			redrawFlag = 1;
+			if(counter == 0)
+			{
+				counter = 1;
+			}
+		}
+		else
+		{
+			redrawFlag = 0;
+		}
 
-	  //if( counter == 2 )
-	  {
-		  point = FT_GetLastPoint();
-		  if( GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW)
-		  {
-			  //SetTouchPoint(point->x, point->y);
+		if (counter)
+		{
+			counter++;
+		}
 
-			  LBItem = (char*)GFX_LB_ReturnSelectedItemPtr(GFX_LB);
+		if (counter >= TIME_TO_REDRAW)
+		{
+			counter = 0;
+			redrawFlag = 1;
+			//SetTouchPoint(point->x, point->y);
 
+			LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
 
-			  if( LBItem )
-			  {
-				  FRESULT tmp;
-				  GFX_FB_ProcessRequest(&GFX_FB, LBItem);
+			if (LBItem)
+			{
+				FRESULT tmp;
+				if (GFX_FB_ProcessRequest(&GFX_FB, LBItem) == GFX_FB_DIR_SELECTED)
+				{
+					GFX_LB_SelectItem(GFX_LB, NO_SELECTION);
+				}
 
 //				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
 //				  TIM_Cmd(MIDI_TIM, DISABLE);
@@ -117,28 +138,26 @@ void Task_GLCDScreen(void * pvArg)
 //				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
 //				  TIM_Cmd(MIDI_TIM, ENABLE);
 
+				if (tmp == FR_OK)
+				{
+					xprintf("SUCCESS!!\n");
+				}
+			}
+		}
 
-				  if(tmp == FR_OK)
-				  {
-					  xprintf("SUCCESS!!\n");
-				  }
-			  }
+		if( redrawFlag )
+		{
+			LCD_Clear(WHITE);
+			SetClip(1);
+			GFX_LB_Draw(GFX_LB);
+			SetClip(0);
+			setPixel(point->x, point->y);
+			gfxWriteString(point->x, point->y, "Hi");
+		}
 
-			  LCD_Clear(WHITE);
-
-			  SetClip(1);
-			  GFX_LB_Draw(GFX_LB);
-			  SetClip(0);
-			  setPixel(point->x,point->y);
-			  gfxWriteString(point->x, point->y, "Hi");
-		  }
-		  counter = 0;
-	  }
-
-
-    }
+	}
 }
 
 /*********************************************************************************************************
-      END FILE
-*********************************************************************************************************/
+ END FILE
+ *********************************************************************************************************/

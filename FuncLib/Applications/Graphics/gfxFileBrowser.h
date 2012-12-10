@@ -42,8 +42,15 @@ typedef enum {NO_DIRECTORIES 	= 0x00,
 			  INC_SELF_DIR  	= (1<<0),
 			  INC_ALL_DIRS		= (1<<1)} INCLUDE_MODE;
 
+
+typedef enum {GFX_FB_DIR_SELECTED 		= 0x00,
+			  GFX_FB_NO_DIR_SELECTED  	= (1<<0)
+} GFX_FB_SELECT_ITEM;
+
+
+
 void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilter);
-void GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item);
+GFX_FB_SELECT_ITEM GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item);
 
 
 #endif
