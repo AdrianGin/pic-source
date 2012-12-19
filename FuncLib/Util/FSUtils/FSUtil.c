@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "FatFS/ff.h"
 
 /* Start node to be scanned (also used as work area) */
@@ -120,6 +121,20 @@ FSUTIL_t FSUtil_GetDirObj(DIR* dir, char* buffer)
 
 
 
+uint8_t FSUtil_HasExtension(char* fn, char* extension)
+{
+	char upperStr[5];
+	int i;
+	for( i = 0; i < strlen(extension)+1; i++)
+	{
+		upperStr[i] = toupper(extension[i]);
+	}
 
+	if( strstr(fn, extension) || strstr(fn, upperStr))
+	{
+		return 1;
+	}
+	return 0;
+}
 
 

@@ -40,16 +40,19 @@ uint8_t* LPD8806_GFXRAM = &LPD8806_DMABUFFER[GFXRAM_OFFSET];
 uint8_t LPD8806_Brightness;
 
 #define LPD8806_USE_DMA
-#define LPB8806_DMA_CHANNEL	DMA1_Channel3
+
 #define LPD8806_USE_SPI1
+#define LPD_USE_ALTERNATE_SPI1
 //#define LPD8806_USE SPI2
 
 #ifdef  LPD8806_USE_SPI1
 
-//#define LPD_USE_ALTERNATE_SPI1
+#define LPB8806_DMA_CHANNEL	DMA1_Channel3
 
 #define LPD_SPI			SPI1
 #define LPB_SPI_RCC		RCC_APB2Periph_SPI1
+#define LPD_DMA_FLAG_TC	DMA1_FLAG_TC3
+
 
 #ifdef LPD_USE_ALTERNATE_SPI1
 #define LPB_GPIO_RCC	 RCC_APB2Periph_GPIOB
@@ -66,6 +69,8 @@ uint8_t LPD8806_Brightness;
 #define LPD_SPI_RCC_APBeriphClockCmd RCC_APB2PeriphClockCmd
 
 #else
+#define LPB8806_DMA_CHANNEL	DMA1_Channel5
+#define LPD_DMA_FLAG_TC		DMA1_FLAG_TC5
 
 #define LPD_SPI			SPI2
 #define LPB_SPI_RCC		RCC_APB1Periph_SPI2
@@ -249,7 +254,7 @@ void LPD8806_DMA_Init(void)
 
 
 
-void LPB8806_DMA_Start(void)
+void LPD8806_DMA_Start(void)
 {
 	/* DMA2 Channel2 configuration ----------------------------------------------*/
 	/* DMA Channel configuration ----------------------------------------------*/
@@ -407,14 +412,14 @@ void LPD8806_Update(void)
 	LPD8806_Write(0);
 #else
 
-	if( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET )
+	if( DMA_GetFlagStatus(LPD_DMA_FLAG_TC) == RESET )
 	{
 		return;
 	}
 //	while( DMA_GetFlagStatus(DMA1_FLAG_TC3) == RESET)
 //	{}
 
-	LPB8806_DMA_Start();
+	LPD8806_DMA_Start();
 
 #endif
 }

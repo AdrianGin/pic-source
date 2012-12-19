@@ -32,7 +32,7 @@
 
 #include "LightSys/LightSys.h"
 #include "stm32f10x.h"
-#include "Graphics/Listbox.h"
+#include "Graphics/gfxListbox.h"
 
 #include "FluidTouch/FluidTouch.h"
 
@@ -58,20 +58,53 @@ void App_GLCDScreenTaskCreate(void)
 			APP_TASK_GLCDSCREEN_STK_SIZE, NULL, APP_TASK_GLCDSCREEN_PRIO, NULL);
 }
 
-#define TIME_TO_REDRAW	(10)
+
+void ExecuteMIDIFile(char* LBItem)
+{
+	char path[255];
+	FRESULT tmp;
+
+	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+	TIM_Cmd(MIDI_TIM, DISABLE);
+
+	vTaskDelay(10);
+
+	strcpy(path, GFX_FB_CWD());
+	strcat(path, "/");
+	strcat(path, LBItem);
+	MPB_ResetMIDI();
+
+	LS_ClearLightTimers();
+	LS_ClearLights();
+
+	tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+
+	xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
+
+	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+	TIM_Cmd(MIDI_TIM, ENABLE);
+
+	if (tmp == FR_OK)
+	{
+		xprintf("SUCCESS!!\n");
+	}
+
+}
+
 
 void Task_GLCDScreen(void * pvArg)
 {
 
-	uint16_t counter;
+	uint8_t actionDelay;
 	Coordinate* point;
-	char* LBItem;
+	char* LBItem = NULL;
 	char* fnPath;
-	char path[255];
+
+	FT_STATES state;
 
 	uint8_t redrawFlag;
 
-	counter = 0;
+	actionDelay = 0;
 
 	for (;;)
 	{
@@ -85,75 +118,57 @@ void Task_GLCDScreen(void * pvArg)
 		vTaskDelay(32);
 
 		point = FT_GetLastPoint();
-		if (GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW)
+		redrawFlag = 0;
+
+
+		//if( FluidGetTouch() != TOUCH_OFF )
 		{
-			redrawFlag = 1;
-			if(counter == 0)
-			{
-				counter = 1;
-			}
+			redrawFlag = gfxFrame_ProcessInputs(&GFX_MainFrame, point);
 		}
-		else
-		{
-			redrawFlag = 0;
-		}
-
-		if (counter)
-		{
-			counter++;
-		}
-
-		if (counter >= TIME_TO_REDRAW)
-		{
-			counter = 0;
-			redrawFlag = 1;
-			//SetTouchPoint(point->x, point->y);
-
-			LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
-
-			if (LBItem)
-			{
-				FRESULT tmp;
-				if (GFX_FB_ProcessRequest(&GFX_FB, LBItem) == GFX_FB_DIR_SELECTED)
-				{
-					GFX_LB_SelectItem(GFX_LB, NO_SELECTION);
-				}
-
-//				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-//				  TIM_Cmd(MIDI_TIM, DISABLE);
 //
-//				  vTaskDelay(10);
+//		if ((LBItem == NULL) && (GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW))
+//		{
+//			redrawFlag = 1;
+//			LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
+//		}
 //
-//				  strcpy(path, "/MIDI/");
-//				  strcat(path, LBItem);
-//				  MPB_ResetMIDI();
+//		if (LBItem != NULL)
+//		{
+//			if (actionDelay++ >= EXECUTION_DELAY)
+//			{
+//				actionDelay = 0;
+//				redrawFlag = 1;
 //
-//				  LS_ClearLightTimers();
-//				  LS_ClearLights();
 //
-//				  tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+//				if (GFX_FB_ProcessRequest(&GFX_FB.GFXLB, LBItem) == GFX_FB_DIR_SELECTED)
+//				{
 //
-//				  xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
+//					FTI_ResetInertia(&GFX_LB->inertia);
+//					GFX_LB_SelectItem(GFX_LB, NO_SELECTION);
+//				}
+//				else
+//				{
+//					if( FSUtil_HasExtension(LBItem, ".mid") )
+//					{
+//						ExecuteMIDIFile(LBItem);
+//					}
+//				}
+//				GFX_LB_ResetTouchCounter(GFX_LB);
+//				LBItem = NULL;
 //
-//				  TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-//				  TIM_Cmd(MIDI_TIM, ENABLE);
+//
+//			}
+//		}
 
-				if (tmp == FR_OK)
-				{
-					xprintf("SUCCESS!!\n");
-				}
-			}
-		}
-
-		if( redrawFlag )
-		{
-			LCD_Clear(WHITE);
-			SetClip(1);
-			GFX_LB_Draw(GFX_LB);
-			SetClip(0);
-			setPixel(point->x, point->y);
-			gfxWriteString(point->x, point->y, "Hi");
-		}
+//		if( redrawFlag )
+//		{
+//			LCD_Clear(WHITE);
+//			SetClip(1);
+//			GFX_LB_Draw(GFX_LB);
+//			SetClip(0);
+//			setPixel(point->x, point->y);
+//			gfxWriteString(point->x, point->y, "Hi");
+//		}
 
 	}
 }

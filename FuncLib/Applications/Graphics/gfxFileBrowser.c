@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "Listbox.h"
+#include "gfxListbox.h"
 
 
 #include "gfxFileBrowser.h"
@@ -15,13 +15,14 @@ const char DIRECTORY_TAG[]	  = DIR_TAG;
 
 void GFX_FB_Init(GFX_FB_t* FB)
 {
-	strcpy(FB->cwd, "/");
+	//strcpy(FB->cwd, "/");
 }
 
-char* GFX_FB_CWD(GFX_FB_t* FB)
+char* GFX_FB_CWD(void)
 {
-	f_getcwd (FB->cwd, sizeof(FB->cwd));
-	return FB->cwd;
+	static char cwd[_MAX_LFN];
+	f_getcwd (cwd, sizeof(cwd));
+	return cwd;
 }
 
 void GFX_FB_OpenDir(GFX_FB_t* FB, char* path)
@@ -35,32 +36,32 @@ void GFX_FB_OpenDirRel(GFX_FB_t* FB, char* relPath)
 }
 
 
-GFX_FB_SELECT_ITEM GFX_FB_ProcessRequest(GFX_FB_t* FB, char* item)
+GFX_FB_SELECT_ITEM GFX_FB_ProcessRequest(GFX_Listbox_t* LB, char* item)
 {
 
-	uint8_t refreshList = 0;
+	uint8_t refreshList = GFX_FB_NO_DIR_SELECTED;
 
 	if( strcmp(item, UP_ONE_LEVEL_TAG) == 0)
 	{
 		f_chdir("..");
-		refreshList = 1;
+		refreshList = GFX_FB_DDOT_SELECTED;
 	}
 
 	if( strstr(item, DIRECTORY_TAG) )
 	{
 		f_chdir( &item[sizeof(DIRECTORY_TAG)-1] );
-		refreshList = 1;
+		refreshList = GFX_FB_DIR_SELECTED;
 		xprintf("Changing Dir... %s", &item[sizeof(DIRECTORY_TAG)-1]);
-
 	}
 
 
-	if( refreshList == 1)
+	if( refreshList == GFX_FB_DDOT_SELECTED ||
+		refreshList == GFX_FB_DIR_SELECTED	)
 	{
-		GFX_LB_DeleteListboxItems(&FB->GFXLB);
-		GFX_FB_RepopulateList(FB, INC_ALL_DIRS, NULL);
-		alphasort_linkedList(&FB->GFXLB.list, SORT_ASCENDING);
-		return GFX_FB_DIR_SELECTED;
+		GFX_LB_DeleteListboxItems(LB);
+		GFX_FB_RepopulateList(LB, INC_ALL_DIRS, NULL);
+		alphasort_linkedList(&LB->list, SORT_ASCENDING);
+		return refreshList;
 	}
 
 	return GFX_FB_NO_DIR_SELECTED;
@@ -76,13 +77,16 @@ if
 3: List all directories and ..'s
 
 */
-void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilter)
+void GFX_FB_RepopulateList(GFX_Listbox_t* LB, uint8_t includeDir, char* extensionFilter)
 {
 	DIR dir;
 	FSUTIL_t ret;
 	char fnPath[100];
 
-	FSUtil_OpenDir(&dir, GFX_FB_CWD(FB));
+
+
+
+	FSUtil_OpenDir(&dir, GFX_FB_CWD() );
 	while (1)
 	{
 		ret = FSUtil_GetDirObj(&dir, fnPath);
@@ -132,7 +136,7 @@ void GFX_FB_RepopulateList(GFX_FB_t* FB, uint8_t includeDir, char* extensionFilt
 				}
 
 				xprintf("Path:%s\n", fnPath);
-				GFX_LB_AddItem(&FB->GFXLB, fnPath);
+				GFX_LB_AddItem(LB, fnPath);
 				fnPath[0] = 0;
 				//free(fnPath);
 			}

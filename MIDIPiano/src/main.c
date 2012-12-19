@@ -101,6 +101,8 @@ int main(void)
 	LPD8806_Init();
 	LS_Init();
 	MLL_Init();
+	LPD8806_Clear();
+	LPD8806_Update();
 
 	TIM_MIDI_Configuration();
 	AUX_TIM_Configuration();
@@ -142,7 +144,7 @@ int main(void)
 
 	GFX_FB_Init(&GFX_FB);
 	GFX_FB_OpenDirRel(&GFX_FB, "/");
-	GFX_FB_RepopulateList(&GFX_FB, INC_ALL_DIRS, NULL);
+	GFX_FB_RepopulateList(&GFX_FB.GFXLB, INC_ALL_DIRS, NULL);
 
 //	//GFX_LB_AddItem(&GFX_FB.GFXLB, "<DIR>ABC");
 //	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAA");
@@ -207,6 +209,7 @@ int main(void)
 	/* Start the scheduler. */
 	vTaskStartScheduler();
 
+	return 0;
 }
 
 #ifdef  USE_FULL_ASSERT

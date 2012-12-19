@@ -5,24 +5,31 @@
 
 #include "linkedlist\linkedlist.h"
 #include "gfxEngine.h"
-#include "listbox.h"
+#include "gfxlistbox.h"
 #include "fontRender.h"
 
 #include "InertiaTouch/InertiaTouch.h"
 #include "FluidTouch\FluidTouch.h"
 
+#define REQUIRE_TOUCH_OFF	(0xF0)
 
 void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_t width, void* fontHdr, uint16_t spacing)
 {
 	LB->x = x;
 	LB->y = y;
+
+	LB->fixedX = x;
+	LB->fixedY = y;
+
 	LB->spacing = spacing;
 	LB->height = height;
 	LB->width = width;
 	LB->fontHdr = fontHdr;
 	GFX_LB_SetColour(LB,0,0,0,0,0);
-	LB->selectedItems[0] = NULL;
+	LB->selectedItems[0] = NO_SELECTION;
 	LB->margin = 5;
+
+	LB->counters[TOUCH_ON] = REQUIRE_TOUCH_OFF;
 
 	FTI_InitInertia(&LB->inertia);
 }
@@ -53,20 +60,7 @@ void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB)
 
 void GFX_LB_DeleteListboxItems(GFX_Listbox_t* LB)
 {
-	uint16_t i;
-	LIST_NODE_t* node;
-
-	uint16_t count = LL_Count(&LB->list);
-
-	for( i = 0; i < count; i++ )
-	{
-		node = LB->list.first;
-		if( node )
-		{
-			LL_Free(node->data);
-			LL_Remove(&LB->list, node);
-		}
-	}
+	LL_DeleteListAndData(&LB->list);
 }
 
 void GFX_LB_AddItem(GFX_Listbox_t* LB, char* item)
@@ -83,8 +77,8 @@ int16_t GFX_LB_GetPosition(GFX_Listbox_t* LB)
 	return LB->y;
 }
 
-#define MIN_HEIGHT	(200)
-#define Y_BOUNDARY	(200)
+//#define MIN_HEIGHT	(200)
+//#define Y_BOUNDARY	(200)
 uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 {
 
@@ -96,20 +90,28 @@ uint8_t GFX_LB_SetPosition(GFX_Listbox_t* LB, int16_t y)
 	totalSpacing = fontHdr->height + LB->spacing*2;
 
 
-	if( y + ((LL_Count(&LB->list)) * totalSpacing) < Y_BOUNDARY )
+	if(y + (LL_Count(&LB->list) * totalSpacing) < (LB->height+LB->fixedY))
 	{
-		LB->y = Y_BOUNDARY - (LL_Count(&LB->list)) * totalSpacing;
+		LB->y = (LB->fixedY+LB->height) - (LL_Count(&LB->list) * totalSpacing);
 		y = LB->y;
+		if(((LL_Count(&LB->list) * totalSpacing) < LB->height))
+		{
+			LB->y = LB->fixedY;
+			return LB_OS_TOP;
+
+		}
+
 		return LB_OS_BOTTOM;
+
 	}
 	else
 	{
 		LB->y = y;
 	}
 
-	if( y > MIN_HEIGHT )
+	if( y > LB->fixedY )
 	{
-		LB->y = MIN_HEIGHT;
+		LB->y = LB->fixedY;
 		return LB_OS_TOP;
 		//LB->y = y;
 	}
@@ -133,7 +135,7 @@ int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y)
 
 	if( diff < 0 )
 	{
-		return 0xFF;
+		return NO_SELECTION;
 	}
 	divisor = (LB->spacing * 2) + fontHeight;
 
@@ -184,12 +186,16 @@ void GFX_LB_Draw(GFX_Listbox_t* LB)
 
 	gfxSetColour(LB->bkColour);
 	//gfxFillRect(LB->x, LB->y, LB->x + LB->width, LB->y + LB->height);
-
+	SetClipRgn(LB->fixedX, LB->fixedY, LB->fixedX + LB->width, LB->fixedY + LB->height);
 
 	while( node != NULL )
 	{
 
 		LB->y = LB->y + (LB->spacing);
+		if( LB->y > MAX_LCD_Y)
+		{
+			break;
+		}
 
 		gfxSetColour(LB->fontColour);
 		if( index == LB->selectedItems[0] )
@@ -204,8 +210,6 @@ void GFX_LB_Draw(GFX_Listbox_t* LB)
 		node = node->next;
 		gfxSetColour(LB->sepColour);
 		GFX_LB_DrawSeparator(LB);
-
-
 
 		index++;
 	}
@@ -231,6 +235,12 @@ uint16_t GFX_LB_GetFontHeight(GFX_Listbox_t* LB)
 
 
 
+
+void GFX_LB_ResetTouchCounter(GFX_Listbox_t* LB)
+{
+	LB->counters[TOUCH_ON] = REQUIRE_TOUCH_OFF;
+}
+
 uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 {
 	FT_STATES state;
@@ -238,11 +248,9 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 	uint8_t ret = LB_NO_REDRAW;
 	static uint8_t dragCount = 0;
 
-	static uint8_t counters[5];
-
 	state = FluidGetTouch();
 
-	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG))  && (counters[TOUCH_ON]==0)  )
+	if( ((state == TOUCH_TAP) || (state == TOUCH_LONG))  && (LB->counters[TOUCH_ON]==0)  )
 	{
 		point = FT_GetLastPoint();
 		GFX_LB_SelectItem(LB, GFX_LB_CalculateSelectedItem(LB, point->y));
@@ -255,8 +263,8 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 		//This here is a STOP while dragging.
 		if( !FTI_InertiaIsZero(&LB->inertia) )
 		{
-			counters[TOUCH_ON]++;
-			if( counters[TOUCH_ON] >= 2 )
+			LB->counters[TOUCH_ON]++;
+			if( LB->counters[TOUCH_ON] >= 2 )
 			{
 				FTI_ResetInertia(&LB->inertia);
 				GFX_LB_Scroll(LB, LB->inertia.Value.y);
@@ -312,7 +320,7 @@ uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
 	if( state == TOUCH_OFF )
 	{
 		//GFX_LB_SelectItem(LB, NO_SELECTION);
-		counters[TOUCH_ON] = 0;
+		LB->counters[TOUCH_ON] = 0;
 		dragCount = 0;
 	}
 

@@ -372,7 +372,15 @@ uint8_t USBMIDI_GetByte(uint8_t* inByte, uint8_t cableNo)
 
 
 
+void USBSetConnected(void)
+{
+	USB_Connected = 1;
+}
 
+void USBSetDisconnected(void)
+{
+	USB_Connected = 0;
+}
 
 /* This here makes the process Buffer redundant */
 void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo)
@@ -392,7 +400,7 @@ void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo)
 	    MIDImsgComplete[wMIDImsgCount].header = MIDImsgComplete[wMIDImsgCount].header | (cableNo << 4);
 		  wMIDImsgCount = (wMIDImsgCount + 1) & MIDI_OUT_MASK;
 
-			while( GetEPTxStatus(ENDP1) == EP_TX_VALID )
+			while(USB_Connected && GetEPTxStatus(ENDP1) == EP_TX_VALID )
 			{
 				//printf("!");
 			}

@@ -21,6 +21,8 @@ FRESULT scan_files ( char* path );
 FRESULT FSUtil_OpenDir(DIR* dir, char* path);
 //This function mallocs memory
 FSUTIL_t FSUtil_GetDirObj(DIR* dir, char* buffer);
+uint8_t FSUtil_HasExtension(char* fn, char* extension);
+
 
 #endif
 

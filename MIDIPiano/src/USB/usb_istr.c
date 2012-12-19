@@ -195,7 +195,14 @@ void SOF_Callback(void)
 
 void CTR_Callback(void)
 {
-	//printf("CTR Callback!\n");
+	//xprintf("CTR Callback!\n");
+
+}
+
+void RESET_Callback(void)
+{
+	xprintf("RESET Callback!\n");
+	USBSetConnected();
 }
 
 void ERR_Callback(void)
@@ -207,9 +214,11 @@ void ERR_Callback(void)
 }
 
 
+
 void ESOF_Callback(void)
 {
-	//printf("USB DC\n");
+	xprintf("USB DC\n");
+	USBSetDisconnected();
 	SetCNTR(GetCNTR() & ~CNTR_ESOFM);
 }
 

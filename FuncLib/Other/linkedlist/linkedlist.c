@@ -9,7 +9,6 @@
 void LL_DeleteList(LINKED_LIST_t* linkedList)
 {
 	LIST_NODE_t* node;
-	LIST_NODE_t* nextNode;
 	node = linkedList->first;
 
 	while(node)
@@ -18,6 +17,22 @@ void LL_DeleteList(LINKED_LIST_t* linkedList)
 		node = linkedList->first;
 	}
 }
+
+
+
+void LL_DeleteListAndData(LINKED_LIST_t* linkedList)
+{
+	LIST_NODE_t* node;
+	node = linkedList->first;
+
+	while(node)
+	{
+		LL_Free(node->data);
+		LL_Remove(linkedList, node);
+		node = linkedList->first;
+	}
+}
+
 
 LIST_NODE_t* LL_NewNode(void* data)
 {

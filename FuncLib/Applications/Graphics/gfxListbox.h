@@ -17,8 +17,11 @@ typedef struct
 {
 	//There are spacings, SPACE FONT SPACE LINE
 	int16_t spacing;
-	//position of the LB
+	//current position of the LB
 	int16_t x, y;
+
+	//The fix X-Y fix points of the LB
+	int16_t fixedX, fixedY;
 
 	//Dimensions of the LB
 	int16_t height, width;
@@ -44,6 +47,9 @@ typedef struct
 	uint8_t margin;
 
 	InertiaElement_t inertia;
+	uint8_t counters[1];
+
+	uint8_t (*execFunc)(void* self, void* data);
 
 } GFX_Listbox_t;
 
@@ -70,5 +76,7 @@ uint8_t GFX_LB_ReturnSelectedItemIndex(GFX_Listbox_t* LB);
 void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB);
 
 uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
+
+void GFX_LB_ResetTouchCounter(GFX_Listbox_t* LB);
 
 #endif

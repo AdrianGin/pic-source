@@ -91,6 +91,8 @@ void AUX_TIM_Configuration(void);
 void USB_Config(void);
 void Set_USBClock(void);
 void USB_Cable_Config (FunctionalState NewState);
+void USBSetConnected(void);
+void USBSetDisconnected(void);
 
 void ProcessUSBMIDIBuffer_Loopback(void);
 void ProcessUSBMIDIBuffer_LightSys(void);

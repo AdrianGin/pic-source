@@ -27,12 +27,13 @@ extern "C" {
 #ifndef _COORDINATE_H_
 #define _COORDINATE_H_
 
+#include <stdint.h>
 
 /* Private typedef -----------------------------------------------------------*/
 typedef	struct POINT 
 {
-   int16_t x;
-   int16_t y;
+   int x;
+   int y;
 } Coordinate;
 
 

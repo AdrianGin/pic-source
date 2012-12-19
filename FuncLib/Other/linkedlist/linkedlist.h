@@ -24,6 +24,8 @@ typedef struct
 } LINKED_LIST_t;
 
 void LL_DeleteList(LINKED_LIST_t* linkedList);
+void LL_DeleteListAndData(LINKED_LIST_t* linkedList);
+
 LIST_NODE_t* LL_NewNode(void* data);
 void* LL_PopData(LINKED_LIST_t* linkedList);
 void LL_AppendData(LINKED_LIST_t* linkedList, void* data);
