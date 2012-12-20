@@ -635,9 +635,11 @@ void LCD_Initializtion(void)
 	    LCD_WriteReg(0x000E,0x2B00);    delay_ms(20);
 	    LCD_WriteReg(0x001E,0x00B0);    delay_ms(20);
 	    LCD_WriteReg(0x0001,0x693F);    delay_ms(20);   /* Sets up the rotation, upside down = 0x2B3F */
+	    //LCD_WriteReg(0x0001,0x2B3F);    delay_ms(20);   /* Sets up the rotation, upside down = 0x2B3F */
 	    LCD_WriteReg(0x0002,0x0600);    delay_ms(20);
 	    LCD_WriteReg(0x0010,0x0000);    delay_ms(20);
-	    LCD_WriteReg(0x0011,0x6060);    delay_ms(20);
+	    //LCD_WriteReg(0x0011,0x6060);    delay_ms(20); //for increment along Y, use 0x6060, else, x6068
+	    LCD_WriteReg(0x0011,0x6078);    delay_ms(20);
 
 	    //LCD_WriteReg(0x0011,0xE070);    delay_ms(20);
 
@@ -1337,7 +1339,12 @@ void LCD_PauseUpdateScreen(void)
 		case LGDP4535:
 		case SSD1289:
 		case SSD1298:
+
+#ifdef DISP_ORIENTATION == 90 || DISP_ORIENTATION == 270
+			LCD_WriteReg(0x0011,0xE078);
+#else
 			LCD_WriteReg(0x0011,0xE070);
+#endif
 			break;
 
 	    case HX8347A:
@@ -1359,7 +1366,11 @@ void LCD_ResumeUpdateScreen(void)
 		case LGDP4535:
 		case SSD1289:
 		case SSD1298:
+#ifdef DISP_ORIENTATION == 90 || DISP_ORIENTATION == 270
+			LCD_WriteReg(0x0011,0x6078);
+#else
 			LCD_WriteReg(0x0011,0x6070);
+#endif
 			break;
 
 	    case HX8347A:

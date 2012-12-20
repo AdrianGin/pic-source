@@ -33,8 +33,6 @@ uint8_t ProcessFB_Request(void* LB, void* data)
 
 		ret = GFX_FB_ProcessRequest(gfxlb, LBItem);
 
-		xprintf("RET=%d\n", ret);
-
 		if (ret != GFX_FB_NO_DIR_SELECTED)
 		{
 			if( ret == GFX_FB_DIR_SELECTED )
@@ -46,11 +44,9 @@ uint8_t ProcessFB_Request(void* LB, void* data)
 		}
 		else
 		{
-			xprintf("NP:%s\n", LBItem);
 			GFX_LB_SelectItem(gfxlb, NO_SELECTION);
 			if( FSUtil_HasExtension(LBItem, ".mid") )
 			{
-				xprintf("EXECM\n");
 				ExecuteMIDIFile(LBItem);
 			}
 		}
@@ -59,7 +55,7 @@ uint8_t ProcessFB_Request(void* LB, void* data)
 		return 0;
 	}
 
-	return PEDNING_ACTION;
+	return PEDNING_ACTION_FLAG;
 }
 
 
@@ -69,7 +65,7 @@ void UserGUI_Init(void* gfxLB)
 
 	GFX_LB = (GFX_Listbox_t*)gfxLB;
 	fontHdr = (FONT_HEADER*)Tahoma_12.address;
-	GFX_LB_Init(GFX_LB, 20, 20 , 200, 300, (void*)&Verdana_12 ,  5);
+	GFX_LB_Init(GFX_LB, 20, 20 , 180, 300, (void*)&Verdana_12 ,  5);
 	//GFX_LB_Init(&GFX_LB, 20, 120 , 190, 300, (void*)&Tahoma_12 ,  5);
 	GFX_LB->list.first = (LIST_NODE_t*)NULL;
 	GFX_LB->list.last = (LIST_NODE_t*)NULL;

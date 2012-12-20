@@ -124,6 +124,13 @@ int main(void)
 	xprintf("Mount %d\n", ret);
 
 	//scan_files(path);
+	LPD8806_SetPixel(0, RGB(0,255,255));
+	LPD8806_SetPixel(LED_COUNT - 1, RGB(0,255,0));
+	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255));
+
+	//LPD8806_Test();
+	LPD8806_Update();
+
 
 	TP_Init();
 	TouchPanel_Calibrate();
@@ -134,78 +141,19 @@ int main(void)
 
 	UserGUI_Init(&GFX_FB.GFXLB);
 
-	LPD8806_SetPixel(0, RGB(0,255,255));
-	LPD8806_SetPixel(LED_COUNT - 1, RGB(0,255,0));
-	LPD8806_SetPixel(LED_COUNT / 2, RGB(255,0,255));
-
-	//LPD8806_Test();
-	LPD8806_Update();
 	LCD_PauseUpdateScreen();
 
 	GFX_FB_Init(&GFX_FB);
 	GFX_FB_OpenDirRel(&GFX_FB, "/");
 	GFX_FB_RepopulateList(&GFX_FB.GFXLB, INC_ALL_DIRS, NULL);
-
-//	//GFX_LB_AddItem(&GFX_FB.GFXLB, "<DIR>ABC");
-//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAA");
-//	//GFX_LB_AddItem(&GFX_FB.GFXLB, "04 AA");
-//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AZV");
-//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AG");
-//	GFX_LB_AddItem(&GFX_FB.GFXLB, "AAV");
-
 	alphasort_linkedList(&GFX_FB.GFXLB.list, SORT_ASCENDING);
 
-//
-//	{
-//		DIR dir;
-//		FSUTIL_t ret;
-//		char fnPath[100];
-//
-//		f_chdir("/MIDI");
-//		f_chdir("..");
-//		FSUtil_OpenDir(&dir, ".");
-//		while (1)
-//		{
-//			ret = FSUtil_GetDirObj(&dir, fnPath);
-//
-//			switch(ret)
-//			{
-//				case DIRECTORY:
-//					memmove(&fnPath[5], fnPath, strlen(fnPath)+1);
-//					strncpy(fnPath, "<DIR>", 5);
-//					break;
-//
-//				case VALID_FILE:
-//
-//				case NO_FILE:
-//				default:
-//					break;
-//			}
-//
-//			if (ret != NO_FILE)
-//			{
-//				xprintf("Path:%s\n", fnPath);
-//				GFX_LB_AddItem(&GFX_LB, fnPath);
-//				//free(fnPath);
-//			}
-//			else
-//			{
-//				break;
-//			}
-//		}
-//	}
-
-	//App_StartUpTaskCreate();
 	App_LightSystemTaskCreate();
 	App_MIDIPlaybackTaskCreate();
-
 	App_GLCDScreenTaskCreate();
-
-	//App_TouchScreenTaskCreate();
 	App_ProcessInputsTaskCreate();
 	App_SystemMonitorTaskCreate();
 
-	//App_DummyTaskCreate();
 	/* Start the scheduler. */
 	vTaskStartScheduler();
 

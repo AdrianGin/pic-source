@@ -1,24 +1,24 @@
 /**
-  ******************************************************************************
-  * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c 
-  * @author  MCD Application Team
-  * @version V3.4.0
-  * @date    10/15/2010
-  * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
-  ******************************************************************************
-  * @copy
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
-  */ 
+ ******************************************************************************
+ * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c
+ * @author  MCD Application Team
+ * @version V3.4.0
+ * @date    10/15/2010
+ * @brief   Main Interrupt Service Routines.
+ *          This file provides template for all exceptions handler and
+ *          peripherals interrupt service routine.
+ ******************************************************************************
+ * @copy
+ *
+ * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+ * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+ * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+ * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+ * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+ * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+ *
+ * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+ */
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -32,9 +32,11 @@
 
 #include "intertaskComm.h"
 
+#include "core_cm3.h"
+
 /** @addtogroup STM32F10x_StdPeriph_Template
-  * @{
-  */
+ * @{
+ */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -48,76 +50,80 @@
 /******************************************************************************/
 
 /**
-  * @brief   This function handles NMI exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief   This function handles NMI exception.
+ * @param  None
+ * @retval None
+ */
 void NMI_Handler(void)
 {
 }
 
 /**
-  * @brief  This function handles Hard Fault exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles Hard Fault exception.
+ * @param  None
+ * @retval None
+ */
 void HardFault_Handler(void)
 {
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
+	/* Go to infinite loop when Hard Fault exception occurs */
+
+	NVIC_SystemReset();
+
+	while (1)
+	{
+	}
 }
 
 /**
-  * @brief  This function handles Memory Manage exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles Memory Manage exception.
+ * @param  None
+ * @retval None
+ */
 void MemManage_Handler(void)
 {
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
+	NVIC_SystemReset();
+	/* Go to infinite loop when Memory Manage exception occurs */
+	while (1)
+	{
+	}
 }
 
 /**
-  * @brief  This function handles Bus Fault exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles Bus Fault exception.
+ * @param  None
+ * @retval None
+ */
 void BusFault_Handler(void)
 {
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
+	NVIC_SystemReset();
+	/* Go to infinite loop when Bus Fault exception occurs */
+	while (1)
+	{
+	}
 }
 
 /**
-  * @brief  This function handles Usage Fault exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles Usage Fault exception.
+ * @param  None
+ * @retval None
+ */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+	NVIC_SystemReset();
+	/* Go to infinite loop when Usage Fault exception occurs */
+	while (1)
+	{
+	}
 }
 
-
 /**
-  * @brief  This function handles Debug Monitor exception.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles Debug Monitor exception.
+ * @param  None
+ * @retval None
+ */
 void DebugMon_Handler(void)
 {
 }
-
 
 //Used by FreeRTOS
 ///**
@@ -156,25 +162,21 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief  This function handles PPP interrupt request.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function handles PPP interrupt request.
+ * @param  None
+ * @retval None
+ */
 /*void PPP_IRQHandler(void)
-{
-}*/
-
-
-
-
+ {
+ }*/
 
 /*******************************************************************************
-* Function Name  : USART1_IRQHandler
-* Description    : This function handles USART1 global interrupt request.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
+ * Function Name  : USART1_IRQHandler
+ * Description    : This function handles USART1 global interrupt request.
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ *******************************************************************************/
 
 void USART1_IRQHandler(void)
 {
@@ -190,40 +192,34 @@ void USART1_IRQHandler(void)
 	}
 }
 
-
-
-
 /**
-  * @}
-  */ 
+ * @}
+ */
 /*******************************************************************************
-* Function Name  : SDIO_IRQHandler
-* Description    : This function handles SDIO global interrupt request.
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
+ * Function Name  : SDIO_IRQHandler
+ * Description    : This function handles SDIO global interrupt request.
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ * Attention		 : None
+ *******************************************************************************/
 void SDIO_IRQHandler(void)
 {
-  /* Process All SDIO Interrupt Sources */
+	/* Process All SDIO Interrupt Sources */
 //  CPU_SR         cpu_sr;
 //  OS_ENTER_CRITICAL();
 //  OSIntNesting++;
 //  OS_EXIT_CRITICAL();
 //
-  SD_ProcessIRQSrc();
+	SD_ProcessIRQSrc();
 //
 //  OSIntExit();
 }
-
-
 
 void DMA1_Channel3_IRQHandler(void)
 {
 	//DMA_ClearITPendingBit(DMA1_FLAG_TC3 | DMA1_FLAG_GL3);
 }
-
 
 void TIM2_IRQHandler(void)
 {
@@ -231,21 +227,21 @@ void TIM2_IRQHandler(void)
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 	portBASE_TYPE xYieldRequired = pdFALSE;
 
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update );
 
-	xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_MIDITick, &xHigherPriorityTaskWoken);
-	if( xTaskIsTaskSuspended(MIDIPlayBackHandle) == pdTRUE )
+	xHigherPriorityTaskWoken =
+			SemaphoreGiveISR(Sem_MIDITick, &xHigherPriorityTaskWoken);
+	if (xTaskIsTaskSuspended(MIDIPlayBackHandle) == pdTRUE)
 	{
 		xYieldRequired = xTaskResumeFromISR(MIDIPlayBackHandle);
 	}
 
-	 if( (xYieldRequired == pdTRUE) || (xHigherPriorityTaskWoken == pdTRUE) )
-	 {
-		 // We should switch context so the ISR returns to a different task.
-		 // NOTE:  How this is done depends on the port you are using.  Check
-		 // the documentation and examples for your port.
-		 vPortYieldFromISR();
-	 }
+	if ((xYieldRequired == pdTRUE)|| (xHigherPriorityTaskWoken == pdTRUE) ){
+	// We should switch context so the ISR returns to a different task.
+	// NOTE:  How this is done depends on the port you are using.  Check
+	// the documentation and examples for your port.
+	vPortYieldFromISR();
+}
 
 	globalFlag |= 1;
 }
@@ -256,37 +252,35 @@ void TIM3_IRQHandler(void)
 	static uint16_t cntr2 = 0;
 	static uint16_t cntr3 = 0;
 	static uint16_t cntr4 = 0;
-	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+	TIM_ClearITPendingBit(TIM3, TIM_IT_Update );
 
-
-	if( cntr4++ == (277/2))
+	if (cntr4++ == (277 / 2))
 	{
 		cntr4 = 0;
 	}
 
-
-	if( cntr3++ == 500)
+	if (cntr3++ == 500)
 	{
 		globalFlag |= 0x10;
 		cntr3 = 0;
 	}
 
 	cntr2++;
-	if( cntr2 == 3000)
+	if (cntr2 == 3000)
 	{
 		globalFlag |= 0x08;
 		cntr2 = 0;
 	}
 
 	cntr++;
-	if( cntr == 1 )
+	if (cntr == 1)
 	{
 		//GPIO_SetBits(GPIOC, GPIO_Pin_13);
 		globalFlag |= 0x04;
 		globalFlag &= ~0x02;
 	}
 
-	if( cntr == 320*2 )
+	if (cntr == 320 * 2)
 	{
 		//GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 		globalFlag |= 0x02;
@@ -294,36 +288,32 @@ void TIM3_IRQHandler(void)
 		cntr = 0;
 	}
 
-
 }
 
-
 /*******************************************************************************
-* Function Name  : USB_HP_CAN1_TX_IRQHandler
-* Description    : This function handles USB High Priority or CAN1 TX interrupts
-*                  requests.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
+ * Function Name  : USB_HP_CAN1_TX_IRQHandler
+ * Description    : This function handles USB High Priority or CAN1 TX interrupts
+ *                  requests.
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ *******************************************************************************/
 void USB_HP_CAN1_TX_IRQHandler(void)
 {
-  CTR_HP();
+	CTR_HP();
 }
 
 /*******************************************************************************
-* Function Name  : USB_LP_CAN1_RX0_IRQHandler
-* Description    : This function handles USB Low Priority or CAN RX0 interrupts
-*                  requests.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
+ * Function Name  : USB_LP_CAN1_RX0_IRQHandler
+ * Description    : This function handles USB Low Priority or CAN RX0 interrupts
+ *                  requests.
+ * Input          : None
+ * Output         : None
+ * Return         : None
+ *******************************************************************************/
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-  USB_Istr();
+	USB_Istr();
 }
-
-
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

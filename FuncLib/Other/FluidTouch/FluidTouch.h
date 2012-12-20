@@ -42,7 +42,7 @@ extern FT_STATES FT_State;
 void FluidTouchInit(void);
 void FluidTouchMain(void);
 
-FT_STATES FluidGetTouch(void);
+FT_STATES FT_FluidGetTouchGesture(void);
 void _FluidTouch_CalcDiff(Coordinate* newPoint);
 FT_STATES FluidTouchGetState_FromPanel(Coordinate* point);
 
@@ -55,7 +55,7 @@ void FT_ResetDiff(void);
 #define FT_GetLastPoint() &FT_LastPoint
 #define FT_GetDiff() &FT_Diff
 #define FT_GetTouchState() FT_State
-
+#define FT_ClearTouchState() FT_State = TOUCH_OFF
 
 
 #endif

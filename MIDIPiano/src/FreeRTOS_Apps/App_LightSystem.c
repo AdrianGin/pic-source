@@ -55,10 +55,11 @@ void App_LightSystemTaskCreate(void)
 
 void Task_LightSystem(void * pvArg)
 {
+	LPD8806_Update();
 	for (;;)
 	{
 		WAIT_FOR_LIGHTSYS_UPDATE();
-		LPD8806_Update();
+		//LPD8806_Update();
 	}
 }
 

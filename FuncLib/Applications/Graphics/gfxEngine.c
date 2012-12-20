@@ -71,13 +71,33 @@ void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 {
 	int16_t   x, y;
 
-    for(y = top; y < bottom + 1; y++)
+//    for(y = top; y < bottom + 1; y++)
+//    {
+//        for(x = left; x < right + 1; x++)
+//        {
+//            PutPixel(x, y);
+//        }
+//    }
+    for(y = top; y < bottom+1; y++)
     {
-        for(x = left; x < right + 1; x++)
-        {
-            PutPixel(x, y);
-        }
+		if( y >= MAX_LCD_Y || y < 0 )
+		{
+			break;
+		}
+    	x = left;
+		LCD_SetCursor(x,y);
+		LCD_WriteIndex(0x0022);
+		for( x = left; x < right; x++ )
+		{
+			if( x >= MAX_LCD_X || x < 0)
+			{
+				break;
+			}
+			LCD_WriteData(_color);
+		}
     }
+
+
 }
 
 void gfxDrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1)

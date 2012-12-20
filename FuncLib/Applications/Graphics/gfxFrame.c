@@ -8,6 +8,8 @@
 #include "gfxFrame.h"
 #include "GLCD/GLCD.h"
 
+#include "FluidTouch/FluidTouch.h"
+
 void gfxFrameInit()
 {
 
@@ -24,7 +26,7 @@ void gfxWidget_Create(gfxWidget_t* widget, int type, int x, int y, int xe, int y
 	widget->end.x = xe;
 	widget->end.y = ye;
 	widget->instance = instance;
-	widget->pendingAction = 0;
+	widget->pendingFlags = 0;
 
 }
 
@@ -51,6 +53,7 @@ uint8_t gfxFrame_CheckWidgetBoundaries(gfxWidget_t* widget, Coordinate* point)
 uint8_t gfxFrame_WidgetProcessInput(gfxWidget_t* widget)
 {
 	uint8_t redrawRequired = 0;
+	uint8_t pendingAction = widget->pendingFlags & PEDNING_ACTION_FLAG;
 
 	switch(widget->type)
 	{
@@ -61,27 +64,31 @@ uint8_t gfxFrame_WidgetProcessInput(gfxWidget_t* widget)
 			GFX_Listbox_t* GFX_LB;
 
 			GFX_LB = (GFX_Listbox_t*)widget->instance;
-			redrawRequired = GFX_LB_ProcessTouchInputs( GFX_LB );
+
+			//Any drag will stop any pending action
+			if(!(widget->pendingFlags & PEDNING_ACTION_FLAG) || (FT_GetTouchState() == TOUCH_DRAG) )
+			{
+				redrawRequired = GFX_LB_ProcessTouchInputs( GFX_LB );
+				widget->pendingFlags &= ~PEDNING_ACTION_FLAG;
+			}
 			LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
 
 			if( LBItem != NULL )
 			{
-				 widget->pendingAction = GFX_LB->execFunc(GFX_LB, LBItem);
-				 xprintf("T:%s\n", LBItem);
+				widget->pendingFlags = GFX_LB->execFunc(GFX_LB, LBItem);
 			}
 
-				LCD_Clear(WHITE);
-				SetClip(1);
+			if(redrawRequired || (pendingAction && (widget->pendingFlags == 0)) )
+			{
+				//LCD_Clear(WHITE);
 				GFX_LB_Draw(GFX_LB);
-				SetClip(0);
-
-
-
-
+				redrawRequired = 1;
+			}
 			break;
 		}
 
 		case GFX_BUTTON:
+			break;
 
 		default:
 			break;
@@ -90,7 +97,28 @@ uint8_t gfxFrame_WidgetProcessInput(gfxWidget_t* widget)
 	return redrawRequired;
 }
 
-uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, Coordinate* point)
+
+void gfxFrame_RedrawWidget(gfxWidget_t* widget)
+{
+	switch(widget->type)
+	{
+
+		case GFX_LIST_BOX:
+		{
+			//GFX_LB_Draw(GFX_LB);
+			break;
+		}
+
+		case GFX_BUTTON:
+			break;
+
+		default:
+			break;
+	}
+}
+
+
+uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, uint8_t state, Coordinate* point)
 {
 	LIST_NODE_t* node;
 	gfxWidget_t* widget;
@@ -102,12 +130,14 @@ uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, Coordinate* point)
 	{
 		widget = (gfxWidget_t*)node->data;
 		if( gfxFrame_CheckWidgetBoundaries(widget, point) ||
-			(widget->pendingAction) )
+			(widget->pendingFlags & PEDNING_ACTION_FLAG) )
 		{
 			redrawRequired = gfxFrame_WidgetProcessInput(widget);
 		}
 		node = node->next;
 	}
+
+
 
 	return redrawRequired;
 }

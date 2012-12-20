@@ -92,6 +92,7 @@ void ExecuteMIDIFile(char* LBItem)
 }
 
 
+
 void Task_GLCDScreen(void * pvArg)
 {
 
@@ -117,58 +118,18 @@ void Task_GLCDScreen(void * pvArg)
 		GPIO_SetBits(GPIOC, GPIO_Pin_13 );
 		vTaskDelay(32);
 
+		//state = FT_GetTouchState();
 		point = FT_GetLastPoint();
 		redrawFlag = 0;
 
 
 		//if( FluidGetTouch() != TOUCH_OFF )
 		{
-			redrawFlag = gfxFrame_ProcessInputs(&GFX_MainFrame, point);
+			redrawFlag = gfxFrame_ProcessInputs(&GFX_MainFrame, state, point);
 		}
-//
-//		if ((LBItem == NULL) && (GFX_LB_ProcessTouchInputs(GFX_LB) == LB_REQUIRES_REDRAW))
-//		{
-//			redrawFlag = 1;
-//			LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
-//		}
-//
-//		if (LBItem != NULL)
-//		{
-//			if (actionDelay++ >= EXECUTION_DELAY)
-//			{
-//				actionDelay = 0;
-//				redrawFlag = 1;
-//
-//
-//				if (GFX_FB_ProcessRequest(&GFX_FB.GFXLB, LBItem) == GFX_FB_DIR_SELECTED)
-//				{
-//
-//					FTI_ResetInertia(&GFX_LB->inertia);
-//					GFX_LB_SelectItem(GFX_LB, NO_SELECTION);
-//				}
-//				else
-//				{
-//					if( FSUtil_HasExtension(LBItem, ".mid") )
-//					{
-//						ExecuteMIDIFile(LBItem);
-//					}
-//				}
-//				GFX_LB_ResetTouchCounter(GFX_LB);
-//				LBItem = NULL;
-//
-//
-//			}
-//		}
 
-//		if( redrawFlag )
-//		{
-//			LCD_Clear(WHITE);
-//			SetClip(1);
-//			GFX_LB_Draw(GFX_LB);
-//			SetClip(0);
-//			setPixel(point->x, point->y);
-//			gfxWriteString(point->x, point->y, "Hi");
-//		}
+		//Clear the touch state.
+		FT_ClearTouchState();
 
 	}
 }

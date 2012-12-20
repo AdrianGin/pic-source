@@ -242,7 +242,8 @@ void LPD8806_DMA_Init(void)
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal; /* DMA循环模式 */
+	//DMA_InitStructure.DMA_Mode = DMA_Mode_Normal; /* DMA循环模式 */
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 	DMA_Init(LPB8806_DMA_CHANNEL, &DMA_InitStructure);
 	/* Enable SPI DMA Tx request */

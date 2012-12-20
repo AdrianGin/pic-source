@@ -186,7 +186,6 @@ void FT_DecodeTouchGesture(void)
 				return;
 			}
 		}
-		return;
 	}
 }
 
@@ -201,7 +200,7 @@ void FluidTouchMain(void)
 
 }
 
-FT_STATES FluidGetTouch(void)
+FT_STATES FT_FluidGetTouchGesture(void)
 {
 	FT_STATES ret;
 	if( FT_State != TOUCH_OFF)
