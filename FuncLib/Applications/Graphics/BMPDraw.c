@@ -15,6 +15,8 @@ uint16_t BMP_Scale;
 int16_t BMP_Direction[2];
 uint16_t BMP_Rotation;
 
+uint8_t readBuf[512];
+
 void* _BMP_readbuf(FIL* ptr, void* buf, uint16_t size)
 {
 	UINT br;
@@ -129,7 +131,7 @@ void BMP_PrintToLCD(BMPFile_t* pBmpDec)
 	uint16_t j,k;
 	uint16_t pixelsRead;
 	uint16_t cursorX,cursorY;
-	uint8_t readBuf[512];
+
 
 	uint16_t rowPos = 0;
 
@@ -201,7 +203,7 @@ void BMP_PrintToLCD(BMPFile_t* pBmpDec)
 uint16_t BMP_GetRowData_24BPP(BMPFile_t* pBmpDec, uint8_t* readBuf, uint16_t bufSize, uint16_t rowPos, uint16_t height)
 {
 
-	uint8_t pixelsToRead;
+	uint16_t pixelsToRead;
 	if( rowPos >=  pBmpDec->lWidth)
 	{
 		return 0;

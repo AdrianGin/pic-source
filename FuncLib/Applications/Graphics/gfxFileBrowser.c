@@ -83,9 +83,6 @@ void GFX_FB_RepopulateList(GFX_Listbox_t* LB, uint8_t includeDir, char* extensio
 	FSUTIL_t ret;
 	char fnPath[100];
 
-
-
-
 	FSUtil_OpenDir(&dir, GFX_FB_CWD() );
 	while (1)
 	{

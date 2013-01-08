@@ -57,11 +57,13 @@
 
 #include "Alphasort/alphasort.h"
 
+#include "ProjectConfig/ProjectConfig.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 
-FATFS fs;
+FATFS fs[_VOLUMES];
 MIDI_HEADER_CHUNK_t MIDIHdr;
 
 volatile uint8_t globalFlag;
@@ -120,8 +122,13 @@ int main(void)
 
 	gfxEngine_Init();
 
-	ret = f_mount(0, &fs);
-	xprintf("Mount %d\n", ret);
+	ret = f_mount(MAIN_DRIVE, &fs[MAIN_DRIVE]);
+	xprintf("MountMain:%d\n", ret);
+
+	ret = f_mount(RESOURCE_DRIVE, &fs[RESOURCE_DRIVE]);
+	xprintf("MountRes:%d\n", ret);
+
+	ret = f_chdrive(MAIN_DRIVE);
 
 	//scan_files(path);
 	LPD8806_SetPixel(0, RGB(0,255,255));
@@ -136,6 +143,11 @@ int main(void)
 	TouchPanel_Calibrate();
 	/* Infinite loop */
 
+	SetClip(0);
+	BMP_SetCursor(0,239);
+	BMP_SetRotation(1,-1, 0);
+	gfxDrawBMP("1:/title010.bmp");
+
 	//PhysicsInit();
 	FluidTouchInit();
 
@@ -144,7 +156,7 @@ int main(void)
 	LCD_PauseUpdateScreen();
 
 	GFX_FB_Init(&GFX_FB);
-	GFX_FB_OpenDirRel(&GFX_FB, "/");
+	GFX_FB_OpenDirRel(&GFX_FB, "0:/");
 	GFX_FB_RepopulateList(&GFX_FB.GFXLB, INC_ALL_DIRS, NULL);
 	alphasort_linkedList(&GFX_FB.GFXLB.list, SORT_ASCENDING);
 
@@ -156,6 +168,7 @@ int main(void)
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
+
 
 	return 0;
 }

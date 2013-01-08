@@ -191,6 +191,7 @@ void AUX_TIM_Configuration(void)
 
 void display_mallinfo(void)
 {
+#ifdef __GNUC__
     struct mallinfo mi;
 
     mi = mallinfo();
@@ -205,6 +206,7 @@ void display_mallinfo(void)
     xprintf("Total allocated space (uordblks):      %d\n", mi.uordblks);
     xprintf("Total free space (fordblks):           %d\n", mi.fordblks);
     xprintf("Topmost releasable block (keepcost):   %d\n", mi.keepcost);
+#endif
 }
 
 

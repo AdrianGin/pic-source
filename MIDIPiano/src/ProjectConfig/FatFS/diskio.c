@@ -22,6 +22,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FatFS/diskio.h"
+#include "FatFS/ff.h"
 #include "SDIO/sdio_sd.h"
 //#include "stm32_eval_sdio_sd.h"
 
@@ -29,6 +30,12 @@
 /* Private variables ---------------------------------------------------------*/
 extern SD_CardInfo SDCardInfo;
 
+#if _MULTI_PARTITION		/* Multiple partition configuration */
+PARTITION VolToPart[] = {
+    {0, 1},     /* Logical drive 0 ==> Physical drive 0, 1st partition */
+    {0, 2},     /* Logical drive 1 ==> Physical drive 0, 2nd partition */
+};
+#endif
 
 DSTATUS disk_initialize (
 	BYTE drv				/* Physical drive nmuber (0..) */

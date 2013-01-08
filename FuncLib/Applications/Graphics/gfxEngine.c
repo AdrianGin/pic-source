@@ -78,6 +78,20 @@ void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 //            PutPixel(x, y);
 //        }
 //    }
+
+    if(_clipRgn)
+    {
+        if(left < _clipLeft)
+        	left = _clipLeft;
+        if(right > _clipRight)
+        	right = _clipRight;
+        if(top < _clipTop)
+        	top = _clipTop;
+        if(bottom > _clipBottom)
+        	bottom = _clipBottom;
+    }
+
+
     for(y = top; y < bottom+1; y++)
     {
 		if( y >= MAX_LCD_Y || y < 0 )

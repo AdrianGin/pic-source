@@ -193,7 +193,7 @@ void GFX_LB_Draw(GFX_Listbox_t* LB)
 
 	SetClip(1);
 	SetClipRgn(LB->fixedX, LB->fixedY, LB->fixedX + LB->width, LB->fixedY + LB->height);
-	SetClip(0);
+
 
 	while( node != NULL )
 	{
@@ -221,6 +221,7 @@ void GFX_LB_Draw(GFX_Listbox_t* LB)
 		index++;
 	}
 
+	SetClip(0);
 	LB->y = initPosition;
 }
 
