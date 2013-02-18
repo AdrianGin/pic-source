@@ -78,19 +78,22 @@ typedef struct {
 
 typedef struct
 {
+	uint8_t   eventType;
     uint8_t   parameter1;
     uint8_t   parameter2;   
 } MIDI_CHAN_EVENT_t;
 
 typedef struct
 {
+	uint8_t   eventType;
     uint32_t  length;
     uint8_t*  data;   
 } MIDI_SYSEX_EVENT_t;
 
 typedef struct
 {
-    uint8_t   type;
+	uint8_t   eventType;
+    uint8_t   metaType;
     uint32_t  length;
     uint8_t*  data;   
 } MIDI_META_EVENT_t;
@@ -98,13 +101,12 @@ typedef struct
 typedef struct
 {
     uint32_t  deltaTime;
-    uint8_t   eventType;
-    
     union
     {
-       MIDI_CHAN_EVENT_t  chanEvent;
-       MIDI_SYSEX_EVENT_t sysExEvent;
-       MIDI_META_EVENT_t  metaEvent;
+    	uint8_t   eventType;
+    	MIDI_CHAN_EVENT_t  chanEvent;
+    	MIDI_SYSEX_EVENT_t sysExEvent;
+       	MIDI_META_EVENT_t  metaEvent;
     } event;
     
 } MIDI_EVENT_t;

@@ -39,6 +39,13 @@
 #define RCC_APB2Periph_GPIO_DISCONNECT    RCC_APB2Periph_GPIOB
 
 
+/* Serial Debug Port Pins */
+//+3V3V (Connect to Vref)
+//PA13 SW I/O (Connect to JTMS)
+//PA14 SW Clock (Connect to JTCK)
+// (JTAG Reset connect to RESET)
+
+
 /**
   * @brief  SDIO Data Transfer Frequency (25MHz max)
   */
@@ -86,7 +93,7 @@ void NVIC_Configuration(void);
 void TIM_MIDI_Configuration(void);
 void AUX_TIM_Configuration(void);
 
-
+void display_mallinfo(void);
 
 void USB_Config(void);
 void Set_USBClock(void);

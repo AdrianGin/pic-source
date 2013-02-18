@@ -39,50 +39,6 @@ uint8_t* LPD8806_GFXRAM = &LPD8806_DMABUFFER[GFXRAM_OFFSET];
 
 uint8_t LPD8806_Brightness;
 
-#define LPD8806_USE_DMA
-
-#define LPD8806_USE_SPI1
-#define LPD_USE_ALTERNATE_SPI1
-//#define LPD8806_USE SPI2
-
-#ifdef  LPD8806_USE_SPI1
-
-#define LPB8806_DMA_CHANNEL	DMA1_Channel3
-
-#define LPD_SPI			SPI1
-#define LPB_SPI_RCC		RCC_APB2Periph_SPI1
-#define LPD_DMA_FLAG_TC	DMA1_FLAG_TC3
-
-
-#ifdef LPD_USE_ALTERNATE_SPI1
-#define LPB_GPIO_RCC	 RCC_APB2Periph_GPIOB
-#define LPD_SPI_PORT	 (GPIOB)
-#define LPD_SPI_PINS	 (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5)
-
-#else
-#define LPB_GPIO_RCC	 RCC_APB2Periph_GPIOA
-#define LPD_SPI_PORT	 (GPIOA)
-#define LPD_SPI_PINS	 (GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7)
-#endif
-
-
-#define LPD_SPI_RCC_APBeriphClockCmd RCC_APB2PeriphClockCmd
-
-#else
-#define LPB8806_DMA_CHANNEL	DMA1_Channel5
-#define LPD_DMA_FLAG_TC		DMA1_FLAG_TC5
-
-#define LPD_SPI			SPI2
-#define LPB_SPI_RCC		RCC_APB1Periph_SPI2
-#define LPB_GPIO_RCC	RCC_APB2Periph_GPIOB
-
-#define LPD_SPI_PORT	 (GPIOB)
-#define LPD_SPI_PINS	 (GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)
-
-#define LPD_SPI_RCC_APBeriphClockCmd RCC_APB1PeriphClockCmd
-
-#endif
-
 
 
 

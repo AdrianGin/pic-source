@@ -56,7 +56,7 @@ typedef struct
 typedef enum {LB_OS_TOP, LB_OS_BOTTOM, LB_OS_LEFT, LB_OS_RIGHT, LS_OS_NONE} LB_OVERSHOOT_STATES;
 
 
-void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_t width, void* fontHdr, uint16_t spacing);
+void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t width, int16_t height, void* fontHdr, uint16_t spacing);
 void GFX_LB_SetColour(GFX_Listbox_t* LB, uint16_t font, uint16_t bkground, uint16_t fontSel, uint16_t select, uint16_t sep);
 void GFX_LB_SelectItem(GFX_Listbox_t* LB, uint8_t index);
 

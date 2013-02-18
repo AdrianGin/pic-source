@@ -67,17 +67,10 @@ void gfxWrite(uint8_t ch)
 * Note: none
 *
 ********************************************************************/
+#define USE_FAST_RECT
 void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 {
 	int16_t   x, y;
-
-//    for(y = top; y < bottom + 1; y++)
-//    {
-//        for(x = left; x < right + 1; x++)
-//        {
-//            PutPixel(x, y);
-//        }
-//    }
 
     if(_clipRgn)
     {
@@ -92,6 +85,16 @@ void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
     }
 
 
+#ifndef USE_FAST_RECT
+	for(y = top; y < bottom + 1; y++)
+	{
+		for(x = left; x < right + 1; x++)
+		{
+			PutPixel(x, y);
+		}
+	}
+#else
+	LCD_WriteReg(0x0016,0x00A8); //MY, MX, MV Bits,
     for(y = top; y < bottom+1; y++)
     {
 		if( y >= MAX_LCD_Y || y < 0 )
@@ -99,6 +102,7 @@ void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 			break;
 		}
     	x = left;
+
 		LCD_SetCursor(x,y);
 		LCD_WriteIndex(0x0022);
 		for( x = left; x < right; x++ )
@@ -110,7 +114,8 @@ void gfxFillRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
 			LCD_WriteData(_color);
 		}
     }
-
+    LCD_WriteReg(0x0016,0x0008); //MY, MX, MV Bits,
+#endif
 
 }
 

@@ -35,6 +35,9 @@
 #include "UARTProcessor.h"
 #include "MIDICodes\MIDICodes.h"
 
+#include "ProjectConfig/ProjectConfig.h"
+#include "MIDIPlayback/midiplayback.h"
+
 #define USART_RX_DATA_SIZE   2048
 
 uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
@@ -110,6 +113,66 @@ void ToggleActiveChannel(uint8_t byte)
 	{
 		LS_IncrementColourMode();
 	}
+
+
+
+	switch(byte)
+	{
+		case 'F':
+		{
+			uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
+
+			tmasterClock = (tmasterClock + 1) * (4*MIDIHdr.PPQ);
+			myprintf("tMClock: ", tmasterClock);
+			myprintf("MClock: ", MIDIHdr.masterClock);
+			myprintf("maxLen: ", MIDIHdr.currentState.maxLength);
+			if(tmasterClock > MIDIHdr.currentState.maxLength)
+			{
+				tmasterClock = MIDIHdr.currentState.maxLength;
+			}
+			myprintf("MClock: ", tmasterClock);
+			//MPB_PlayMIDIFile(&MIDIHdr, filename);
+			//TimerStop();
+			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+			TIM_Cmd(MIDI_TIM, DISABLE);
+
+			MPB_ResetMIDI();
+			MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
+			MPB_ReplayStatusBuffer();
+
+			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+			TIM_Cmd(MIDI_TIM, ENABLE);
+
+			//TimerStart();
+
+			break;
+		}
+
+        case 'R':
+        {
+            uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
+            if( tmasterClock == 0)
+            {
+                tmasterClock = 1;
+            }
+            //MPB_PlayMIDIFile(&MIDIHdr, filename);
+			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+			TIM_Cmd(MIDI_TIM, DISABLE);
+            MPB_ResetMIDI();
+            tmasterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
+            MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
+            MPB_ReplayStatusBuffer();
+			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+			TIM_Cmd(MIDI_TIM, ENABLE);
+
+
+            break;
+        }
+
+			default:
+				break;
+	}
+
 }
 
 

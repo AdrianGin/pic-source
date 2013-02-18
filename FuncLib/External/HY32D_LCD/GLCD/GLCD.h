@@ -62,6 +62,8 @@ extern uint8_t LCD_Code;
 //#define DISP_ORIENTATION					180
 #define DISP_ORIENTATION					270
 
+typedef enum {LCD_ROTATION_0 = 0, LCD_ROTATION_90, LCD_ROTATION_180, LCD_ROTATION_270 } LCD_ROTATION_t;
+
 /* Private define ------------------------------------------------------------*/
 
 #if  ( DISP_ORIENTATION == 90 ) || ( DISP_ORIENTATION == 270 )
@@ -107,6 +109,8 @@ extern uint8_t LCD_Code;
 
 #define RGB565CONVERT(red, green, blue) (int) (((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3))
 
+
+
 /* Private function prototypes -----------------------------------------------*/
 void LCD_Initializtion(void);
 void LCD_Clear(uint16_t Color);	
@@ -136,6 +140,7 @@ uint16_t LCD_ReadData(void);
 void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue);
 uint16_t LCD_ReadReg(uint16_t LCD_Reg);
 
+void LCD_SetRotation(LCD_ROTATION_t rotation);
 
 
 

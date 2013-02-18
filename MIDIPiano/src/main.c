@@ -146,6 +146,9 @@ int main(void)
 	SetClip(0);
 	BMP_SetCursor(0,239);
 	BMP_SetRotation(1,-1, 0);
+
+	LCD_SetRotation(LCD_ROTATION_90);
+
 	gfxDrawBMP("1:/title010.bmp");
 
 	//PhysicsInit();
@@ -174,6 +177,7 @@ int main(void)
 }
 
 #ifdef  USE_FULL_ASSERT
+
 
 /**
  * @brief  Reports the name of the source file and the source line number

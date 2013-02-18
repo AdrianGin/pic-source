@@ -14,7 +14,7 @@
 
 #define REQUIRE_TOUCH_OFF	(0xF0)
 
-void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t height, int16_t width, void* fontHdr, uint16_t spacing)
+void GFX_LB_Init(GFX_Listbox_t* LB, int16_t x, int16_t y, int16_t width, int16_t height, void* fontHdr, uint16_t spacing)
 {
 	LB->x = x;
 	LB->y = y;

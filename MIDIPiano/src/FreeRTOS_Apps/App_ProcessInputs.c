@@ -31,6 +31,8 @@
 
 #include "stm32f10x.h"
 
+#include "FluidTouch/FluidTouch.h"
+
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void Task_ProcessInputs(void * pvArg);

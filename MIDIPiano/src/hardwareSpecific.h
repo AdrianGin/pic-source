@@ -23,7 +23,8 @@ void myprintf(char* string, uint32_t num);
 void myprintfd(char* string, uint32_t num);
 void myPrintNum(uint32_t num, uint8_t base);
 
-
+void SetMIDITickTimer(uint16_t usPerTick);
+void SetMIDITickTimerPrescale(uint16_t prescale);
 
 #define SET_TIMER_INTERVAL(usPerTick)	SetMIDITickTimer(usPerTick)
 #define SET_TIMER_PRESCALER(scale)		SetMIDITickTimerPrescale(scale)

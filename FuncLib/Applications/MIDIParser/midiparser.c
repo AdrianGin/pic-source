@@ -180,22 +180,22 @@ void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* d
     uint8_t bytesToSend;
     //uint8_t runningStatus;
     
-    if( ((event->eventType & 0xF0) >= MIDI_NOTE_OFF) &&
-        ((event->eventType & 0xF0) < MIDI_SYSEX_START))
+    if( ((event->event.eventType & 0xF0) >= MIDI_NOTE_OFF) &&
+        ((event->event.eventType & 0xF0) < MIDI_SYSEX_START))
     {
-        track->runningStatus = event->eventType;
+        track->runningStatus = event->event.eventType;
     }
 
     byteOffset = midiparse_variableLength(data, &event->deltaTime);
-    event->eventType = data[byteOffset];
+    event->event.eventType = data[byteOffset];
     //for running status
-    if (event->eventType<MIDI_NOTE_OFF)
+    if (event->event.eventType<MIDI_NOTE_OFF)
     {
-        event->eventType = track->runningStatus;
+        event->event.eventType = track->runningStatus;
         byteOffset--;
     }
 
-    if (event->eventType==MIDI_SYSEX_START)
+    if (event->event.eventType==MIDI_SYSEX_START)
     {
         midiparse_variableLength(&data[byteOffset+1], &event->event.sysExEvent.length);
         
@@ -204,9 +204,9 @@ void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* d
         return &data[byteOffset+2+event->event.sysExEvent.length];
     }
 
-    if (event->eventType==MIDI_META_MSG)
+    if (event->event.eventType==MIDI_META_MSG)
     {
-        event->event.metaEvent.type = data[byteOffset+1];
+        event->event.metaEvent.metaType = data[byteOffset+1];
         
         midiparse_variableLength(&data[byteOffset+2], &event->event.metaEvent.length);
         
@@ -219,10 +219,10 @@ void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* d
 
 
 
-    bytesToSend = MIDI_CommandSize(event->eventType&0xF0);
+    bytesToSend = MIDI_CommandSize(event->event.eventType&0xF0);
     if (bytesToSend>1)
     {
-        //runningStatus = event->eventType;
+        //runningStatus = event->event.eventType;
 
         event->event.chanEvent.parameter1 = data[byteOffset+1];
         if (bytesToSend>2)
@@ -238,16 +238,16 @@ void* MIDIParse_Event(MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, uint8_t* d
 void MIDI_PrintEventInfo(MIDI_EVENT_t* event)
 {
     myprintf("DT: ", event->deltaTime);
-    myprintf("ET: ", event->eventType);
+    myprintf("ET: ", event->event.eventType);
 
-    switch (event->eventType)
+    switch (event->event.eventType)
     {
         case MIDI_SYSEX_START:
             myprintf("LEN: ", event->event.sysExEvent.length);
             break;
             
         case MIDI_META_MSG:
-            myprintf("TYPE: ", event->event.metaEvent.type);
+            myprintf("TYPE: ", event->event.metaEvent.metaType);
             myprintf("LEN: ", event->event.metaEvent.length);
             myprintf("DATA0: ", event->event.metaEvent.data[0]);
             myprintf("DATA1: ", event->event.metaEvent.data[1]);

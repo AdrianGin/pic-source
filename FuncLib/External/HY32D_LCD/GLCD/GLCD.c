@@ -110,7 +110,7 @@ static void LCD_FSMCConfig(void)
 	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMTimingInitStructure;
 	FSMC_NORSRAMTimingInitTypeDef FSMC_NORSRAMWriteInitStructure;
 	/* FSMC读速度设置 */
-	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0x00;//5;  /* 地址建立时间  */
+	FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0x05;//5;  /* 地址建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
 	FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 0x06;//5;	   /* 数据建立时间  */
 	FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0x00;
@@ -314,6 +314,7 @@ void LCD_Initializtion(void)
 	//while(1)
 	{
 	DeviceCode = 0x0123;
+	DeviceCode = LCD_ReadReg(0x0000);
 	DeviceCode = LCD_ReadReg(0x0000);
 	//DeviceCode = 0x0123;
 	}
@@ -1020,7 +1021,11 @@ void LCD_Initializtion(void)
 		    LCD_WriteReg(0x0009,0x003F);
 		    delay_ms(10);
 		    LCD_WriteReg(0x0001,0x0006);
-		    LCD_WriteReg(0x0016,0x0008);
+
+		    LCD_WriteReg(0x0016,0x0008); //MY, MX, MV Bits, for a portrait LCD arrangement
+
+		    //LCD_WriteReg(0x0016,0x00A8); //MY, MX, MV Bits,
+
 		    LCD_WriteReg(0x0023,0x0095);
 		    LCD_WriteReg(0x0024,0x0095);
 		    LCD_WriteReg(0x0025,0x00FF);
@@ -1074,6 +1079,8 @@ void LCD_Initializtion(void)
 		    LCD_WriteReg(0x0057,0x0002);
 		    LCD_WriteReg(0x0095,0x0001);
 		    LCD_WriteReg(0x0057,0x0000);
+
+
 		}
 	}
     delay_ms(50);   /* delay 50 ms */
@@ -1159,17 +1166,33 @@ void LCD_Clear(uint16_t Color)
 
 	if( LCD_Code == HX8347D || LCD_Code == HX8347A )
 	{
+//		LCD_WriteReg(0x02,0x00);
+//		LCD_WriteReg(0x03,0x00);
+//
+//		LCD_WriteReg(0x04,0x00);
+//		LCD_WriteReg(0x05,0xEF);
+//
+//		LCD_WriteReg(0x06,0x00);
+//		LCD_WriteReg(0x07,0x00);
+//
+//		LCD_WriteReg(0x08,0x01);
+//		LCD_WriteReg(0x09,0x3F);
+
+
 		LCD_WriteReg(0x02,0x00);
 		LCD_WriteReg(0x03,0x00);
 
-		LCD_WriteReg(0x04,0x00);
-		LCD_WriteReg(0x05,0xEF);
+		LCD_WriteReg(0x04,0x01);
+		LCD_WriteReg(0x05,0x3F);
 
 		LCD_WriteReg(0x06,0x00);
 		LCD_WriteReg(0x07,0x00);
 
-		LCD_WriteReg(0x08,0x01);
-		LCD_WriteReg(0x09,0x3F);
+		LCD_WriteReg(0x08,0x00);
+		LCD_WriteReg(0x09,0xEF);
+
+		LCD_WriteReg(0x0016,0x0068);
+
 	}
 	else
 	{
@@ -1811,11 +1834,6 @@ __INLINE void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 	#endif
   switch( LCD_Code )
   {
-     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
-          LCD_WriteReg(0x0020, Xpos );
-          LCD_WriteReg(0x0021, Ypos );
-	      break;
-
      case SSD1298: 	 /* 0x8999 */
      case SSD1289:   /* 0x8989 */
 	      LCD_WriteReg(0x004e, Xpos );
@@ -1833,5 +1851,60 @@ __INLINE void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 	      break;
      case SSD2119:	 /* 3.5 LCD 0x9919 */
 	      break;
+
+     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
+          LCD_WriteReg(0x0020, Xpos );
+          LCD_WriteReg(0x0021, Ypos );
+	      break;
+
   }
 }
+
+
+
+
+void LCD_SetRotation(LCD_ROTATION_t rotation)
+{
+	  switch( LCD_Code )
+	  {
+	     case SSD1298: 	 /* 0x8999 */
+	     case SSD1289:   /* 0x8989 */
+
+	    	 switch(rotation)
+	    	 {
+	    	 case LCD_ROTATION_0:
+	    		 LCD_WriteReg(0x0011,0x6068);
+	    		 break;
+
+	    	 case LCD_ROTATION_90:
+	    		 LCD_WriteReg(0x0011,0x6078);
+	    	 	 break;
+
+	    	 case LCD_ROTATION_180:
+	    		 LCD_WriteReg(0x0011,0x6078);
+	    	 	 break;
+
+	    	 case LCD_ROTATION_270:
+	    		 LCD_WriteReg(0x0011,0x6078);
+	    	 	 break;
+	    	 }
+		     break;
+
+	     case HX8347A: 	 /* 0x0047 */
+	     case HX8347D: 	 /* 0x0047 */
+
+
+		      break;
+	     case SSD2119:	 /* 3.5 LCD 0x9919 */
+		      break;
+
+	     default:		 /* 0x9320 0x9325 0x9328 0x9331 0x5408 0x1505 0x0505 0x7783 0x4531 0x4535 */
+		      break;
+
+	  }
+
+}
+
+
+
+

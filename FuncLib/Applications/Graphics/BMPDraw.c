@@ -138,10 +138,14 @@ void BMP_PrintToLCD(BMPFile_t* pBmpDec)
     cursorX = BMP_CursorX;
     cursorY = BMP_CursorY;
 
+    LCD_SetCursor(cursorX + pBmpDec->lWidth, cursorY + pBmpDec->lHeight);
+
     for( j = 0; j < pBmpDec->lHeight; )
     {
     	//Keep getting data until no more row data is left.
     	pixelsRead = BMP_GetRowData_24BPP(pBmpDec, &readBuf[0], PIXEL_BUFFER_COUNT*BMP_24BPP, rowPos, j);
+
+    	LCD_WriteIndex(0x0022);
     	if( pixelsRead )
     	{
     		for(k = 0; k < pixelsRead; k++)
@@ -166,6 +170,7 @@ void BMP_PrintToLCD(BMPFile_t* pBmpDec)
                 {
                 	PutPixel(cursorX , cursorY);
                 }
+                //LCD_WriteData(pixel);
 
 
                 if( (BMP_Direction[0] == 1) && (BMP_Direction[1] == 1))
@@ -187,13 +192,16 @@ void BMP_PrintToLCD(BMPFile_t* pBmpDec)
             {
             	cursorX = cursorX + BMP_Direction[0];
             	cursorY = BMP_CursorY;
-
             }
             else
             {
             	cursorY = cursorY + BMP_Direction[1];
             	cursorX = BMP_CursorX;
             }
+
+    		//cursorY--;
+    		LCD_SetCursor(cursorX + pBmpDec->lWidth, cursorY + pBmpDec->lHeight);
+
     		j++;
     	}
     }

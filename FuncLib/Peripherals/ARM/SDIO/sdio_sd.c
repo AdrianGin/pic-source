@@ -896,7 +896,6 @@ SD_Error SD_SetDeviceMode(uint32_t Mode)
 SD_Error SD_SetHighSpeed(uint32_t arg)
 {
 	uint8_t buffer[64];
-	uint8_t count = 0;
 	uint32_t* tempbuff;
 
   SD_Error errorstatus = SD_OK;
@@ -1023,8 +1022,7 @@ SD_Error SD_SelectDeselect(uint32_t addr)
 SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
 {
   SD_Error errorstatus = SD_OK;
-  uint32_t count = 0, *tempbuff = (uint32_t *)readbuff;
-  uint8_t power = 0;
+  uint32_t* tempbuff = (uint32_t *)readbuff;
 
   if (NULL == readbuff)
   {
@@ -1175,7 +1173,6 @@ SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t Block
 {
   SD_Error errorstatus = SD_OK;
   uint32_t count = 0, *tempbuff = (uint32_t *)readbuff;
-  uint8_t power = 0;
 
   if (NULL == readbuff)
   {
@@ -2928,7 +2925,6 @@ static SD_Error IsCardProgramming(uint8_t *pstatus)
   */
 static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
 {
-  uint32_t index = 0;
   SD_Error errorstatus = SD_OK;
   uint32_t tempscr[2] = {0, 0};
 
