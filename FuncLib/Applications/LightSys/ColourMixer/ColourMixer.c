@@ -12,46 +12,80 @@
 
 #include "rgbUtils/rgbutils.h"
 #include "ColourMixer.h"
-//Typically the max number of LEDS
-#define MAX_NOTE_COUNT	(88)
-#define MAX_COLOUR_MIX	(5)
-uint32_t CM_MixerMap[MAX_NOTE_COUNT][MAX_COLOUR_MIX];
+//Typically the max number of LEDS for a piano
+#define MAX_MIXER_COUNT	(128)
+#define MAX_COLOUR_MIX	(8)
+uint32_t CM_MixerMap[MAX_MIXER_COUNT][MAX_COLOUR_MIX];
 
 #define BRIGHTNESS_BITS (0xFF000000)
 #define RGB_BITS		(0x00FFFFFF)
 
 //Accepts colours in 24bit RGB format
-#define APPLY_BRIGHTNESS(colour, brightness)	(colour | (brightness << 24))
+#define APPLY_BRIGHTNESS(colour, brightness)	((colour & RGB_BITS) | (brightness << 24))
 #define GET_BRIGHTNESS(brightness_colour)		((brightness_colour & 0xFF000000) >> 24)
 
 void CM_Init(void)
 {
-	memset(CM_MixerMap, 0, MAX_NOTE_COUNT*MAX_COLOUR_MIX*sizeof(uint32_t) );
+	memset(CM_MixerMap, 0, MAX_MIXER_COUNT*MAX_COLOUR_MIX*sizeof(uint32_t) );
 }
 
 
-void CM_AddColour(uint8_t note, uint32_t colour, uint8_t brightness)
+
+void CM_AddColour(uint8_t index, uint32_t colour, uint8_t brightness)
 {
 	uint8_t i;
-	for( i = 0; i < MAX_COLOUR_MIX; i++)
+
+	if( index < MAX_MIXER_COUNT)
 	{
-		if(CM_MixerMap[note][i] == 0)
+		for( i = 0; i < MAX_COLOUR_MIX; i++)
 		{
-			CM_MixerMap[note][i] = APPLY_BRIGHTNESS(colour,brightness);
-			break;
+			if(CM_MixerMap[index][i] == 0)
+			{
+				CM_MixerMap[index][i] = APPLY_BRIGHTNESS(colour,brightness);
+				break;
+			}
 		}
 	}
 }
 
-void CM_RemoveColour(uint8_t note, uint32_t colour)
+void CM_RemoveColour(uint8_t index, uint32_t colour)
 {
 	uint8_t i;
-	for( i = 0; i < MAX_COLOUR_MIX; i++)
+	if( index < MAX_MIXER_COUNT)
 	{
-		if( (CM_MixerMap[note][i] & RGB_BITS) == (colour & RGB_BITS))
+		for( i = 0; i < MAX_COLOUR_MIX; i++)
 		{
-			CM_MixerMap[note][i] = 0;
-			break;
+			if( (CM_MixerMap[index][i] & RGB_BITS) == (colour & RGB_BITS))
+			{
+				CM_MixerMap[index][i] = 0;
+				break;
+			}
+		}
+	}
+}
+
+void CM_ReduceBrightnessPercentage(uint8_t index, int8_t percentage, uint8_t minBrightness)
+{
+	uint8_t i;
+	uint16_t brightness;
+	uint16_t deltaBrightness;
+
+
+	if( index < MAX_MIXER_COUNT)
+	{
+		for( i = 0; i < MAX_COLOUR_MIX; i++)
+		{
+			if( (CM_MixerMap[index][i] & RGB_BITS) )
+			{
+				brightness = GET_BRIGHTNESS(CM_MixerMap[index][i]);
+				deltaBrightness = (brightness * percentage) / 100;
+				brightness = brightness - deltaBrightness;
+				if( brightness < minBrightness )
+				{
+					brightness = minBrightness;
+				}
+				CM_MixerMap[index][i] = APPLY_BRIGHTNESS(CM_MixerMap[index][i], brightness);
+			}
 		}
 	}
 }
@@ -84,7 +118,7 @@ uint32_t _CM_NomaliseColour(uint32_t r, uint32_t g, uint32_t b)
 	return RGB(r,g,b);
 }
 
-uint32_t CM_GetMixedColour(uint8_t note)
+uint32_t CM_GetMixedColour(uint8_t index)
 {
 	uint8_t i;
 	uint16_t r = 0;
@@ -93,12 +127,15 @@ uint32_t CM_GetMixedColour(uint8_t note)
 
 	uint8_t brightness;
 
-	for( i = 0; i < MAX_COLOUR_MIX; i++)
+	if( index < MAX_MIXER_COUNT)
 	{
-		brightness = GET_BRIGHTNESS(CM_MixerMap[note][i]);
-		r  = r + ((R_RGB(CM_MixerMap[note][i]) * brightness) / MAX_COLOUR_VALUE);
-		g  = g + ((G_RGB(CM_MixerMap[note][i]) * brightness) / MAX_COLOUR_VALUE);
-		b  = b + ((B_RGB(CM_MixerMap[note][i]) * brightness) / MAX_COLOUR_VALUE);
+		for( i = 0; i < MAX_COLOUR_MIX; i++)
+		{
+			brightness = GET_BRIGHTNESS(CM_MixerMap[index][i]);
+			r  = r + ((R_RGB(CM_MixerMap[index][i]) * brightness) / MAX_COLOUR_VALUE);
+			g  = g + ((G_RGB(CM_MixerMap[index][i]) * brightness) / MAX_COLOUR_VALUE);
+			b  = b + ((B_RGB(CM_MixerMap[index][i]) * brightness) / MAX_COLOUR_VALUE);
+		}
 	}
 
 	return _CM_NomaliseColour(r,g,b);

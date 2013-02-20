@@ -25,18 +25,20 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "MIDICodes/MIDICodes.h"
 
-#define LIGHT_OFFSET (0)
+//#define LIGHT_OFFSET (-MIDI_PIANO_A0)
 #define LIGHT_COUNT	 (128)
 
 void LS_Init(void);
 void LS_ClearLightTimers(void);
 void LS_ClearLights(void);
 void LS_ProcessAutoTurnOff(void);
+void LS_ProcessAutoTurnOff2(void);
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer);
 
 void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity);
-void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command);
+void LS_SetPixel(uint8_t note, uint32_t colour);
 uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity);
 void LS_SetTranspose(uint8_t channel, int8_t semitones);
 int8_t LS_GetTranspose(uint8_t channel);

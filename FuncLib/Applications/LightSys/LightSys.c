@@ -36,7 +36,7 @@
 typedef uint32_t LS_ChannelColour_t;
 //Every single possible note has its own individual countdown.
 
-#define MAX_POLYPHONY (256)
+#define MAX_POLYPHONY (MIDI_PIANO_KEY_COUNT)
 #define FREE_ELEMENT  (0xFFFF)
 #define FADE_RATE	  (15)
 #define MIN_ON_BRIGHTNESS (1<<1)
@@ -161,7 +161,7 @@ void LS_ClearLights(void)
 
 	for( i = 0; i < LIGHT_COUNT; i++)
 	{
-		LS_SETPIXEL( i+LIGHT_OFFSET , 0x00)
+		LS_SETPIXEL(i , 0x00)
 	}
 }
 
@@ -192,6 +192,29 @@ void LS_ProcessAutoTurnOff(void)
 	}
 }
 
+
+//This uses the Colour Mixer to process the fade out.
+void LS_ProcessAutoTurnOff2(void)
+{
+	uint8_t i;
+	uint8_t j;
+
+	for( i=0, j=0; (i < LS_CountdownCount) && (j < MAX_POLYPHONY); j++ )
+	{
+		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
+		{
+			uint32_t colour;
+
+			CM_ReduceBrightnessPercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY), FADE_RATE, LS_MinBrightness);
+			colour = CM_GetMixedColour((LS_Countdown[j].channelKey & MIDI_MAX_KEY));
+			LS_SetPixel((LS_Countdown[j].channelKey & MIDI_MAX_KEY), colour);
+			i++;
+		}
+	}
+}
+
+
+
 //When a note on is received.
 //Because we must remember which lights have been on for how long
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
@@ -200,6 +223,13 @@ void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 
 	for( j=0; j < MAX_POLYPHONY; j++ )
 	{
+
+		//Don't record duplicates.
+		if( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) == (channelKey & MIDI_MAX_KEY) )
+		{
+			break;
+		}
+
 		if( LS_Countdown[j].channelKey == FREE_ELEMENT)
 		{
 			LS_Countdown[j].channelKey = channelKey;
@@ -259,17 +289,9 @@ void LS_TurnOffChannel(uint8_t channel)
 
 
 
-void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
+void LS_SetPixel(uint8_t note, uint32_t colour)
 {
 	LS_SETPIXEL(note + LIGHT_OFFSET, colour);
-//	if (colour)
-//	{
-//		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
-//	}
-//	else
-//	{
-//		LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
-//	}
 }
 
 
@@ -281,7 +303,12 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 
 	//Already been transposed
 	colour = LS_GetColourFromMIDI(command, note, velocity);
-	if( (command & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_OFF )
+	if(colour == 0)
+	{
+		return;
+	}
+
+	if( ((command & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_OFF) || velocity == 0)
 	{
 		velocity = 0;
 		CM_RemoveColour(note, colour);
@@ -289,18 +316,27 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 	else
 	{
 		velocity = (velocity << 1) + 1;
-		CM_AddColour(note + LIGHT_OFFSET, colour, velocity);
+		CM_AddColour(note, colour, velocity);
 	}
 
 	//02/2013 Added Colour Mixer
-	colour = CM_GetMixedColour(note + LIGHT_OFFSET);
+	colour = CM_GetMixedColour(note);
 	//colour = SCALE_COLOUR(colour , velocity, MIDI_MAX_KEY);
+
 
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
+		if (colour && velocity)
+		{
+			LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
+		}
+		else
+		{
+			LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
+		}
 		//Reverse on LED Strip
 		//LS_SetPixel((LED_COUNT / 2) - note, colour, command);
-		LS_SetPixel(note, colour, command);
+		LS_SetPixel(note, colour);
 	}
 }
 
@@ -352,7 +388,7 @@ uint8_t LS_LookupFifthsColour(uint8_t note)
 
 uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
 {
-	uint32_t colour;
+	uint32_t colour = 0;
 	uint8_t musicNote;
 
 

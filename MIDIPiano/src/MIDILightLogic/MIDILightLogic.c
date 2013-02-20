@@ -36,9 +36,9 @@ uint16_t MLL_ActiveChannelMap[MLL_MAP_COUNT];
 
 void MLL_Init(void)
 {
-	MLL_ActiveChannelMap[MLL_LIGHTS] = 0x0001;
+	MLL_ActiveChannelMap[MLL_LIGHTS] = 0xFDFF; //exclude the drums
 	MLL_ActiveChannelMap[MLL_MIDIOUT] = 0xFFFF;
-	MLL_ActiveChannelMap[MLL_HALT] = 0x0001;
+	MLL_ActiveChannelMap[MLL_HALT] = 0x0008;
 }
 
 //channel refers to the MIDI channel

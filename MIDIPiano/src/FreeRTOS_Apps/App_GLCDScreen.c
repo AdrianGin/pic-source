@@ -112,7 +112,8 @@ void Task_GLCDScreen(void * pvArg)
 		vTaskDelay(1);
 
 		LCD_VSyncHigh();
-		LS_ProcessAutoTurnOff();
+		//LS_ProcessAutoTurnOff();
+		LS_ProcessAutoTurnOff2();
 		GPIO_SetBits(GPIOC, GPIO_Pin_13 );
 		vTaskDelay(32);
 

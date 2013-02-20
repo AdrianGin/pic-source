@@ -19,6 +19,12 @@
 
 #define MIDI_DRUM_CHANNEL   (0x09)
 
+//For a Piano
+#define MIDI_PIANO_A0 (21)
+#define MIDI_PIANO_C8 (MIDI_PIANO_A0+MIDI_PIANO_KEY_COUNT-1)
+#define MIDI_PIANO_KEY_COUNT (88)
+
+
 typedef enum {
    MIDI_NOTE_OFF = 0x80,
    MIDI_NOTE_ON = 0x90,
