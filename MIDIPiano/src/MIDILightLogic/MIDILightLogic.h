@@ -16,6 +16,7 @@ void MLL_OutputLighting(void);
 
 
 #define HALT_FLAG_RAISED (1)
+void MLL_ClearHaltList(void);
 void MLL_SetHaltFlag(uint8_t state);
 uint8_t MLL_GetHaltFlag(void);
 void MLL_AddHaltMasterNote(uint8_t* midiDataArray);
@@ -24,7 +25,7 @@ void MLL_AddHaltMasterNote(uint8_t* midiDataArray);
 void MLL_ProcessHaltNote(uint8_t* midiDataArray);
 //midiDataArray:: A 3 byte array pointer
 void MLL_AddTesterHaltNote(uint8_t* midiDataArray);
-void MLL_TesterHaltCancelNotes(void);
+void MLL_TesterHaltCancelNotes(uint8_t* midiDataArray);
 void MLL_CompareMasterTesterHaltList(void);
 
 #endif

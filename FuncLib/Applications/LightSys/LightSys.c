@@ -133,7 +133,6 @@ uint8_t LS_FifthsColourMap[] =
 void LS_Init(void)
 {
 	CM_Init();
-	LS_ClearLightTimers();
 	LS_ClearLights();
 
 	memset(LS_TransposeMap, 0, sizeof(LS_TransposeMap));
@@ -142,10 +141,9 @@ void LS_Init(void)
 
 
 //Deactive ALL timers.
-void LS_ClearLightTimers(void)
+void _LS_ClearLightTimers(void)
 {
 	uint16_t i;
-
 	for( i = 0; i < MAX_POLYPHONY; i++)
 	{
 		LS_Countdown[i].channelKey = FREE_ELEMENT;
@@ -158,7 +156,8 @@ void LS_ClearLightTimers(void)
 void LS_ClearLights(void)
 {
 	uint16_t i;
-
+	CM_ClearAll();
+	_LS_ClearLightTimers();
 	for( i = 0; i < LIGHT_COUNT; i++)
 	{
 		LS_SETPIXEL(i , 0x00)

@@ -173,30 +173,37 @@ uint8_t UserGUI_SliderReposition(void* sld, void* data)
 		GFX_SLIDER_Draw(SLD);
 	}
 
-	//xprintf("SLIDER: %d",  *state );
+	xprintf("SLIDER: %d",  *state );
 
 	switch( *state )
 	{
 		case PENDING_ACTION_FLAG:
-			if( MPB_GetPlaybackState(&MIDIHdr) == STATE_ACTIVE )
+			//if( MPB_GetPlaybackState(&MIDIHdr) == STATE_ACTIVE )
 			{
 				uint32_t position;
+				MidiPlaybackState_t playbackState;
 				position = GFX_SLIDER_GetPosition(SLD);
 
 				xprintf("Position: %d\n",  position );
 
 				position = (position * (MIDIHdr.currentState.maxLength / SLIDER_RESOLUTION));
 
+				playbackState = MPB_GetPlaybackState(&MIDIHdr);
+				MPB_PausePlayback(&MIDIHdr);
 				MPB_ResetMIDI();
 				MPB_RePosition(&MIDIHdr, position, MPB_PB_SAVE_MIDI_STATUS);
 				MPB_ReplayStatusBuffer();
-				MPB_EnablePlayback(&MIDIHdr);
+				MPB_SetPlaybackState(&MIDIHdr, playbackState);
+
 				LS_ClearLights();
+				MLL_ClearHaltList();
 			}
 			GFX_SLIDER_Draw(SLD);
 			break;
 
 		case PENDING_NO_FLAG:
+			break;
+
 		case PENDING_REDRAW_FLAG:
 			GFX_SLIDER_Draw(SLD);
 

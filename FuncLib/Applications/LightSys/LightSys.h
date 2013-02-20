@@ -28,10 +28,11 @@
 #include "MIDICodes/MIDICodes.h"
 
 //#define LIGHT_OFFSET (-MIDI_PIANO_A0)
+#define LIGHT_OFFSET (MIDI_PIANO_A0)
 #define LIGHT_COUNT	 (128)
 
 void LS_Init(void);
-void LS_ClearLightTimers(void);
+void _LS_ClearLightTimers(void);
 void LS_ClearLights(void);
 void LS_ProcessAutoTurnOff(void);
 void LS_ProcessAutoTurnOff2(void);

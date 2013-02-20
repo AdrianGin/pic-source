@@ -162,16 +162,25 @@ void MLL_ProcessMIDIByte(uint8_t byte)
 enum {
 	MASTER_HALT_LIST = 0,
 	TESTER_HALT_ON_LIST,
-	TESTER_HALT_OFF_LIST,
+	//TESTER_HALT_OFF_LIST,
 	HALT_LIST_COUNT
 };
 
 LINKED_LIST_t MPL_NoteHaltList[HALT_LIST_COUNT];
-static uint8_t Halt_Count[HALT_LIST_COUNT] = {0,0,0};
+static uint8_t Halt_Count[HALT_LIST_COUNT] = {0,0};
 //MIDI_CHAN_EVENT_t MPL_NoteHaltList[MAX_NOTES_TO_HALT];
 
 static uint8_t Halt_Flag;
 
+
+void MLL_ClearHaltList(void)
+{
+	LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
+	LL_DeleteListAndData(&MPL_NoteHaltList[TESTER_HALT_ON_LIST]);
+	Halt_Count[MASTER_HALT_LIST] = 0;
+	Halt_Count[TESTER_HALT_ON_LIST] = 0;
+	MLL_SetHaltFlag(0);
+}
 
 void MLL_SetHaltFlag(uint8_t state)
 {
@@ -190,7 +199,7 @@ void MLL_ProcessHaltNote(uint8_t* midiDataArray)
 	//if( MLL_GetHaltFlag() == HALT_FLAG_RAISED)
 	{
 		MLL_AddTesterHaltNote(midiDataArray);
-		MLL_TesterHaltCancelNotes();
+		MLL_TesterHaltCancelNotes(midiDataArray);
 		MLL_CompareMasterTesterHaltList();
 	}
 }
@@ -214,63 +223,91 @@ void MLL_AddHaltMasterNote(uint8_t* midiDataArray)
 //midiDataArray:: A 3 byte array pointer
 void MLL_AddTesterHaltNote(uint8_t* midiDataArray)
 {
-	MIDI_CHAN_EVENT_t* newNoteHalt;
-	newNoteHalt = LL_Malloc(sizeof(MIDI_CHAN_EVENT_t));
-	newNoteHalt->eventType = midiDataArray[0];
-	newNoteHalt->parameter1 = midiDataArray[1];
-	newNoteHalt->parameter2 = midiDataArray[2];
-
-	if( (newNoteHalt->eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_OFF ||
-		(newNoteHalt->parameter2) == 0)
+	//Only add non zero NoteOn's
+	if( (midiDataArray[0] & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON &&
+		(midiDataArray[2] != 0))
 	{
-		LL_AppendData(&MPL_NoteHaltList[TESTER_HALT_OFF_LIST], (void*)newNoteHalt);
-		Halt_Count[TESTER_HALT_OFF_LIST]++;
-	}
+		MIDI_CHAN_EVENT_t* newNoteHalt;
+		newNoteHalt = LL_Malloc(sizeof(MIDI_CHAN_EVENT_t));
+		newNoteHalt->eventType = midiDataArray[0];
+		newNoteHalt->parameter1 = midiDataArray[1];
+		newNoteHalt->parameter2 = midiDataArray[2];
 
-	if( (newNoteHalt->eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON &&
-		(newNoteHalt->parameter2 != 0))
-	{
 		LL_AppendData(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], (void*)newNoteHalt);
 		Halt_Count[TESTER_HALT_ON_LIST]++;
 	}
-
 }
 
 
 //midiDataArray:: A 3 byte array pointer
 // ignore the events across channels, imagine they are all on the same keyboard
-void MLL_TesterHaltCancelNotes(void)
+void MLL_TesterHaltCancelNotes(uint8_t* midiDataArray)
 {
 	uint8_t i;
 	uint8_t j;
+	uint8_t eventType;
+	uint8_t parameter1;
+	uint8_t parameter2;
 
 	LIST_NODE_t* onNode;
 	LIST_NODE_t* offNode;
 	MIDI_CHAN_EVENT_t* onEvent;
 	MIDI_CHAN_EVENT_t* offEvent;
-	for( i = 0 ; i < Halt_Count[TESTER_HALT_ON_LIST];)
+
+	eventType = midiDataArray[0];
+	parameter1 = midiDataArray[1];
+	parameter2 = midiDataArray[2];
+
+	//We can only cancel against Note offs / NoteOn's with Vel=0.
+	if( ((eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_OFF) ||
+		(((eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON) && (parameter2 == 0)))
 	{
-		onNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], i++);
-		onEvent = (MIDI_CHAN_EVENT_t*)onNode->data;
-		for( j = 0; j < Halt_Count[TESTER_HALT_OFF_LIST];)
+		for( i = 0 ; i < Halt_Count[TESTER_HALT_ON_LIST];)
 		{
-			offNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_OFF_LIST], j++);
-			offEvent = (MIDI_CHAN_EVENT_t*)offNode->data;
-			if( (onEvent->parameter1 == offEvent->parameter1) )
+			onNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], i++);
+			if( onNode != NULL)
 			{
-				LL_Free(onNode->data);
-				LL_Free(offNode->data);
-				LL_Remove(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], onNode);
-				LL_Remove(&MPL_NoteHaltList[TESTER_HALT_OFF_LIST], offNode);
-
-				Halt_Count[TESTER_HALT_ON_LIST]--;
-				i--;
-				Halt_Count[TESTER_HALT_OFF_LIST]--;
-				j--;
+				onEvent = (MIDI_CHAN_EVENT_t*)onNode->data;
+				if( onEvent != NULL )
+				{
+					if( (onEvent->parameter1 == parameter1) )
+					{
+						LL_Free(onNode->data);
+						LL_Remove(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], onNode);
+						Halt_Count[TESTER_HALT_ON_LIST]--;
+						i--;
+					}
+				}
 			}
-
 		}
 	}
+
+
+
+//	for( i = 0 ; i < Halt_Count[TESTER_HALT_ON_LIST];)
+//	{
+//		onNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], i++);
+//		onEvent = (MIDI_CHAN_EVENT_t*)onNode->data;
+//
+//		for( j = 0; j < Halt_Count[TESTER_HALT_OFF_LIST];)
+//		{
+//			offNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_OFF_LIST], j++);
+//			offEvent = (MIDI_CHAN_EVENT_t*)offNode->data;
+//			if( (onEvent->parameter1 == offEvent->parameter1) )
+//			{
+//				LL_Free(onNode->data);
+//				LL_Free(offNode->data);
+//				LL_Remove(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], onNode);
+//				LL_Remove(&MPL_NoteHaltList[TESTER_HALT_OFF_LIST], offNode);
+//
+//				Halt_Count[TESTER_HALT_ON_LIST]--;
+//				i--;
+//				Halt_Count[TESTER_HALT_OFF_LIST]--;
+//				j--;
+//			}
+//
+//		}
+//	}
 }
 
 
@@ -307,15 +344,8 @@ void MLL_CompareMasterTesterHaltList(void)
 	//If we have matched the halt requirements, delete everything and continue
 	if(matchCount == Halt_Count[MASTER_HALT_LIST])
 	{
-
-		uint8_t k;
-		//for( k = 0 ; k < HALT_LIST_COUNT; k++)
-		{
-			LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
-			//LL_DeleteListAndData(&MPL_NoteHaltList[TESTER_HALT_ON_LIST]);
-			Halt_Count[MASTER_HALT_LIST] = 0;
-			//Halt_Count[TESTER_HALT_ON_LIST] = 0;
-		}
+		LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
+		Halt_Count[MASTER_HALT_LIST] = 0;
 		MLL_SetHaltFlag(0);
 	}
 

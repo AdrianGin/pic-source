@@ -39,8 +39,12 @@ uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, uint8_t state, Coordinate* poi
 	while(node)
 	{
 		widget = (gfxWidget_t*)node->data;
-		if( gfxWidget_CheckBoundaries(widget, point) ||
-			(widget->pendingFlags) )
+		if( gfxWidget_CheckBoundaries(widget, point))
+		{
+			widget->pendingFlags |= PENDING_ACTION_FLAG;
+		}
+
+		if(widget->pendingFlags)
 		{
 			redrawRequired = gfxWidget_ProcessInput(widget);
 			widget->pendingFlags &= ~PENDING_REDRAW_FLAG;

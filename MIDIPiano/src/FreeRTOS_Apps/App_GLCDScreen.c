@@ -72,8 +72,8 @@ void ExecuteMIDIFile(char* LBItem)
 	strcat(path, LBItem);
 	MPB_ResetMIDI();
 
-	LS_ClearLightTimers();
 	LS_ClearLights();
+	MLL_ClearHaltList();
 
 	tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
 

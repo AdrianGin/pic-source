@@ -165,10 +165,14 @@ void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint32_t lengthSecs;
     uint32_t maxLength;
+    uint8_t playbackState;
     
     lengthSecs = MIDIHdr->currentState.trackLengthSecs;
     maxLength = MIDIHdr->currentState.maxLength;
+    playbackState = MIDIHdr->playbackState;
     _mpb_InitMIDIHdr(MIDIHdr);
+
+    MIDIHdr->playbackState = playbackState;
     MIDIHdr->currentState.trackLengthSecs = lengthSecs;
     MIDIHdr->currentState.maxLength = maxLength;
 

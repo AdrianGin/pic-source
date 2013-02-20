@@ -58,7 +58,6 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 		GFX_LB = (GFX_Listbox_t*) widget->instance;
 
 		//Any drag will stop any pending action
-		if (!(widget->pendingFlags & PENDING_ACTION_FLAG)|| (FT_GetTouchState() == TOUCH_DRAG) )
 		{
 			redrawRequired = GFX_LB_ProcessTouchInputs( GFX_LB );
 			widget->pendingFlags &= ~PENDING_ACTION_FLAG;
@@ -116,8 +115,11 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 		GFX_Slider_t* GFX_SLD;
 		GFX_SLD = (GFX_Slider_t*) widget->instance;
 		{
-			uint8_t state;
-			state = GFX_SLIDER_ProcessTouchInputs(GFX_SLD);
+			uint8_t state = widget->pendingFlags;
+			if( widget->pendingFlags == PENDING_ACTION_FLAG)
+			{
+				state = GFX_SLIDER_ProcessTouchInputs(GFX_SLD);
+			}
 
 			if( GFX_SLD->execFunc != NULL )
 			{

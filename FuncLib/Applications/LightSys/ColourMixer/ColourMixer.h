@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#define CM_ClearAll()	CM_Init()
+
 void CM_Init(void);
 void CM_AddColour(uint8_t index, uint32_t colour, uint8_t brightness);
 void CM_RemoveColour(uint8_t index, uint32_t colour);
