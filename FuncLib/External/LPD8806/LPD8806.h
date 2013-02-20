@@ -25,7 +25,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-
+#include "rgbUtils/rgbutils.h"
 /* Private define ------------------------------------------------------------*/
 #define LED_COUNT (48*5)
 #define MAX_LED_BRIGHTNESS (255)
@@ -35,18 +35,12 @@
 #define LPD8806_FLAG		(0x80)
 
 #define LPD8806_BPP (7)
-#define LPD_RED(colour) 	((colour & 0xFF0000) >> 16)
-#define LPD_GREEN(colour) 	((colour & 0x00FF00) >> 8)
-#define LPD_BLUE(colour) 	(colour & 0x0000FF)
-#define RGB(r,g,b)		((r << 16) | (g << 8) | (b))
+#define LPD_RED(colour) 	R_RGB(colour)
+#define LPD_GREEN(colour) 	G_RGB(colour)
+#define LPD_BLUE(colour) 	B_RGB(colour)
 
 #define NORM_RGB(r,g,b)	RGB( (r * MAX_LED_BRIGHTNESS) / (r+g+b), (g * MAX_LED_BRIGHTNESS) / (r+g+b), (b * MAX_LED_BRIGHTNESS) / (r+g+b))
 
-
-#define SCALE(number, factor, divisor)	((number * factor) / divisor )
-#define SCALE_COLOUR(colour, factor, divisor)	RGB( SCALE(LPD_RED(colour), factor, divisor), \
-													 SCALE(LPD_GREEN(colour), factor, divisor), \
-													 SCALE(LPD_BLUE(colour), factor, divisor))
 
 
 #define LPD8806_USE_DMA

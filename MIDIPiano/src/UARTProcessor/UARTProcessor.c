@@ -38,6 +38,8 @@
 #include "ProjectConfig/ProjectConfig.h"
 #include "MIDIPlayback/midiplayback.h"
 
+#include "MIDIPianoLogic/MIDIPianoLogic.h"
+
 #define USART_RX_DATA_SIZE   2048
 
 uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
@@ -93,20 +95,18 @@ void ToggleActiveChannel(uint8_t byte)
 
 	if( byte == '+')
 	{
-		for( i = 0; i < MIDI_MAX_CHANNELS; i++)
-		{
-			LS_SetTranspose(i, LS_GetTranspose(i) + 1 );
-		}
-		xprintf("%d\n", LS_GetTranspose(0));
+		MPL_RestartPlay();
+		MPL_SetTranspose(MPL_GetTranspose()+1);
+
+		xprintf("%d\n", MPL_GetTranspose());
 	}
 
 	if( byte == '-')
 	{
-		for( i = 0; i < MIDI_MAX_CHANNELS; i++)
-		{
-			LS_SetTranspose(i, LS_GetTranspose(i) - 1 );
-		}
-		xprintf("%d\n", LS_GetTranspose(0));
+
+		MPL_RestartPlay();
+		MPL_SetTranspose(MPL_GetTranspose()-1);
+		xprintf("%d\n", MPL_GetTranspose());
 	}
 
 	if( byte == 'C')
@@ -133,15 +133,13 @@ void ToggleActiveChannel(uint8_t byte)
 			myprintf("MClock: ", tmasterClock);
 			//MPB_PlayMIDIFile(&MIDIHdr, filename);
 			//TimerStop();
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-			TIM_Cmd(MIDI_TIM, DISABLE);
+			MPB_PausePlayback(&MIDIHdr);
 
 			MPB_ResetMIDI();
 			MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
 			MPB_ReplayStatusBuffer();
 
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-			TIM_Cmd(MIDI_TIM, ENABLE);
+			MPB_EnablePlayback(&MIDIHdr);
 
 			//TimerStart();
 
@@ -156,14 +154,12 @@ void ToggleActiveChannel(uint8_t byte)
                 tmasterClock = 1;
             }
             //MPB_PlayMIDIFile(&MIDIHdr, filename);
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-			TIM_Cmd(MIDI_TIM, DISABLE);
+            MPB_PausePlayback(&MIDIHdr);
             MPB_ResetMIDI();
             tmasterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
             MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
             MPB_ReplayStatusBuffer();
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-			TIM_Cmd(MIDI_TIM, ENABLE);
+            MPB_EnablePlayback(&MIDIHdr);
 
 
             break;

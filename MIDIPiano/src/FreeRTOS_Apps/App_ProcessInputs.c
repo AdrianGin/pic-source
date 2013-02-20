@@ -60,6 +60,8 @@ void Task_ProcessInputs(void * pvArg)
 		ProcessUARTBuffer();
 		ProcessUSBMIDIBuffer_LightSys();
 
+
+
 		//LPD8806_Update();
 
 		SemaphoreGive(Sem_LightSysUpdate);

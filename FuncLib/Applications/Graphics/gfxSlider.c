@@ -80,21 +80,20 @@ void GFX_SLIDER_Draw(GFX_Slider_t* SLIDER)
 
 
 
-#define SLIDER_RESOLUTION (1000)
-int16_t GFX_SLIDER_GetPosition(GFX_Slider_t* SLIDER)
+
+uint16_t GFX_SLIDER_GetPosition(GFX_Slider_t* SLIDER)
 {
 
-	int16_t normPos;
-
+	uint32_t normPos;
 	if(SLIDER->sliderType == SLIDER_X)
 	{
-		normPos = (SLIDER->position * SLIDER_RESOLUTION) / SLIDER->fixedX;
+		normPos = (SLIDER->position * SLIDER_RESOLUTION) / SLIDER->width;
 	}
 	else
 	{
-		normPos = (SLIDER->position * SLIDER_RESOLUTION) / SLIDER->fixedY;
+		normPos = (SLIDER->position * SLIDER_RESOLUTION) / SLIDER->height;
 	}
-	return normPos;
+	return (uint16_t)normPos;
 }
 
 void GFX_SLIDER_SetPosition(GFX_Slider_t* SLIDER, Coordinate* point)
@@ -106,6 +105,23 @@ void GFX_SLIDER_SetPosition(GFX_Slider_t* SLIDER, Coordinate* point)
 	else
 	{
 		SLIDER->position = point->y - SLIDER->fixedY;
+	}
+
+	if( SLIDER->position < 0 )
+	{
+		SLIDER->position = 0;
+	}
+}
+
+void GFX_SLIDER_SetPositionRaw(GFX_Slider_t* SLIDER, uint16_t position)
+{
+	if(SLIDER->sliderType == SLIDER_X)
+	{
+		SLIDER->position = (position * SLIDER->width) / SLIDER_RESOLUTION;
+	}
+	else
+	{
+		SLIDER->position = (position * SLIDER->height) / SLIDER_RESOLUTION;
 	}
 }
 
@@ -126,7 +142,7 @@ uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* SLIDER)
 			{
 				point = FT_GetLastPoint();
 				GFX_SLIDER_SetPosition(SLIDER, point);
-				ret = PENDING_REDRAW_FLAG;
+				ret = PENDING_ACTION_FLAG;
 			}
 			break;
 		}

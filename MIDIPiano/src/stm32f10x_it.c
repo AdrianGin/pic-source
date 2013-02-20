@@ -240,8 +240,8 @@ void TIM2_IRQHandler(void)
 	// We should switch context so the ISR returns to a different task.
 	// NOTE:  How this is done depends on the port you are using.  Check
 	// the documentation and examples for your port.
-	vPortYieldFromISR();
-}
+		vPortYieldFromISR();
+	}
 
 	globalFlag |= 1;
 }

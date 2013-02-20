@@ -64,8 +64,8 @@ void Task_SystemMonitor(void * pvArg)
 	for (;;)
 	{
 		vTaskDelay(1000);
-		//vTaskList(buffer);
-		//xprintf("%s", buffer);
+		vTaskList(buffer);
+		xprintf("%s\n", buffer);
 		display_mallinfo();
 		vTaskDelay(1000);
 		vTaskDelay(1000);

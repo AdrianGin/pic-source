@@ -40,6 +40,10 @@ typedef struct
 
 
 void gfxWidget_Create(gfxWidget_t* widget, int type, int x, int y, int xe, int ye, void* instance);
+
+
+void gfxWidget_SetPendingFlags(gfxWidget_t* widget, uint8_t flags);
+
 //Check to see if the point affects any widgets.;;
 uint8_t gfxWidget_CheckBoundaries(gfxWidget_t* widget, Coordinate* point);
 uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget);

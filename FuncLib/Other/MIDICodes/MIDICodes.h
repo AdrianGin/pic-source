@@ -4,6 +4,7 @@
 
 #define OCTAVE_OFFSET      (1)
 #define MIDI_SYSTEM_COMMON_MSG (0xF0)
+#define MIDI_MSG_TYPE_MASK	(0xF0)
 #define MIDI_CHANNEL_MASK	(0x0F)
 #define MIDI_DATA_READY     (0x01)
 #define MIDI_DATA_NOT_READY (0x00)

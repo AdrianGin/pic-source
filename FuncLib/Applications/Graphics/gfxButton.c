@@ -105,12 +105,12 @@ uint8_t GFX_BUT_ProcessTouchInputs(GFX_Button_t* BUT)
 				point = FT_GetLastPoint();
 				ret = BUT_TENTATIVE;
 			}
-			//This here is a STOP while dragging.
 			break;
 		}
 
 		case TOUCH_DRAG:
 		{
+			ret = BUT_CANCEL;
 			break;
 		}
 

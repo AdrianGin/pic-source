@@ -23,6 +23,11 @@ void gfxWidget_Create(gfxWidget_t* widget, int type, int x, int y, int xe,
 
 }
 
+void gfxWidget_SetPendingFlags(gfxWidget_t* widget, uint8_t flags)
+{
+	widget->pendingFlags = flags;
+}
+
 //Check to see if the point affects any widgets.
 uint8_t gfxWidget_CheckBoundaries(gfxWidget_t* widget, Coordinate* point)
 {
@@ -91,17 +96,17 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 				widget->pendingFlags = GFX_BUT->execFunc(GFX_BUT, &butState);
 			}
 
-			if( butState != BUT_OFF)
-			{
-				widget->pendingFlags = PENDING_ACTION_FLAG;
-			}
-			else
-			{
-				widget->pendingFlags = PENDING_NO_FLAG;
-			}
+//			if( butState != BUT_OFF)
+//			{
+//				widget->pendingFlags = PENDING_ACTION_FLAG;
+//			}
+//			else
+//			{
+//				widget->pendingFlags = PENDING_NO_FLAG;
+//			}
 
 			//GFX_BUT_Draw(GFX_BUT, butState);
-			redrawRequired = 1;
+//			redrawRequired = 1;
 		}
 		break;
 	}

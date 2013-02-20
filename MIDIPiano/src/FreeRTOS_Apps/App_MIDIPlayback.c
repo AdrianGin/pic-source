@@ -34,6 +34,9 @@
 #include "LightSys/LightSys.h"
 #include "stm32f10x.h"
 
+#include "UserGUI.h"
+#include "Graphics/gfxSlider.h"
+
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void Task_MIDIPlayback(void * pvArg);
@@ -53,35 +56,53 @@ void App_MIDIPlaybackTaskCreate(void)
 			&MIDIPlayBackHandle);
 }
 
+#define SEEK_UPDATE_RESOLUTION (100)
+
 void Task_MIDIPlayback(void * pvArg)
 {
 	uint16_t tickCounter = 0;
+	uint16_t sliderUpdater = 0;
 
 	for (;;)
 	{
 
 		WAIT_FOR_MIDI_TICK();
 
-		MIDIHdr.masterClock++;
-		if (MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED)
-		{
-			TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-			TIM_Cmd(MIDI_TIM, DISABLE);
 
-			myprintf("End of MIDI File:  ", 1);
+		if( (MIDIHdr.playbackState == STATE_ACTIVE) &&
+			(MLL_GetHaltFlag() != HALT_FLAG_RAISED) )
+		{
+
+			MIDIHdr.masterClock++;
+			if (MPB_ContinuePlay(&MIDIHdr, MPB_PB_ALL_ON) == MPB_FILE_FINISHED)
+			{
+				MPB_PausePlayback(&MIDIHdr);
+				myprintf("End of MIDI File:  ", 1);
+			}
+
+			if(sliderUpdater-- == 0)
+			{
+				uint32_t position;
+				position = (MIDIHdr.masterClock * SLIDER_RESOLUTION) / MIDIHdr.currentState.maxLength;
+				GFX_SLIDER_SetPositionRaw(&GFX_SLD[SEEK_SLIDER_INDEX], position);
+
+				gfxWidget_SetPendingFlags(GFX_WidgetHandles[SEEK_SLIDER_WIDGET_INDEX], PENDING_REDRAW_FLAG);
+
+				sliderUpdater = (MIDIHdr.currentState.maxLength / SEEK_UPDATE_RESOLUTION);
+			}
+
+
+			//LPD8806_Update();
+			tickCounter++;
+			if ((tickCounter >= ((MIDIHdr.PPQ / 24))))
+			{
+				tickCounter = 0;
+				//MIDI_Tx(0xF8);
+			}
 		}
 
-		//LPD8806_Update();
 		SemaphoreGive(Sem_LightSysUpdate);
 		vTaskResume(LightSystemHandle);
-
-		tickCounter++;
-		if ((tickCounter >= ((MIDIHdr.PPQ / 24))))
-		{
-			tickCounter = 0;
-			//MIDI_Tx(0xF8);
-		}
-
 	}
 }
 

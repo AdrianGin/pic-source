@@ -50,6 +50,10 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
 void MPB_PlayEvent(MIDI_EVENT_t* event, MIDI_PB_MODE mode);
 void MPB_OutputMIDIChanEvent(MIDI_CHAN_EVENT_t* chanEvent);
 
+void MPB_SetTranspose(MIDI_HEADER_CHUNK_t* MIDIHdr, int8_t transpose);
+void MPB_ApplyTranspose(MIDI_EVENT_t* event, int8_t transpose);
+
+
 void MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
 void MPB_ResetMIDI(void);
 void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, MIDI_PB_MODE mode);
@@ -79,6 +83,11 @@ MIDI_EVENT_t* MPB_GetNextEvent(void);
 MIDI_EVENT_t* MPB_ConfirmEventTx(void);
 
 
+void MPB_EnablePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void MPB_PausePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void MPB_TogglePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void MPB_SetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr, MidiPlaybackState_t state);
+MidiPlaybackState_t MPB_GetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr);
 
 //Private Functions for StatusBuffer control
 void _addEventToBuffer(MIDI_CHAN_EVENT_t* chanEvent);

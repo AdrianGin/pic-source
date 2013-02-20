@@ -18,6 +18,11 @@
 
 #include "Graphics/gfxFileBrowser.h"
 
+#include "MIDIPlayback/midiplayback.h"
+#include "ProjectConfig/ProjectConfig.h"
+
+#include "UserGUI.h"
+
 GFX_Listbox_t* GFX_LB;
 GFX_FB_t GFX_FB;
 
@@ -26,8 +31,11 @@ gfxFrame_t GFX_MainFrame;
 GFX_Button_t GFX_BUT1;
 GFX_Slider_t GFX_SLD[2];
 
+gfxWidget_t* GFX_WidgetHandles[10];
+
 
 #define EXECUTION_DELAY	(10)
+//Filebrowser Request.
 uint8_t ProcessFB_Request(void* LB, void* data)
 {
 	char* LBItem = (char*)data;
@@ -78,15 +86,13 @@ uint8_t UserGUI_PlayButton(void* but, void* data )
 	state = (uint8_t*)data;
 	BUT = (GFX_Button_t*)but;
 
-	BMP_SetCursor(BUT->fixedX, BUT->fixedY + BUT->height);
-	BMP_SetRotation(1,-1, 0);
-
-
 	if( lastState == *state)
 	{
 		return PENDING_NO_FLAG;
 	}
 
+	BMP_SetCursor(BUT->fixedX, BUT->fixedY + BUT->height);
+	BMP_SetRotation(1,-1, 0);
 	switch( *state )
 	{
 	case BUT_ON:
@@ -94,6 +100,7 @@ uint8_t UserGUI_PlayButton(void* but, void* data )
 		break;
 
 	case BUT_OFF:
+	case BUT_CANCEL:
 		gfxDrawBMP("1:/PlayUp.bmp");
 		break;
 
@@ -105,9 +112,15 @@ uint8_t UserGUI_PlayButton(void* but, void* data )
 		break;
 	}
 
+	if( (*state == BUT_ON) || (lastState == BUT_TENTATIVE && *state == BUT_OFF))
+	{
+		MPB_TogglePlayback(&MIDIHdr);
+	}
+
+
 	lastState = *state;
 
-	return PENDING_ACTION_FLAG;
+	return PENDING_NO_FLAG;
 
 }
 
@@ -129,6 +142,8 @@ uint8_t UserGUI_Slider(void* sld, void* data)
 
 	switch( *state )
 	{
+		case PENDING_ACTION_FLAG:
+		case PENDING_NO_FLAG:
 		case PENDING_REDRAW_FLAG:
 			GFX_SLIDER_Draw(SLD);
 			break;
@@ -140,9 +155,64 @@ uint8_t UserGUI_Slider(void* sld, void* data)
 	lastState = *state;
 
 	return PENDING_NO_FLAG;
-
 }
 
+
+
+uint8_t UserGUI_SliderReposition(void* sld, void* data)
+{
+	uint8_t* state;
+	GFX_Slider_t* SLD;
+	static uint8_t lastState = 0xFF;
+
+	state = (uint8_t*)data;
+	SLD = (GFX_Slider_t*)sld;
+
+	if( lastState == 0xFF )
+	{
+		GFX_SLIDER_Draw(SLD);
+	}
+
+	//xprintf("SLIDER: %d",  *state );
+
+	switch( *state )
+	{
+		case PENDING_ACTION_FLAG:
+			if( MPB_GetPlaybackState(&MIDIHdr) == STATE_ACTIVE )
+			{
+				uint32_t position;
+				position = GFX_SLIDER_GetPosition(SLD);
+
+				xprintf("Position: %d\n",  position );
+
+				position = (position * (MIDIHdr.currentState.maxLength / SLIDER_RESOLUTION));
+
+				MPB_ResetMIDI();
+				MPB_RePosition(&MIDIHdr, position, MPB_PB_SAVE_MIDI_STATUS);
+				MPB_ReplayStatusBuffer();
+				MPB_EnablePlayback(&MIDIHdr);
+				LS_ClearLights();
+			}
+			GFX_SLIDER_Draw(SLD);
+			break;
+
+		case PENDING_NO_FLAG:
+		case PENDING_REDRAW_FLAG:
+			GFX_SLIDER_Draw(SLD);
+
+			break;
+
+		default:
+			break;
+	}
+
+
+
+	lastState = *state;
+
+	return PENDING_NO_FLAG;
+
+}
 
 
 
@@ -203,9 +273,9 @@ void UserGUI_Init(void* gfxLB)
 	gfxSLD2 = (GFX_Slider_t*)(&GFX_SLD[1]);
 	GFX_SLIDER_Init(gfxSLD2, 90, MAX_LCD_Y-19 , 140, 20, SLIDER_X);
 
-	gfxSLD2->execFunc = UserGUI_Slider;
+	gfxSLD2->execFunc = UserGUI_SliderReposition;
 
-	gfxFrame_AddWidget(&GFX_MainFrame, GFX_SLIDER,
+	GFX_WidgetHandles[SEEK_SLIDER_WIDGET_INDEX] = gfxFrame_AddWidget(&GFX_MainFrame, GFX_SLIDER,
 			gfxSLD2->fixedX,
 			gfxSLD2->fixedY,
 			gfxSLD2->fixedX + gfxSLD2->width,

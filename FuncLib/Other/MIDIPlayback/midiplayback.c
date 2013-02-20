@@ -133,6 +133,34 @@ uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
     return FR_OK;
 }
 
+void MPB_EnablePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+	MIDIHdr->playbackState = STATE_ACTIVE;
+}
+
+void MPB_PausePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+	MIDIHdr->playbackState = STATE_INACTIVE;
+}
+
+void MPB_SetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr, MidiPlaybackState_t state)
+{
+	if( state == STATE_ACTIVE || state == STATE_INACTIVE)
+	{
+		MIDIHdr->playbackState = state;
+	}
+}
+
+MidiPlaybackState_t MPB_GetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+	return MIDIHdr->playbackState;
+}
+
+void MPB_TogglePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr)
+{
+	MIDIHdr->playbackState = MIDIHdr->playbackState ^ 1;
+}
+
 void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint32_t lengthSecs;
@@ -275,11 +303,13 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
 {
 	uint8_t midiChannel;
 
+	MPB_ApplyTranspose(event, MIDIHdr->transpose);
     MPB_PlayEvent(event, mode);
     track->eventCount = MPB_PLAY_NEXT_EVENT;
 
     midiChannel = (event->event.eventType & 0x0F);
     
+    //Keep track of polyphony here
     if( (event->event.eventType & 0xF0) == MIDI_NOTE_ON )
     {
         //A note on with a velocity of 0, can be NOTE_OFFs.
@@ -553,11 +583,32 @@ void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* trac
     }
 }
 
+void MPB_SetTranspose(MIDI_HEADER_CHUNK_t* MIDIHdr, int8_t transpose)
+{
+	MIDIHdr->transpose = transpose;
+}
+
+void MPB_ApplyTranspose(MIDI_EVENT_t* event, int8_t transpose)
+{
+	//Apply transpose here
+    if( ((event->event.eventType & 0xF0) == MIDI_NOTE_ON) ||
+        ((event->event.eventType & 0xF0) == MIDI_NOTE_OFF))
+    {
+    	uint8_t chan;
+    	chan = event->event.eventType & 0x0F;
+    	if( chan != MIDI_DRUM_CHANNEL )
+    	{
+    		event->event.chanEvent.parameter1 += transpose;
+    	}
+    }
+
+}
+
+
+
+
 void MPB_PlayEvent(MIDI_EVENT_t* event, MIDI_PB_MODE mode)
 {
-    
-
-
     if( mode == MPB_PB_ALL_OFF)
     {
         return;
@@ -606,6 +657,9 @@ void MPB_PlayEvent(MIDI_EVENT_t* event, MIDI_PB_MODE mode)
 
         default:
             //MIDI_PrintEventInfo(event);
+
+
+
             if( mode == MPB_PB_NO_NOTES )
             {
                 if( ((event->event.eventType & 0xF0) == MIDI_NOTE_ON) ||

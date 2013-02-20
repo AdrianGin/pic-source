@@ -31,6 +31,8 @@
 #include "hw_config.h"
 #include "MIDIUtils/MIDIUtils.h"
 
+#include "ColourMixer/ColourMixer.h"
+
 typedef uint32_t LS_ChannelColour_t;
 //Every single possible note has its own individual countdown.
 
@@ -43,6 +45,7 @@ typedef uint32_t LS_ChannelColour_t;
 #define LS_GETCHANNEL(x)	(x >> 8)
 
 #define LS_SETPIXEL(index, colour)	LPD8806_SetPixel( index, colour);
+
 
 
 volatile uint8_t	LS_CountdownCount;
@@ -129,6 +132,7 @@ uint8_t LS_FifthsColourMap[] =
 
 void LS_Init(void)
 {
+	CM_Init();
 	LS_ClearLightTimers();
 	LS_ClearLights();
 
@@ -258,14 +262,14 @@ void LS_TurnOffChannel(uint8_t channel)
 void LS_SetPixel(uint8_t note, uint32_t colour, uint8_t command)
 {
 	LS_SETPIXEL(note + LIGHT_OFFSET, colour);
-	if (colour)
-	{
-		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
-	}
-	else
-	{
-		LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
-	}
+//	if (colour)
+//	{
+//		LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
+//	}
+//	else
+//	{
+//		LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
+//	}
 }
 
 
@@ -275,10 +279,22 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 {
 	uint32_t colour;
 
-	note = LS_ApplyTranspose(LS_CHANNEL(command), note);
+	//Already been transposed
 	colour = LS_GetColourFromMIDI(command, note, velocity);
+	if( (command & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_OFF )
+	{
+		velocity = 0;
+		CM_RemoveColour(note, colour);
+	}
+	else
+	{
+		velocity = (velocity << 1) + 1;
+		CM_AddColour(note + LIGHT_OFFSET, colour, velocity);
+	}
 
-	colour = SCALE_COLOUR(colour , velocity, MIDI_MAX_KEY);
+	//02/2013 Added Colour Mixer
+	colour = CM_GetMixedColour(note + LIGHT_OFFSET);
+	//colour = SCALE_COLOUR(colour , velocity, MIDI_MAX_KEY);
 
 	if( LS_IsChannelActive(LS_CHANNEL(command)) )
 	{
@@ -339,7 +355,9 @@ uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
 	uint32_t colour;
 	uint8_t musicNote;
 
-	if( (command & 0xF0) == MIDI_NOTE_OFF )
+
+	if( (command & MIDI_MSG_TYPE_MASK) != MIDI_NOTE_OFF &&
+		(command & MIDI_MSG_TYPE_MASK) != MIDI_NOTE_ON)
 	{
 		colour = 0;
 	}
@@ -349,44 +367,22 @@ uint32_t LS_GetColourFromMIDI(uint8_t command, uint8_t note, uint8_t velocity)
 	{
 		case CHANNEL_COLOUR:
 		{
-			if( (command & 0xF0) == MIDI_NOTE_ON )
-			{
-				colour = LS_ChanColours[LS_CHANNEL(command)];
-				if( velocity == 0)
-				{
-					colour = 0;
-				}
-			}
+			colour = LS_ChanColours[LS_CHANNEL(command)];
 			break;
 		}
 
 		case NOTE_COLOUR:
 		{
-			if( (command & 0xF0) == MIDI_NOTE_ON )
-			{
-				colour = LS_NoteColours[MIDIUtils_GetMusicNote(note)];
-				if( velocity == 0)
-				{
-					colour = 0;
-				}
-			}
+			colour = LS_NoteColours[MIDIUtils_GetMusicNote(note)];
 			break;
 		}
 
 		case NOTE_FIFTHS_COLOUR:
 		{
-			if( (command & 0xF0) == MIDI_NOTE_ON )
-			{
-				musicNote = MIDIUtils_GetMusicNote(note);
-				colour = LS_NoteColours[LS_LookupFifthsColour(musicNote)];
-				if( velocity == 0)
-				{
-					colour = 0;
-				}
-			}
+			musicNote = MIDIUtils_GetMusicNote(note);
+			colour = LS_NoteColours[LS_LookupFifthsColour(musicNote)];
 			break;
 		}
-
 
 		default:
 		{

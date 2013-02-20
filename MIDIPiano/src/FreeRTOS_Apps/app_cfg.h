@@ -61,7 +61,7 @@
 #define  APP_TASK_MIDIPLAYBACK_STK_SIZE                   	256u
 #define  APP_TASK_GLCDSCREEN_STK_SIZE                 		512u
 #define  APP_TASK_TOUCHSCREEN_STK_SIZE					 	128u
-#define  APP_TASK_PROCESSINPUTS_STK_SIZE                    128u
+#define  APP_TASK_PROCESSINPUTS_STK_SIZE                    256u
 #define  APP_TASK_SYSTEMMONITOR_STK_SIZE                    256u
 
 

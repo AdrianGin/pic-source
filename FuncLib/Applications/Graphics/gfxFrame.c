@@ -19,12 +19,13 @@ void gfxFrameInit()
 }
 
 
-void gfxFrame_AddWidget(gfxFrame_t* frame, int type, int x, int y, int xe, int ye, void* instance)
+void* gfxFrame_AddWidget(gfxFrame_t* frame, int type, int x, int y, int xe, int ye, void* instance)
 {
 	gfxWidget_t* newWidget;
 	newWidget = LL_Malloc(sizeof(gfxWidget_t));
 	gfxWidget_Create(newWidget, type, x, y, xe, ye, instance);
 	LL_AppendData(&frame->widgetList, (void*)newWidget);
+	return (void*)newWidget;
 }
 
 uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, uint8_t state, Coordinate* point)

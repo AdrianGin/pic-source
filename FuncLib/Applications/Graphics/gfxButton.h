@@ -7,7 +7,7 @@
 
 
 
-typedef enum {BUT_OFF, BUT_ON, BUT_TENTATIVE, BUT_NO_STATE} BUTTON_STATES;
+typedef enum {BUT_OFF, BUT_ON, BUT_TENTATIVE, BUT_CANCEL, BUT_NO_STATE} BUTTON_STATES;
 
 
 typedef struct

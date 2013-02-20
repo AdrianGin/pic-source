@@ -51,11 +51,13 @@
 #define PROGRAM_SPACE
 #define FLASH_GET_PGM_BYTE
 
-enum
+typedef enum
 {
-    TRACK_STATE_INACTIVE = 0,
-    TRACK_STATE_ACTIVE = 0,
-};
+    STATE_INACTIVE = 0,
+    STATE_ACTIVE = 1,
+} MidiPlaybackState_t;
+
+
 
 enum
 {
@@ -165,6 +167,9 @@ typedef struct
     uint8_t  NoteOnList[MIDI_MAX_POLYPHONY];
     uint8_t  channelPolyphony[MIDI_MAX_CHANNELS];
     uint8_t  totalPolyphony;
+
+    MidiPlaybackState_t playbackState;
+    int8_t transpose;
 
 } MIDI_HEADER_CHUNK_t;
 

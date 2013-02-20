@@ -64,9 +64,7 @@ void ExecuteMIDIFile(char* LBItem)
 	char path[255];
 	FRESULT tmp;
 
-	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-	TIM_Cmd(MIDI_TIM, DISABLE);
-
+	MPB_PausePlayback(&MIDIHdr);
 	vTaskDelay(10);
 
 	strcpy(path, GFX_FB_CWD());
@@ -81,8 +79,8 @@ void ExecuteMIDIFile(char* LBItem)
 
 	xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
 
-	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
-	TIM_Cmd(MIDI_TIM, ENABLE);
+	MPB_EnablePlayback(&MIDIHdr);
+
 
 	if (tmp == FR_OK)
 	{

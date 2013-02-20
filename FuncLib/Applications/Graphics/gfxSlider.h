@@ -27,7 +27,7 @@ typedef struct
 
 } GFX_Slider_t;
 
-
+#define SLIDER_RESOLUTION (1000)
 
 
 void GFX_SLIDER_Init(GFX_Slider_t* SLIDER, int16_t x, int16_t y, int16_t width, int16_t height, SLIDER_TYPE_t sliderType);
@@ -35,8 +35,10 @@ void GFX_SLIDER_SetColour(GFX_Slider_t* SLIDER, uint16_t sliderColour, uint16_t 
 void GFX_SLIDER_Draw(GFX_Slider_t* SLIDER);
 
 
-int16_t GFX_SLIDER_GetPosition(GFX_Slider_t* SLIDER);
+uint16_t GFX_SLIDER_GetPosition(GFX_Slider_t* SLIDER);
 void GFX_SLIDER_SetPosition(GFX_Slider_t* SLIDER, Coordinate* point);
 uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* LB);
+void GFX_SLIDER_SetPositionRaw(GFX_Slider_t* SLIDER, uint16_t position);
+
 
 #endif

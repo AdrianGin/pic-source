@@ -16,6 +16,8 @@
 
 #include "USBMIDI\USBMIDI.h"
 
+#include "MIDILightLogic/MIDILightLogic.h"
+
 #ifdef __GNUC__
 #include <malloc.h>
 #else
@@ -163,9 +165,12 @@ void TIM_MIDI_Configuration(void)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(MIDI_TIM, &TIM_TimeBaseStructure);
 
+	//Enable MIDI Timer now, it should always be enabled.
+	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, ENABLE);
+	TIM_Cmd(MIDI_TIM, ENABLE);
 
-	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
-	TIM_Cmd(MIDI_TIM, DISABLE);
+//	TIM_ITConfig(MIDI_TIM, TIM_IT_Update, DISABLE);
+//	TIM_Cmd(MIDI_TIM, DISABLE);
 }
 
 
@@ -315,6 +320,7 @@ void ProcessUSBMIDIBuffer_LightSys(void)
 		{
 			bufCount = 0;
 			LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
+			MLL_ProcessHaltNote(&lsBuf[0]);
 		}
 	}
 
