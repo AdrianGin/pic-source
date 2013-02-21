@@ -115,12 +115,16 @@ uint8_t UserGUI_PlayButton(void* but, void* data )
 	if( (*state == BUT_ON) || (lastState == BUT_TENTATIVE && *state == BUT_OFF))
 	{
 		MPB_TogglePlayback(&MIDIHdr);
+		lastState = *state;
+		return PENDING_NO_FLAG;
+	}
+	else
+	{
+		lastState = *state;
+		return PENDING_REDRAW_FLAG;
 	}
 
 
-	lastState = *state;
-
-	return PENDING_NO_FLAG;
 
 }
 

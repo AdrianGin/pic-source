@@ -19,6 +19,7 @@ void gfxWidget_Create(gfxWidget_t* widget, int type, int x, int y, int xe,
 	widget->end.x = xe;
 	widget->end.y = ye;
 	widget->instance = instance;
+	widget->currentState = 0;
 	widget->pendingFlags = PENDING_REDRAW_FLAG;
 
 }
@@ -59,7 +60,7 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 
 		//Any drag will stop any pending action
 		{
-			redrawRequired = GFX_LB_ProcessTouchInputs( GFX_LB );
+			redrawRequired = GFX_LB_ProcessTouchInputs( GFX_LB, widget->currentState );
 			widget->pendingFlags &= ~PENDING_ACTION_FLAG;
 		}
 		LBItem = (char*) GFX_LB_ReturnSelectedItemPtr(GFX_LB);
@@ -69,6 +70,7 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 			if( GFX_LB->execFunc != NULL )
 			{
 				widget->pendingFlags = GFX_LB->execFunc(GFX_LB, LBItem);
+				redrawRequired = 1;
 			}
 		}
 
@@ -77,7 +79,7 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 		{
 			//LCD_Clear(WHITE);
 			GFX_LB_Draw(GFX_LB);
-			redrawRequired = 1;
+
 		}
 		break;
 	}
@@ -88,12 +90,14 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 		GFX_BUT = (GFX_Button_t*) widget->instance;
 		{
 			uint8_t butState;
-			butState = GFX_BUT_ProcessTouchInputs(GFX_BUT);
+			butState = GFX_BUT_ProcessTouchInputs(GFX_BUT, widget->currentState);
 
 			if( GFX_BUT->execFunc != NULL )
 			{
 				widget->pendingFlags = GFX_BUT->execFunc(GFX_BUT, &butState);
 			}
+
+			redrawRequired = 1;
 
 //			if( butState != BUT_OFF)
 //			{
@@ -105,7 +109,7 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 //			}
 
 			//GFX_BUT_Draw(GFX_BUT, butState);
-//			redrawRequired = 1;
+
 		}
 		break;
 	}
@@ -118,7 +122,7 @@ uint8_t gfxWidget_ProcessInput(gfxWidget_t* widget)
 			uint8_t state = widget->pendingFlags;
 			if( widget->pendingFlags == PENDING_ACTION_FLAG)
 			{
-				state = GFX_SLIDER_ProcessTouchInputs(GFX_SLD);
+				state = GFX_SLIDER_ProcessTouchInputs(GFX_SLD, widget->currentState);
 			}
 
 			if( GFX_SLD->execFunc != NULL )

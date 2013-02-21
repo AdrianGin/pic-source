@@ -37,7 +37,7 @@ void GFX_SLIDER_Draw(GFX_Slider_t* SLIDER);
 
 uint16_t GFX_SLIDER_GetPosition(GFX_Slider_t* SLIDER);
 void GFX_SLIDER_SetPosition(GFX_Slider_t* SLIDER, Coordinate* point);
-uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* LB);
+uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* LB, uint8_t state);
 void GFX_SLIDER_SetPositionRaw(GFX_Slider_t* SLIDER, uint16_t position);
 
 

@@ -249,14 +249,12 @@ void GFX_LB_ResetTouchCounter(GFX_Listbox_t* LB)
 	LB->counters[TOUCH_ON] = REQUIRE_TOUCH_OFF;
 }
 
-uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB)
+uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB, uint8_t state)
 {
-	FT_STATES state;
 	Coordinate* point;
 	uint8_t ret = LB_NO_REDRAW;
 	static uint8_t dragCount = 0;
 
-	state = FT_GetTouchState();
 
 	switch( state )
 	{

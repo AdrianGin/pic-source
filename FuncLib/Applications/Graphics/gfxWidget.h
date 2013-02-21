@@ -33,6 +33,7 @@ typedef struct
 {
 	int 		type;
 	uint8_t		pendingFlags;
+	uint8_t		currentState; //For Touch screen co-ordination
 	Coordinate 	start;
 	Coordinate 	end;
 	void* 		instance;

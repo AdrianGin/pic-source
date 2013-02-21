@@ -76,12 +76,10 @@ void GFX_BUT_ResetTouchCounter(GFX_Button_t* BUT)
 	BUT->counters[TOUCH_ON] = REQUIRE_TOUCH_OFF;
 }
 
-uint8_t GFX_BUT_ProcessTouchInputs(GFX_Button_t* BUT)
+uint8_t GFX_BUT_ProcessTouchInputs(GFX_Button_t* BUT, uint8_t state)
 {
-	FT_STATES state;
 	Coordinate* point;
 	uint8_t ret = BUT_OFF;
-	state = FT_GetTouchState();
 
 	switch( state )
 	{

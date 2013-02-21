@@ -42,11 +42,23 @@ uint8_t gfxFrame_ProcessInputs(gfxFrame_t* frame, uint8_t state, Coordinate* poi
 		if( gfxWidget_CheckBoundaries(widget, point))
 		{
 			widget->pendingFlags |= PENDING_ACTION_FLAG;
+			widget->currentState = state;
+		}
+		else
+		{
+
+			if( widget->currentState != state )
+			{
+				widget->pendingFlags |= PENDING_REDRAW_FLAG;
+			}
+
+			widget->currentState = TOUCH_OFF;
+
 		}
 
 		if(widget->pendingFlags)
 		{
-			redrawRequired = gfxWidget_ProcessInput(widget);
+			redrawRequired = gfxWidget_ProcessInput(widget) | redrawRequired;
 			widget->pendingFlags &= ~PENDING_REDRAW_FLAG;
 		}
 		node = node->next;

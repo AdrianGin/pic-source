@@ -101,7 +101,7 @@ void Task_GLCDScreen(void * pvArg)
 
 	FT_STATES state;
 
-	uint8_t redrawFlag;
+	uint8_t redrawFlag = 1;
 
 	actionDelay = 0;
 
@@ -113,21 +113,20 @@ void Task_GLCDScreen(void * pvArg)
 
 		LCD_VSyncHigh();
 		//LS_ProcessAutoTurnOff();
-		LS_ProcessAutoTurnOff();
-		MLL_ProcessPulsateHaltList();
+		//LS_ProcessAutoTurnOff();
+		//MLL_ProcessPulsateHaltList();
 
 		GPIO_SetBits(GPIOC, GPIO_Pin_13 );
 		vTaskDelay(32);
 
-		//state = FT_GetTouchState();
+		state = FT_GetTouchState();
 		point = FT_GetLastPoint();
-		redrawFlag = 0;
 
-
-		//if( FluidGetTouch() != TOUCH_OFF )
+		if( (FT_GetTouchState() != TOUCH_OFF) || (redrawFlag == 1)  )
 		{
 			redrawFlag = gfxFrame_ProcessInputs(&GFX_MainFrame, state, point);
 		}
+
 
 		//Clear the touch state.
 		FT_ClearTouchState();

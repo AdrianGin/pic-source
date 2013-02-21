@@ -125,12 +125,10 @@ void GFX_SLIDER_SetPositionRaw(GFX_Slider_t* SLIDER, uint16_t position)
 	}
 }
 
-uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* SLIDER)
+uint8_t GFX_SLIDER_ProcessTouchInputs(GFX_Slider_t* SLIDER, uint8_t state)
 {
-	FT_STATES state;
 	Coordinate* point;
 	uint8_t ret = PENDING_NO_FLAG;
-	state = FT_GetTouchState();
 
 	switch( state )
 	{

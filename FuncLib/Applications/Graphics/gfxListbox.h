@@ -6,7 +6,6 @@
 #include "InertiaTouch\InertiaTouch.h"
 
 
-
 #define MAX_SELECTED_ITEMS (3)
 #define NO_SELECTION		(0xFF)
 #define LB_REQUIRES_REDRAW	(1)
@@ -75,7 +74,7 @@ int8_t GFX_LB_CalculateSelectedItem(GFX_Listbox_t* LB, int16_t y);
 uint8_t GFX_LB_ReturnSelectedItemIndex(GFX_Listbox_t* LB);
 void* GFX_LB_ReturnSelectedItemPtr(GFX_Listbox_t* LB);
 
-uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB);
+uint8_t GFX_LB_ProcessTouchInputs(GFX_Listbox_t* LB, uint8_t state);
 
 void GFX_LB_ResetTouchCounter(GFX_Listbox_t* LB);
 
