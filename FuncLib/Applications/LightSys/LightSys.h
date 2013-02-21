@@ -31,11 +31,23 @@
 #define LIGHT_OFFSET (MIDI_PIANO_A0)
 #define LIGHT_COUNT	 (128)
 
+
+#define FREE_ELEMENT  (0xFFFF)
+#define FADE_PERCENT	  			(15)
+
+#define MIN_ON_BRIGHTNESS (1<<1)
+
+#define MIN_FADE_BRIGHTNESS (100/FADE_PERCENT)
+
+#define LS_CHANNEL(x)	(x & 0x0F)
+#define LS_GETCHANNEL(x)	(x >> 8)
+
+extern uint8_t LS_MinBrightness;
+
 void LS_Init(void);
 void _LS_ClearLightTimers(void);
 void LS_ClearLights(void);
 void LS_ProcessAutoTurnOff(void);
-void LS_ProcessAutoTurnOff2(void);
 void LS_AppendLightOn(uint16_t channelKey, uint8_t timer);
 
 void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity);

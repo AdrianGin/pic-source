@@ -58,7 +58,12 @@ void Task_LightSystem(void * pvArg)
 	LPD8806_Update();
 	for (;;)
 	{
-		WAIT_FOR_LIGHTSYS_UPDATE();
+		//LS_ProcessAutoTurnOff();
+		//MLL_ProcessPulsateHaltList();
+
+		vTaskDelay(10);
+
+		//WAIT_FOR_LIGHTSYS_UPDATE();
 		//LPD8806_Update();
 	}
 }

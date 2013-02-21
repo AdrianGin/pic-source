@@ -7,6 +7,17 @@
 
 #define MLL_CHANNEL_IS_ACTIVE(map, channel) (MLL_ActiveChannelMap[map] & (1<<channel))
 
+#define MLL_PULSATE_THRESHOLD_LO	(6)
+#define MLL_PULSATE_THRESHOLD_HI	(100)
+
+
+
+#define PULSATE_PERCENT_INC			(80)
+#define PULSATE_PERCENT_DEC			(65)
+
+
+#define FADE_PERCENT_RESTORE	    (((10000 / (100-PULSATE_PERCENT_DEC)) - 100) + 1)
+
 void MLL_Init(void);
 
 void MLL_ProcessMIDIByte(uint8_t byte);
@@ -27,5 +38,7 @@ void MLL_ProcessHaltNote(uint8_t* midiDataArray);
 void MLL_AddTesterHaltNote(uint8_t* midiDataArray);
 void MLL_TesterHaltCancelNotes(uint8_t* midiDataArray);
 void MLL_CompareMasterTesterHaltList(void);
+void MLL_ProcessPulsateHaltList(void);
+
 
 #endif

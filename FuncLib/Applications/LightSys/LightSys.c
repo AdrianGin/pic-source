@@ -37,15 +37,7 @@ typedef uint32_t LS_ChannelColour_t;
 //Every single possible note has its own individual countdown.
 
 #define MAX_POLYPHONY (MIDI_PIANO_KEY_COUNT)
-#define FREE_ELEMENT  (0xFFFF)
-#define FADE_RATE	  (15)
-#define MIN_ON_BRIGHTNESS (1<<1)
-
-#define LS_CHANNEL(x)	(x & 0x0F)
-#define LS_GETCHANNEL(x)	(x >> 8)
-
 #define LS_SETPIXEL(index, colour)	LPD8806_SetPixel( index, colour);
-
 
 
 volatile uint8_t	LS_CountdownCount;
@@ -176,24 +168,11 @@ void LS_SetMaxBrightness(uint8_t maxBrightness)
 	LPD8806_SetBrightness(maxBrightness);
 }
 
-void LS_ProcessAutoTurnOff(void)
-{
-	uint8_t i;
-	uint8_t j;
 
-	for( i=0, j=0; (i < LS_CountdownCount) && (j < MAX_POLYPHONY); j++ )
-	{
-		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
-		{
-			LPD8806_ReducePercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY) + LIGHT_OFFSET, FADE_RATE, LS_MinBrightness);
-			i++;
-		}
-	}
-}
 
 
 //This uses the Colour Mixer to process the fade out.
-void LS_ProcessAutoTurnOff2(void)
+void LS_ProcessAutoTurnOff(void)
 {
 	uint8_t i;
 	uint8_t j;
@@ -204,7 +183,7 @@ void LS_ProcessAutoTurnOff2(void)
 		{
 			uint32_t colour;
 
-			CM_ReduceBrightnessPercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY), FADE_RATE, LS_MinBrightness);
+			CM_ReduceBrightnessPercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY), FADE_PERCENT, LS_MinBrightness);
 			colour = CM_GetMixedColour((LS_Countdown[j].channelKey & MIDI_MAX_KEY));
 			LS_SetPixel((LS_Countdown[j].channelKey & MIDI_MAX_KEY), colour);
 			i++;
