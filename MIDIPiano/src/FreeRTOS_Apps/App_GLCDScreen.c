@@ -101,7 +101,7 @@ void Task_GLCDScreen(void * pvArg)
 
 	FT_STATES state;
 
-	uint8_t redrawFlag = 1;
+	RedrawRequired = 1;
 
 	actionDelay = 0;
 
@@ -122,9 +122,10 @@ void Task_GLCDScreen(void * pvArg)
 		state = FT_GetTouchState();
 		point = FT_GetLastPoint();
 
-		if( (FT_GetTouchState() != TOUCH_OFF) || (redrawFlag == 1)  )
+		//TODO: Fast Forward and Reverse's don't remove halts and lights
+		if( (FT_GetTouchState() != TOUCH_OFF) || (RedrawRequired == 1)  )
 		{
-			redrawFlag = gfxFrame_ProcessInputs(&GFX_MainFrame, state, point);
+			RedrawRequired = gfxFrame_ProcessInputs(&GFX_MainFrame, state, point);
 		}
 
 

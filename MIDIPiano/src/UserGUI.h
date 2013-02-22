@@ -21,5 +21,6 @@ extern gfxWidget_t* GFX_WidgetHandles[];
 void UserGUI_Init(void* gfxLB);
 uint8_t ProcessFB_Request(void* LB, void* data);
 
+void UG_UpdateSeekSlider(void);
 
 #endif

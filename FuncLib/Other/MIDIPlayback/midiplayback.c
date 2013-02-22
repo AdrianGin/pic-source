@@ -245,6 +245,8 @@ uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MID
 		}
     }
 
+    //Need to minus some position, so that when play resumes
+    //the message is picked up.
     if(FastFwd_Status.foundEventFlag == 0)
     {
     	position = MIDIHdr->masterClock-1;

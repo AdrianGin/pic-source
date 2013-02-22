@@ -31,6 +31,9 @@ extern xTaskHandle LightSystemHandle;
 extern uint32_t SeekValue;
 extern uint32_t MP3_Data_Index;
 extern uint8_t WaitForMIDIInputValue;
+extern uint8_t RedrawRequired;
+
+
 
 uint8_t InitInterTaskComms(void);
 

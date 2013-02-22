@@ -124,7 +124,6 @@ int main(void)
 
 	ret = f_mount(MAIN_DRIVE, &fs[MAIN_DRIVE]);
 	xprintf("MountMain:%d\n", ret);
-	xprintf("Sizeof=%d", sizeof(MPB_FastFwd_t));
 
 	ret = f_mount(RESOURCE_DRIVE, &fs[RESOURCE_DRIVE]);
 	xprintf("MountRes:%d\n", ret);

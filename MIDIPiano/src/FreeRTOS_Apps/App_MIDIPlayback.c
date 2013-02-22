@@ -82,12 +82,7 @@ void Task_MIDIPlayback(void * pvArg)
 
 			if(sliderUpdater-- == 0)
 			{
-				uint32_t position;
-				position = (MIDIHdr.masterClock * SLIDER_RESOLUTION) / MIDIHdr.currentState.maxLength;
-				GFX_SLIDER_SetPositionRaw(&GFX_SLD[SEEK_SLIDER_INDEX], position);
-
-				gfxWidget_SetPendingFlags(GFX_WidgetHandles[SEEK_SLIDER_WIDGET_INDEX], PENDING_REDRAW_FLAG);
-
+				UG_UpdateSeekSlider();
 				sliderUpdater = (MIDIHdr.currentState.maxLength / SEEK_UPDATE_RESOLUTION);
 			}
 

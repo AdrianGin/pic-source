@@ -16,7 +16,9 @@
 Semaphore_t Sem_MIDITick;
 Semaphore_t Sem_LightSysUpdate;
 Queue_t Queue_WaitForMIDIInput;
+
 uint8_t WaitForMIDIInputValue;
+uint8_t RedrawRequired;
 
 //Queue_t Queue_GUI_MP3_Message;
 

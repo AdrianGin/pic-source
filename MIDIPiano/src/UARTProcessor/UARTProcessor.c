@@ -42,6 +42,7 @@
 #include "MIDILightLogic/MIDILightLogic.h"
 
 #include "Semaphore/osa_semaphore.h"
+#include "UserGUI.h"
 #include "intertaskComm.h"
 
 #define USART_RX_DATA_SIZE   2048
@@ -144,16 +145,23 @@ void ToggleActiveChannel(uint8_t byte)
 			MPB_PausePlayback(&MIDIHdr);
 
 			MPB_ResetMIDI();
+			LS_ClearLights();
+			MLL_ClearHaltList();
+
+
 			MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
 			MPB_ReplayStatusBuffer();
 
 			MPB_EnablePlayback(&MIDIHdr);
+			UG_UpdateSeekSlider();
 
 			//TimerStart();
 
 			break;
 		}
 
+		//TODO: Fix bug where seeks take up lots of time, and selecting a song will crash it
+		//TODO: Function to preview tracks.
         case 'R':
         {
             uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
@@ -164,11 +172,15 @@ void ToggleActiveChannel(uint8_t byte)
             //MPB_PlayMIDIFile(&MIDIHdr, filename);
             MPB_PausePlayback(&MIDIHdr);
             MPB_ResetMIDI();
+    		LS_ClearLights();
+    		MLL_ClearHaltList();
+
             tmasterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
             MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
             MPB_ReplayStatusBuffer();
             MPB_EnablePlayback(&MIDIHdr);
 
+            UG_UpdateSeekSlider();
 
             break;
         }

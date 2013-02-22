@@ -23,6 +23,8 @@
 
 #include "UserGUI.h"
 
+#include "intertaskComm.h"
+
 GFX_Listbox_t* GFX_LB;
 GFX_FB_t GFX_FB;
 
@@ -297,7 +299,15 @@ void UserGUI_Init(void* gfxLB)
 
 
 
+void UG_UpdateSeekSlider(void)
+{
+	uint32_t position;
+	position = (MIDIHdr.masterClock * SLIDER_RESOLUTION) / MIDIHdr.currentState.maxLength;
+	GFX_SLIDER_SetPositionRaw(&GFX_SLD[SEEK_SLIDER_INDEX], position);
 
+	RedrawRequired = 1;
+	gfxWidget_SetPendingFlags(GFX_WidgetHandles[SEEK_SLIDER_WIDGET_INDEX], PENDING_REDRAW_FLAG);
+}
 
 
 
