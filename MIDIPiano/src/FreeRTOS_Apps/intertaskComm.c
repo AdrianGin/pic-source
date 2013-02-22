@@ -15,6 +15,8 @@
 
 Semaphore_t Sem_MIDITick;
 Semaphore_t Sem_LightSysUpdate;
+Queue_t Queue_WaitForMIDIInput;
+uint8_t WaitForMIDIInputValue;
 
 //Queue_t Queue_GUI_MP3_Message;
 
@@ -47,6 +49,9 @@ uint8_t InitInterTaskComms(void)
 
 	SemaphoreCreate(Sem_LightSysUpdate);
 	SemaphoreTake(Sem_LightSysUpdate, 0);
+
+	Queue_WaitForMIDIInput = QueueCreate(1, sizeof(uint8_t));
+
 
 //	Queue_GUI_MP3_Message = QueueCreate(1, sizeof(uint8_t*));
 //	SeekValue = 0;

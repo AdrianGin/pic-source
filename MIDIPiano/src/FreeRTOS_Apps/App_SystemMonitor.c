@@ -66,7 +66,7 @@ void Task_SystemMonitor(void * pvArg)
 		vTaskDelay(1000);
 		//vTaskList(buffer);
 		//xprintf("%s\n", buffer);
-		display_mallinfo();
+		//display_mallinfo();
 		vTaskDelay(1000);
 		vTaskDelay(1000);
 	}

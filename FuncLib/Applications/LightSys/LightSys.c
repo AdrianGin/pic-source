@@ -52,7 +52,7 @@ enum {
 	COLOUR_MODE_COUNT,
 };
 
-static uint8_t mode = NOTE_FIFTHS_COLOUR;
+static uint8_t mode = CHANNEL_COLOUR;
 
 typedef struct
 {

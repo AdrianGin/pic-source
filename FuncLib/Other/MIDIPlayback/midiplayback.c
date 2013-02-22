@@ -219,6 +219,76 @@ uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_
     return MPB_ContinuePlay(MIDIHdr, mode);
 }
 
+static MPB_FastFwd_t	 FastFwd_Status;
+static MIDI_CHAN_EVENT_t FastFwd_Event;
+//Finds the next 'MIDI Command' from the given position.
+//
+uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_MODE mode, MIDI_CHAN_EVENT_t* event, MPB_FF_MODE_t ffMode)
+{
+    MPB_RePosition(MIDIHdr, position, MPB_PB_ALL_OFF);
+
+    FastFwd_Status.foundEventStatus = 0;
+    FastFwd_Status.foundEventFlag = FAST_FWD_ACTIVE;
+    FastFwd_Status.searchMode = ffMode;
+
+    FastFwd_Event.eventType = event->eventType;
+    FastFwd_Event.parameter1 = event->parameter1;
+    FastFwd_Event.parameter2 = 1; //A non zero velocity.
+
+
+    while(FastFwd_Status.foundEventFlag)
+    {
+		MIDIHdr->masterClock++;
+		if (MPB_ContinuePlay(MIDIHdr, MPB_PB_ALL_OFF) == MPB_FILE_FINISHED)
+		{
+			break;
+		}
+    }
+
+    if(FastFwd_Status.foundEventFlag == 0)
+    {
+    	position = MIDIHdr->masterClock-1;
+    }
+
+    if( position == 0 )
+    {
+    	position = 1;
+    }
+
+    MPB_RePosition(MIDIHdr, position-1, mode);
+
+    return FastFwd_Status.foundEventStatus;
+}
+
+
+void MPB_FastFwd_TestEvent(MIDI_EVENT_t* event)
+{
+	if( event->event.eventType >= MIDI_NOTE_OFF &&
+		event->event.eventType <= MIDI_PITCH_CHANGE)
+	{
+		if(event->event.chanEvent.eventType == FastFwd_Event.eventType )
+		{
+			FastFwd_Status.foundEventStatus = FAST_FWD_FIND_COMMAND;
+
+			if(event->event.chanEvent.parameter1 == FastFwd_Event.parameter1 )
+			{
+				FastFwd_Status.foundEventStatus = FAST_FWD_FIND_KEY;
+				if(event->event.chanEvent.parameter2 >= FastFwd_Event.parameter2 )
+				{
+					FastFwd_Status.foundEventStatus = FAST_FWD_FIND_VELOCITY;
+				}
+			}
+		}
+
+		if(FastFwd_Status.searchMode == FastFwd_Status.foundEventStatus)
+		{
+			FastFwd_Status.foundEventFlag = 0;
+		}
+	}
+}
+
+
+
 
 uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, MIDI_PB_MODE mode)
 {
@@ -313,6 +383,12 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
 
     midiChannel = (event->event.eventType & 0x0F);
     
+
+	if( FastFwd_Status.foundEventFlag )
+	{
+		MPB_FastFwd_TestEvent(event);
+	}
+
     //Keep track of polyphony here
     if( (event->event.eventType & 0xF0) == MIDI_NOTE_ON )
     {

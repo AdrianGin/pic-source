@@ -13,6 +13,8 @@ extern Semaphore_t Sem_TouchPanelRdy;
 extern Semaphore_t Sem_SystemRdy;
 extern Semaphore_t Sem_GUIRdy;
 
+
+
 extern xSemaphoreHandle Sem_DMAComplete;
 extern Semaphore_t Sem_StopMP3Decode;
 
@@ -21,12 +23,14 @@ extern xTaskHandle mp3DecodeHandle;
 
 extern Semaphore_t Sem_MIDITick;
 extern Semaphore_t Sem_LightSysUpdate;
+extern Queue_t Queue_WaitForMIDIInput;
 
 extern xTaskHandle MIDIPlayBackHandle;
 extern xTaskHandle LightSystemHandle;
 
 extern uint32_t SeekValue;
 extern uint32_t MP3_Data_Index;
+extern uint8_t WaitForMIDIInputValue;
 
 uint8_t InitInterTaskComms(void);
 

@@ -19,27 +19,30 @@
 #include "MIDIParser/midiparser.h"
 #include "LightSys/ColourMixer/ColourMixer.h"
 
-typedef enum
-{
-	//Which MIDI channels are routed to the lights
-	MLL_LIGHTS = 0,
-	//Which MIDI channels are routed to the MIDI Out
-	MLL_MIDIOUT,
-	//Which MIDI channels require the user to enter the correct key before
-	//proceeding
-	MLL_HALT,
-	MLL_MAP_COUNT,
-} MLL_CH_MAP_t;
+#include "MIDIUtils/MIDIUtils.h"
 
+
+#include "MIDILightLogic/MIDILightLogic.h"
 
 uint16_t MLL_ActiveChannelMap[MLL_MAP_COUNT];
 
 
 void MLL_Init(void)
 {
-	MLL_ActiveChannelMap[MLL_LIGHTS] = 0xFDFF; //exclude the drums
+	MLL_ActiveChannelMap[MLL_LIGHTS] = 0xFFFF; //exclude the drums
 	MLL_ActiveChannelMap[MLL_MIDIOUT] = 0xFFFF;
-	MLL_ActiveChannelMap[MLL_HALT] = 0x0001;
+	MLL_ActiveChannelMap[MLL_HALT] = 0x0200;
+}
+
+
+uint32_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel)
+{
+	if( channel < MIDI_MAX_CHANNELS )
+	{
+		MLL_ActiveChannelMap[map] ^= (1<<channel);
+	}
+
+	return MLL_ActiveChannelMap[map];
 }
 
 //channel refers to the MIDI channel
@@ -147,7 +150,6 @@ void MLL_ProcessMIDIByte(uint8_t byte)
 		if( MLL_CHANNEL_IS_ACTIVE(MLL_HALT, channel) &&
 			(headerByte & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON)
 		{
-
 			MLL_AddHaltMasterNote(&MIDICable[USB_MIDI_CABLE_COUNT].msg.MIDIData[0]);
 		}
 
@@ -172,7 +174,7 @@ static uint8_t Halt_Count[HALT_LIST_COUNT] = {0,0};
 //MIDI_CHAN_EVENT_t MPL_NoteHaltList[MAX_NOTES_TO_HALT];
 
 static uint8_t Halt_Flag;
-
+static uint8_t Match_Mode = REQUIRE_NOTE_RELEASE | OCTAVE_MATCH_MODE | PROCEED_ON_ANY;
 
 void MLL_ClearHaltList(void)
 {
@@ -193,6 +195,28 @@ uint8_t MLL_GetHaltFlag(void)
 	return Halt_Flag;
 }
 
+void MLL_SetMatchMode(uint8_t mode)
+{
+	Match_Mode &= ~(MATCH_MODE_MASK);
+	Match_Mode |= mode;
+}
+
+uint8_t MLL_GetMatchMode(void)
+{
+	return Match_Mode & MATCH_MODE_MASK;
+}
+
+void MLL_SetMatchFlags(uint8_t mode)
+{
+	Match_Mode &= ~MATCH_FLAG_MASK;
+	Match_Mode |= mode & MATCH_FLAG_MASK;
+}
+
+uint8_t MLL_GetMatchFlags(void)
+{
+	return Match_Mode & MATCH_FLAG_MASK;
+}
+
 
 
 void MLL_ProcessHaltNote(uint8_t* midiDataArray)
@@ -201,7 +225,7 @@ void MLL_ProcessHaltNote(uint8_t* midiDataArray)
 	{
 		MLL_AddTesterHaltNote(midiDataArray);
 		MLL_TesterHaltCancelNotes(midiDataArray);
-		MLL_CompareMasterTesterHaltList();
+		MLL_CompareMasterTesterHaltList(Match_Mode);
 	}
 }
 
@@ -212,16 +236,27 @@ void MLL_AddHaltMasterNote(uint8_t* midiDataArray)
 	if( (midiDataArray[0] & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON &&
 		(midiDataArray[2] != 0))
 	{
-		MIDI_CHAN_EVENT_t* newNoteHalt;
 
-		newNoteHalt = LL_Malloc(sizeof(MIDI_CHAN_EVENT_t));
-		newNoteHalt->eventType = midiDataArray[0];
-		newNoteHalt->parameter1 = midiDataArray[1];
-		newNoteHalt->parameter2 = midiDataArray[2];
-		LL_AppendData(&MPL_NoteHaltList[MASTER_HALT_LIST], (void*)newNoteHalt);
+		if( MPL_TestNoteInDetectRange(midiDataArray[1]) )
+		{
+			MIDI_CHAN_EVENT_t* newNoteHalt;
 
-		MLL_SetHaltFlag(HALT_FLAG_RAISED);
-		Halt_Count[MASTER_HALT_LIST]++;
+			newNoteHalt = LL_Malloc(sizeof(MIDI_CHAN_EVENT_t));
+			newNoteHalt->eventType = midiDataArray[0];
+			newNoteHalt->parameter1 = midiDataArray[1];
+			newNoteHalt->parameter2 = midiDataArray[2];
+			LL_AppendData(&MPL_NoteHaltList[MASTER_HALT_LIST], (void*)newNoteHalt);
+
+			MLL_SetHaltFlag(HALT_FLAG_RAISED);
+			Halt_Count[MASTER_HALT_LIST]++;
+
+
+			if( MLL_GetMatchFlags() & REQUIRE_NOTE_RELEASE )
+			{
+				MLL_CompareMasterTesterHaltList(Match_Mode);
+			}
+		}
+
 	}
 }
 
@@ -331,28 +366,34 @@ void MLL_ProcessPulsateHaltList(void)
 
 
 
-void MLL_CompareMasterTesterHaltList(void)
+void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
 {
 	uint8_t i;
 	uint8_t j;
 	uint8_t matchCount = 0;
+	uint8_t proceedFlag = 0;
 
 	LIST_NODE_t* masterNode;
 	LIST_NODE_t* testerNode;
 	MIDI_CHAN_EVENT_t* masterEvent;
 	MIDI_CHAN_EVENT_t* testerEvent;
 
-	if(Halt_Count[MASTER_HALT_LIST] == Halt_Count[TESTER_HALT_ON_LIST])
+	for( i = 0 ; i < Halt_Count[MASTER_HALT_LIST]; i++)
 	{
-		for( i = 0 ; i < Halt_Count[MASTER_HALT_LIST]; i++)
+		masterNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[MASTER_HALT_LIST], i);
+		masterEvent = (MIDI_CHAN_EVENT_t*)masterNode->data;
+		for( j = 0; j < Halt_Count[TESTER_HALT_ON_LIST]; j++)
 		{
-			masterNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[MASTER_HALT_LIST], i);
-			masterEvent = (MIDI_CHAN_EVENT_t*)masterNode->data;
-			for( j = 0; j < Halt_Count[TESTER_HALT_ON_LIST]; j++)
+			testerNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], j);
+			testerEvent = (MIDI_CHAN_EVENT_t*)testerNode->data;
+
+			if( (masterEvent->parameter1 == testerEvent->parameter1) )
 			{
-				testerNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], j);
-				testerEvent = (MIDI_CHAN_EVENT_t*)testerNode->data;
-				if( (masterEvent->parameter1 == testerEvent->parameter1) )
+				matchCount++;
+			}
+			else if( MLL_GetMatchFlags() & OCTAVE_MATCH_MODE )
+			{
+				if(MIDIUtils_GetMusicNote(masterEvent->parameter1) == MIDIUtils_GetMusicNote(testerEvent->parameter1))
 				{
 					matchCount++;
 				}
@@ -360,8 +401,54 @@ void MLL_CompareMasterTesterHaltList(void)
 		}
 	}
 
-	//If we have matched the halt requirements, delete everything and continue
-	if(matchCount == Halt_Count[MASTER_HALT_LIST])
+
+	switch( matchMode & MATCH_MODE_MASK)
+	{
+		case EXACT_MATCH:
+			//If we have matched the halt requirements, delete everything and continue
+			if(matchCount == Halt_Count[MASTER_HALT_LIST])
+			{
+				proceedFlag = 1;
+			}
+			break;
+
+
+		case EXACT_PLUS_MATCH:
+			if(matchCount >= Halt_Count[MASTER_HALT_LIST])
+			{
+				proceedFlag = 1;
+			}
+			break;
+
+		case HALF_CORRECT:
+			if(matchCount*2 >= Halt_Count[MASTER_HALT_LIST])
+			{
+				proceedFlag = 1;
+			}
+			break;
+
+		case MINIMUM_COUNT:
+			if(Halt_Count[TESTER_HALT_ON_LIST] >= Halt_Count[MASTER_HALT_LIST])
+			{
+				proceedFlag = 1;
+			}
+			break;
+
+		case PROCEED_ON_ANY:
+			if(Halt_Count[TESTER_HALT_ON_LIST])
+			{
+				proceedFlag = 1;
+			}
+			break;
+
+		case AUTO_PLAY:
+		{
+			proceedFlag = 1;
+			break;
+		}
+	}
+
+	if( proceedFlag )
 	{
 		LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
 		Halt_Count[MASTER_HALT_LIST] = 0;

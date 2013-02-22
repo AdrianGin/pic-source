@@ -17,6 +17,8 @@
 #include "USBMIDI\USBMIDI.h"
 
 #include "MIDILightLogic/MIDILightLogic.h"
+#include "MIDIPianoLogic/MIDIPianoLogic.h"
+#include "intertaskComm.h"
 
 #ifdef __GNUC__
 #include <malloc.h>
@@ -310,18 +312,27 @@ void ProcessUSBMIDIBuffer_LightSys(void)
 		{
 			lsBuf[bufCount] = byte;
 			bufCount++;
+			if( bufCount == 3)
+			{
+				uint8_t waitForNoteFlag;
+				bufCount = 0;
+				waitForNoteFlag = MPL_ProcessMIDINote(&lsBuf[0]);
+				LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
+
+				//If we're waiting for notes, we don't process them.
+				if( waitForNoteFlag == 0 )
+				{
+					MLL_ProcessHaltNote(&lsBuf[0]);
+				}
+
+			}
 		}
 		else
 		{
 			bufCount = 0;
 		}
 
-		if( bufCount == 3)
-		{
-			bufCount = 0;
-			LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
-			MLL_ProcessHaltNote(&lsBuf[0]);
-		}
+
 	}
 
 

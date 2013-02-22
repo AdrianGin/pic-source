@@ -39,6 +39,10 @@
 #include "MIDIPlayback/midiplayback.h"
 
 #include "MIDIPianoLogic/MIDIPianoLogic.h"
+#include "MIDILightLogic/MIDILightLogic.h"
+
+#include "Semaphore/osa_semaphore.h"
+#include "intertaskComm.h"
 
 #define USART_RX_DATA_SIZE   2048
 
@@ -88,9 +92,13 @@ void ProcessUARTBuffer(void)
 void ToggleActiveChannel(uint8_t byte)
 {
 	uint8_t i;
+	static uint8_t SelectedCHMap = MLL_LIGHTS;
+
 	if( byte < MIDI_MAX_CHANNELS )
 	{
-		xprintf("%X\n", LS_ToggleChannel(byte) );
+
+		xprintf("SelectedCHMap = %x\n", SelectedCHMap);
+		xprintf("MAPState =      %X\n", MLL_ToggleChannel(SelectedCHMap, byte) );
 	}
 
 	if( byte == '+')
@@ -165,8 +173,63 @@ void ToggleActiveChannel(uint8_t byte)
             break;
         }
 
-			default:
-				break;
+        case 'M':
+        {
+        	SelectedCHMap++;
+        	if( SelectedCHMap >= MLL_MAP_COUNT )
+        	{
+        		SelectedCHMap = 0;
+        	}
+        	xprintf("SelectedCHMap = %x\n", SelectedCHMap);
+        }
+        break;
+
+
+        case 'm':
+        {
+        	MLL_SetMatchMode(MLL_GetMatchMode()+1);
+        	if(MLL_GetMatchMode() >= MATCH_MODE_COUNT )
+        	{
+        		MLL_SetMatchMode(EXACT_MATCH);
+        	}
+        	xprintf("MatchMode = %x\n", MLL_GetMatchMode());
+        }
+        break;
+
+        case 'r':
+        {
+        	MLL_SetMatchFlags(MLL_GetMatchFlags()+0x40);
+        	//if(MLL_GetMatchFlags() >= MATCH_FLAG_MASK )
+        	{
+        		//MLL_SetMatchFlags(0x00);
+        	}
+        	xprintf("MatchFlags = %x\n", MLL_GetMatchFlags());
+        }
+        break;
+
+        case 'l':
+        {
+        	//Setup a flag to say we're waiting on a MIDI Note;
+        	WaitForMIDIInputValue = WAITING_FOR_LO_RANGE;
+        }
+        break;
+
+        case 'h':
+        {
+        	//Setup a flag to say we're waiting on a MIDI Note;
+        	WaitForMIDIInputValue = WAITING_FOR_HI_RANGE;
+        }
+        break;
+
+        case 'f':
+        {
+        	//Setup a flag to say we're waiting on a MIDI Note;
+        	WaitForMIDIInputValue = WAITING_FOR_FASTFWD_EVENT;
+        }
+        break;
+
+		default:
+		break;
 	}
 
 }
