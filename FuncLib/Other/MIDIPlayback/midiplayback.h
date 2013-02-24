@@ -28,23 +28,7 @@ typedef enum
     MPB_PB_ALL_OFF,
 } MIDI_PB_MODE;
 
-#define FAST_FWD_ACTIVE	(0x1)
-#define FAST_FWD_STATUS_MASK (0x07)
 
-
-typedef enum {
-	FAST_FWD_FIND_COMMAND = 1,
-	FAST_FWD_FIND_KEY,
-	FAST_FWD_FIND_VELOCITY,
-} MPB_FF_MODE_t;
-
-typedef struct
-{
-	MPB_FF_MODE_t foundEventStatus :3; //MPB_FF_MODE_t type
-	MPB_FF_MODE_t searchMode :3; //MPB_FF_MODE_t type
-	uint8_t foundEventFlag	 :2;
-
-} MPB_FastFwd_t;
 
 
 enum
@@ -59,8 +43,7 @@ enum
 
 
 uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename);
-void    MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr);
-void    _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void    MPB_ResetMIDITracks(MIDI_HEADER_CHUNK_t* MIDIHdr);
 
 uint8_t MPB_PlayTrack(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_PB_MODE mode);
 uint8_t MPB_AddEvent(MIDI_EVENT_t* event);
@@ -80,13 +63,13 @@ void MPB_ReplayStatusBuffer(void);
 void MPB_SaveMIDIStatus(MIDI_CHAN_EVENT_t* chanEvent);
 
 uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_MODE mode, MIDI_CHAN_EVENT_t* event, MPB_FF_MODE_t ffMode);
-void MPB_FastFwd_TestEvent(MIDI_EVENT_t* event);
+void MPB_FastFwd_TestEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_EVENT_t* event);
 
 uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, MIDI_PB_MODE mode);
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_MODE mode);
 uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_PB_MODE mode);
 
-void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr);
+void MPB_DetermineMIDIFileStats(MIDI_HEADER_CHUNK_t* MIDIHdr);
 uint16_t MPB_CurrentTimePosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
 uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr);
 

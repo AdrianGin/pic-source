@@ -32,6 +32,8 @@ void MLL_Init(void)
 	MLL_ActiveChannelMap[MLL_LIGHTS] = 0xFFFF; //exclude the drums
 	MLL_ActiveChannelMap[MLL_MIDIOUT] = 0xFFFF;
 	MLL_ActiveChannelMap[MLL_HALT] = 0x0200;
+	MLL_ActiveChannelMap[MLL_SOLO] = 0x0000;
+
 }
 
 
@@ -137,21 +139,35 @@ void MLL_ProcessMIDIByte(uint8_t byte)
 
 		}
 
-		if( MLL_CHANNEL_IS_ACTIVE(MLL_MIDIOUT, channel) || channel >= MIDI_SYSTEM_COMMON_MSG )
+		if( MLL_ActiveChannelMap[MLL_SOLO] )
 		{
-			MLL_OutputMIDI();
+			if( MLL_CHANNEL_IS_ACTIVE(MLL_SOLO, channel) )
+			{
+				MLL_OutputMIDI();
+				MLL_OutputLighting();
+			}
+		}
+		else
+		{
+			if( MLL_CHANNEL_IS_ACTIVE(MLL_MIDIOUT, channel) || channel >= MIDI_SYSTEM_COMMON_MSG )
+			{
+				MLL_OutputMIDI();
+			}
+
+			if( MLL_CHANNEL_IS_ACTIVE(MLL_LIGHTS, channel))
+			{
+				MLL_OutputLighting();
+			}
+
+			if( MLL_CHANNEL_IS_ACTIVE(MLL_HALT, channel) &&
+				(headerByte & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON)
+			{
+				MLL_AddHaltMasterNote(&MIDICable[USB_MIDI_CABLE_COUNT].msg.MIDIData[0]);
+			}
 		}
 
-		if( MLL_CHANNEL_IS_ACTIVE(MLL_LIGHTS, channel))
-		{
-			MLL_OutputLighting();
-		}
 
-		if( MLL_CHANNEL_IS_ACTIVE(MLL_HALT, channel) &&
-			(headerByte & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON)
-		{
-			MLL_AddHaltMasterNote(&MIDICable[USB_MIDI_CABLE_COUNT].msg.MIDIData[0]);
-		}
+
 
 
 	}

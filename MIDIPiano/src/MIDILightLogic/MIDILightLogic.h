@@ -34,6 +34,7 @@ typedef enum
 	//Which MIDI channels require the user to enter the correct key before
 	//proceeding
 	MLL_HALT,
+	MLL_SOLO,
 	MLL_MAP_COUNT,
 } MLL_CH_MAP_t;
 

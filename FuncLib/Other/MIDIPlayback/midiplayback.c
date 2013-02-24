@@ -8,7 +8,7 @@
 #include "linkedlist/linkedlist.h"
 
 #include "ReplaceChar/replacechar.h"
-
+#include "MIDICodes/MIDICodes.h"
 #include "hardwareSpecific.h"
 
 //#include "LEDArray/LEDArray.h"
@@ -72,10 +72,39 @@ uint16_t MPB_CurrentBarPosition(MIDI_HEADER_CHUNK_t* MIDIHdr)
     return (MIDIHdr->masterClock/MIDIHdr->PPQ)>>2;
 }
 
-void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
+//Finds out which MIDI channels are used in the MIDI file
+//So later the FindEvent can be used to find all the On_Notes
+//for a particular channel.
+//We determine the instrument based off the MIDI_PROGRAM_CHANGE bytes.
+//Should also keep track of number of Notes for each track.
+void MPB_BuildChannelStats(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_EVENT_t* event)
+{
+	if( (event->event.eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON &&
+		(event->event.chanEvent.parameter2 != 0))
+	{
+		uint8_t channel;
+		channel = event->event.eventType & MIDI_CHANNEL_MASK;
+		MIDIHdr->channelStateBitmap |= (1<<channel);
+		MIDIHdr->channelStats[channel].noteCount++;
+	}
+
+	if( (event->event.eventType & MIDI_MSG_TYPE_MASK) == MIDI_PROGRAM_CHANGE)
+	{
+		uint8_t channel;
+		channel = event->event.eventType & MIDI_CHANNEL_MASK;
+		MIDIHdr->channelStats[channel].programNumber = event->event.chanEvent.parameter1;
+	}
+
+}
+
+
+void MPB_DetermineMIDIFileStats(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
     uint8_t i;
     uint32_t* maxLength;
+
+    //Determine the MIDI channel constitution.
+    MPB_SetPlaybackState(MIDIHdr, STATE_TRACK_BUILDING);
 
     MIDIHdr->masterClock = 0xFFFFFFFF;
     while(MPB_ContinuePlay(MIDIHdr, MPB_PB_ALL_OFF) != MPB_FILE_FINISHED)
@@ -104,6 +133,7 @@ void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
         MIDIHdr->PPQ = MPB_DEFAULT_PPQ;
     }
 
+    MIDIHdr->NoteOnTime = MIDIHdr->PPQ/8;
 
     MIDIHdr->currentState.tickTime = MIDIHdr->currentState.tickTime +
                                      ((uint32_t)((*maxLength - MIDIHdr->currentState.lastTempoChange)*60) / MIDIHdr->currentState.BPM);
@@ -114,6 +144,21 @@ void MPB_DetermineLength(MIDI_HEADER_CHUNK_t* MIDIHdr)
     myprintfd("Sec: ", MIDIHdr->currentState.trackLengthSecs%60);
     myprintf("MaxLength: ", *maxLength >> 16);
     myprintf("MaxLength: ", *maxLength);
+
+    for (i = 0; i<MIDI_MAX_CHANNELS; i++)
+    {
+    	if(MIDIHdr->channelStateBitmap & (1<<i) )
+    	{
+    		xprintf("Channel %d::ACTIVE\n", i);
+    		xprintf("Patch %d::\n", MIDIHdr->channelStats[i].programNumber);
+    		xprintf("NoteCount %d::\n", MIDIHdr->channelStats[i].noteCount);
+    	}
+    	else
+    	{
+    		xprintf("Channel %d::DISABLED\n", i);
+    	}
+    }
+
 
 
 }
@@ -127,9 +172,17 @@ uint8_t MPB_PlayMIDIFile(MIDI_HEADER_CHUNK_t* MIDIHdr, uint8_t* filename)
     {
         return ret;
     }
-    _mpb_InitMIDIHdr(MIDIHdr);
-    MPB_DetermineLength(MIDIHdr);
-    MPB_InitMIDIHdr(MIDIHdr);
+
+    memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
+    MPB_ResetMIDITracks(MIDIHdr);
+    //Need to reset the MIDI Tracks twice, one for Initialisation
+    //Another time because determining file stats requires a complete
+    //run through the file.
+    MPB_DetermineMIDIFileStats(MIDIHdr);
+    MPB_ResetMIDITracks(MIDIHdr);
+    MPB_SetPlaybackState(MIDIHdr, STATE_ACTIVE);
+
+
     return FR_OK;
 }
 
@@ -145,10 +198,7 @@ void MPB_PausePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr)
 
 void MPB_SetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr, MidiPlaybackState_t state)
 {
-	if( state == STATE_ACTIVE || state == STATE_INACTIVE)
-	{
-		MIDIHdr->playbackState = state;
-	}
+	MIDIHdr->playbackState = state;
 }
 
 MidiPlaybackState_t MPB_GetPlaybackState(MIDI_HEADER_CHUNK_t* MIDIHdr)
@@ -161,82 +211,67 @@ void MPB_TogglePlayback(MIDI_HEADER_CHUNK_t* MIDIHdr)
 	MIDIHdr->playbackState = MIDIHdr->playbackState ^ 1;
 }
 
-void MPB_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
+void MPB_ResetMIDITracks(MIDI_HEADER_CHUNK_t* MIDIHdr)
 {
-    uint32_t lengthSecs;
-    uint32_t maxLength;
-    uint8_t playbackState;
-    
-    lengthSecs = MIDIHdr->currentState.trackLengthSecs;
-    maxLength = MIDIHdr->currentState.maxLength;
-    playbackState = MIDIHdr->playbackState;
-    _mpb_InitMIDIHdr(MIDIHdr);
+	uint8_t i;
+	uint32_t position = 0;
+	uint8_t* buf;
+	uint8_t* ptr;
 
-    MIDIHdr->playbackState = playbackState;
-    MIDIHdr->currentState.trackLengthSecs = lengthSecs;
-    MIDIHdr->currentState.maxLength = maxLength;
+	buf = (uint8_t*)&MIDIHdr->Track[0].buffer;
+	MPB_ReadToBuffer(position, buf);
 
-    MIDIHdr->NoteOnTime = MIDIHdr->PPQ/8;
+	ptr = findSubString( (char*)buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
+	if( ptr )
+	{
+		if( (ptr - buf + MIDI_HEADER_SIZE) > MIDI_TRACK_BUFFER_SIZE)
+		{
+			MPB_ReadToBuffer(ptr-buf, buf);
+			position = ptr-buf;
+			ptr = buf;
+		}
+	}
+
+	position = position + MIDIParse_Header(MIDIHdr, buf, MIDI_TRACK_BUFFER_SIZE);
+	position = position+MIDI_HEADER_SIZE;
+
+	for (i = 0; i<MIDIHdr->trackCount; i++)
+	{
+		MPB_ReadToBuffer(position, buf);
+		position = MIDIPopulate_HeaderTrack(MIDIHdr, i, position, buf, MIDI_TRACK_BUFFER_SIZE);
+		MIDIHdr->Track[i].eventCount = MPB_NEW_DATA;
+		MIDIHdr->Track[i].trackIndex = i;
+		MIDIHdr->Track[i].trackClock = 0;
+	}
+
+	MIDIHdr->currentState.trackState = 0;
 }
 
-void _mpb_InitMIDIHdr(MIDI_HEADER_CHUNK_t* MIDIHdr)
-{
-    uint8_t i;
-    uint32_t position = 0;
-    uint8_t* buf;
-    uint8_t* ptr;
-    
-    buf = (uint8_t*)&MIDIHdr->Track[0].buffer;
-    memset(MIDIHdr, 0, sizeof(MIDI_HEADER_CHUNK_t));
-    MPB_ReadToBuffer(position, buf);
 
-    ptr = findSubString( (char*)buf, MIDI_HEADER_STRING, MIDI_TRACK_BUFFER_SIZE);
-    if( ptr )
-    {
-        if( (ptr - buf + MIDI_HEADER_SIZE) > MIDI_TRACK_BUFFER_SIZE)
-        {
-            MPB_ReadToBuffer(ptr-buf, buf);
-            position = ptr-buf;
-            ptr = buf;
-        }
-    }
-
-    position = position + MIDIParse_Header(MIDIHdr, buf, MIDI_TRACK_BUFFER_SIZE);
-    position = position+MIDI_HEADER_SIZE;
-    for (i = 0; i<MIDIHdr->trackCount; i++)
-    {
-        MPB_ReadToBuffer(position, buf);
-        position = MIDIPopulate_HeaderTrack(MIDIHdr, i, position, buf, MIDI_TRACK_BUFFER_SIZE);
-        MIDIHdr->Track[i].eventCount = MPB_NEW_DATA;
-        MIDIHdr->Track[i].trackIndex = i;
-    }
-}
 
 uint8_t MPB_RePosition(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_MODE mode)
 {
-    MPB_InitMIDIHdr(MIDIHdr);
+	MPB_ResetMIDITracks(MIDIHdr);
     MIDIHdr->masterClock = position;
     return MPB_ContinuePlay(MIDIHdr, mode);
 }
 
-static MPB_FastFwd_t	 FastFwd_Status;
-static MIDI_CHAN_EVENT_t FastFwd_Event;
 //Finds the next 'MIDI Command' from the given position.
 //
 uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MIDI_PB_MODE mode, MIDI_CHAN_EVENT_t* event, MPB_FF_MODE_t ffMode)
 {
     MPB_RePosition(MIDIHdr, position, MPB_PB_ALL_OFF);
 
-    FastFwd_Status.foundEventStatus = 0;
-    FastFwd_Status.foundEventFlag = FAST_FWD_ACTIVE;
-    FastFwd_Status.searchMode = ffMode;
+    MIDIHdr->FastFwd_Status.foundEventStatus = 0;
+    MIDIHdr->FastFwd_Status.foundEventFlag = FAST_FWD_ACTIVE;
+    MIDIHdr->FastFwd_Status.searchMode = ffMode;
 
-    FastFwd_Event.eventType = event->eventType;
-    FastFwd_Event.parameter1 = event->parameter1;
-    FastFwd_Event.parameter2 = 1; //A non zero velocity.
+    MIDIHdr->FastFwd_Event.eventType = event->eventType;
+    MIDIHdr->FastFwd_Event.parameter1 = event->parameter1;
+    MIDIHdr->FastFwd_Event.parameter2 = event->parameter2; //A non zero velocity.
 
 
-    while(FastFwd_Status.foundEventFlag)
+    while(MIDIHdr->FastFwd_Status.foundEventFlag)
     {
 		MIDIHdr->masterClock++;
 		if (MPB_ContinuePlay(MIDIHdr, MPB_PB_ALL_OFF) == MPB_FILE_FINISHED)
@@ -247,7 +282,7 @@ uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MID
 
     //Need to minus some position, so that when play resumes
     //the message is picked up.
-    if(FastFwd_Status.foundEventFlag == 0)
+    if(MIDIHdr->FastFwd_Status.foundEventFlag == 0)
     {
     	position = MIDIHdr->masterClock-1;
     }
@@ -259,32 +294,46 @@ uint8_t MPB_FastFwd_ToEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, uint32_t position, MID
 
     MPB_RePosition(MIDIHdr, position-1, mode);
 
-    return FastFwd_Status.foundEventStatus;
+    return MIDIHdr->FastFwd_Status.foundEventStatus;
 }
 
 
-void MPB_FastFwd_TestEvent(MIDI_EVENT_t* event)
+void MPB_FastFwd_TestEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_EVENT_t* event)
 {
+
+	MPB_FastFwd_t* 	   fastFwd_Status;
+	MIDI_CHAN_EVENT_t* fastFwd_Event;
+
+	fastFwd_Status = &MIDIHdr->FastFwd_Status;
+	fastFwd_Event = &MIDIHdr->FastFwd_Event;
+
 	if( event->event.eventType >= MIDI_NOTE_OFF &&
 		event->event.eventType <= MIDI_PITCH_CHANGE)
 	{
-		if(event->event.chanEvent.eventType == FastFwd_Event.eventType )
+		if( (fastFwd_Event->eventType == event->event.chanEvent.eventType))
 		{
-			FastFwd_Status.foundEventStatus = FAST_FWD_FIND_COMMAND;
+			fastFwd_Status->foundEventStatus = FAST_FWD_FIND_COMMAND;
 
-			if(event->event.chanEvent.parameter1 == FastFwd_Event.parameter1 )
+
+			if((fastFwd_Event->parameter1 == event->event.chanEvent.parameter1) ||
+			   (fastFwd_Event->parameter1 == FAST_FWD_IGNORE_PARAM1)	)
 			{
-				FastFwd_Status.foundEventStatus = FAST_FWD_FIND_KEY;
-				if(event->event.chanEvent.parameter2 >= FastFwd_Event.parameter2 )
+				fastFwd_Status->foundEventStatus = FAST_FWD_FIND_PARAM1;
+
+				if( (fastFwd_Event->parameter2 == event->event.chanEvent.parameter2 ) ||
+					(fastFwd_Event->parameter2 == FAST_FWD_IGNORE_PARAM2) ||
+					((fastFwd_Event->parameter2 == FAST_FWD_NON_ZERO_PARAM2) &&
+					 (event->event.chanEvent.parameter2 != 0)) )
 				{
-					FastFwd_Status.foundEventStatus = FAST_FWD_FIND_VELOCITY;
+					fastFwd_Status->foundEventStatus = FAST_FWD_FIND_PARAM2;
 				}
 			}
+
 		}
 
-		if(FastFwd_Status.searchMode == FastFwd_Status.foundEventStatus)
+		if(fastFwd_Status->searchMode == fastFwd_Status->foundEventStatus)
 		{
-			FastFwd_Status.foundEventFlag = 0;
+			fastFwd_Status->foundEventFlag = 0;
 		}
 	}
 }
@@ -298,7 +347,7 @@ uint8_t MPB_RePositionTime(MIDI_HEADER_CHUNK_t* MIDIHdr, uint16_t timePosSec, MI
     uint32_t myMasterClock;
     uint32_t myMaxLength = MIDIHdr->currentState.maxLength;
     uint16_t i;
-    MPB_InitMIDIHdr(MIDIHdr);
+    MPB_ResetMIDITracks(MIDIHdr);
     
     
     for(i = 0 ; i < 30000 ; i++ )
@@ -351,7 +400,7 @@ uint8_t MPB_ContinuePlay(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_PB_MODE mode)
                 else if(ret == MPB_TRACK_STOPPED)
                 {
                     MIDIHdr->currentState.trackState++;
-                    if(MIDIHdr->currentState.trackState == MIDIHdr->trackCount)
+                    if(MIDIHdr->currentState.trackState >= MIDIHdr->trackCount)
                     {
                         return MPB_FILE_FINISHED;
                     }
@@ -386,10 +435,16 @@ void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* t
     midiChannel = (event->event.eventType & 0x0F);
     
 
-	if( FastFwd_Status.foundEventFlag )
+	if( MIDIHdr->FastFwd_Status.foundEventFlag )
 	{
-		MPB_FastFwd_TestEvent(event);
+		MPB_FastFwd_TestEvent(MIDIHdr, event);
 	}
+
+	if( MIDIHdr->playbackState == STATE_TRACK_BUILDING )
+	{
+		MPB_BuildChannelStats(MIDIHdr, event);
+	}
+
 
     //Keep track of polyphony here
     if( (event->event.eventType & 0xF0) == MIDI_NOTE_ON )

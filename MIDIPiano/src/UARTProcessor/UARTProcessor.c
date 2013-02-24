@@ -98,8 +98,18 @@ void ToggleActiveChannel(uint8_t byte)
 	if( byte < MIDI_MAX_CHANNELS )
 	{
 
-		xprintf("SelectedCHMap = %x\n", SelectedCHMap);
-		xprintf("MAPState =      %X\n", MLL_ToggleChannel(SelectedCHMap, byte) );
+		if( SelectedCHMap >= MLL_MAP_COUNT )
+		{
+			xprintf("Seeking to first Note Preview\n");
+			MPL_PreviewNote(byte);
+		}
+		else
+		{
+			xprintf("SelectedCHMap = %x\n", SelectedCHMap);
+			xprintf("MAPState =      %X\n", MLL_ToggleChannel(SelectedCHMap, byte) );
+		}
+
+
 	}
 
 	if( byte == '+')
@@ -125,8 +135,20 @@ void ToggleActiveChannel(uint8_t byte)
 
 
 
+
 	switch(byte)
 	{
+
+		case 'D':
+		{
+			uint8_t i;
+			for(i = 0; i < MIDI_MAX_CHANNELS; i++)
+			{
+				MLL_DisableChannel(MLL_SOLO, i);
+			}
+		}
+		break;
+
 		case 'F':
 		{
 			uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
@@ -188,7 +210,7 @@ void ToggleActiveChannel(uint8_t byte)
         case 'M':
         {
         	SelectedCHMap++;
-        	if( SelectedCHMap >= MLL_MAP_COUNT )
+        	if( SelectedCHMap >= MLL_MAP_COUNT+1 )
         	{
         		SelectedCHMap = 0;
         	}
@@ -237,6 +259,25 @@ void ToggleActiveChannel(uint8_t byte)
         {
         	//Setup a flag to say we're waiting on a MIDI Note;
         	WaitForMIDIInputValue = WAITING_FOR_FASTFWD_EVENT;
+        }
+        break;
+
+        case 'p':
+        {
+        	uint8_t i;
+            for (i = 0; i<MIDI_MAX_CHANNELS; i++)
+            {
+            	if(MIDIHdr.channelStateBitmap & (1<<i) )
+            	{
+            		xprintf("Channel %d::ACTIVE\n", i);
+            		xprintf("Patch %d::\n", MIDIHdr.channelStats[i].programNumber);
+            		xprintf("NoteCount %d::\n", MIDIHdr.channelStats[i].noteCount);
+            	}
+            	else
+            	{
+            		xprintf("Channel %d::DISABLED\n", i);
+            	}
+            }
         }
         break;
 
