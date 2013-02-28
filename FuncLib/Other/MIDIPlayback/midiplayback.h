@@ -55,7 +55,7 @@ void MPB_SetTranspose(MIDI_HEADER_CHUNK_t* MIDIHdr, int8_t transpose);
 void MPB_ApplyTranspose(MIDI_EVENT_t* event, int8_t transpose);
 
 
-void MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
+uint16_t MPB_SetTickRate(uint16_t BPM, uint16_t PPQ);
 void MPB_ResetMIDI(void);
 void MPB_ProcessGenericEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event, MIDI_PB_MODE mode);
 

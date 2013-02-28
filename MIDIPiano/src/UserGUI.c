@@ -132,7 +132,7 @@ uint8_t UserGUI_PlayButton(void* but, void* data )
 
 
 
-uint8_t UserGUI_Slider(void* sld, void* data)
+uint8_t UserGUI_SliderTempo(void* sld, void* data)
 {
 	uint8_t* state;
 	GFX_Slider_t* SLD;
@@ -149,18 +149,51 @@ uint8_t UserGUI_Slider(void* sld, void* data)
 	switch( *state )
 	{
 		case PENDING_ACTION_FLAG:
+			//if( MPB_GetPlaybackState(&MIDIHdr) == STATE_ACTIVE )
+			{
+				int32_t position;
+				uint16_t tickRate;
+				int32_t newTickRate;
+				int32_t deltaBPMpercent;
+				uint16_t newBPM;
+				MidiPlaybackState_t playbackState;
+				position = GFX_SLIDER_GetPosition(SLD);
+
+
+
+				deltaBPMpercent = (int32_t)(position - (SLIDER_RESOLUTION / 2)) / (SLIDER_RESOLUTION/200);
+				deltaBPMpercent = (int32_t)(MIDIHdr.currentState.BPM * deltaBPMpercent) / 100;
+
+				xprintf("position: %d\n",  position );
+				xprintf("deltaBPMpercent: %d\n",  deltaBPMpercent );
+
+				newBPM = MIDIHdr.currentState.BPM + deltaBPMpercent;
+
+				xprintf("Tempo: %d\n",  newBPM );
+
+				MPB_SetTickRate(newBPM, MIDIHdr.PPQ);
+			}
+			GFX_SLIDER_Draw(SLD);
+			break;
+
 		case PENDING_NO_FLAG:
+			break;
+
 		case PENDING_REDRAW_FLAG:
 			GFX_SLIDER_Draw(SLD);
+
 			break;
 
 		default:
 			break;
 	}
 
+
+
 	lastState = *state;
 
 	return PENDING_NO_FLAG;
+
 }
 
 
@@ -178,8 +211,6 @@ uint8_t UserGUI_SliderReposition(void* sld, void* data)
 	{
 		GFX_SLIDER_Draw(SLD);
 	}
-
-	xprintf("SLIDER: %d",  *state );
 
 	switch( *state )
 	{
@@ -273,8 +304,8 @@ void UserGUI_Init(void* gfxLB)
 
 	gfxSLD1 = (GFX_Slider_t*)(&GFX_SLD[0]);
 	GFX_SLIDER_Init(gfxSLD1, 90, MAX_LCD_Y-39 , 140, 20, SLIDER_X);
-
-	gfxSLD1->execFunc = UserGUI_Slider;
+	gfxSLD1->position = SLIDER_RESOLUTION / 2;
+	gfxSLD1->execFunc = UserGUI_SliderTempo;
 
 	gfxFrame_AddWidget(&GFX_MainFrame, GFX_SLIDER,
 			gfxSLD1->fixedX,

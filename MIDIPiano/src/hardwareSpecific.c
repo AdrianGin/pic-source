@@ -32,6 +32,11 @@ void SetMIDITickTimer(uint16_t usPerTick)
 }
 
 
+uint16_t GetMIDITickTimer(void)
+{
+	return MIDI_TIM->ARR;
+}
+
 void SetMIDITickTimerPrescale(uint16_t prescale)
 {
 	TIM_PrescalerConfig(MIDI_TIM, prescale*DEFAULT_MIDI_TIMER_PRESCALER, TIM_PSCReloadMode_Immediate);

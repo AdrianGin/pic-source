@@ -38,14 +38,14 @@ void MPB_ResetMIDI(void)
         event.event.chanEvent.parameter1 = ALL_NOTES_OFF;
         event.event.chanEvent.parameter2 = 0;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
+//
+//        event.event.chanEvent.parameter1 = ALL_SOUND_OFF;
+//        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
+//
+//        event.event.chanEvent.parameter1 = ALL_CONTROLLERS_OFF;
+//        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
 
-        event.event.chanEvent.parameter1 = ALL_SOUND_OFF;
-        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
-
-        event.event.chanEvent.parameter1 = ALL_CONTROLLERS_OFF;
-        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
-
-        event.event.chanEvent.parameter1 = PORTAMENTO_TOGGLE;
+        event.event.chanEvent.parameter1 = SUSTAIN;
         event.event.chanEvent.parameter2 = 0x00;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
     }
@@ -150,7 +150,7 @@ void MPB_DetermineMIDIFileStats(MIDI_HEADER_CHUNK_t* MIDIHdr)
     	if(MIDIHdr->channelStateBitmap & (1<<i) )
     	{
     		xprintf("Channel %d::ACTIVE\n", i);
-    		xprintf("Patch %d::\n", MIDIHdr->channelStats[i].programNumber);
+    		xprintf("Patch::%s\n", MIDIUtils_GetInstrumentName(MIDIHdr->channelStats[i].programNumber));
     		xprintf("NoteCount %d::\n", MIDIHdr->channelStats[i].noteCount);
     	}
     	else
@@ -622,7 +622,7 @@ MIDI_EVENT_t* MPB_ConfirmEventTx(void)
 #define MIN_BMP	(20)
 #define MIN_BMP_PPQ_PRODUCT (MIN_BMP*MIN_PPQ)
 #define MIN_BMP_PPQ_PRESCALER	(64)
-void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
+uint16_t MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
 {
     //*to send a Timing signal we need to send 24 0xF8's per quarter note
     uint16_t usPerTick;
@@ -649,6 +649,8 @@ void MPB_SetTickRate(uint16_t bpm, uint16_t PPQ)
     myprintfd("BPM: ", bpm);
     myprintfd("PPQ: ", PPQ);
     myprintfd("usPerTick: ", usPerTick);
+
+    return usPerTick;
 }
 
 void MPB_ProcessMetaEvent(MIDI_HEADER_CHUNK_t* MIDIHdr, MIDI_TRACK_CHUNK_t* track, MIDI_EVENT_t* event)

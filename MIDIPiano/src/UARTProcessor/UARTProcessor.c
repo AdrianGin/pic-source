@@ -41,9 +41,13 @@
 #include "MIDIPianoLogic/MIDIPianoLogic.h"
 #include "MIDILightLogic/MIDILightLogic.h"
 
+#include "MIDIUtils/MIDIUtils.h"
+
 #include "Semaphore/osa_semaphore.h"
 #include "UserGUI.h"
 #include "intertaskComm.h"
+
+#include "GameFunctionLogic/GameFunctionLogic.h"
 
 #define USART_RX_DATA_SIZE   2048
 
@@ -98,18 +102,20 @@ void ToggleActiveChannel(uint8_t byte)
 	if( byte < MIDI_MAX_CHANNELS )
 	{
 
-		if( SelectedCHMap >= MLL_MAP_COUNT )
+		switch( SelectedCHMap )
 		{
-			xprintf("Seeking to first Note Preview\n");
+		case 0:
+			GFL_User_InitiatePractice(byte);
+			break;
+
+		case 1:
+			GFL_User_InitiateFollow(byte);
+			break;
+
+		case 2:
 			MPL_PreviewNote(byte);
+			break;
 		}
-		else
-		{
-			xprintf("SelectedCHMap = %x\n", SelectedCHMap);
-			xprintf("MAPState =      %X\n", MLL_ToggleChannel(SelectedCHMap, byte) );
-		}
-
-
 	}
 
 	if( byte == '+')
@@ -183,7 +189,6 @@ void ToggleActiveChannel(uint8_t byte)
 		}
 
 		//TODO: Fix bug where seeks take up lots of time, and selecting a song will crash it
-		//TODO: Function to preview tracks.
         case 'R':
         {
             uint32_t tmasterClock = MIDIHdr.masterClock / (4*MIDIHdr.PPQ);
@@ -270,7 +275,7 @@ void ToggleActiveChannel(uint8_t byte)
             	if(MIDIHdr.channelStateBitmap & (1<<i) )
             	{
             		xprintf("Channel %d::ACTIVE\n", i);
-            		xprintf("Patch %d::\n", MIDIHdr.channelStats[i].programNumber);
+            		xprintf("Patch::%s\n", MIDIUtils_GetInstrumentName(MIDIHdr.channelStats[i].programNumber));
             		xprintf("NoteCount %d::\n", MIDIHdr.channelStats[i].noteCount);
             	}
             	else

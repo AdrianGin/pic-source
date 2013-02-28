@@ -4,6 +4,7 @@
 
 
 #include <stdint.h>
+#include "MIDIParser/midiparser.h"
 
 #define MLL_CHANNEL_IS_ACTIVE(map, channel) (MLL_ActiveChannelMap[map] & (1<<channel))
 
@@ -24,6 +25,15 @@
 #define MATCH_FLAG_MASK	(0xC0)
 #define OCTAVE_MATCH_MODE    (1<<7)
 #define REQUIRE_NOTE_RELEASE (1<<6)
+
+#define MAX_NOTES_TO_HALT	(20)
+
+enum {
+	MASTER_HALT_LIST = 0,
+	TESTER_HALT_ON_LIST,
+	HALT_LIST_COUNT
+};
+
 
 typedef enum
 {
@@ -52,9 +62,10 @@ enum {
 
 void MLL_Init(void);
 //channel refers to the MIDI channel
-uint32_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel);
-uint32_t MLL_ActivateChannel(MLL_CH_MAP_t map, uint8_t channel);
-uint32_t MLL_DisableChannel(MLL_CH_MAP_t map, uint8_t channel);
+uint16_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel);
+uint16_t MLL_ActivateChannel(MLL_CH_MAP_t map, uint8_t channel);
+uint16_t MLL_DisableChannel(MLL_CH_MAP_t map, uint8_t channel);
+void MLL_SetChannelMaps(MLL_CH_MAP_t map, uint16_t state);
 
 
 
@@ -81,8 +92,10 @@ void MLL_ProcessHaltNote(uint8_t* midiDataArray);
 //midiDataArray:: A 3 byte array pointer
 void MLL_AddTesterHaltNote(uint8_t* midiDataArray);
 void MLL_TesterHaltCancelNotes(uint8_t* midiDataArray);
-void MLL_CompareMasterTesterHaltList(uint8_t matchMode);
+void MLL_CompareMasterTesterHaltList(MIDI_CHAN_EVENT_t* newEvent, uint8_t matchMode);
+
 void MLL_ProcessPulsateHaltList(void);
 
+void MLL_ProcessCorrectKeyPress(void);
 
 #endif

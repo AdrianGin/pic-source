@@ -59,6 +59,8 @@
 
 #include "ProjectConfig/ProjectConfig.h"
 
+#include "ADC/ADC.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -105,6 +107,8 @@ int main(void)
 	MLL_Init();
 	LPD8806_Clear();
 	LPD8806_Update();
+
+	ADC_Configuration();
 
 	TIM_MIDI_Configuration();
 	AUX_TIM_Configuration();

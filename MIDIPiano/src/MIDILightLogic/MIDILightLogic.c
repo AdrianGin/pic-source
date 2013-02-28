@@ -24,20 +24,39 @@
 
 #include "MIDILightLogic/MIDILightLogic.h"
 
+#include "rgbUtils/rgbutils.h"
+
 uint16_t MLL_ActiveChannelMap[MLL_MAP_COUNT];
+
+uint32_t MLL_CorrectColour = RGB(0,255,0);
+
+
+
+LINKED_LIST_t MPL_NoteHaltList[HALT_LIST_COUNT];
+static uint8_t Halt_Count[HALT_LIST_COUNT] = {0,0};
+//MIDI_CHAN_EVENT_t MPL_NoteHaltList[MAX_NOTES_TO_HALT];
+
+static uint8_t Halt_Flag;
+static uint8_t Match_Mode = REQUIRE_NOTE_RELEASE | OCTAVE_MATCH_MODE | EXACT_MATCH;
+
 
 
 void MLL_Init(void)
 {
 	MLL_ActiveChannelMap[MLL_LIGHTS] = 0xFFFF; //exclude the drums
 	MLL_ActiveChannelMap[MLL_MIDIOUT] = 0xFFFF;
-	MLL_ActiveChannelMap[MLL_HALT] = 0x0200;
+	MLL_ActiveChannelMap[MLL_HALT] = 0x0000;
 	MLL_ActiveChannelMap[MLL_SOLO] = 0x0000;
 
 }
 
 
-uint32_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel)
+void MLL_SetChannelMaps(MLL_CH_MAP_t map, uint16_t state)
+{
+	MLL_ActiveChannelMap[map] = state;
+}
+
+uint16_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel)
 {
 	if( channel < MIDI_MAX_CHANNELS )
 	{
@@ -48,7 +67,7 @@ uint32_t MLL_ToggleChannel(MLL_CH_MAP_t map, uint8_t channel)
 }
 
 //channel refers to the MIDI channel
-uint32_t MLL_ActivateChannel(MLL_CH_MAP_t map, uint8_t channel)
+uint16_t MLL_ActivateChannel(MLL_CH_MAP_t map, uint8_t channel)
 {
 	if( channel < MIDI_MAX_CHANNELS )
 	{
@@ -59,7 +78,7 @@ uint32_t MLL_ActivateChannel(MLL_CH_MAP_t map, uint8_t channel)
 
 
 //channel refers to the MIDI channel
-uint32_t MLL_DisableChannel(MLL_CH_MAP_t map, uint8_t channel)
+uint16_t MLL_DisableChannel(MLL_CH_MAP_t map, uint8_t channel)
 {
 	if( channel < MIDI_MAX_CHANNELS )
 	{
@@ -67,6 +86,8 @@ uint32_t MLL_DisableChannel(MLL_CH_MAP_t map, uint8_t channel)
 	}
 	return MLL_ActiveChannelMap[map];
 }
+
+
 
 
 
@@ -176,22 +197,6 @@ void MLL_ProcessMIDIByte(uint8_t byte)
 }
 
 
-#define MAX_NOTES_TO_HALT	(20)
-
-enum {
-	MASTER_HALT_LIST = 0,
-	TESTER_HALT_ON_LIST,
-	//TESTER_HALT_OFF_LIST,
-	HALT_LIST_COUNT
-};
-
-LINKED_LIST_t MPL_NoteHaltList[HALT_LIST_COUNT];
-static uint8_t Halt_Count[HALT_LIST_COUNT] = {0,0};
-//MIDI_CHAN_EVENT_t MPL_NoteHaltList[MAX_NOTES_TO_HALT];
-
-static uint8_t Halt_Flag;
-static uint8_t Match_Mode = REQUIRE_NOTE_RELEASE | OCTAVE_MATCH_MODE | PROCEED_ON_ANY;
-
 void MLL_ClearHaltList(void)
 {
 	LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
@@ -241,7 +246,7 @@ void MLL_ProcessHaltNote(uint8_t* midiDataArray)
 	{
 		MLL_AddTesterHaltNote(midiDataArray);
 		MLL_TesterHaltCancelNotes(midiDataArray);
-		MLL_CompareMasterTesterHaltList(Match_Mode);
+		MLL_CompareMasterTesterHaltList(midiDataArray, Match_Mode);
 	}
 }
 
@@ -267,9 +272,9 @@ void MLL_AddHaltMasterNote(uint8_t* midiDataArray)
 			Halt_Count[MASTER_HALT_LIST]++;
 
 
-			if( MLL_GetMatchFlags() & REQUIRE_NOTE_RELEASE )
+			if( (MLL_GetMatchFlags() & REQUIRE_NOTE_RELEASE) == 0)
 			{
-				MLL_CompareMasterTesterHaltList(Match_Mode);
+				MLL_CompareMasterTesterHaltList(0, Match_Mode);
 			}
 		}
 
@@ -382,7 +387,7 @@ void MLL_ProcessPulsateHaltList(void)
 
 
 
-void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
+void MLL_CompareMasterTesterHaltList(MIDI_CHAN_EVENT_t* newEvent, uint8_t matchMode)
 {
 	uint8_t i;
 	uint8_t j;
@@ -394,10 +399,25 @@ void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
 	MIDI_CHAN_EVENT_t* masterEvent;
 	MIDI_CHAN_EVENT_t* testerEvent;
 
+
 	for( i = 0 ; i < Halt_Count[MASTER_HALT_LIST]; i++)
 	{
 		masterNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[MASTER_HALT_LIST], i);
 		masterEvent = (MIDI_CHAN_EVENT_t*)masterNode->data;
+
+		if((matchMode & MATCH_FLAG_MASK) & REQUIRE_NOTE_RELEASE)
+		{
+			if( newEvent )
+			{
+				if( ((newEvent->eventType & MIDI_MSG_TYPE_MASK) == MIDI_NOTE_ON) &&
+					 (newEvent->parameter2 != 0) &&
+					 (newEvent->parameter1 == masterEvent->parameter1))
+				{
+					proceedFlag = 1;
+				}
+			}
+		}
+
 		for( j = 0; j < Halt_Count[TESTER_HALT_ON_LIST]; j++)
 		{
 			testerNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[TESTER_HALT_ON_LIST], j);
@@ -417,12 +437,23 @@ void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
 		}
 	}
 
+	if((matchMode & MATCH_FLAG_MASK) & REQUIRE_NOTE_RELEASE)
+	{
+		if(proceedFlag == 0)
+		{
+			return;
+		}
+
+	}
+
+	proceedFlag = 0;
 
 	switch( matchMode & MATCH_MODE_MASK)
 	{
 		case EXACT_MATCH:
 			//If we have matched the halt requirements, delete everything and continue
-			if(matchCount == Halt_Count[MASTER_HALT_LIST])
+			if( (matchCount == Halt_Count[MASTER_HALT_LIST]) &&
+				(Halt_Count[TESTER_HALT_ON_LIST] == Halt_Count[MASTER_HALT_LIST]))
 			{
 				proceedFlag = 1;
 			}
@@ -466,6 +497,8 @@ void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
 
 	if( proceedFlag )
 	{
+		MLL_ProcessCorrectKeyPress();
+
 		LL_DeleteListAndData(&MPL_NoteHaltList[MASTER_HALT_LIST]);
 		Halt_Count[MASTER_HALT_LIST] = 0;
 		MLL_SetHaltFlag(0);
@@ -478,6 +511,27 @@ void MLL_CompareMasterTesterHaltList(uint8_t matchMode)
 
 
 
+void MLL_ProcessCorrectKeyPress(void)
+{
+	uint8_t i;
+	LIST_NODE_t* masterNode;
+	MIDI_CHAN_EVENT_t* masterEvent;
+
+	uint32_t colour;
+	//Already been transposed
+
+	for( i = 0 ; i < Halt_Count[MASTER_HALT_LIST]; i++)
+	{
+		masterNode = LL_ReturnNodeFromIndex(&MPL_NoteHaltList[MASTER_HALT_LIST], i);
+		masterEvent = (MIDI_CHAN_EVENT_t*)masterNode->data;
+
+		colour = MLL_CorrectColour;
+		CM_AddColour(masterEvent->parameter1, colour, MAX_BRIGHTNESS);
+		LS_AppendLightOn(((LS_CHANNEL(masterEvent->eventType) << 8) | masterEvent->parameter1), colour, DEFAULT_FADE_TIME);
+		colour = CM_GetMixedColour(masterEvent->parameter1);
+		LS_SetPixel(masterEvent->parameter1, colour);
+	}
+}
 
 
 

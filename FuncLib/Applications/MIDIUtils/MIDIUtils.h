@@ -30,6 +30,8 @@
 uint8_t MIDIUtils_GetMusicNote(uint8_t note);
 /* Returns the octave of the passed note */
 uint8_t MIDIUtils_GetOctave(uint8_t note);
+const char* MIDIUtils_GetInstrumentName(uint8_t programNumber);
+
 
 #endif
 

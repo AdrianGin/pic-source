@@ -25,6 +25,7 @@ void myPrintNum(uint32_t num, uint8_t base);
 
 void SetMIDITickTimer(uint16_t usPerTick);
 void SetMIDITickTimerPrescale(uint16_t prescale);
+uint16_t GetMIDITickTimer(void);
 
 #define SET_TIMER_INTERVAL(usPerTick)	SetMIDITickTimer(usPerTick)
 #define SET_TIMER_PRESCALER(scale)		SetMIDITickTimerPrescale(scale)

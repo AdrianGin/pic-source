@@ -34,6 +34,11 @@
 
 #include "UserGUI.h"
 
+#include "ADC/ADC.h"
+
+#include "MIDICodes/MIDICodes.h"
+#include "MIDIPlayback/midiplayback.h"
+
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void Task_SystemMonitor(void * pvArg);
@@ -61,9 +66,29 @@ void Task_SystemMonitor(void * pvArg)
 	uint8_t buffer[APP_TASK_COUNT*40];
 	size_t heapSize;
 
+	uint16_t AD_value_1;
+	uint16_t AD_value_2;
+
+    MIDI_EVENT_t event;
+
 	for (;;)
 	{
 		vTaskDelay(1000);
+
+		AD_value_1 = ADC_GetSample(0);
+		xprintf("The current AD1 value = %d \r\n", AD_value_1);
+
+        event.event.eventType = MIDI_CONTROL_CHANGE|0;
+        event.event.chanEvent.parameter1 = CHANNEL_VOLUME;
+        event.event.chanEvent.parameter2 = AD_value_1 >> 5;
+        //MPB_PlayEvent(&event, MPB_PB_ALL_ON);
+
+
+
+		AD_value_2 = ADC_GetSample(1);
+		xprintf("The current AD2 value = %d \r\n", AD_value_2);
+
+
 		//vTaskList(buffer);
 		//xprintf("%s\n", buffer);
 		//display_mallinfo();

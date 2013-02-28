@@ -33,11 +33,6 @@
 
 #include "ColourMixer/ColourMixer.h"
 
-typedef uint32_t LS_ChannelColour_t;
-//Every single possible note has its own individual countdown.
-
-#define MAX_POLYPHONY (MIDI_PIANO_KEY_COUNT)
-#define LS_SETPIXEL(index, colour)	LPD8806_SetPixel( index, colour);
 
 
 volatile uint8_t	LS_CountdownCount;
@@ -45,23 +40,11 @@ volatile uint16_t LS_ChannelActive = 0xFFFF;
 
 uint8_t LS_MinBrightness;
 
-enum {
-	CHANNEL_COLOUR,
-	NOTE_COLOUR,
-	NOTE_FIFTHS_COLOUR,
-	COLOUR_MODE_COUNT,
-};
-
 static uint8_t mode = CHANNEL_COLOUR;
 
-typedef struct
-{
-	//In the format of: CHANNEL << 8 | KEY;
-	uint16_t channelKey;
-	uint8_t	 timer;
-} LS_CountdownElement_t;
 
 LS_CountdownElement_t LS_Countdown[MAX_POLYPHONY];
+uint8_t LS_AutoTurnOffElements[MAX_POLYPHONY];
 
 //Either  +/- from middle C up to +/- 24 semi tones.
 int8_t LS_TransposeMap[MIDI_MAX_CHANNELS];
@@ -85,6 +68,9 @@ LS_ChannelColour_t LS_ChanColours[MIDI_MAX_CHANNELS] =
 				RGB(0, 255, 0),
 				RGB(0, 255, 0),
 		};
+
+
+
 
 #define MAX_COLOUR (MAX_LED_BRIGHTNESS)
 #define HALF_COLOUR	(MAX_COLOUR/2)
@@ -176,41 +162,74 @@ void LS_ProcessAutoTurnOff(void)
 {
 	uint8_t i;
 	uint8_t j;
+	uint32_t colour;
+
+	memset(LS_AutoTurnOffElements, FREE_ELEMENT, sizeof(LS_AutoTurnOffElements));
+
 
 	for( i=0, j=0; (i < LS_CountdownCount) && (j < MAX_POLYPHONY); j++ )
 	{
 		if( LS_Countdown[j].channelKey != FREE_ELEMENT)
 		{
-			uint32_t colour;
+			//If the timer has elapsed, remove the colour completely.
+			if(LS_Countdown[j].timer != WAIT_FOR_NOTE_OFF )
+			{
+				if( LS_Countdown[j].timer == 0 )
+				{
+					CM_RemoveColour(LS_Countdown[j].channelKey, LS_Countdown[j].colour);
+					colour = CM_GetMixedColour((LS_Countdown[j].channelKey & MIDI_MAX_KEY));
+					LS_SetPixel((LS_Countdown[j].channelKey & MIDI_MAX_KEY), colour);
 
+					LS_DeactivateTimer(LS_Countdown[j].channelKey, LS_Countdown[j].colour, 0);
+				}
+				else
+				{
+					LS_Countdown[j].timer--;
+				}
+			}
+			i++;
+			LS_AutoTurnOffElements[LS_Countdown[j].channelKey & MIDI_MAX_KEY] = j;
+		}
+	}
+
+
+	//Fade out the lights
+	for( i = 0; i < MAX_POLYPHONY; i++)
+	{
+		if( LS_AutoTurnOffElements[i] != FREE_ELEMENT)
+		{
+			j = LS_AutoTurnOffElements[i];
 			CM_ReduceBrightnessPercentage((LS_Countdown[j].channelKey & MIDI_MAX_KEY), FADE_PERCENT, LS_MinBrightness);
 			colour = CM_GetMixedColour((LS_Countdown[j].channelKey & MIDI_MAX_KEY));
 			LS_SetPixel((LS_Countdown[j].channelKey & MIDI_MAX_KEY), colour);
-			i++;
 		}
 	}
+
 }
 
 
 
 //When a note on is received.
 //Because we must remember which lights have been on for how long
-void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
+void LS_AppendLightOn(uint8_t channelKey, uint32_t colour, uint8_t timer)
 {
 	uint16_t j;
 
 	for( j=0; j < MAX_POLYPHONY; j++ )
 	{
-
 		//Don't record duplicates.
+		//TODO: Because otherwise the fade will be twice as quick...
+		//But this quick fix doesn't work. Since we now need to take into account colours
+		//It's not just one element per key.
 		if( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) == (channelKey & MIDI_MAX_KEY) )
 		{
-			break;
+			//break;
 		}
 
 		if( LS_Countdown[j].channelKey == FREE_ELEMENT)
 		{
 			LS_Countdown[j].channelKey = channelKey;
+			LS_Countdown[j].colour = colour;
 			LS_Countdown[j].timer = timer;
 			LS_CountdownCount++;
 			break;
@@ -221,15 +240,18 @@ void LS_AppendLightOn(uint16_t channelKey, uint8_t timer)
 //When a Note Off is received
 //channelKey =  channel | note;
 // eg. 0x0165 = Channel x1, note x65
-void LS_DeactivateTimer(uint16_t channelKey)
+void LS_DeactivateTimer(uint8_t channelKey, uint32_t colour , uint8_t timer)
 {
 	uint16_t j;
 
 	for( j=0; j < MAX_POLYPHONY; j++ )
 	{
-		if( LS_Countdown[j].channelKey == channelKey)
+		if( (LS_Countdown[j].channelKey == channelKey) &&
+			(LS_Countdown[j].colour == colour) &&
+			(LS_Countdown[j].timer == timer))
 		{
 			LS_Countdown[j].channelKey = FREE_ELEMENT;
+			LS_Countdown[j].colour = 0;
 			LS_Countdown[j].timer = 0;
 			if( LS_CountdownCount )
 			{
@@ -297,8 +319,6 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 		CM_AddColour(note, colour, velocity);
 	}
 
-	//02/2013 Added Colour Mixer
-	colour = CM_GetMixedColour(note);
 	//colour = SCALE_COLOUR(colour , velocity, MIDI_MAX_KEY);
 
 
@@ -306,14 +326,16 @@ void LS_ProcessMIDINote(uint8_t command, uint8_t note, uint8_t velocity)
 	{
 		if (colour && velocity)
 		{
-			LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), 50);
+			LS_AppendLightOn(((LS_CHANNEL(command) << 8) | note), colour, WAIT_FOR_NOTE_OFF);
 		}
 		else
 		{
-			LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note));
+			LS_DeactivateTimer(((LS_CHANNEL(command) << 8) | note), colour, WAIT_FOR_NOTE_OFF);
 		}
 		//Reverse on LED Strip
 		//LS_SetPixel((LED_COUNT / 2) - note, colour, command);
+		//02/2013 Added Colour Mixer
+		colour = CM_GetMixedColour(note);
 		LS_SetPixel(note, colour);
 	}
 }
