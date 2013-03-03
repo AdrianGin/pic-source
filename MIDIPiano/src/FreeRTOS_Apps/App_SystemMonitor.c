@@ -75,18 +75,13 @@ void Task_SystemMonitor(void * pvArg)
 	{
 		vTaskDelay(1000);
 
-		AD_value_1 = ADC_GetSample(0);
-		xprintf("The current AD1 value = %d \r\n", AD_value_1);
+//		AD_value_1 = ADC_GetSample(0);
+//		xprintf("The current AD1 value = %d \r\n", AD_value_1);
 
-        event.event.eventType = MIDI_CONTROL_CHANGE|0;
-        event.event.chanEvent.parameter1 = CHANNEL_VOLUME;
-        event.event.chanEvent.parameter2 = AD_value_1 >> 5;
+//        event.event.eventType = MIDI_CONTROL_CHANGE|0;
+//        event.event.chanEvent.parameter1 = CHANNEL_VOLUME;
+//        event.event.chanEvent.parameter2 = AD_value_1 >> 5;
         //MPB_PlayEvent(&event, MPB_PB_ALL_ON);
-
-
-
-		AD_value_2 = ADC_GetSample(1);
-		xprintf("The current AD2 value = %d \r\n", AD_value_2);
 
 
 		//vTaskList(buffer);

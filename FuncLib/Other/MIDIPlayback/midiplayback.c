@@ -22,8 +22,7 @@ FIL midifile;
 
 void MPB_ResetMIDI(void)
 {
-    MIDI_EVENT_t event;
-    uint8_t i;
+
 
     MIDI_Tx(MIDI_SYSEX_START);
     MIDI_Tx(0x7E);
@@ -32,26 +31,27 @@ void MPB_ResetMIDI(void)
     MIDI_Tx(0x01);
     MIDI_Tx(MIDI_SYSEX_STOP);
 
+    MPB_StopAllSounds();
+
+    _clearEventBuffer();
+}
+
+
+void MPB_StopAllSounds(void)
+{
+    MIDI_EVENT_t event;
+    uint8_t i;
     for (i = 0; i< MIDI_MAX_CHANNELS ; i++)
     {
         event.event.eventType = MIDI_CONTROL_CHANGE|i;
         event.event.chanEvent.parameter1 = ALL_NOTES_OFF;
         event.event.chanEvent.parameter2 = 0;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
-//
-//        event.event.chanEvent.parameter1 = ALL_SOUND_OFF;
-//        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
-//
-//        event.event.chanEvent.parameter1 = ALL_CONTROLLERS_OFF;
-//        MPB_PlayEvent(&event, MPB_PB_ALL_ON);
 
         event.event.chanEvent.parameter1 = SUSTAIN;
         event.event.chanEvent.parameter2 = 0x00;
         MPB_PlayEvent(&event, MPB_PB_ALL_ON);
     }
-
-    _clearEventBuffer();
-
 }
 
 

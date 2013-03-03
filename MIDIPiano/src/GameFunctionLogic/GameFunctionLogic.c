@@ -10,6 +10,8 @@
 void GFL_User_InitiatePractice(uint8_t channel)
 {
 
+	MPB_StopAllSounds();
+
 	MLL_SetChannelMaps(MLL_LIGHTS, (1<<channel));
 	MLL_SetChannelMaps(MLL_MIDIOUT, 0xFFFF & ~(1<<channel));
 	MLL_SetChannelMaps(MLL_HALT, (1<<channel));
