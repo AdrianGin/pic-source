@@ -29,7 +29,8 @@
 #include "LightSys\LightSys.h"
 #include "LPD8806\LPD8806.h"
 
-#include "MIDILightLogic/MIDILightLogic.h"
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
+
 
 #include "LightSys/LightSys.h"
 #include "stm32f10x.h"
@@ -59,7 +60,8 @@ void Task_LightSystem(void * pvArg)
 	for (;;)
 	{
 		LS_ProcessAutoTurnOff();
-		MLL_ProcessPulsateHaltList();
+		MPB_CL_ProcessPulsateHaltList();
+
 
 		vTaskDelay(10);
 

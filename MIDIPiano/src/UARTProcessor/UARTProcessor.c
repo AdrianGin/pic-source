@@ -40,6 +40,8 @@
 
 #include "MIDIPianoLogic/MIDIPianoLogic.h"
 #include "MIDILightLogic/MIDILightLogic.h"
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
+#include "MIDIPlaybackControlLogic/PlayStats/PlayStats.h"
 
 #include "MIDIUtils/MIDIUtils.h"
 
@@ -79,6 +81,9 @@ void ReceiveUSARTData(void)
 
 void ProcessUARTBuffer(void)
 {
+
+	//TODO: Need to have a common USB-MIDI Process routine.
+
 	if(USART_Rx_ptr_in != USART_Rx_ptr_out)
 	{
 		//This echoes it out.
@@ -97,7 +102,7 @@ void ProcessUARTBuffer(void)
 void ToggleActiveChannel(uint8_t byte)
 {
 	uint8_t i;
-	static uint8_t SelectedCHMap = MLL_LIGHTS;
+	static uint8_t SelectedCHMap = MPB_CL_LIGHTS;
 
 	if( byte < MIDI_MAX_CHANNELS )
 	{
@@ -150,7 +155,7 @@ void ToggleActiveChannel(uint8_t byte)
 			uint8_t i;
 			for(i = 0; i < MIDI_MAX_CHANNELS; i++)
 			{
-				MLL_DisableChannel(MLL_SOLO, i);
+				MPB_CL_DisableChannel(MPB_CL_SOLO, i);
 			}
 		}
 		break;
@@ -174,7 +179,7 @@ void ToggleActiveChannel(uint8_t byte)
 
 			MPB_ResetMIDI();
 			LS_ClearLights();
-			MLL_ClearHaltList();
+			MPB_CL_ClearHaltList();
 
 
 			MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
@@ -200,7 +205,7 @@ void ToggleActiveChannel(uint8_t byte)
             MPB_PausePlayback(&MIDIHdr);
             MPB_ResetMIDI();
     		LS_ClearLights();
-    		MLL_ClearHaltList();
+    		MPB_CL_ClearHaltList();
 
             tmasterClock = (tmasterClock - 1) * (4*MIDIHdr.PPQ);
             MPB_RePosition(&MIDIHdr, tmasterClock, MPB_PB_SAVE_MIDI_STATUS);
@@ -215,7 +220,7 @@ void ToggleActiveChannel(uint8_t byte)
         case 'M':
         {
         	SelectedCHMap++;
-        	if( SelectedCHMap >= MLL_MAP_COUNT+1 )
+        	if( SelectedCHMap >= MPB_CL_MAP_COUNT+1 )
         	{
         		SelectedCHMap = 0;
         	}
@@ -226,23 +231,23 @@ void ToggleActiveChannel(uint8_t byte)
 
         case 'm':
         {
-        	MLL_SetMatchMode(MLL_GetMatchMode()+1);
-        	if(MLL_GetMatchMode() >= MATCH_MODE_COUNT )
+        	MPB_CL_SetMatchMode(MPB_CL_GetMatchMode()+1);
+        	if(MPB_CL_GetMatchMode() >= MATCH_MODE_COUNT )
         	{
-        		MLL_SetMatchMode(EXACT_MATCH);
+        		MPB_CL_SetMatchMode(EXACT_MATCH);
         	}
-        	xprintf("MatchMode = %x\n", MLL_GetMatchMode());
+        	xprintf("MatchMode = %x\n", MPB_CL_GetMatchMode());
         }
         break;
 
         case 'r':
         {
-        	MLL_SetMatchFlags(MLL_GetMatchFlags()+0x40);
-        	//if(MLL_GetMatchFlags() >= MATCH_FLAG_MASK )
+        	MPB_CL_SetMatchFlags(MPB_CL_GetMatchFlags()+ALLOW_SLIDE);
+        	//if(MPB_CL_GetMatchFlags() >= MATCH_FLAG_MASK )
         	{
-        		//MLL_SetMatchFlags(0x00);
+        		//MPB_CL_SetMatchFlags(0x00);
         	}
-        	xprintf("MatchFlags = %x\n", MLL_GetMatchFlags());
+        	xprintf("MatchFlags = %x\n", MPB_CL_GetMatchFlags());
         }
         break;
 
@@ -283,6 +288,12 @@ void ToggleActiveChannel(uint8_t byte)
             		xprintf("Channel %d::DISABLED\n", i);
             	}
             }
+        }
+        break;
+
+        case 'P':
+        {
+        	PS_PrintSummary();
         }
         break;
 

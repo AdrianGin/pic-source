@@ -218,7 +218,6 @@ void LS_AppendLightOn(uint8_t channelKey, uint32_t colour, uint8_t timer)
 	for( j=0; j < MAX_POLYPHONY; j++ )
 	{
 		//Don't record duplicates.
-		//TODO: Because otherwise the fade will be twice as quick...
 		//But this quick fix doesn't work. Since we now need to take into account colours
 		//It's not just one element per key.
 		if( (LS_Countdown[j].channelKey & MIDI_MAX_KEY) == (channelKey & MIDI_MAX_KEY) )

@@ -43,6 +43,7 @@
 #include "LPD8806\LPD8806.h"
 
 #include "MIDILightLogic/MIDILightLogic.h"
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
 
 #include "usb_lib.h"
 
@@ -104,7 +105,7 @@ int main(void)
 
 	LPD8806_Init();
 	LS_Init();
-	MLL_Init();
+	MPB_CL_Init();
 	LPD8806_Clear();
 	LPD8806_Update();
 

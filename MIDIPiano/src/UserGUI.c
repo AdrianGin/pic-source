@@ -25,6 +25,10 @@
 
 #include "intertaskComm.h"
 
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
+
+#include "MIDIPlaybackControlLogic/PlayStats/PlayStats.h"
+
 GFX_Listbox_t* GFX_LB;
 GFX_FB_t GFX_FB;
 
@@ -76,6 +80,41 @@ uint8_t ProcessFB_Request(void* LB, void* data)
 	}
 
 	return PENDING_ACTION_FLAG;
+}
+
+
+void ExecuteMIDIFile(char* LBItem)
+{
+	char path[255];
+	FRESULT tmp;
+
+	MPB_PausePlayback(&MIDIHdr);
+	vTaskDelay(10);
+
+	strcpy(path, GFX_FB_CWD());
+	strcat(path, "/");
+	strcat(path, LBItem);
+	MPB_ResetMIDI();
+
+	LS_ClearLights();
+	MPB_CL_ClearHaltList();
+
+
+
+	tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
+
+	PS_Init();
+	PS_SetExpiryTolerance(MIDIHdr.PPQ);
+
+	xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
+
+	MPB_EnablePlayback(&MIDIHdr);
+
+
+	if (tmp == FR_OK)
+	{
+		xprintf("SUCCESS!!\n");
+	}
 }
 
 
@@ -234,7 +273,7 @@ uint8_t UserGUI_SliderReposition(void* sld, void* data)
 				MPB_SetPlaybackState(&MIDIHdr, playbackState);
 
 				LS_ClearLights();
-				MLL_ClearHaltList();
+				MPB_CL_ClearHaltList();
 			}
 			GFX_SLIDER_Draw(SLD);
 			break;

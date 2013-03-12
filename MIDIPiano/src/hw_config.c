@@ -18,6 +18,8 @@
 
 #include "MIDILightLogic/MIDILightLogic.h"
 #include "MIDIPianoLogic/MIDIPianoLogic.h"
+#include "MIDIInputProcessor/MIDIInputProcessor.h"
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
 #include "intertaskComm.h"
 
 #ifdef __GNUC__
@@ -306,6 +308,8 @@ void ProcessUSBMIDIBuffer_LightSys(void)
 	static uint8_t lsBuf[3];
 	static uint8_t bufCount = 0;
 
+	//TODO: Link with the common UART MIDI process routine.
+
 	while( USBMIDI_GetByte(&byte, 0) != NO_DATA_BYTE )
 	{
 		if( ((byte & 0xF0) == MIDI_NOTE_ON) || ((byte & 0xF0) == MIDI_NOTE_OFF) || (bufCount))
@@ -314,28 +318,15 @@ void ProcessUSBMIDIBuffer_LightSys(void)
 			bufCount++;
 			if( bufCount == 3)
 			{
-				uint8_t waitForNoteFlag;
 				bufCount = 0;
-				waitForNoteFlag = MPL_ProcessMIDINote(&lsBuf[0]);
-				LS_ProcessMIDINote(lsBuf[0], lsBuf[1], lsBuf[2]);
-
-				//If we're waiting for notes, we don't process them.
-				if( waitForNoteFlag == 0 )
-				{
-					MLL_ProcessHaltNote(&lsBuf[0]);
-				}
-
+				MIP_ProcessEvent((MIDI_CHAN_EVENT_t*)&lsBuf);
 			}
 		}
 		else
 		{
 			bufCount = 0;
 		}
-
-
 	}
-
-
 
 	ret = GetEPRxStatus(ENDP1);
 	if( ret != EP_RX_VALID )

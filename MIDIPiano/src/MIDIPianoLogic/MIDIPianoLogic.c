@@ -14,6 +14,8 @@
 #include "Semaphore/osa_semaphore.h"
 #include "Queue/osa_queue.h"
 
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
+
 #include "intertaskComm.h"
 #include "UserGUI.h"
 
@@ -83,9 +85,9 @@ uint8_t MPL_PreviewNote(uint8_t channel)
 		MPB_PausePlayback(&MIDIHdr);
 		MPB_ResetMIDI();
 		LS_ClearLights();
-		MLL_ClearHaltList();
+		MPB_CL_ClearHaltList();
 
-		MLL_ActivateChannel(MLL_SOLO, channel);
+		MPB_CL_ActivateChannel(MPB_CL_SOLO, channel);
 		MPB_FastFwd_ToEvent(&MIDIHdr, 0, MPB_PB_SAVE_MIDI_STATUS, &event, FAST_FWD_FIND_PARAM2);
 		MPB_ReplayStatusBuffer();
 		MPB_SetPlaybackState(&MIDIHdr, STATE_ACTIVE);
@@ -118,10 +120,10 @@ uint8_t MPL_ProcessMIDINote(uint8_t* midiDataArray)
 		MPB_ResetMIDI();
 
 		LS_ClearLights();
-		MLL_ClearHaltList();
+		MPB_CL_ClearHaltList();
 
 		midiDataArray[2] = FAST_FWD_NON_ZERO_PARAM2;
-		MPB_FastFwd_ToEvent(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_SAVE_MIDI_STATUS, midiDataArray, FAST_FWD_FIND_PARAM2);
+		MPB_FastFwd_ToEvent(&MIDIHdr, MIDIHdr.masterClock, MPB_PB_SAVE_MIDI_STATUS, (MIDI_CHAN_EVENT_t*)midiDataArray, FAST_FWD_FIND_PARAM2);
 		MPB_ReplayStatusBuffer();
 		MPB_SetPlaybackState(&MIDIHdr, playbackState);
 		UG_UpdateSeekSlider();

@@ -30,6 +30,7 @@
 #include "LPD8806\LPD8806.h"
 
 #include "MIDILightLogic/MIDILightLogic.h"
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
 
 #include "LightSys/LightSys.h"
 #include "stm32f10x.h"
@@ -63,6 +64,8 @@ void Task_MIDIPlayback(void * pvArg)
 	uint16_t tickCounter = 0;
 	uint16_t sliderUpdater = 0;
 
+	MIDI_CHAN_EVENT_t tempEvent;
+
 	for (;;)
 	{
 
@@ -70,7 +73,7 @@ void Task_MIDIPlayback(void * pvArg)
 
 
 		if( (MIDIHdr.playbackState == STATE_ACTIVE) &&
-			(MLL_GetHaltFlag() != HALT_FLAG_RAISED) )
+			(MPB_CL_GetHaltFlag() != HALT_FLAG_RAISED) )
 		{
 
 			MIDIHdr.masterClock++;
@@ -91,13 +94,19 @@ void Task_MIDIPlayback(void * pvArg)
 			tickCounter++;
 			if ((tickCounter >= ((MIDIHdr.PPQ / 24))))
 			{
+				MPB_CL_CheckListExpiry(MASTER_HALT_LIST, MIDIHdr.PPQ);
+				MPB_CL_CheckListExpiry(TESTER_HALT_ON_LIST, MIDIHdr.PPQ);
 				tickCounter = 0;
 				//MIDI_Tx(0xF8);
 			}
 		}
 
-		SemaphoreGive(Sem_LightSysUpdate);
-		vTaskResume(LightSystemHandle);
+		if( QueueReceive(Queue_MIDIEventInput, &tempEvent, 0) == pdTRUE )
+		{
+			MPB_CL_ProcessNewHaltNote((uint8_t*)&tempEvent);
+		}
+
+		MPB_CL_ProcessHaltList();
 	}
 }
 

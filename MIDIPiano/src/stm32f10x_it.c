@@ -229,8 +229,7 @@ void TIM2_IRQHandler(void)
 
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update );
 
-	xHigherPriorityTaskWoken =
-			SemaphoreGiveISR(Sem_MIDITick, &xHigherPriorityTaskWoken);
+	xHigherPriorityTaskWoken = SemaphoreGiveISR(Sem_MIDITick, &xHigherPriorityTaskWoken);
 	if (xTaskIsTaskSuspended(MIDIPlayBackHandle) == pdTRUE)
 	{
 		xYieldRequired = xTaskResumeFromISR(MIDIPlayBackHandle);

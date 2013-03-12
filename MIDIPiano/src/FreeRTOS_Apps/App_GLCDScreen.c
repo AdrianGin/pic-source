@@ -40,6 +40,8 @@
 
 #include "printf/printf.h"
 
+#include "MIDIPlaybackControlLogic/MIDIPlaybackControlLogic.h"
+
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void Task_GLCDScreen(void * pvArg);
@@ -58,36 +60,6 @@ void App_GLCDScreenTaskCreate(void)
 			APP_TASK_GLCDSCREEN_STK_SIZE, NULL, APP_TASK_GLCDSCREEN_PRIO, NULL);
 }
 
-
-void ExecuteMIDIFile(char* LBItem)
-{
-	char path[255];
-	FRESULT tmp;
-
-	MPB_PausePlayback(&MIDIHdr);
-	vTaskDelay(10);
-
-	strcpy(path, GFX_FB_CWD());
-	strcat(path, "/");
-	strcat(path, LBItem);
-	MPB_ResetMIDI();
-
-	LS_ClearLights();
-	MLL_ClearHaltList();
-
-	tmp =  MPB_PlayMIDIFile(&MIDIHdr, (uint8_t*)path);
-
-	xprintf("SELECTED:: %s, FR=%d\n", path, tmp);
-
-	MPB_EnablePlayback(&MIDIHdr);
-
-
-	if (tmp == FR_OK)
-	{
-		xprintf("SUCCESS!!\n");
-	}
-
-}
 
 
 

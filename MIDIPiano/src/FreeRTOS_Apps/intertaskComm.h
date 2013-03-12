@@ -23,7 +23,9 @@ extern xTaskHandle mp3DecodeHandle;
 
 extern Semaphore_t Sem_MIDITick;
 extern Semaphore_t Sem_LightSysUpdate;
+extern Semaphore_t Sem_ProcessMIDIInput;
 extern Queue_t Queue_WaitForMIDIInput;
+extern Queue_t Queue_MIDIEventInput;
 
 extern xTaskHandle MIDIPlayBackHandle;
 extern xTaskHandle LightSystemHandle;
