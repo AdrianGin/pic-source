@@ -21,24 +21,6 @@
 
 #include "stm32f10x.h"
 
-/* define compiler specific symbols */
-#if defined ( __CC_ARM   )
-  #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */
-  #define __INLINE         __inline                                   /*!< inline keyword for ARM Compiler       */
-
-#elif defined ( __ICCARM__ )
-  #define __ASM           __asm                                       /*!< asm keyword for IAR Compiler          */
-  #define __INLINE        inline                                      /*!< inline keyword for IAR Compiler. Only avaiable in High optimization mode! */
-
-#elif defined   (  __GNUC__  )
-  #define __ASM            __asm                                      /*!< asm keyword for GNU Compiler          */
-  #define __INLINE         inline                                     /*!< inline keyword for GNU Compiler       */
-
-#elif defined   (  __TASKING__  )
-  #define __ASM            __asm                                      /*!< asm keyword for TASKING Compiler      */
-  #define __INLINE         inline                                     /*!< inline keyword for TASKING Compiler   */
-
-#endif
 
 
 /* Private define ------------------------------------------------------------*/
@@ -1749,23 +1731,23 @@ __INLINE void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
 *******************************************************************************/
 
 
-__INLINE void LCD_WriteIndex(uint16_t index)
-{
-	LCD_REG	= index;
-}
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : LCD寄存器数据
-* Input          : - index: 寄存器数据
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-__INLINE void LCD_WriteData(uint16_t data)
-{
-	LCD_RAM = data;
-}
+//__INLINE void LCD_WriteIndex(uint16_t index)
+//{
+//	LCD_REG	= index;
+//}
+//
+///*******************************************************************************
+//* Function Name  : LCD_WriteReg
+//* Description    : LCD寄存器数据
+//* Input          : - index: 寄存器数据
+//* Output         : None
+//* Return         : None
+//* Attention		 : None
+//*******************************************************************************/
+//__INLINE void LCD_WriteData(uint16_t data)
+//{
+//	LCD_RAM = data;
+//}
 
 
 /*******************************************************************************
@@ -1791,13 +1773,13 @@ __INLINE uint16_t LCD_ReadData(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-__INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
-{
-	/* Write 16-bit Index, then Write Reg */
-	LCD_WriteIndex(LCD_Reg);
-	/* Write 16-bit Reg */
-	LCD_WriteData(LCD_RegValue);
-}
+//__INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
+//{
+//	/* Write 16-bit Index, then Write Reg */
+//	LCD_WriteIndex(LCD_Reg);
+//	/* Write 16-bit Reg */
+//	LCD_WriteData(LCD_RegValue);
+//}
 
 /*******************************************************************************
 * Function Name  : LCD_WriteReg

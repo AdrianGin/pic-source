@@ -115,7 +115,7 @@ void MPB_CL_CheckListExpiry(MPB_CL_LIST_TYPE_t listMap, uint32_t PPQ);
 void MPB_CL_ProcessPulsateHaltList(void);
 
 void MPB_CL_ProcessSingleCorrectKeyPress(MIDI_CHAN_EVENT_t* masterEvent);
-void MPB_CL_ProcessCorrectKeyPress(void);
+void MPB_CL_ProcessAllCorrectKeyPress(void);
 
 
 

@@ -59,7 +59,6 @@
 #include "Alphasort/alphasort.h"
 
 #include "ProjectConfig/ProjectConfig.h"
-
 #include "ADC/ADC.h"
 
 #include <stdlib.h>
