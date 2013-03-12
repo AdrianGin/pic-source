@@ -382,7 +382,7 @@
 									<listOptionValue builtIn="false" value="-Map=${ProjName}.map"/>
 									<listOptionValue builtIn="false" value="-gc-sections"/>
 								</option>
-								<option id="gnu.cpp.link.option.flags.1298183283" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-T&quot;M:\Robotics\Source\MIDIPiano\stm32_flash.ld&quot;  -mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft -g3 -ggdb" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.1298183283" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-T&quot;../stm32_flash.ld&quot;  -mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft -g3 -ggdb" valueType="string"/>
 								<option id="gnu.cpp.link.option.userobjs.1273989079" name="Other objects" superClass="gnu.cpp.link.option.userobjs"/>
 								<option id="gnu.cpp.link.option.libs.563550786" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
 								<option defaultValue="true" id="gnu.cpp.link.option.shared.564593934" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>

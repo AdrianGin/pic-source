@@ -28,32 +28,32 @@
 		<link>
 			<name>Applications</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/Applications</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/Applications</locationURI>
 		</link>
 		<link>
 			<name>External</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/External</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/External</locationURI>
 		</link>
 		<link>
 			<name>Libraries</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/ThirdPartyDrivers/Libraries</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/ThirdPartyDrivers/Libraries</locationURI>
 		</link>
 		<link>
 			<name>Other</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/Other</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/Other</locationURI>
 		</link>
 		<link>
 			<name>Peripherals</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/Peripherals/ARM</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/Peripherals/ARM</locationURI>
 		</link>
 		<link>
 			<name>Util</name>
 			<type>2</type>
-			<location>M:/Robotics/Source/FuncLib/Util</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/Util</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
