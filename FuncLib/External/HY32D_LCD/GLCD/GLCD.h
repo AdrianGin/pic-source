@@ -152,24 +152,19 @@ void LCD_VSyncLow(void);
 void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);
 void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos );
 
+extern void LCD_WriteIndex(uint16_t index);
+extern void LCD_WriteData(uint16_t data);
+extern void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue);
+
+#if defined ( __CC_ARM   )
 __INLINE void LCD_WriteIndex(uint16_t index)
 {
 	LCD_REG	= index;
 }
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : LCD寄存器数据
-* Input          : - index: 寄存器数据
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
 __INLINE void LCD_WriteData(uint16_t data)
 {
 	LCD_RAM = data;
 }
-
 
 __INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
 {
@@ -178,6 +173,7 @@ __INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
 	/* Write 16-bit Reg */
 	LCD_WriteData(LCD_RegValue);
 }
+#endif
 
 uint16_t LCD_ReadData(void);
 

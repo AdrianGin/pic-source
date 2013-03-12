@@ -1730,25 +1730,42 @@ __INLINE void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
 * Attention		 : None
 *******************************************************************************/
 
+#if defined ( __GNUC__   )
+__INLINE void LCD_WriteIndex(uint16_t index)
+{
+	LCD_REG	= index;
+}
 
-//__INLINE void LCD_WriteIndex(uint16_t index)
-//{
-//	LCD_REG	= index;
-//}
-//
-///*******************************************************************************
-//* Function Name  : LCD_WriteReg
-//* Description    : LCD寄存器数据
-//* Input          : - index: 寄存器数据
-//* Output         : None
-//* Return         : None
-//* Attention		 : None
-//*******************************************************************************/
-//__INLINE void LCD_WriteData(uint16_t data)
-//{
-//	LCD_RAM = data;
-//}
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : LCD寄存器数据
+* Input          : - index: 寄存器数据
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+__INLINE void LCD_WriteData(uint16_t data)
+{
+	LCD_RAM = data;
+}
 
+/*******************************************************************************
+* Function Name  : LCD_WriteReg
+* Description    : Writes to the selected LCD register.
+* Input          : - LCD_Reg: address of the selected register.
+*                  - LCD_RegValue: value to write to the selected register.
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+__INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
+{
+	/* Write 16-bit Index, then Write Reg */
+	LCD_WriteIndex(LCD_Reg);
+	/* Write 16-bit Reg */
+	LCD_WriteData(LCD_RegValue);
+}
+#endif
 
 /*******************************************************************************
 * Function Name  : LCD_ReadData
@@ -1762,24 +1779,6 @@ __INLINE uint16_t LCD_ReadData(void)
 {
 	return LCD_RAM;
 }
-
-
-/*******************************************************************************
-* Function Name  : LCD_WriteReg
-* Description    : Writes to the selected LCD register.
-* Input          : - LCD_Reg: address of the selected register.
-*                  - LCD_RegValue: value to write to the selected register.
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-//__INLINE void LCD_WriteReg(uint16_t LCD_Reg,uint16_t LCD_RegValue)
-//{
-//	/* Write 16-bit Index, then Write Reg */
-//	LCD_WriteIndex(LCD_Reg);
-//	/* Write 16-bit Reg */
-//	LCD_WriteData(LCD_RegValue);
-//}
 
 /*******************************************************************************
 * Function Name  : LCD_WriteReg
