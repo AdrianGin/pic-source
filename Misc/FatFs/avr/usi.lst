@@ -1,0 +1,59 @@
+   1               	# 1 "usi.S"
+   1               	;---------------------------------------------------------------------------;
+   0               	
+   0               	
+   2               	; USI control functions
+   3               	;---------------------------------------------------------------------------;
+   4               	
+   7               	.list
+   8               	
+   9               	
+  10               	;---------------------------------------------------------------------------;
+  11               	; Receive a byte (28 clks)
+  12               	;
+  13               	; BYTE rcv_spi (void);
+  14               	
+  15               	.global rcv_spi
+  16               	.func rcv_spi
+  17               	rcv_spi:
+  18:usi.S         **** 	ldi	r24, 0xFF
+  19               		; Link next function
+  20               	.endfunc
+  21               	
+  22               	
+  23               	;---------------------------------------------------------------------------;
+  24               	; Transmit a byte (27 clks)
+  25               	;
+  26               	; void xmit_spi (BYTE);
+  27               	
+  28               	.global xmit_spi
+  29               	.func xmit_spi
+  30               	xmit_spi:
+  31:usi.S         **** 	out	_SFR_IO_ADDR(USIDR), r24
+  32               	
+  33:usi.S         **** 	ldi	r24, 0b000100		; PB2(SCK)
+  34:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24	; Toggle SCK 16 times
+  35:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  36:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  37:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  38:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  39:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  40:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  41:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  42:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  43:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  44:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  45:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  46:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  47:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  48:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  49:usi.S         **** 	out	_SFR_IO_ADDR(PINB), r24
+  50:usi.S         **** 	nop
+  51:usi.S         **** 	in	r24, _SFR_IO_ADDR(USIDR)
+  52:usi.S         **** 	reti
+  53               	.endfunc
+DEFINED SYMBOLS
+               usi.S:17     .text:00000000 rcv_spi
+               usi.S:30     .text:00000002 xmit_spi
+
+NO UNDEFINED SYMBOLS

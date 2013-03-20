@@ -1,0 +1,126 @@
+   1               	# 1 "suart.S"
+   1               	;---------------------------------------------------------------------------;
+   0               	
+   0               	
+   2               	; Software implemented UART module                                          ;
+   3               	; (C)ChaN, 2005 (http://elm-chan.org/)                                      ;
+   4               	;---------------------------------------------------------------------------;
+   5               	; Bit rate settings:
+   6               	;
+   7               	;            1MHz  2MHz  4MHz  6MHz  8MHz  10MHz  12MHz  16MHz  20MHz
+   8               	;   2.4kbps   138     -     -     -     -      -      -      -      -
+   9               	;   4.8kbps    68   138     -     -     -      -      -      -      -
+  10               	;   9.6kbps    33    68   138   208     -      -      -      -      -
+  11               	;  19.2kbps     -    33    68   102   138    173    208      -      -
+  12               	;  38.4kbps     -     -    33    50    68     85    102    138    172
+  13               	;  57.6kbps     -     -    21    33    44     56     68     91    114
+  14               	; 115.2kbps     -     -     -     -    21     27     33     44     56
+  15               	
+  18               	.list
+  19               	
+  20               	#define	BPS	68	/* Bit delay. (see above table) */
+  21               	#define	BIDIR	1	/* 0:Separated Tx/Rx, 1:Shared Tx/Rx */
+  22               	
+  23               	#define	OUT_1		cbi _SFR_IO_ADDR(DDRB), 4	/* Output 1 */
+  24               	#define	OUT_0		sbi _SFR_IO_ADDR(DDRB), 4	/* Output 0 */
+  25               	#define	SKIP_IN_1	sbis _SFR_IO_ADDR(PINB), 4	/* Skip if 1 */
+  26               	#define	SKIP_IN_0	sbic _SFR_IO_ADDR(PINB), 4	/* Skip if 0 */
+  27               	
+  28               	
+  29               	
+  30               	#ifdef SPM_PAGESIZE
+  31               	.macro	_LPMI	reg
+  32               		lpm	\reg, Z+
+  33               	.endm
+  34               	.macro	_MOVW	dh,dl, sh,sl
+  35               		movw	\dl, \sl
+  36               	.endm
+  37               	#else
+  38               	.macro	_LPMI	reg
+  39               		lpm
+  40               		mov	\reg, r0
+  41               		adiw	ZL, 1
+  42               	.endm
+  43               	.macro	_MOVW	dh,dl, sh,sl
+  44               		mov	\dl, \sl
+  45               		mov	\dh, \sh
+  46               	.endm
+  47               	#endif
+  48               	
+  49               	
+  50               	
+  51               	;---------------------------------------------------------------------------;
+  52               	; Transmit a byte in serial format of N81
+  53               	;
+  54               	;Prototype: void xmit (uint8_t data);
+  55               	;Size: 16 words
+  56               	
+  57               	.global xmit
+  58               	.func xmit
+  59               	xmit:
+  60               	#if BIDIR
+  61:suart.S       **** 	ldi	r23, BPS-1	;Pre-idle time for bidirectional data line
+  62:suart.S       **** 5:	dec	r23     	;
+  63:suart.S       **** 	brne	5b		;/
+  64               	#endif
+  65:suart.S       **** 	in	r0, _SFR_IO_ADDR(SREG)	;Save flags
+  66               	
+  67:suart.S       **** 	com	r24		;C = start bit
+  68:suart.S       **** 	ldi	r25, 10		;Bit counter
+  69:suart.S       **** 	cli			;Start critical section
+  70               	
+  71:suart.S       **** 1:	ldi	r23, BPS-1	;----- Bit transferring loop 
+  72:suart.S       **** 2:	dec	r23     	;Wait for a bit time
+  73:suart.S       **** 	brne	2b		;/
+  74:suart.S       **** 	brcs	3f		;MISO = bit to be sent
+  75:suart.S       **** 	OUT_1			;
+  76:suart.S       **** 3:	brcc	4f		;
+  77:suart.S       **** 	OUT_0			;/
+  78:suart.S       **** 4:	lsr	r24     	;Get next bit into C
+  79:suart.S       **** 	dec	r25     	;All bits sent?
+  80:suart.S       **** 	brne	1b	     	;  no, coutinue
+  81               	
+  82:suart.S       **** 	out	_SFR_IO_ADDR(SREG), r0	;End of critical section
+  83:suart.S       **** 	ret
+  84               	.endfunc
+  85               	
+  86               	
+  87               	
+  88               	;---------------------------------------------------------------------------;
+  89               	; Receive a byte
+  90               	;
+  91               	;Prototype: uint8_t rcvr (void);
+  92               	;Size: 19 words
+  93               	
+  94               	.global rcvr
+  95               	.func rcvr
+  96               	rcvr:
+  97:suart.S       **** 	in	r0, _SFR_IO_ADDR(SREG)	;Save flags
+  98               	
+  99:suart.S       **** 	ldi	r24, 0x80	;Receiving shift reg
+ 100:suart.S       **** 	cli			;Start critical section
+ 101               	
+ 102:suart.S       **** 1:	SKIP_IN_1		;Wait for idle
+ 103:suart.S       **** 	rjmp	1b
+ 104:suart.S       **** 2:	SKIP_IN_0		;Wait for start bit
+ 105:suart.S       **** 	rjmp	2b
+ 106:suart.S       **** 	ldi	r25, BPS/2	;Wait for half bit time
+ 107:suart.S       **** 3:	dec	r25
+ 108:suart.S       **** 	brne	3b
+ 109               	
+ 110:suart.S       **** 4:	ldi	r25, BPS	;----- Bit receiving loop
+ 111:suart.S       **** 5:	dec	r25     	;Wait for a bit time
+ 112:suart.S       **** 	brne	5b		;/
+ 113:suart.S       **** 	lsr	r24     	;Next bit
+ 114:suart.S       **** 	SKIP_IN_0		;Get a data bit into r24.7
+ 115:suart.S       **** 	ori	r24, 0x80
+ 116:suart.S       **** 	brcc	4b	     	;All bits received?  no, continue
+ 117               	
+ 118:suart.S       **** 	out	_SFR_IO_ADDR(SREG), r0	;End of critical section
+ 119:suart.S       **** 	ret
+ 120               	.endfunc
+DEFINED SYMBOLS
+             suart.S:59     .text:00000000 xmit
+             suart.S:96     .text:00000026 rcvr
+
+NO UNDEFINED SYMBOLS

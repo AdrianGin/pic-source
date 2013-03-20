@@ -1,0 +1,1947 @@
+
+MSXConv.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000038  00800100  000008f0  00000984  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         000008f0  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000029  00800138  00800138  000009bc  2**0
+                  ALLOC
+  3 .stab         000008d0  00000000  00000000  000009bc  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      0000014d  00000000  00000000  0000128c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_aranges 000000a0  00000000  00000000  000013d9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_pubnames 0000028b  00000000  00000000  00001479  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   00000e5a  00000000  00000000  00001704  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 00000593  00000000  00000000  0000255e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   00000d88  00000000  00000000  00002af1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  000001e0  00000000  00000000  0000387c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    00000469  00000000  00000000  00003a5c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000703  00000000  00000000  00003ec5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 00000018  00000000  00000000  000045c8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   8:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  10:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  14:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  18:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  1c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  28:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  3c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  44:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  48:	0c 94 53 00 	jmp	0xa6	; 0xa6 <__vector_18>
+  4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  50:	0c 94 79 00 	jmp	0xf2	; 0xf2 <__vector_20>
+  54:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  58:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  5c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  60:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  64:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	e0 ef       	ldi	r30, 0xF0	; 240
+  7c:	f8 e0       	ldi	r31, 0x08	; 8
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	a8 33       	cpi	r26, 0x38	; 56
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+
+0000008a <__do_clear_bss>:
+  8a:	11 e0       	ldi	r17, 0x01	; 1
+  8c:	a8 e3       	ldi	r26, 0x38	; 56
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
+  90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
+
+00000092 <.do_clear_bss_loop>:
+  92:	1d 92       	st	X+, r1
+
+00000094 <.do_clear_bss_start>:
+  94:	a1 36       	cpi	r26, 0x61	; 97
+  96:	b1 07       	cpc	r27, r17
+  98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
+  9a:	0e 94 ac 00 	call	0x158	; 0x158 <main>
+  9e:	0c 94 76 04 	jmp	0x8ec	; 0x8ec <_exit>
+
+000000a2 <__bad_interrupt>:
+  a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000a6 <__vector_18>:
+   }
+}
+
+
+ISR(USART_RX_vect)
+{
+  a6:	1f 92       	push	r1
+  a8:	0f 92       	push	r0
+  aa:	0f b6       	in	r0, 0x3f	; 63
+  ac:	0f 92       	push	r0
+  ae:	11 24       	eor	r1, r1
+  b0:	2f 93       	push	r18
+  b2:	3f 93       	push	r19
+  b4:	4f 93       	push	r20
+  b6:	5f 93       	push	r21
+  b8:	6f 93       	push	r22
+  ba:	7f 93       	push	r23
+  bc:	8f 93       	push	r24
+  be:	9f 93       	push	r25
+  c0:	af 93       	push	r26
+  c2:	bf 93       	push	r27
+  c4:	ef 93       	push	r30
+  c6:	ff 93       	push	r31
+   uint8_t buffer = UDR0;
+  c8:	80 91 c6 00 	lds	r24, 0x00C6
+
+   PS2_SendByte(buffer);
+  cc:	0e 94 b2 03 	call	0x764	; 0x764 <PS2_SendByte>
+}
+  d0:	ff 91       	pop	r31
+  d2:	ef 91       	pop	r30
+  d4:	bf 91       	pop	r27
+  d6:	af 91       	pop	r26
+  d8:	9f 91       	pop	r25
+  da:	8f 91       	pop	r24
+  dc:	7f 91       	pop	r23
+  de:	6f 91       	pop	r22
+  e0:	5f 91       	pop	r21
+  e2:	4f 91       	pop	r20
+  e4:	3f 91       	pop	r19
+  e6:	2f 91       	pop	r18
+  e8:	0f 90       	pop	r0
+  ea:	0f be       	out	0x3f, r0	; 63
+  ec:	0f 90       	pop	r0
+  ee:	1f 90       	pop	r1
+  f0:	18 95       	reti
+
+000000f2 <__vector_20>:
+
+
+
+
+ISR(USART_TX_vect, ISR_NOBLOCK)
+{
+  f2:	78 94       	sei
+  f4:	1f 92       	push	r1
+  f6:	0f 92       	push	r0
+  f8:	0f b6       	in	r0, 0x3f	; 63
+  fa:	0f 92       	push	r0
+  fc:	11 24       	eor	r1, r1
+  fe:	2f 93       	push	r18
+ 100:	3f 93       	push	r19
+ 102:	4f 93       	push	r20
+ 104:	5f 93       	push	r21
+ 106:	6f 93       	push	r22
+ 108:	7f 93       	push	r23
+ 10a:	8f 93       	push	r24
+ 10c:	9f 93       	push	r25
+ 10e:	af 93       	push	r26
+ 110:	bf 93       	push	r27
+ 112:	ef 93       	push	r30
+ 114:	ff 93       	push	r31
+   // Tx the next byte if there are still bytes in the buffer
+   if( !ringbuffer_isEmpty((RINGBUFFER_T*)PrimaryUART.TransmitBuffer) )
+ 116:	80 91 20 01 	lds	r24, 0x0120
+ 11a:	90 91 21 01 	lds	r25, 0x0121
+ 11e:	0e 94 a1 02 	call	0x542	; 0x542 <ringbuffer_isEmpty>
+ 122:	00 97       	sbiw	r24, 0x00	; 0
+ 124:	41 f4       	brne	.+16     	; 0x136 <__vector_20+0x44>
+   {
+      UDR0 = ringbuffer_get((RINGBUFFER_T*)PrimaryUART.TransmitBuffer);
+ 126:	80 91 20 01 	lds	r24, 0x0120
+ 12a:	90 91 21 01 	lds	r25, 0x0121
+ 12e:	0e 94 2c 02 	call	0x458	; 0x458 <ringbuffer_get>
+ 132:	80 93 c6 00 	sts	0x00C6, r24
+   }
+}
+ 136:	ff 91       	pop	r31
+ 138:	ef 91       	pop	r30
+ 13a:	bf 91       	pop	r27
+ 13c:	af 91       	pop	r26
+ 13e:	9f 91       	pop	r25
+ 140:	8f 91       	pop	r24
+ 142:	7f 91       	pop	r23
+ 144:	6f 91       	pop	r22
+ 146:	5f 91       	pop	r21
+ 148:	4f 91       	pop	r20
+ 14a:	3f 91       	pop	r19
+ 14c:	2f 91       	pop	r18
+ 14e:	0f 90       	pop	r0
+ 150:	0f be       	out	0x3f, r0	; 63
+ 152:	0f 90       	pop	r0
+ 154:	1f 90       	pop	r1
+ 156:	18 95       	reti
+
+00000158 <main>:
+volatile uint8_t dataSent = 1;
+
+
+
+int main(void)
+{
+ 158:	df 92       	push	r13
+ 15a:	ef 92       	push	r14
+ 15c:	ff 92       	push	r15
+ 15e:	0f 93       	push	r16
+ 160:	1f 93       	push	r17
+ 162:	df 93       	push	r29
+ 164:	cf 93       	push	r28
+ 166:	cd b7       	in	r28, 0x3d	; 61
+ 168:	de b7       	in	r29, 0x3e	; 62
+ 16a:	2a 97       	sbiw	r28, 0x0a	; 10
+ 16c:	0f b6       	in	r0, 0x3f	; 63
+ 16e:	f8 94       	cli
+ 170:	de bf       	out	0x3e, r29	; 62
+ 172:	0f be       	out	0x3f, r0	; 63
+ 174:	cd bf       	out	0x3d, r28	; 61
+
+    uint8_t dataIn;
+    uint8_t outputString[10];
+
+    uartInit(&PrimaryUART, 0);
+ 176:	82 e1       	ldi	r24, 0x12	; 18
+ 178:	91 e0       	ldi	r25, 0x01	; 1
+ 17a:	60 e0       	ldi	r22, 0x00	; 0
+ 17c:	0e 94 5c 01 	call	0x2b8	; 0x2b8 <uartInit>
+    uartSetBaud(&PrimaryUART, 0, BAUD(9600));
+ 180:	82 e1       	ldi	r24, 0x12	; 18
+ 182:	91 e0       	ldi	r25, 0x01	; 1
+ 184:	60 e0       	ldi	r22, 0x00	; 0
+ 186:	43 e3       	ldi	r20, 0x33	; 51
+ 188:	0e 94 75 01 	call	0x2ea	; 0x2ea <uartSetBaud>
+
+    PS2_Init();
+ 18c:	0e 94 ec 03 	call	0x7d8	; 0x7d8 <PS2_Init>
+
+    sei();
+ 190:	78 94       	sei
+
+    MSX_POS_DIR |= MSX_POS_PINS;
+ 192:	8a b1       	in	r24, 0x0a	; 10
+ 194:	80 6f       	ori	r24, 0xF0	; 240
+ 196:	8a b9       	out	0x0a, r24	; 10
+    MSX_TRIGGER_DIR |= (MSX_LEFT_BUTTON_PIN | MSX_RIGHT_BUTTON_PIN);
+ 198:	84 b1       	in	r24, 0x04	; 4
+ 19a:	86 60       	ori	r24, 0x06	; 6
+ 19c:	84 b9       	out	0x04, r24	; 4
+    MSX_TRIGGER_PORT |= (MSX_LEFT_BUTTON_PIN | MSX_RIGHT_BUTTON_PIN);
+ 19e:	85 b1       	in	r24, 0x05	; 5
+ 1a0:	86 60       	ori	r24, 0x06	; 6
+ 1a2:	85 b9       	out	0x05, r24	; 5
+ 1a4:	ff 24       	eor	r15, r15
+ 1a6:	f3 94       	inc	r15
+            uint8_t xPos = event.xPos;
+            uint8_t yPos = event.yPos;
+            uint8_t buttonMap = event.buttonMap;
+
+            uartTxString(&PrimaryUART, "Buttons: ");
+            utoa(buttonMap, outputString, 16);
+ 1a8:	8e 01       	movw	r16, r28
+ 1aa:	0f 5f       	subi	r16, 0xFF	; 255
+ 1ac:	1f 4f       	sbci	r17, 0xFF	; 255
+
+    uint8_t MSX_Ready = 1;
+        
+    while(1)
+    {
+        dataReady = PS2_GetPositionPacket(&event);
+ 1ae:	8c e5       	ldi	r24, 0x5C	; 92
+ 1b0:	91 e0       	ldi	r25, 0x01	; 1
+ 1b2:	0e 94 73 03 	call	0x6e6	; 0x6e6 <PS2_GetPositionPacket>
+ 1b6:	80 93 5f 01 	sts	0x015F, r24
+        if( dataReady )
+ 1ba:	80 91 5f 01 	lds	r24, 0x015F
+ 1be:	88 23       	and	r24, r24
+ 1c0:	09 f4       	brne	.+2      	; 0x1c4 <main+0x6c>
+ 1c2:	58 c0       	rjmp	.+176    	; 0x274 <main+0x11c>
+        {
+            if( MSX_Ready == 1)
+ 1c4:	81 e0       	ldi	r24, 0x01	; 1
+ 1c6:	f8 16       	cp	r15, r24
+ 1c8:	61 f4       	brne	.+24     	; 0x1e2 <main+0x8a>
+            {
+                readyData.xPos = event.xPos;
+ 1ca:	80 91 5c 01 	lds	r24, 0x015C
+ 1ce:	80 93 59 01 	sts	0x0159, r24
+                readyData.yPos = event.yPos;
+ 1d2:	80 91 5d 01 	lds	r24, 0x015D
+ 1d6:	80 93 5a 01 	sts	0x015A, r24
+                readyData.buttonMap = event.buttonMap;
+ 1da:	80 91 5e 01 	lds	r24, 0x015E
+ 1de:	80 93 5b 01 	sts	0x015B, r24
+                MSX_Ready = 0;
+         
+            }  
+
+            uint8_t xPos = event.xPos;
+ 1e2:	e0 90 5c 01 	lds	r14, 0x015C
+            uint8_t yPos = event.yPos;
+ 1e6:	f0 90 5d 01 	lds	r15, 0x015D
+            uint8_t buttonMap = event.buttonMap;
+ 1ea:	d0 90 5e 01 	lds	r13, 0x015E
+
+            uartTxString(&PrimaryUART, "Buttons: ");
+ 1ee:	82 e1       	ldi	r24, 0x12	; 18
+ 1f0:	91 e0       	ldi	r25, 0x01	; 1
+ 1f2:	60 e0       	ldi	r22, 0x00	; 0
+ 1f4:	71 e0       	ldi	r23, 0x01	; 1
+ 1f6:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            utoa(buttonMap, outputString, 16);
+ 1fa:	8d 2d       	mov	r24, r13
+ 1fc:	90 e0       	ldi	r25, 0x00	; 0
+ 1fe:	b8 01       	movw	r22, r16
+ 200:	40 e1       	ldi	r20, 0x10	; 16
+ 202:	50 e0       	ldi	r21, 0x00	; 0
+ 204:	0e 94 3c 04 	call	0x878	; 0x878 <utoa>
+            uartTxString(&PrimaryUART, outputString);
+ 208:	82 e1       	ldi	r24, 0x12	; 18
+ 20a:	91 e0       	ldi	r25, 0x01	; 1
+ 20c:	b8 01       	movw	r22, r16
+ 20e:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            uartNewLine(&PrimaryUART);
+ 212:	82 e1       	ldi	r24, 0x12	; 18
+ 214:	91 e0       	ldi	r25, 0x01	; 1
+ 216:	0e 94 ae 01 	call	0x35c	; 0x35c <uartNewLine>
+
+            uartTxString(&PrimaryUART, "X: ");
+ 21a:	82 e1       	ldi	r24, 0x12	; 18
+ 21c:	91 e0       	ldi	r25, 0x01	; 1
+ 21e:	6a e0       	ldi	r22, 0x0A	; 10
+ 220:	71 e0       	ldi	r23, 0x01	; 1
+ 222:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            utoa(xPos, outputString, 10);
+ 226:	8e 2d       	mov	r24, r14
+ 228:	90 e0       	ldi	r25, 0x00	; 0
+ 22a:	b8 01       	movw	r22, r16
+ 22c:	4a e0       	ldi	r20, 0x0A	; 10
+ 22e:	50 e0       	ldi	r21, 0x00	; 0
+ 230:	0e 94 3c 04 	call	0x878	; 0x878 <utoa>
+            uartTxString(&PrimaryUART, outputString);
+ 234:	82 e1       	ldi	r24, 0x12	; 18
+ 236:	91 e0       	ldi	r25, 0x01	; 1
+ 238:	b8 01       	movw	r22, r16
+ 23a:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            uartNewLine(&PrimaryUART);
+ 23e:	82 e1       	ldi	r24, 0x12	; 18
+ 240:	91 e0       	ldi	r25, 0x01	; 1
+ 242:	0e 94 ae 01 	call	0x35c	; 0x35c <uartNewLine>
+
+            uartTxString(&PrimaryUART, "Y: ");
+ 246:	82 e1       	ldi	r24, 0x12	; 18
+ 248:	91 e0       	ldi	r25, 0x01	; 1
+ 24a:	6e e0       	ldi	r22, 0x0E	; 14
+ 24c:	71 e0       	ldi	r23, 0x01	; 1
+ 24e:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            utoa(yPos, outputString, 10);
+ 252:	8f 2d       	mov	r24, r15
+ 254:	90 e0       	ldi	r25, 0x00	; 0
+ 256:	b8 01       	movw	r22, r16
+ 258:	4a e0       	ldi	r20, 0x0A	; 10
+ 25a:	50 e0       	ldi	r21, 0x00	; 0
+ 25c:	0e 94 3c 04 	call	0x878	; 0x878 <utoa>
+            uartTxString(&PrimaryUART, outputString);
+ 260:	82 e1       	ldi	r24, 0x12	; 18
+ 262:	91 e0       	ldi	r25, 0x01	; 1
+ 264:	b8 01       	movw	r22, r16
+ 266:	0e 94 d0 01 	call	0x3a0	; 0x3a0 <uartTxString>
+            uartNewLine(&PrimaryUART);
+ 26a:	82 e1       	ldi	r24, 0x12	; 18
+ 26c:	91 e0       	ldi	r25, 0x01	; 1
+ 26e:	0e 94 ae 01 	call	0x35c	; 0x35c <uartNewLine>
+ 272:	03 c0       	rjmp	.+6      	; 0x27a <main+0x122>
+            //MSX_SendPosition(event.xPos, event.yPos);         
+        }
+
+        if( MSX_Ready == 0 )
+ 274:	ff 20       	and	r15, r15
+ 276:	09 f0       	breq	.+2      	; 0x27a <main+0x122>
+ 278:	9a cf       	rjmp	.-204    	; 0x1ae <main+0x56>
+        {
+
+            if( MSX_SendPosition(readyData.xPos, readyData.yPos) )
+ 27a:	80 91 59 01 	lds	r24, 0x0159
+ 27e:	60 91 5a 01 	lds	r22, 0x015A
+ 282:	0e 94 e2 02 	call	0x5c4	; 0x5c4 <MSX_SendPosition>
+ 286:	81 11       	cpse	r24, r1
+ 288:	81 e0       	ldi	r24, 0x01	; 1
+ 28a:	f8 2e       	mov	r15, r24
+            {   
+                    MSX_Ready = 1;   
+            }
+        
+            if( (readyData.buttonMap & MSX_LEFT_TRIGGER) || (readyData.buttonMap & MSX_RIGHT_TRIGGER ))
+ 28c:	80 91 5b 01 	lds	r24, 0x015B
+ 290:	80 fd       	sbrc	r24, 0
+ 292:	04 c0       	rjmp	.+8      	; 0x29c <main+0x144>
+ 294:	80 91 5b 01 	lds	r24, 0x015B
+ 298:	81 ff       	sbrs	r24, 1
+ 29a:	04 c0       	rjmp	.+8      	; 0x2a4 <main+0x14c>
+            {
+                MSX_SendButtons(readyData.buttonMap);
+ 29c:	80 91 5b 01 	lds	r24, 0x015B
+ 2a0:	0e 94 cc 02 	call	0x598	; 0x598 <MSX_SendButtons>
+            }
+
+            if( !(readyData.buttonMap & MSX_LEFT_TRIGGER) )
+ 2a4:	80 91 5b 01 	lds	r24, 0x015B
+ 2a8:	80 ff       	sbrs	r24, 0
+            {
+                MSX_TRIGGER_PORT |= (MSX_LEFT_BUTTON_PIN);
+ 2aa:	29 9a       	sbi	0x05, 1	; 5
+            }
+
+            if( !(readyData.buttonMap & MSX_RIGHT_TRIGGER) )
+ 2ac:	80 91 5b 01 	lds	r24, 0x015B
+ 2b0:	81 fd       	sbrc	r24, 1
+ 2b2:	7d cf       	rjmp	.-262    	; 0x1ae <main+0x56>
+            {
+                MSX_TRIGGER_PORT |= (MSX_RIGHT_BUTTON_PIN);
+ 2b4:	2a 9a       	sbi	0x05, 2	; 5
+ 2b6:	7b cf       	rjmp	.-266    	; 0x1ae <main+0x56>
+
+000002b8 <uartInit>:
+ *
+ * Interrupts are not set by default.
+ *
+ */
+void uartInit(AVR_USART_t* port, uint8_t U2Xvalue)
+{
+ 2b8:	fc 01       	movw	r30, r24
+	/*Setup the U2X Bit*/
+	*port->UCSRxA	=	(*port->UCSRxA & (~(1<<U2X))) | (U2Xvalue << U2X);
+ 2ba:	a0 81       	ld	r26, Z
+ 2bc:	b1 81       	ldd	r27, Z+1	; 0x01
+ 2be:	8c 91       	ld	r24, X
+ 2c0:	66 0f       	add	r22, r22
+ 2c2:	8d 7f       	andi	r24, 0xFD	; 253
+ 2c4:	68 2b       	or	r22, r24
+ 2c6:	6c 93       	st	X, r22
+	
+	*port->UCSRxB |= ((1<<RXEN) | (1<<TXEN) | (1<<RXCIE) | (1<<TXCIE));	/*Enable Rx and Tx modules*/
+ 2c8:	a2 81       	ldd	r26, Z+2	; 0x02
+ 2ca:	b3 81       	ldd	r27, Z+3	; 0x03
+ 2cc:	8c 91       	ld	r24, X
+ 2ce:	88 6d       	ori	r24, 0xD8	; 216
+ 2d0:	8c 93       	st	X, r24
+	*port->UCSRxB &= ~(1<<UCSZ2);				/*Set to 8bit mode*/
+ 2d2:	a2 81       	ldd	r26, Z+2	; 0x02
+ 2d4:	b3 81       	ldd	r27, Z+3	; 0x03
+ 2d6:	8c 91       	ld	r24, X
+ 2d8:	8b 7f       	andi	r24, 0xFB	; 251
+ 2da:	8c 93       	st	X, r24
+	/* Set to Asynchronous Mode
+	 *			 1 Stop-bit
+	 *			 No Parity
+	 *			 8-bit char mode
+	 */
+	*port->UCSRxC = (NOPARITY<<UPM0)
+ 2dc:	04 80       	ldd	r0, Z+4	; 0x04
+ 2de:	f5 81       	ldd	r31, Z+5	; 0x05
+ 2e0:	e0 2d       	mov	r30, r0
+ 2e2:	86 e8       	ldi	r24, 0x86	; 134
+ 2e4:	80 83       	st	Z, r24
+      				|	(BIT8 << UCSZ0) 
+      				|  (1<<URSEL);
+
+   /*Enable the pull up on RXD */
+   PORTD |= (1 << PD0);
+ 2e6:	58 9a       	sbi	0x0b, 0	; 11
+
+}
+ 2e8:	08 95       	ret
+
+000002ea <uartSetBaud>:
+ * Changes the baudrate to the specified value.
+ * See the datasheet for more details on what the
+ * Baudrate generation registers should be.
+ */
+void uartSetBaud(AVR_USART_t* port, uint8_t baudrateH, uint8_t baudrateL)
+{
+ 2ea:	fc 01       	movw	r30, r24
+	*port->UBRRxH = 	baudrateH;
+ 2ec:	a6 81       	ldd	r26, Z+6	; 0x06
+ 2ee:	b7 81       	ldd	r27, Z+7	; 0x07
+ 2f0:	6c 93       	st	X, r22
+	/* The lower 8bits must be written last as the baudrate generator
+	 * is updated as soon as UBRRL is written to*/
+	*port->UBRRxL	=	baudrateL; 
+ 2f2:	00 84       	ldd	r0, Z+8	; 0x08
+ 2f4:	f1 85       	ldd	r31, Z+9	; 0x09
+ 2f6:	e0 2d       	mov	r30, r0
+ 2f8:	40 83       	st	Z, r20
+
+}
+ 2fa:	08 95       	ret
+
+000002fc <uartDisable>:
+
+
+/* Disables the Receiver and Transmitter modules*/
+void uartDisable(AVR_USART_t* port)
+{
+	*port->UCSRxB &= ~((1<<RXEN) | (1<<TXEN) | (1<<TXCIE) | (1<<RXCIE) | (1<<UDRIE));	/*Disable Rx and Tx modules*/
+ 2fc:	dc 01       	movw	r26, r24
+ 2fe:	12 96       	adiw	r26, 0x02	; 2
+ 300:	ed 91       	ld	r30, X+
+ 302:	fc 91       	ld	r31, X
+ 304:	13 97       	sbiw	r26, 0x03	; 3
+ 306:	80 81       	ld	r24, Z
+ 308:	87 70       	andi	r24, 0x07	; 7
+ 30a:	80 83       	st	Z, r24
+	
+}
+ 30c:	08 95       	ret
+
+0000030e <uartTx>:
+//}
+
+
+
+void uartTx(AVR_USART_t* port, uint8_t byte)
+{
+ 30e:	0f 93       	push	r16
+ 310:	1f 93       	push	r17
+ 312:	cf 93       	push	r28
+ 314:	df 93       	push	r29
+ 316:	ec 01       	movw	r28, r24
+ 318:	16 2f       	mov	r17, r22
+   /* If the buffer is full, then we have to wait until we have to send the data
+    * to prevent data loss */
+   while(ringbuffer_put((RINGBUFFER_T*)port->TransmitBuffer, byte) == BUFFER_OVERFLOW)
+ 31a:	8e 85       	ldd	r24, Y+14	; 0x0e
+ 31c:	9f 85       	ldd	r25, Y+15	; 0x0f
+ 31e:	61 2f       	mov	r22, r17
+ 320:	0e 94 4d 02 	call	0x49a	; 0x49a <ringbuffer_put>
+ 324:	2f ef       	ldi	r18, 0xFF	; 255
+ 326:	8f 3f       	cpi	r24, 0xFF	; 255
+ 328:	92 07       	cpc	r25, r18
+ 32a:	b9 f3       	breq	.-18     	; 0x31a <uartTx+0xc>
+   {
+   }
+
+   if( (*port->UCSRxA & (1 << UDRE)) && !ringbuffer_isEmpty((RINGBUFFER_T*)port->TransmitBuffer))
+ 32c:	e8 81       	ld	r30, Y
+ 32e:	f9 81       	ldd	r31, Y+1	; 0x01
+ 330:	80 81       	ld	r24, Z
+ 332:	85 ff       	sbrs	r24, 5
+ 334:	0e c0       	rjmp	.+28     	; 0x352 <uartTx+0x44>
+ 336:	8e 85       	ldd	r24, Y+14	; 0x0e
+ 338:	9f 85       	ldd	r25, Y+15	; 0x0f
+ 33a:	0e 94 a1 02 	call	0x542	; 0x542 <ringbuffer_isEmpty>
+ 33e:	00 97       	sbiw	r24, 0x00	; 0
+ 340:	41 f4       	brne	.+16     	; 0x352 <uartTx+0x44>
+   {
+      *port->UDRx = ringbuffer_get((RINGBUFFER_T*)port->TransmitBuffer);
+ 342:	0a 85       	ldd	r16, Y+10	; 0x0a
+ 344:	1b 85       	ldd	r17, Y+11	; 0x0b
+ 346:	8e 85       	ldd	r24, Y+14	; 0x0e
+ 348:	9f 85       	ldd	r25, Y+15	; 0x0f
+ 34a:	0e 94 2c 02 	call	0x458	; 0x458 <ringbuffer_get>
+ 34e:	f8 01       	movw	r30, r16
+ 350:	80 83       	st	Z, r24
+   }
+}
+ 352:	df 91       	pop	r29
+ 354:	cf 91       	pop	r28
+ 356:	1f 91       	pop	r17
+ 358:	0f 91       	pop	r16
+ 35a:	08 95       	ret
+
+0000035c <uartNewLine>:
+      uartTx(port, c);    
+   }
+}
+
+void uartNewLine(AVR_USART_t* port)
+{
+ 35c:	cf 93       	push	r28
+ 35e:	df 93       	push	r29
+ 360:	ec 01       	movw	r28, r24
+   uartTx(port, '\r');
+ 362:	6d e0       	ldi	r22, 0x0D	; 13
+ 364:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+   uartTx(port, '\n'); 
+ 368:	ce 01       	movw	r24, r28
+ 36a:	6a e0       	ldi	r22, 0x0A	; 10
+ 36c:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+}
+ 370:	df 91       	pop	r29
+ 372:	cf 91       	pop	r28
+ 374:	08 95       	ret
+
+00000376 <uartTxString_P>:
+}
+
+/* Usage: uartTxString_P( PSTR("hello!") ); */
+/* Send a string which resides in the program memory */
+void uartTxString_P(AVR_USART_t* port, PGM_P outString_P)
+{
+ 376:	0f 93       	push	r16
+ 378:	1f 93       	push	r17
+ 37a:	cf 93       	push	r28
+ 37c:	df 93       	push	r29
+ 37e:	ec 01       	movw	r28, r24
+ 380:	8b 01       	movw	r16, r22
+   char c;
+   while( (c = pgm_read_byte(outString_P++)) )
+ 382:	03 c0       	rjmp	.+6      	; 0x38a <uartTxString_P+0x14>
+   {
+      uartTx(port, c);    
+ 384:	ce 01       	movw	r24, r28
+ 386:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+ 38a:	f8 01       	movw	r30, r16
+/* Usage: uartTxString_P( PSTR("hello!") ); */
+/* Send a string which resides in the program memory */
+void uartTxString_P(AVR_USART_t* port, PGM_P outString_P)
+{
+   char c;
+   while( (c = pgm_read_byte(outString_P++)) )
+ 38c:	0f 5f       	subi	r16, 0xFF	; 255
+ 38e:	1f 4f       	sbci	r17, 0xFF	; 255
+ 390:	64 91       	lpm	r22, Z+
+ 392:	66 23       	and	r22, r22
+ 394:	b9 f7       	brne	.-18     	; 0x384 <uartTxString_P+0xe>
+   {
+      uartTx(port, c);    
+   }
+}
+ 396:	df 91       	pop	r29
+ 398:	cf 91       	pop	r28
+ 39a:	1f 91       	pop	r17
+ 39c:	0f 91       	pop	r16
+ 39e:	08 95       	ret
+
+000003a0 <uartTxString>:
+ * Outputs the passed string to the UART.Tx pin
+ * The output is true ouput, not inverted, so a MAX232 or some sort of
+ * TTL -> +/- 15V converter is required.
+ */
+void uartTxString(AVR_USART_t* port, uint8_t* outString)
+{
+ 3a0:	0f 93       	push	r16
+ 3a2:	1f 93       	push	r17
+ 3a4:	cf 93       	push	r28
+ 3a6:	df 93       	push	r29
+ 3a8:	ec 01       	movw	r28, r24
+ 3aa:	8b 01       	movw	r16, r22
+	while( *outString )
+ 3ac:	05 c0       	rjmp	.+10     	; 0x3b8 <uartTxString+0x18>
+	{
+		uartTx(port, *outString++);
+ 3ae:	0f 5f       	subi	r16, 0xFF	; 255
+ 3b0:	1f 4f       	sbci	r17, 0xFF	; 255
+ 3b2:	ce 01       	movw	r24, r28
+ 3b4:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+ * The output is true ouput, not inverted, so a MAX232 or some sort of
+ * TTL -> +/- 15V converter is required.
+ */
+void uartTxString(AVR_USART_t* port, uint8_t* outString)
+{
+	while( *outString )
+ 3b8:	f8 01       	movw	r30, r16
+ 3ba:	60 81       	ld	r22, Z
+ 3bc:	66 23       	and	r22, r22
+ 3be:	b9 f7       	brne	.-18     	; 0x3ae <uartTxString+0xe>
+	{
+		uartTx(port, *outString++);
+   }
+}
+ 3c0:	df 91       	pop	r29
+ 3c2:	cf 91       	pop	r28
+ 3c4:	1f 91       	pop	r17
+ 3c6:	0f 91       	pop	r16
+ 3c8:	08 95       	ret
+
+000003ca <uartTxDump_P>:
+	}
+}
+
+/** Writes nbytes of buffer to the UART */
+void uartTxDump_P(AVR_USART_t* port, PGM_P buffer, uint16_t nbytes )
+{
+ 3ca:	cf 92       	push	r12
+ 3cc:	df 92       	push	r13
+ 3ce:	ef 92       	push	r14
+ 3d0:	ff 92       	push	r15
+ 3d2:	0f 93       	push	r16
+ 3d4:	1f 93       	push	r17
+ 3d6:	cf 93       	push	r28
+ 3d8:	df 93       	push	r29
+ 3da:	ec 01       	movw	r28, r24
+ 3dc:	8b 01       	movw	r16, r22
+ 3de:	6a 01       	movw	r12, r20
+ 3e0:	ee 24       	eor	r14, r14
+ 3e2:	ff 24       	eor	r15, r15
+	uint16_t i = 0;
+	while( i++ < nbytes )
+ 3e4:	0a c0       	rjmp	.+20     	; 0x3fa <uartTxDump_P+0x30>
+	{
+      uint8_t c;
+      c = pgm_read_byte(buffer++);
+ 3e6:	f8 01       	movw	r30, r16
+ 3e8:	ee 0d       	add	r30, r14
+ 3ea:	ff 1d       	adc	r31, r15
+ 3ec:	64 91       	lpm	r22, Z+
+		uartTx(port, c);
+ 3ee:	ce 01       	movw	r24, r28
+ 3f0:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+ 3f4:	08 94       	sec
+ 3f6:	e1 1c       	adc	r14, r1
+ 3f8:	f1 1c       	adc	r15, r1
+
+/** Writes nbytes of buffer to the UART */
+void uartTxDump_P(AVR_USART_t* port, PGM_P buffer, uint16_t nbytes )
+{
+	uint16_t i = 0;
+	while( i++ < nbytes )
+ 3fa:	ec 14       	cp	r14, r12
+ 3fc:	fd 04       	cpc	r15, r13
+ 3fe:	98 f3       	brcs	.-26     	; 0x3e6 <uartTxDump_P+0x1c>
+	{
+      uint8_t c;
+      c = pgm_read_byte(buffer++);
+		uartTx(port, c);
+	}
+}
+ 400:	df 91       	pop	r29
+ 402:	cf 91       	pop	r28
+ 404:	1f 91       	pop	r17
+ 406:	0f 91       	pop	r16
+ 408:	ff 90       	pop	r15
+ 40a:	ef 90       	pop	r14
+ 40c:	df 90       	pop	r13
+ 40e:	cf 90       	pop	r12
+ 410:	08 95       	ret
+
+00000412 <uartTxDump>:
+
+
+
+/** Writes nbytes of buffer to the UART */
+void uartTxDump(AVR_USART_t* port, uint8_t* buffer, uint16_t nbytes )
+{
+ 412:	cf 92       	push	r12
+ 414:	df 92       	push	r13
+ 416:	ef 92       	push	r14
+ 418:	ff 92       	push	r15
+ 41a:	0f 93       	push	r16
+ 41c:	1f 93       	push	r17
+ 41e:	cf 93       	push	r28
+ 420:	df 93       	push	r29
+ 422:	ec 01       	movw	r28, r24
+ 424:	8b 01       	movw	r16, r22
+ 426:	6a 01       	movw	r12, r20
+ 428:	ee 24       	eor	r14, r14
+ 42a:	ff 24       	eor	r15, r15
+	uint16_t i = 0;
+	while( i++ < nbytes )
+ 42c:	09 c0       	rjmp	.+18     	; 0x440 <uartTxDump+0x2e>
+	{
+		uartTx(port, *buffer++);
+ 42e:	f8 01       	movw	r30, r16
+ 430:	61 91       	ld	r22, Z+
+ 432:	8f 01       	movw	r16, r30
+ 434:	ce 01       	movw	r24, r28
+ 436:	0e 94 87 01 	call	0x30e	; 0x30e <uartTx>
+ 43a:	08 94       	sec
+ 43c:	e1 1c       	adc	r14, r1
+ 43e:	f1 1c       	adc	r15, r1
+
+/** Writes nbytes of buffer to the UART */
+void uartTxDump(AVR_USART_t* port, uint8_t* buffer, uint16_t nbytes )
+{
+	uint16_t i = 0;
+	while( i++ < nbytes )
+ 440:	ec 14       	cp	r14, r12
+ 442:	fd 04       	cpc	r15, r13
+ 444:	a0 f3       	brcs	.-24     	; 0x42e <uartTxDump+0x1c>
+	{
+		uartTx(port, *buffer++);
+	}
+}
+ 446:	df 91       	pop	r29
+ 448:	cf 91       	pop	r28
+ 44a:	1f 91       	pop	r17
+ 44c:	0f 91       	pop	r16
+ 44e:	ff 90       	pop	r15
+ 450:	ef 90       	pop	r14
+ 452:	df 90       	pop	r13
+ 454:	cf 90       	pop	r12
+ 456:	08 95       	ret
+
+00000458 <ringbuffer_get>:
+
+
+/* Critical means disable interrupts on entry and restore interrupt 
+ * state on exit */
+
+int ringbuffer_get(RINGBUFFER_T *buffer) {
+ 458:	fc 01       	movw	r30, r24
+    //buffer not empty?
+    if (buffer->read_pos != buffer->write_pos) {
+ 45a:	26 81       	ldd	r18, Z+6	; 0x06
+ 45c:	37 81       	ldd	r19, Z+7	; 0x07
+ 45e:	80 85       	ldd	r24, Z+8	; 0x08
+ 460:	91 85       	ldd	r25, Z+9	; 0x09
+ 462:	28 17       	cp	r18, r24
+ 464:	39 07       	cpc	r19, r25
+ 466:	19 f4       	brne	.+6      	; 0x46e <ringbuffer_get+0x16>
+ 468:	2f ef       	ldi	r18, 0xFF	; 255
+ 46a:	3f ef       	ldi	r19, 0xFF	; 255
+ 46c:	14 c0       	rjmp	.+40     	; 0x496 <ringbuffer_get+0x3e>
+        //wrap around read position
+        buffer->read_pos &= (buffer->size - 1);
+ 46e:	26 81       	ldd	r18, Z+6	; 0x06
+ 470:	37 81       	ldd	r19, Z+7	; 0x07
+ 472:	82 81       	ldd	r24, Z+2	; 0x02
+ 474:	93 81       	ldd	r25, Z+3	; 0x03
+ 476:	01 97       	sbiw	r24, 0x01	; 1
+ 478:	82 23       	and	r24, r18
+ 47a:	93 23       	and	r25, r19
+ 47c:	97 83       	std	Z+7, r25	; 0x07
+ 47e:	86 83       	std	Z+6, r24	; 0x06
+        //get byte from buffer, update read position and return
+        return buffer->memory[buffer->read_pos++];
+ 480:	86 81       	ldd	r24, Z+6	; 0x06
+ 482:	97 81       	ldd	r25, Z+7	; 0x07
+ 484:	a0 81       	ld	r26, Z
+ 486:	b1 81       	ldd	r27, Z+1	; 0x01
+ 488:	a8 0f       	add	r26, r24
+ 48a:	b9 1f       	adc	r27, r25
+ 48c:	2c 91       	ld	r18, X
+ 48e:	30 e0       	ldi	r19, 0x00	; 0
+ 490:	01 96       	adiw	r24, 0x01	; 1
+ 492:	97 83       	std	Z+7, r25	; 0x07
+ 494:	86 83       	std	Z+6, r24	; 0x06
+    } else {
+        return BUFFER_OVERFLOW; /* This is really trying to get a nonexistant byte */
+    }
+
+
+}
+ 496:	c9 01       	movw	r24, r18
+ 498:	08 95       	ret
+
+0000049a <ringbuffer_put>:
+
+
+int ringbuffer_put(RINGBUFFER_T *buffer, char character) {
+ 49a:	fc 01       	movw	r30, r24
+    //is there space in the buffer?
+    int bufferMask = (buffer->size - 1);
+ 49c:	22 81       	ldd	r18, Z+2	; 0x02
+ 49e:	33 81       	ldd	r19, Z+3	; 0x03
+ 4a0:	21 50       	subi	r18, 0x01	; 1
+ 4a2:	30 40       	sbci	r19, 0x00	; 0
+
+    if ( ((buffer->write_pos + 1) & bufferMask) != (buffer->read_pos & bufferMask)) {
+ 4a4:	80 85       	ldd	r24, Z+8	; 0x08
+ 4a6:	91 85       	ldd	r25, Z+9	; 0x09
+ 4a8:	46 81       	ldd	r20, Z+6	; 0x06
+ 4aa:	57 81       	ldd	r21, Z+7	; 0x07
+ 4ac:	01 96       	adiw	r24, 0x01	; 1
+ 4ae:	84 27       	eor	r24, r20
+ 4b0:	95 27       	eor	r25, r21
+ 4b2:	82 23       	and	r24, r18
+ 4b4:	93 23       	and	r25, r19
+ 4b6:	00 97       	sbiw	r24, 0x00	; 0
+ 4b8:	19 f4       	brne	.+6      	; 0x4c0 <ringbuffer_put+0x26>
+ 4ba:	2f ef       	ldi	r18, 0xFF	; 255
+ 4bc:	3f ef       	ldi	r19, 0xFF	; 255
+ 4be:	26 c0       	rjmp	.+76     	; 0x50c <ringbuffer_put+0x72>
+        //wrap around write position
+        buffer->write_pos &= bufferMask;
+ 4c0:	80 85       	ldd	r24, Z+8	; 0x08
+ 4c2:	91 85       	ldd	r25, Z+9	; 0x09
+ 4c4:	82 23       	and	r24, r18
+ 4c6:	93 23       	and	r25, r19
+ 4c8:	91 87       	std	Z+9, r25	; 0x09
+ 4ca:	80 87       	std	Z+8, r24	; 0x08
+
+        //write the character
+        buffer->memory[buffer->write_pos++] = character;
+ 4cc:	80 85       	ldd	r24, Z+8	; 0x08
+ 4ce:	91 85       	ldd	r25, Z+9	; 0x09
+ 4d0:	a0 81       	ld	r26, Z
+ 4d2:	b1 81       	ldd	r27, Z+1	; 0x01
+ 4d4:	a8 0f       	add	r26, r24
+ 4d6:	b9 1f       	adc	r27, r25
+ 4d8:	6c 93       	st	X, r22
+ 4da:	01 96       	adiw	r24, 0x01	; 1
+ 4dc:	91 87       	std	Z+9, r25	; 0x09
+ 4de:	80 87       	std	Z+8, r24	; 0x08
+    }
+}
+
+unsigned int ringbuffer_len(RINGBUFFER_T *buffer) {
+   
+    if( buffer->read_pos > buffer->write_pos )
+ 4e0:	26 81       	ldd	r18, Z+6	; 0x06
+ 4e2:	37 81       	ldd	r19, Z+7	; 0x07
+ 4e4:	80 85       	ldd	r24, Z+8	; 0x08
+ 4e6:	91 85       	ldd	r25, Z+9	; 0x09
+ 4e8:	82 17       	cp	r24, r18
+ 4ea:	93 07       	cpc	r25, r19
+ 4ec:	48 f4       	brcc	.+18     	; 0x500 <ringbuffer_put+0x66>
+    {
+        return buffer->write_pos + buffer->size - buffer->read_pos;
+ 4ee:	20 85       	ldd	r18, Z+8	; 0x08
+ 4f0:	31 85       	ldd	r19, Z+9	; 0x09
+ 4f2:	86 81       	ldd	r24, Z+6	; 0x06
+ 4f4:	97 81       	ldd	r25, Z+7	; 0x07
+ 4f6:	42 81       	ldd	r20, Z+2	; 0x02
+ 4f8:	53 81       	ldd	r21, Z+3	; 0x03
+ 4fa:	24 0f       	add	r18, r20
+ 4fc:	35 1f       	adc	r19, r21
+ 4fe:	04 c0       	rjmp	.+8      	; 0x508 <ringbuffer_put+0x6e>
+    }
+    return buffer->write_pos - buffer->read_pos;
+ 500:	20 85       	ldd	r18, Z+8	; 0x08
+ 502:	31 85       	ldd	r19, Z+9	; 0x09
+ 504:	86 81       	ldd	r24, Z+6	; 0x06
+ 506:	97 81       	ldd	r25, Z+7	; 0x07
+ 508:	28 1b       	sub	r18, r24
+ 50a:	39 0b       	sbc	r19, r25
+
+        return ringbuffer_len(buffer);
+    } else {
+        return BUFFER_OVERFLOW;
+    }
+}
+ 50c:	c9 01       	movw	r24, r18
+ 50e:	08 95       	ret
+
+00000510 <ringbuffer_len>:
+
+unsigned int ringbuffer_len(RINGBUFFER_T *buffer) {
+ 510:	fc 01       	movw	r30, r24
+   
+    if( buffer->read_pos > buffer->write_pos )
+ 512:	26 81       	ldd	r18, Z+6	; 0x06
+ 514:	37 81       	ldd	r19, Z+7	; 0x07
+ 516:	80 85       	ldd	r24, Z+8	; 0x08
+ 518:	91 85       	ldd	r25, Z+9	; 0x09
+ 51a:	82 17       	cp	r24, r18
+ 51c:	93 07       	cpc	r25, r19
+ 51e:	48 f4       	brcc	.+18     	; 0x532 <ringbuffer_len+0x22>
+    {
+        return buffer->write_pos + buffer->size - buffer->read_pos;
+ 520:	20 85       	ldd	r18, Z+8	; 0x08
+ 522:	31 85       	ldd	r19, Z+9	; 0x09
+ 524:	86 81       	ldd	r24, Z+6	; 0x06
+ 526:	97 81       	ldd	r25, Z+7	; 0x07
+ 528:	42 81       	ldd	r20, Z+2	; 0x02
+ 52a:	53 81       	ldd	r21, Z+3	; 0x03
+ 52c:	24 0f       	add	r18, r20
+ 52e:	35 1f       	adc	r19, r21
+ 530:	04 c0       	rjmp	.+8      	; 0x53a <ringbuffer_len+0x2a>
+    }
+    return buffer->write_pos - buffer->read_pos;
+ 532:	20 85       	ldd	r18, Z+8	; 0x08
+ 534:	31 85       	ldd	r19, Z+9	; 0x09
+ 536:	86 81       	ldd	r24, Z+6	; 0x06
+ 538:	97 81       	ldd	r25, Z+7	; 0x07
+ 53a:	28 1b       	sub	r18, r24
+ 53c:	39 0b       	sbc	r19, r25
+}
+ 53e:	c9 01       	movw	r24, r18
+ 540:	08 95       	ret
+
+00000542 <ringbuffer_isEmpty>:
+
+unsigned int ringbuffer_isEmpty(RINGBUFFER_T *buffer) {
+ 542:	fc 01       	movw	r30, r24
+   return buffer->write_pos == buffer->read_pos;
+ 544:	40 85       	ldd	r20, Z+8	; 0x08
+ 546:	51 85       	ldd	r21, Z+9	; 0x09
+ 548:	86 81       	ldd	r24, Z+6	; 0x06
+ 54a:	97 81       	ldd	r25, Z+7	; 0x07
+ 54c:	20 e0       	ldi	r18, 0x00	; 0
+ 54e:	30 e0       	ldi	r19, 0x00	; 0
+ 550:	48 17       	cp	r20, r24
+ 552:	59 07       	cpc	r21, r25
+ 554:	11 f4       	brne	.+4      	; 0x55a <ringbuffer_isEmpty+0x18>
+ 556:	21 e0       	ldi	r18, 0x01	; 1
+ 558:	30 e0       	ldi	r19, 0x00	; 0
+}
+ 55a:	c9 01       	movw	r24, r18
+ 55c:	08 95       	ret
+
+0000055e <ringbuffer_clear>:
+
+
+void ringbuffer_clear(RINGBUFFER_T *buffer) {
+ 55e:	fc 01       	movw	r30, r24
+    buffer->read_pos = 0;
+ 560:	17 82       	std	Z+7, r1	; 0x07
+ 562:	16 82       	std	Z+6, r1	; 0x06
+    buffer->write_pos = 0;
+ 564:	11 86       	std	Z+9, r1	; 0x09
+ 566:	10 86       	std	Z+8, r1	; 0x08
+}
+ 568:	08 95       	ret
+
+0000056a <MSX_ValidateInputs>:
+
+}
+
+
+void MSX_ValidateInputs(int8_t* xPos, int8_t* yPos)
+{
+ 56a:	fc 01       	movw	r30, r24
+ 56c:	db 01       	movw	r26, r22
+    if( *xPos > MSX_MAX_X_DATA )
+ 56e:	80 81       	ld	r24, Z
+ 570:	81 35       	cpi	r24, 0x51	; 81
+ 572:	14 f0       	brlt	.+4      	; 0x578 <MSX_ValidateInputs+0xe>
+    {
+        *xPos = MSX_MAX_X_DATA;
+ 574:	80 e5       	ldi	r24, 0x50	; 80
+ 576:	80 83       	st	Z, r24
+    }
+    
+    if( *xPos < MSX_MIN_X_DATA )
+ 578:	80 81       	ld	r24, Z
+ 57a:	80 3b       	cpi	r24, 0xB0	; 176
+ 57c:	14 f4       	brge	.+4      	; 0x582 <MSX_ValidateInputs+0x18>
+    {
+        *xPos = MSX_MIN_X_DATA;
+ 57e:	80 eb       	ldi	r24, 0xB0	; 176
+ 580:	80 83       	st	Z, r24
+    }
+
+
+    if( *yPos > MSX_MAX_Y_DATA )
+ 582:	8c 91       	ld	r24, X
+ 584:	81 35       	cpi	r24, 0x51	; 81
+ 586:	14 f0       	brlt	.+4      	; 0x58c <MSX_ValidateInputs+0x22>
+    {
+        *yPos = MSX_MAX_Y_DATA;
+ 588:	80 e5       	ldi	r24, 0x50	; 80
+ 58a:	8c 93       	st	X, r24
+    }
+    
+    if( *yPos < MSX_MIN_Y_DATA )
+ 58c:	8c 91       	ld	r24, X
+ 58e:	80 3b       	cpi	r24, 0xB0	; 176
+ 590:	14 f4       	brge	.+4      	; 0x596 <MSX_ValidateInputs+0x2c>
+    {
+        *yPos = MSX_MIN_Y_DATA;
+ 592:	80 eb       	ldi	r24, 0xB0	; 176
+ 594:	8c 93       	st	X, r24
+ 596:	08 95       	ret
+
+00000598 <MSX_SendButtons>:
+uint8_t MSX_SendButtons(uint8_t buttonMap)
+{
+    
+    uint8_t buttonCount = 0;
+
+    if( buttonMap & MSX_LEFT_TRIGGER )
+ 598:	28 2f       	mov	r18, r24
+ 59a:	80 fd       	sbrc	r24, 0
+ 59c:	02 c0       	rjmp	.+4      	; 0x5a2 <MSX_SendButtons+0xa>
+ 59e:	80 e0       	ldi	r24, 0x00	; 0
+ 5a0:	02 c0       	rjmp	.+4      	; 0x5a6 <MSX_SendButtons+0xe>
+    {
+        MSX_TRIGGER_PORT &= ~MSX_LEFT_BUTTON_PIN;
+ 5a2:	29 98       	cbi	0x05, 1	; 5
+ 5a4:	81 e0       	ldi	r24, 0x01	; 1
+        buttonCount++;
+    }
+    
+    if( buttonMap & MSX_RIGHT_TRIGGER )
+ 5a6:	21 ff       	sbrs	r18, 1
+ 5a8:	03 c0       	rjmp	.+6      	; 0x5b0 <MSX_SendButtons+0x18>
+    {
+        MSX_TRIGGER_PORT &= ~MSX_RIGHT_BUTTON_PIN;
+ 5aa:	2a 98       	cbi	0x05, 2	; 5
+        buttonCount++;
+ 5ac:	8f 5f       	subi	r24, 0xFF	; 255
+ 5ae:	03 c0       	rjmp	.+6      	; 0x5b6 <MSX_SendButtons+0x1e>
+    }
+
+    if( buttonCount )
+ 5b0:	88 23       	and	r24, r24
+ 5b2:	39 f0       	breq	.+14     	; 0x5c2 <MSX_SendButtons+0x2a>
+ 5b4:	81 e0       	ldi	r24, 0x01	; 1
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 5b6:	ef e3       	ldi	r30, 0x3F	; 63
+ 5b8:	fc e9       	ldi	r31, 0x9C	; 156
+ 5ba:	31 97       	sbiw	r30, 0x01	; 1
+ 5bc:	f1 f7       	brne	.-4      	; 0x5ba <MSX_SendButtons+0x22>
+ 5be:	00 c0       	rjmp	.+0      	; 0x5c0 <MSX_SendButtons+0x28>
+ 5c0:	00 00       	nop
+    }
+
+    return buttonCount;
+
+
+}
+ 5c2:	08 95       	ret
+
+000005c4 <MSX_SendPosition>:
+
+uint8_t MSX_SendPosition(uint8_t xPos, uint8_t yPos)
+{
+    //MSX_ValidateInputs(&xPos, &yPos);
+
+    MSX_WAIT_FOR_HIGH();
+ 5c4:	18 9b       	sbis	0x03, 0	; 3
+ 5c6:	fe cf       	rjmp	.-4      	; 0x5c4 <MSX_SendPosition>
+
+    /* Wait for a High */
+    if( (MSX_STROBE_PIN & MSX_STROBE) )
+ 5c8:	18 9b       	sbis	0x03, 0	; 3
+ 5ca:	09 c0       	rjmp	.+18     	; 0x5de <MSX_SendPosition+0x1a>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 5cc:	92 e9       	ldi	r25, 0x92	; 146
+ 5ce:	9a 95       	dec	r25
+ 5d0:	f1 f7       	brne	.-4      	; 0x5ce <MSX_SendPosition+0xa>
+ 5d2:	00 c0       	rjmp	.+0      	; 0x5d4 <MSX_SendPosition+0x10>
+        uint8_t outNib = 0;
+        xPos = (~xPos) + 1;
+
+        /* Check for a sustained high */
+        _delay_us(55);
+        if( !(MSX_STROBE_PIN & MSX_STROBE) )
+ 5d4:	18 99       	sbic	0x03, 0	; 3
+ 5d6:	05 c0       	rjmp	.+10     	; 0x5e2 <MSX_SendPosition+0x1e>
+        {
+            MSX_POS_PORT &= ~(MSX_POS_PINS);
+ 5d8:	8b b1       	in	r24, 0x0b	; 11
+ 5da:	8f 70       	andi	r24, 0x0F	; 15
+ 5dc:	8b b9       	out	0x0b, r24	; 11
+ 5de:	80 e0       	ldi	r24, 0x00	; 0
+            return 0;
+ 5e0:	08 95       	ret
+    /* Wait for a High */
+    if( (MSX_STROBE_PIN & MSX_STROBE) )
+    {
+
+        uint8_t outNib = 0;
+        xPos = (~xPos) + 1;
+ 5e2:	81 95       	neg	r24
+            return 0;
+        }
+
+        /* Transfer MSBs first */
+        outNib = xPos;
+        MSX_POS_PORT = (MSX_POS_PORT & ~(MSX_POS_PINS)) | (outNib & MSX_POS_PINS);
+ 5e4:	2b b1       	in	r18, 0x0b	; 11
+ 5e6:	98 2f       	mov	r25, r24
+ 5e8:	90 7f       	andi	r25, 0xF0	; 240
+ 5ea:	2f 70       	andi	r18, 0x0F	; 15
+ 5ec:	92 2b       	or	r25, r18
+ 5ee:	9b b9       	out	0x0b, r25	; 11
+
+        /* Wait for a Low */
+        MSX_WAIT_FOR_LOW();
+ 5f0:	18 99       	sbic	0x03, 0	; 3
+ 5f2:	fe cf       	rjmp	.-4      	; 0x5f0 <MSX_SendPosition+0x2c>
+        outNib = xPos << 4;
+        MSX_POS_PORT = (MSX_POS_PORT & ~(MSX_POS_PINS)) | (outNib & MSX_POS_PINS);
+ 5f4:	9b b1       	in	r25, 0x0b	; 11
+ 5f6:	82 95       	swap	r24
+ 5f8:	80 7f       	andi	r24, 0xF0	; 240
+ 5fa:	9f 70       	andi	r25, 0x0F	; 15
+ 5fc:	89 2b       	or	r24, r25
+ 5fe:	8b b9       	out	0x0b, r24	; 11
+
+        /* Wait for a High */
+        MSX_WAIT_FOR_HIGH();
+ 600:	18 9b       	sbis	0x03, 0	; 3
+ 602:	fe cf       	rjmp	.-4      	; 0x600 <MSX_SendPosition+0x3c>
+        outNib = yPos;
+        MSX_POS_PORT = (MSX_POS_PORT & ~(MSX_POS_PINS)) | (outNib & MSX_POS_PINS);
+ 604:	9b b1       	in	r25, 0x0b	; 11
+ 606:	86 2f       	mov	r24, r22
+ 608:	80 7f       	andi	r24, 0xF0	; 240
+ 60a:	9f 70       	andi	r25, 0x0F	; 15
+ 60c:	89 2b       	or	r24, r25
+ 60e:	8b b9       	out	0x0b, r24	; 11
+
+        /* Wait for Low */
+        MSX_WAIT_FOR_LOW();
+ 610:	18 99       	sbic	0x03, 0	; 3
+ 612:	fe cf       	rjmp	.-4      	; 0x610 <MSX_SendPosition+0x4c>
+        outNib = yPos << 4;
+        MSX_POS_PORT = (MSX_POS_PORT & ~(MSX_POS_PINS)) | (outNib & MSX_POS_PINS);
+ 614:	8b b1       	in	r24, 0x0b	; 11
+ 616:	62 95       	swap	r22
+ 618:	60 7f       	andi	r22, 0xF0	; 240
+ 61a:	8f 70       	andi	r24, 0x0F	; 15
+ 61c:	68 2b       	or	r22, r24
+ 61e:	6b b9       	out	0x0b, r22	; 11
+ 620:	82 e9       	ldi	r24, 0x92	; 146
+ 622:	8a 95       	dec	r24
+ 624:	f1 f7       	brne	.-4      	; 0x622 <MSX_SendPosition+0x5e>
+ 626:	00 c0       	rjmp	.+0      	; 0x628 <MSX_SendPosition+0x64>
+        
+        _delay_us(55);
+        MSX_POS_PORT &= ~(MSX_POS_PINS);
+ 628:	8b b1       	in	r24, 0x0b	; 11
+ 62a:	8f 70       	andi	r24, 0x0F	; 15
+ 62c:	8b b9       	out	0x0b, r24	; 11
+ 62e:	81 e0       	ldi	r24, 0x01	; 1
+        return 1;
+
+    }
+
+    return 0;
+}
+ 630:	08 95       	ret
+
+00000632 <PS2_ValidateData>:
+    return 0;
+}
+
+
+uint8_t PS2_ValidateData(PS2_Position_t* input)
+{
+ 632:	fc 01       	movw	r30, r24
+    //if( (input->buttonMap & PS2_MOUSE_X_OVF) || (input->buttonMap & PS2_MOUSE_Y_OVF) )
+    {
+    //    return 0;
+    }
+
+    if( (input->buttonMap & PS2_MOUSE_X_SIGN) && (input->xPos <= 127) )
+ 634:	82 81       	ldd	r24, Z+2	; 0x02
+ 636:	90 e0       	ldi	r25, 0x00	; 0
+ 638:	ac 01       	movw	r20, r24
+ 63a:	40 71       	andi	r20, 0x10	; 16
+ 63c:	50 70       	andi	r21, 0x00	; 0
+ 63e:	84 ff       	sbrs	r24, 4
+ 640:	03 c0       	rjmp	.+6      	; 0x648 <PS2_ValidateData+0x16>
+ 642:	20 81       	ld	r18, Z
+ 644:	27 ff       	sbrs	r18, 7
+ 646:	17 c0       	rjmp	.+46     	; 0x676 <PS2_ValidateData+0x44>
+    {
+        return 0;
+    }
+
+    if( (input->buttonMap & PS2_MOUSE_Y_SIGN) && (input->yPos <= 127) )
+ 648:	9c 01       	movw	r18, r24
+ 64a:	20 72       	andi	r18, 0x20	; 32
+ 64c:	30 70       	andi	r19, 0x00	; 0
+ 64e:	85 ff       	sbrs	r24, 5
+ 650:	03 c0       	rjmp	.+6      	; 0x658 <PS2_ValidateData+0x26>
+ 652:	81 81       	ldd	r24, Z+1	; 0x01
+ 654:	87 ff       	sbrs	r24, 7
+ 656:	0f c0       	rjmp	.+30     	; 0x676 <PS2_ValidateData+0x44>
+    {
+        return 0;
+    }
+
+    if( !(input->buttonMap & PS2_MOUSE_X_SIGN) && (input->xPos >= 127) )
+ 658:	41 15       	cp	r20, r1
+ 65a:	51 05       	cpc	r21, r1
+ 65c:	19 f4       	brne	.+6      	; 0x664 <PS2_ValidateData+0x32>
+ 65e:	80 81       	ld	r24, Z
+ 660:	8f 37       	cpi	r24, 0x7F	; 127
+ 662:	48 f4       	brcc	.+18     	; 0x676 <PS2_ValidateData+0x44>
+    {
+        return 0;
+    }
+
+    if( !(input->buttonMap & PS2_MOUSE_Y_SIGN) && (input->yPos >= 127) )
+ 664:	21 15       	cp	r18, r1
+ 666:	31 05       	cpc	r19, r1
+ 668:	21 f4       	brne	.+8      	; 0x672 <PS2_ValidateData+0x40>
+ 66a:	80 e0       	ldi	r24, 0x00	; 0
+ 66c:	91 81       	ldd	r25, Z+1	; 0x01
+ 66e:	9f 37       	cpi	r25, 0x7F	; 127
+ 670:	18 f4       	brcc	.+6      	; 0x678 <PS2_ValidateData+0x46>
+ 672:	81 e0       	ldi	r24, 0x01	; 1
+ 674:	08 95       	ret
+ 676:	80 e0       	ldi	r24, 0x00	; 0
+    {
+        return 0;
+    }
+
+    return 1;
+}
+ 678:	08 95       	ret
+
+0000067a <PS2_GetByte>:
+
+
+}
+
+uint8_t PS2_GetByte(uint8_t* inByte)
+{
+ 67a:	fc 01       	movw	r30, r24
+    uint8_t dataIn = 0;
+    uint8_t parity = 0;
+
+    PS2_DIR &= ~(PS2_CLK | PS2_DATA);
+ 67c:	94 b1       	in	r25, 0x04	; 4
+ 67e:	9f 73       	andi	r25, 0x3F	; 63
+ 680:	94 b9       	out	0x04, r25	; 4
+    if( !(PS2_STARTBIT) )
+ 682:	1e 99       	sbic	0x03, 6	; 3
+ 684:	2c c0       	rjmp	.+88     	; 0x6de <PS2_GetByte+0x64>
+ 686:	1f 99       	sbic	0x03, 7	; 3
+ 688:	2a c0       	rjmp	.+84     	; 0x6de <PS2_GetByte+0x64>
+    {
+        return PS2_NO_DATA;
+    }
+
+    /* Wait for High */
+    PS2_WAIT_CLK_HIGH();
+ 68a:	1e 9b       	sbis	0x03, 6	; 3
+ 68c:	fe cf       	rjmp	.-4      	; 0x68a <PS2_GetByte+0x10>
+ 68e:	20 e0       	ldi	r18, 0x00	; 0
+ 690:	40 e0       	ldi	r20, 0x00	; 0
+ 692:	90 e0       	ldi	r25, 0x00	; 0
+
+    uint8_t i;
+    for( i = 0; i < 8; i++ )
+    {
+        /* Wait for Low */
+        PS2_WAIT_CLK_LOW();
+ 694:	1e 99       	sbic	0x03, 6	; 3
+ 696:	fe cf       	rjmp	.-4      	; 0x694 <PS2_GetByte+0x1a>
+    
+        dataIn = dataIn >> 1;
+ 698:	96 95       	lsr	r25
+
+        if( PS2_DATABIT )
+ 69a:	1f 9b       	sbis	0x03, 7	; 3
+ 69c:	02 c0       	rjmp	.+4      	; 0x6a2 <PS2_GetByte+0x28>
+        {
+            parity++;
+ 69e:	4f 5f       	subi	r20, 0xFF	; 255
+            dataIn |= 0x80;
+ 6a0:	90 68       	ori	r25, 0x80	; 128
+        }
+    
+        /* Wait for High */
+        PS2_WAIT_CLK_HIGH();
+ 6a2:	1e 9b       	sbis	0x03, 6	; 3
+ 6a4:	fe cf       	rjmp	.-4      	; 0x6a2 <PS2_GetByte+0x28>
+
+    /* Wait for High */
+    PS2_WAIT_CLK_HIGH();
+
+    uint8_t i;
+    for( i = 0; i < 8; i++ )
+ 6a6:	2f 5f       	subi	r18, 0xFF	; 255
+ 6a8:	28 30       	cpi	r18, 0x08	; 8
+ 6aa:	a1 f7       	brne	.-24     	; 0x694 <PS2_GetByte+0x1a>
+        /* Wait for High */
+        PS2_WAIT_CLK_HIGH();
+    }
+
+    /* Wait for Low */
+    PS2_WAIT_CLK_LOW();
+ 6ac:	1e 99       	sbic	0x03, 6	; 3
+ 6ae:	fe cf       	rjmp	.-4      	; 0x6ac <PS2_GetByte+0x32>
+    if( !((parity + PS2_DATABIT) & 0x01) )
+ 6b0:	23 b1       	in	r18, 0x03	; 3
+ 6b2:	33 27       	eor	r19, r19
+ 6b4:	27 fd       	sbrc	r18, 7
+ 6b6:	30 95       	com	r19
+ 6b8:	22 27       	eor	r18, r18
+ 6ba:	33 0f       	add	r19, r19
+ 6bc:	22 1f       	adc	r18, r18
+ 6be:	33 27       	eor	r19, r19
+ 6c0:	24 0f       	add	r18, r20
+ 6c2:	31 1d       	adc	r19, r1
+ 6c4:	20 ff       	sbrs	r18, 0
+ 6c6:	0d c0       	rjmp	.+26     	; 0x6e2 <PS2_GetByte+0x68>
+    {
+        /* Parity Bit failed! */
+        return PS2_DATA_ERROR;
+    }
+    PS2_WAIT_CLK_HIGH();
+ 6c8:	1e 9b       	sbis	0x03, 6	; 3
+ 6ca:	fe cf       	rjmp	.-4      	; 0x6c8 <PS2_GetByte+0x4e>
+
+    /* Wait for stop Low */
+    PS2_WAIT_CLK_LOW();
+ 6cc:	1e 99       	sbic	0x03, 6	; 3
+ 6ce:	fe cf       	rjmp	.-4      	; 0x6cc <PS2_GetByte+0x52>
+    if( !PS2_DATABIT )
+ 6d0:	1f 9b       	sbis	0x03, 7	; 3
+ 6d2:	07 c0       	rjmp	.+14     	; 0x6e2 <PS2_GetByte+0x68>
+    {
+        /* Stop bit must be 0! */
+        return PS2_DATA_ERROR;
+    }
+
+    PS2_WAIT_CLK_HIGH();
+ 6d4:	1e 9b       	sbis	0x03, 6	; 3
+ 6d6:	fe cf       	rjmp	.-4      	; 0x6d4 <PS2_GetByte+0x5a>
+
+    *inByte = dataIn;
+ 6d8:	90 83       	st	Z, r25
+ 6da:	81 e0       	ldi	r24, 0x01	; 1
+
+    
+
+    return PS2_DATA_READY;
+ 6dc:	08 95       	ret
+ 6de:	80 e0       	ldi	r24, 0x00	; 0
+ 6e0:	08 95       	ret
+ 6e2:	82 e0       	ldi	r24, 0x02	; 2
+}
+ 6e4:	08 95       	ret
+
+000006e6 <PS2_GetPositionPacket>:
+
+}
+
+
+uint8_t PS2_GetPositionPacket(PS2_Position_t* event)
+{
+ 6e6:	0f 93       	push	r16
+ 6e8:	1f 93       	push	r17
+ 6ea:	df 93       	push	r29
+ 6ec:	cf 93       	push	r28
+ 6ee:	0f 92       	push	r0
+ 6f0:	cd b7       	in	r28, 0x3d	; 61
+ 6f2:	de b7       	in	r29, 0x3e	; 62
+ 6f4:	8c 01       	movw	r16, r24
+    uint8_t inByte;
+    static uint8_t dataCount = 0;
+
+    uint8_t status = PS2_GetByte(&inByte);
+ 6f6:	ce 01       	movw	r24, r28
+ 6f8:	01 96       	adiw	r24, 0x01	; 1
+ 6fa:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+
+    if( status == PS2_DATA_ERROR )
+ 6fe:	82 30       	cpi	r24, 0x02	; 2
+ 700:	71 f0       	breq	.+28     	; 0x71e <PS2_GetPositionPacket+0x38>
+    {
+        dataCount = 0;
+        return 0;
+    }
+
+    if( status == PS2_DATA_READY )
+ 702:	81 30       	cpi	r24, 0x01	; 1
+ 704:	41 f5       	brne	.+80     	; 0x756 <PS2_GetPositionPacket+0x70>
+    {
+        switch(dataCount)
+ 706:	80 91 58 01 	lds	r24, 0x0158
+ 70a:	81 30       	cpi	r24, 0x01	; 1
+ 70c:	71 f0       	breq	.+28     	; 0x72a <PS2_GetPositionPacket+0x44>
+ 70e:	81 30       	cpi	r24, 0x01	; 1
+ 710:	18 f0       	brcs	.+6      	; 0x718 <PS2_GetPositionPacket+0x32>
+ 712:	82 30       	cpi	r24, 0x02	; 2
+ 714:	91 f4       	brne	.+36     	; 0x73a <PS2_GetPositionPacket+0x54>
+ 716:	0d c0       	rjmp	.+26     	; 0x732 <PS2_GetPositionPacket+0x4c>
+        {
+            case 0:
+                /* The firstByte must have 0x08 set */
+                if( !(inByte & 0x08) )
+ 718:	99 81       	ldd	r25, Y+1	; 0x01
+ 71a:	93 fd       	sbrc	r25, 3
+ 71c:	03 c0       	rjmp	.+6      	; 0x724 <PS2_GetPositionPacket+0x3e>
+                {
+                    dataCount = 0;
+ 71e:	10 92 58 01 	sts	0x0158, r1
+ 722:	19 c0       	rjmp	.+50     	; 0x756 <PS2_GetPositionPacket+0x70>
+                    return 0;
+                }
+                event->buttonMap = inByte;
+ 724:	f8 01       	movw	r30, r16
+ 726:	92 83       	std	Z+2, r25	; 0x02
+
+                break;
+ 728:	13 c0       	rjmp	.+38     	; 0x750 <PS2_GetPositionPacket+0x6a>
+
+            case 1:
+                event->xPos = inByte;
+ 72a:	99 81       	ldd	r25, Y+1	; 0x01
+ 72c:	f8 01       	movw	r30, r16
+ 72e:	90 83       	st	Z, r25
+                break;
+ 730:	0f c0       	rjmp	.+30     	; 0x750 <PS2_GetPositionPacket+0x6a>
+
+            case 2:
+                event->yPos = inByte;
+ 732:	89 81       	ldd	r24, Y+1	; 0x01
+ 734:	f8 01       	movw	r30, r16
+ 736:	81 83       	std	Z+1, r24	; 0x01
+ 738:	02 c0       	rjmp	.+4      	; 0x73e <PS2_GetPositionPacket+0x58>
+
+        }
+
+
+
+        if( dataCount >= 2 )
+ 73a:	82 30       	cpi	r24, 0x02	; 2
+ 73c:	48 f0       	brcs	.+18     	; 0x750 <PS2_GetPositionPacket+0x6a>
+        {
+            dataCount = 0;
+ 73e:	10 92 58 01 	sts	0x0158, r1
+            if( PS2_ValidateData(event) == 0 )
+ 742:	c8 01       	movw	r24, r16
+ 744:	0e 94 19 03 	call	0x632	; 0x632 <PS2_ValidateData>
+ 748:	88 23       	and	r24, r24
+ 74a:	31 f0       	breq	.+12     	; 0x758 <PS2_GetPositionPacket+0x72>
+ 74c:	81 e0       	ldi	r24, 0x01	; 1
+ 74e:	04 c0       	rjmp	.+8      	; 0x758 <PS2_GetPositionPacket+0x72>
+            {
+                return 0;
+            }
+            return 1;
+        }
+        dataCount++;
+ 750:	8f 5f       	subi	r24, 0xFF	; 255
+ 752:	80 93 58 01 	sts	0x0158, r24
+ 756:	80 e0       	ldi	r24, 0x00	; 0
+    }
+
+
+    return 0;
+}
+ 758:	0f 90       	pop	r0
+ 75a:	cf 91       	pop	r28
+ 75c:	df 91       	pop	r29
+ 75e:	1f 91       	pop	r17
+ 760:	0f 91       	pop	r16
+ 762:	08 95       	ret
+
+00000764 <PS2_SendByte>:
+
+
+void PS2_SendByte(uint8_t outByte)
+{
+    /* Send a RTS */
+    PS2_OUT &= ~(PS2_CLK);
+ 764:	2e 98       	cbi	0x05, 6	; 5
+    PS2_DIR |= (PS2_CLK);
+ 766:	26 9a       	sbi	0x04, 6	; 4
+ 768:	ef ee       	ldi	r30, 0xEF	; 239
+ 76a:	f0 e0       	ldi	r31, 0x00	; 0
+ 76c:	31 97       	sbiw	r30, 0x01	; 1
+ 76e:	f1 f7       	brne	.-4      	; 0x76c <PS2_SendByte+0x8>
+ 770:	00 c0       	rjmp	.+0      	; 0x772 <PS2_SendByte+0xe>
+ 772:	00 00       	nop
+    _delay_us(120);
+
+    PS2_CLR_DATA();
+ 774:	2f 98       	cbi	0x05, 7	; 5
+    PS2_DIR |= (PS2_DATA);
+ 776:	27 9a       	sbi	0x04, 7	; 4
+
+    PS2_DIR &= ~(PS2_CLK);
+ 778:	26 98       	cbi	0x04, 6	; 4
+    PS2_OUT |= (PS2_CLK);
+ 77a:	2e 9a       	sbi	0x05, 6	; 5
+ 77c:	90 e0       	ldi	r25, 0x00	; 0
+ 77e:	20 e0       	ldi	r18, 0x00	; 0
+ 780:	fd e0       	ldi	r31, 0x0D	; 13
+ 782:	fa 95       	dec	r31
+ 784:	f1 f7       	brne	.-4      	; 0x782 <PS2_SendByte+0x1e>
+ 786:	00 00       	nop
+    uint8_t i;
+    uint8_t parity = 0;
+    for( i = 0; i < 8; i++ )
+    {
+        _delay_us(5);
+        PS2_WAIT_CLK_LOW();
+ 788:	1e 99       	sbic	0x03, 6	; 3
+ 78a:	fe cf       	rjmp	.-4      	; 0x788 <PS2_SendByte+0x24>
+ 78c:	3d e0       	ldi	r19, 0x0D	; 13
+ 78e:	3a 95       	dec	r19
+ 790:	f1 f7       	brne	.-4      	; 0x78e <PS2_SendByte+0x2a>
+ 792:	00 00       	nop
+        _delay_us(5);
+
+        PS2_CLR_DATA();
+ 794:	2f 98       	cbi	0x05, 7	; 5
+        if( outByte & 0x01 )
+ 796:	80 ff       	sbrs	r24, 0
+ 798:	02 c0       	rjmp	.+4      	; 0x79e <PS2_SendByte+0x3a>
+        {
+            parity++;
+ 79a:	9f 5f       	subi	r25, 0xFF	; 255
+            PS2_SET_DATA();
+ 79c:	2f 9a       	sbi	0x05, 7	; 5
+        }
+        outByte = outByte >> 1;
+        
+        PS2_WAIT_CLK_HIGH();
+ 79e:	1e 9b       	sbis	0x03, 6	; 3
+ 7a0:	fe cf       	rjmp	.-4      	; 0x79e <PS2_SendByte+0x3a>
+    PS2_OUT |= (PS2_CLK);
+
+
+    uint8_t i;
+    uint8_t parity = 0;
+    for( i = 0; i < 8; i++ )
+ 7a2:	2f 5f       	subi	r18, 0xFF	; 255
+ 7a4:	28 30       	cpi	r18, 0x08	; 8
+ 7a6:	11 f0       	breq	.+4      	; 0x7ac <PS2_SendByte+0x48>
+        if( outByte & 0x01 )
+        {
+            parity++;
+            PS2_SET_DATA();
+        }
+        outByte = outByte >> 1;
+ 7a8:	86 95       	lsr	r24
+ 7aa:	ea cf       	rjmp	.-44     	; 0x780 <PS2_SendByte+0x1c>
+        PS2_WAIT_CLK_HIGH();
+        
+    }
+
+    /* Send Parity */
+    PS2_WAIT_CLK_LOW();
+ 7ac:	1e 99       	sbic	0x03, 6	; 3
+ 7ae:	fe cf       	rjmp	.-4      	; 0x7ac <PS2_SendByte+0x48>
+    PS2_SET_DATA();
+ 7b0:	2f 9a       	sbi	0x05, 7	; 5
+    if( parity & 0x01 )
+ 7b2:	90 fd       	sbrc	r25, 0
+    {
+        PS2_CLR_DATA();
+ 7b4:	2f 98       	cbi	0x05, 7	; 5
+    }
+    PS2_WAIT_CLK_HIGH();
+ 7b6:	1e 9b       	sbis	0x03, 6	; 3
+ 7b8:	fe cf       	rjmp	.-4      	; 0x7b6 <PS2_SendByte+0x52>
+    
+    PS2_WAIT_CLK_LOW();
+ 7ba:	1e 99       	sbic	0x03, 6	; 3
+ 7bc:	fe cf       	rjmp	.-4      	; 0x7ba <PS2_SendByte+0x56>
+    /* Release Data line */
+    PS2_SET_DATA();
+ 7be:	2f 9a       	sbi	0x05, 7	; 5
+    PS2_DIR &= ~(PS2_DATA);
+ 7c0:	27 98       	cbi	0x04, 7	; 4
+    PS2_WAIT_CLK_HIGH();
+ 7c2:	1e 9b       	sbis	0x03, 6	; 3
+ 7c4:	fe cf       	rjmp	.-4      	; 0x7c2 <PS2_SendByte+0x5e>
+
+    /* Wait until the line is ready */
+    PS2_WAIT_DATA_LOW();
+ 7c6:	1f 9b       	sbis	0x03, 7	; 3
+ 7c8:	fe cf       	rjmp	.-4      	; 0x7c6 <PS2_SendByte+0x62>
+    PS2_WAIT_CLK_LOW();
+ 7ca:	1e 99       	sbic	0x03, 6	; 3
+ 7cc:	fe cf       	rjmp	.-4      	; 0x7ca <PS2_SendByte+0x66>
+
+    PS2_WAIT_CLK_HIGH();
+ 7ce:	1e 9b       	sbis	0x03, 6	; 3
+ 7d0:	fe cf       	rjmp	.-4      	; 0x7ce <PS2_SendByte+0x6a>
+    PS2_WAIT_DATA_HIGH();
+ 7d2:	1f 99       	sbic	0x03, 7	; 3
+ 7d4:	fe cf       	rjmp	.-4      	; 0x7d2 <PS2_SendByte+0x6e>
+
+    //_delay_ms(10);
+
+
+}
+ 7d6:	08 95       	ret
+
+000007d8 <PS2_Init>:
+#include <stdint.h>
+#include "PS2_Mouse.h"
+
+
+void PS2_Init(void)
+{
+ 7d8:	0f 93       	push	r16
+ 7da:	1f 93       	push	r17
+ 7dc:	df 93       	push	r29
+ 7de:	cf 93       	push	r28
+ 7e0:	0f 92       	push	r0
+ 7e2:	cd b7       	in	r28, 0x3d	; 61
+ 7e4:	de b7       	in	r29, 0x3e	; 62
+    uint8_t dataIn = 0;
+ 7e6:	19 82       	std	Y+1, r1	; 0x01
+    while( dataIn != 0xAA )
+    {
+        PS2_GetByte(&dataIn);
+ 7e8:	8e 01       	movw	r16, r28
+ 7ea:	0f 5f       	subi	r16, 0xFF	; 255
+ 7ec:	1f 4f       	sbci	r17, 0xFF	; 255
+
+
+void PS2_Init(void)
+{
+    uint8_t dataIn = 0;
+    while( dataIn != 0xAA )
+ 7ee:	03 c0       	rjmp	.+6      	; 0x7f6 <PS2_Init+0x1e>
+    {
+        PS2_GetByte(&dataIn);
+ 7f0:	c8 01       	movw	r24, r16
+ 7f2:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+
+
+void PS2_Init(void)
+{
+    uint8_t dataIn = 0;
+    while( dataIn != 0xAA )
+ 7f6:	89 81       	ldd	r24, Y+1	; 0x01
+ 7f8:	8a 3a       	cpi	r24, 0xAA	; 170
+ 7fa:	d1 f7       	brne	.-12     	; 0x7f0 <PS2_Init+0x18>
+ 7fc:	04 c0       	rjmp	.+8      	; 0x806 <PS2_Init+0x2e>
+        PS2_GetByte(&dataIn);
+    }
+
+    while( dataIn != 0x00 )
+    {
+        PS2_GetByte(&dataIn);
+ 7fe:	c8 01       	movw	r24, r16
+ 800:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+ 804:	03 c0       	rjmp	.+6      	; 0x80c <PS2_Init+0x34>
+ 806:	8e 01       	movw	r16, r28
+ 808:	0f 5f       	subi	r16, 0xFF	; 255
+ 80a:	1f 4f       	sbci	r17, 0xFF	; 255
+    while( dataIn != 0xAA )
+    {
+        PS2_GetByte(&dataIn);
+    }
+
+    while( dataIn != 0x00 )
+ 80c:	89 81       	ldd	r24, Y+1	; 0x01
+ 80e:	88 23       	and	r24, r24
+ 810:	b1 f7       	brne	.-20     	; 0x7fe <PS2_Init+0x26>
+    {
+        PS2_GetByte(&dataIn);
+    }
+
+    dataIn = 0xFF;
+ 812:	8f ef       	ldi	r24, 0xFF	; 255
+ 814:	89 83       	std	Y+1, r24	; 0x01
+    PS2_SendByte(0xFF);
+ 816:	0e 94 b2 03 	call	0x764	; 0x764 <PS2_SendByte>
+    while( dataIn != 0x00 )
+    {
+        PS2_GetByte(&dataIn);
+ 81a:	8e 01       	movw	r16, r28
+ 81c:	0f 5f       	subi	r16, 0xFF	; 255
+ 81e:	1f 4f       	sbci	r17, 0xFF	; 255
+        PS2_GetByte(&dataIn);
+    }
+
+    dataIn = 0xFF;
+    PS2_SendByte(0xFF);
+    while( dataIn != 0x00 )
+ 820:	03 c0       	rjmp	.+6      	; 0x828 <PS2_Init+0x50>
+    {
+        PS2_GetByte(&dataIn);
+ 822:	c8 01       	movw	r24, r16
+ 824:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+        PS2_GetByte(&dataIn);
+    }
+
+    dataIn = 0xFF;
+    PS2_SendByte(0xFF);
+    while( dataIn != 0x00 )
+ 828:	89 81       	ldd	r24, Y+1	; 0x01
+ 82a:	88 23       	and	r24, r24
+ 82c:	d1 f7       	brne	.-12     	; 0x822 <PS2_Init+0x4a>
+    {
+        PS2_GetByte(&dataIn);
+    }
+    dataIn = 0xFF;
+ 82e:	8f ef       	ldi	r24, 0xFF	; 255
+ 830:	89 83       	std	Y+1, r24	; 0x01
+
+
+
+    /* Set Report Rate */
+    /* Set sample rate to 200 */
+    PS2_SendByte(0xF3);
+ 832:	83 ef       	ldi	r24, 0xF3	; 243
+ 834:	0e 94 b2 03 	call	0x764	; 0x764 <PS2_SendByte>
+
+    while( dataIn != 0xFA )
+    {
+        PS2_GetByte(&dataIn);
+ 838:	8e 01       	movw	r16, r28
+ 83a:	0f 5f       	subi	r16, 0xFF	; 255
+ 83c:	1f 4f       	sbci	r17, 0xFF	; 255
+
+    /* Set Report Rate */
+    /* Set sample rate to 200 */
+    PS2_SendByte(0xF3);
+
+    while( dataIn != 0xFA )
+ 83e:	03 c0       	rjmp	.+6      	; 0x846 <PS2_Init+0x6e>
+    {
+        PS2_GetByte(&dataIn);
+ 840:	c8 01       	movw	r24, r16
+ 842:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+
+    /* Set Report Rate */
+    /* Set sample rate to 200 */
+    PS2_SendByte(0xF3);
+
+    while( dataIn != 0xFA )
+ 846:	89 81       	ldd	r24, Y+1	; 0x01
+ 848:	8a 3f       	cpi	r24, 0xFA	; 250
+ 84a:	d1 f7       	brne	.-12     	; 0x840 <PS2_Init+0x68>
+    {
+        PS2_GetByte(&dataIn);
+    }
+
+    PS2_SendByte(20);
+ 84c:	84 e1       	ldi	r24, 0x14	; 20
+ 84e:	0e 94 b2 03 	call	0x764	; 0x764 <PS2_SendByte>
+
+    while( dataIn != 0xFA )
+    {
+        PS2_GetByte(&dataIn);
+ 852:	8e 01       	movw	r16, r28
+ 854:	0f 5f       	subi	r16, 0xFF	; 255
+ 856:	1f 4f       	sbci	r17, 0xFF	; 255
+        PS2_GetByte(&dataIn);
+    }
+
+    PS2_SendByte(20);
+
+    while( dataIn != 0xFA )
+ 858:	03 c0       	rjmp	.+6      	; 0x860 <PS2_Init+0x88>
+    {
+        PS2_GetByte(&dataIn);
+ 85a:	c8 01       	movw	r24, r16
+ 85c:	0e 94 3d 03 	call	0x67a	; 0x67a <PS2_GetByte>
+        PS2_GetByte(&dataIn);
+    }
+
+    PS2_SendByte(20);
+
+    while( dataIn != 0xFA )
+ 860:	89 81       	ldd	r24, Y+1	; 0x01
+ 862:	8a 3f       	cpi	r24, 0xFA	; 250
+ 864:	d1 f7       	brne	.-12     	; 0x85a <PS2_Init+0x82>
+    {
+        PS2_GetByte(&dataIn);
+    }
+
+    PS2_SendByte(0xF4);
+ 866:	84 ef       	ldi	r24, 0xF4	; 244
+ 868:	0e 94 b2 03 	call	0x764	; 0x764 <PS2_SendByte>
+
+}
+ 86c:	0f 90       	pop	r0
+ 86e:	cf 91       	pop	r28
+ 870:	df 91       	pop	r29
+ 872:	1f 91       	pop	r17
+ 874:	0f 91       	pop	r16
+ 876:	08 95       	ret
+
+00000878 <utoa>:
+ 878:	fb 01       	movw	r30, r22
+ 87a:	9f 01       	movw	r18, r30
+ 87c:	42 30       	cpi	r20, 0x02	; 2
+ 87e:	74 f0       	brlt	.+28     	; 0x89c <utoa+0x24>
+ 880:	45 32       	cpi	r20, 0x25	; 37
+ 882:	64 f4       	brge	.+24     	; 0x89c <utoa+0x24>
+ 884:	64 2f       	mov	r22, r20
+ 886:	77 27       	eor	r23, r23
+ 888:	0e 94 62 04 	call	0x8c4	; 0x8c4 <__udivmodhi4>
+ 88c:	80 5d       	subi	r24, 0xD0	; 208
+ 88e:	8a 33       	cpi	r24, 0x3A	; 58
+ 890:	0c f0       	brlt	.+2      	; 0x894 <utoa+0x1c>
+ 892:	89 5d       	subi	r24, 0xD9	; 217
+ 894:	81 93       	st	Z+, r24
+ 896:	cb 01       	movw	r24, r22
+ 898:	00 97       	sbiw	r24, 0x00	; 0
+ 89a:	a1 f7       	brne	.-24     	; 0x884 <utoa+0xc>
+ 89c:	10 82       	st	Z, r1
+ 89e:	c9 01       	movw	r24, r18
+ 8a0:	0c 94 52 04 	jmp	0x8a4	; 0x8a4 <strrev>
+
+000008a4 <strrev>:
+ 8a4:	dc 01       	movw	r26, r24
+ 8a6:	fc 01       	movw	r30, r24
+ 8a8:	67 2f       	mov	r22, r23
+ 8aa:	71 91       	ld	r23, Z+
+ 8ac:	77 23       	and	r23, r23
+ 8ae:	e1 f7       	brne	.-8      	; 0x8a8 <strrev+0x4>
+ 8b0:	32 97       	sbiw	r30, 0x02	; 2
+ 8b2:	04 c0       	rjmp	.+8      	; 0x8bc <strrev+0x18>
+ 8b4:	7c 91       	ld	r23, X
+ 8b6:	6d 93       	st	X+, r22
+ 8b8:	70 83       	st	Z, r23
+ 8ba:	62 91       	ld	r22, -Z
+ 8bc:	ae 17       	cp	r26, r30
+ 8be:	bf 07       	cpc	r27, r31
+ 8c0:	c8 f3       	brcs	.-14     	; 0x8b4 <strrev+0x10>
+ 8c2:	08 95       	ret
+
+000008c4 <__udivmodhi4>:
+ 8c4:	aa 1b       	sub	r26, r26
+ 8c6:	bb 1b       	sub	r27, r27
+ 8c8:	51 e1       	ldi	r21, 0x11	; 17
+ 8ca:	07 c0       	rjmp	.+14     	; 0x8da <__udivmodhi4_ep>
+
+000008cc <__udivmodhi4_loop>:
+ 8cc:	aa 1f       	adc	r26, r26
+ 8ce:	bb 1f       	adc	r27, r27
+ 8d0:	a6 17       	cp	r26, r22
+ 8d2:	b7 07       	cpc	r27, r23
+ 8d4:	10 f0       	brcs	.+4      	; 0x8da <__udivmodhi4_ep>
+ 8d6:	a6 1b       	sub	r26, r22
+ 8d8:	b7 0b       	sbc	r27, r23
+
+000008da <__udivmodhi4_ep>:
+ 8da:	88 1f       	adc	r24, r24
+ 8dc:	99 1f       	adc	r25, r25
+ 8de:	5a 95       	dec	r21
+ 8e0:	a9 f7       	brne	.-22     	; 0x8cc <__udivmodhi4_loop>
+ 8e2:	80 95       	com	r24
+ 8e4:	90 95       	com	r25
+ 8e6:	bc 01       	movw	r22, r24
+ 8e8:	cd 01       	movw	r24, r26
+ 8ea:	08 95       	ret
+
+000008ec <_exit>:
+ 8ec:	f8 94       	cli
+
+000008ee <__stop_program>:
+ 8ee:	ff cf       	rjmp	.-2      	; 0x8ee <__stop_program>
