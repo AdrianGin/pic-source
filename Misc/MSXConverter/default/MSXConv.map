@@ -1,17 +1,11 @@
 Archive member included because of file (symbol)
 
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
-                              d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o (exit)
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+                              d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o (exit)
+d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
                               MSXConv.o (__do_copy_data)
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
                               MSXConv.o (__do_clear_bss)
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
-                              MSXConv.o (utoa)
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
-                              d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o) (strrev)
-d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_udivmodhi4.o)
-                              d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o) (__udivmodhi4)
 
 Allocating common symbols
 Common symbol       size              file
@@ -35,15 +29,15 @@ signature        0x00840000         0x00000400         rw !x
 Linker script and memory map
 
 Address of section .data set to 0x800100
-LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+LOAD d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
 LOAD MSXConv.o
 LOAD hardUart.o
 LOAD ringbuffer.o
 LOAD MSX_Mouse.o
 LOAD PS2_Mouse.o
-LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
-LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a
-LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
+LOAD d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a
+LOAD d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5\libc.a
+LOAD d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a
 
 .hash
  *(.hash)
@@ -135,9 +129,9 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x8f0
+.text           0x00000000      0x7a0
  *(.vectors)
- .vectors       0x00000000       0x68 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .vectors       0x00000000       0x68 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
                 0x00000000                __vector_default
                 0x00000000                __vectors
  *(.vectors)
@@ -162,20 +156,20 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000068        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .init0         0x00000068        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
                 0x00000068                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000068        0xc d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .init2         0x00000068        0xc d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000074       0x16 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+ .init4         0x00000074       0x16 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
                 0x00000074                __do_copy_data
- .init4         0x0000008a       0x10 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+ .init4         0x0000008a       0x10 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
                 0x0000008a                __do_clear_bss
  *(.init4)
  *(.init5)
@@ -187,10 +181,10 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000009a        0x8 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .init9         0x0000009a        0x8 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
  *(.init9)
  *(.text)
- .text          0x000000a2        0x4 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .text          0x000000a2        0x4 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
                 0x000000a2                __vector_22
                 0x000000a2                __vector_1
                 0x000000a2                __vector_24
@@ -215,60 +209,50 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
                 0x000000a2                __vector_14
                 0x000000a2                __vector_10
                 0x000000a2                __vector_16
- .text          0x000000a6      0x212 MSXConv.o
-                0x000000a6                __vector_18
-                0x000000f2                __vector_20
-                0x00000158                main
- .text          0x000002b8      0x1a0 hardUart.o
-                0x000002b8                uartInit
-                0x000002ea                uartSetBaud
-                0x000002fc                uartDisable
-                0x0000030e                uartTx
-                0x0000035c                uartNewLine
-                0x00000376                uartTxString_P
-                0x000003a0                uartTxString
-                0x000003ca                uartTxDump_P
-                0x00000412                uartTxDump
- .text          0x00000458      0x112 ringbuffer.o
-                0x00000458                ringbuffer_get
-                0x0000049a                ringbuffer_put
-                0x00000510                ringbuffer_len
-                0x00000542                ringbuffer_isEmpty
-                0x0000055e                ringbuffer_clear
- .text          0x0000056a       0xc8 MSX_Mouse.o
-                0x0000056a                MSX_ValidateInputs
-                0x00000598                MSX_SendButtons
-                0x000005c4                MSX_SendPosition
- .text          0x00000632      0x246 PS2_Mouse.o
-                0x00000632                PS2_ValidateData
-                0x0000067a                PS2_GetByte
-                0x000006e6                PS2_GetPositionPacket
-                0x00000764                PS2_SendByte
-                0x000007d8                PS2_Init
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
- .text          0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_udivmodhi4.o)
-                0x00000878                . = ALIGN (0x2)
+ .text          0x000000a6       0xb2 MSXConv.o
+                0x000000a6                __vector_20
+                0x0000010c                __vector_18
+ .text          0x00000158      0x182 hardUart.o
+                0x00000158                uartInit
+                0x0000018a                uartSetBaud
+                0x0000019c                uartDisable
+                0x000001ae                uartTx
+                0x000001fc                uartTxDump
+                0x00000230                uartTxDump_P
+                0x00000274                uartTxString
+                0x00000298                uartTxString_P
+                0x000002c0                uartNewLine
+ .text          0x000002da       0xee ringbuffer.o
+                0x000002da                ringbuffer_get
+                0x0000031c                ringbuffer_len
+                0x00000350                ringbuffer_put
+                0x000003a2                ringbuffer_isEmpty
+                0x000003bc                ringbuffer_clear
+ .text          0x000003c8       0xb8 MSX_Mouse.o
+                0x000003c8                MSX_SendPosition
+                0x0000043a                MSX_SendButtons
+                0x00000452                MSX_ValidateInputs
+ .text          0x00000480      0x26a PS2_Mouse.o
+                0x00000480                PS2_ValidateData
+                0x000004c6                PS2_SendByte
+                0x00000536                PS2_GetByte
+                0x000005a4                PS2_GetPositionPacket
+                0x00000652                PS2_Init
+ .text          0x000006ea        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .text          0x000006ea        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .text          0x000006ea        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
+                0x000006ea                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
- .text.libgcc   0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
- .text.libgcc   0x00000878        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
- .text.avr-libc
-                0x00000878       0x2c d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
-                0x00000878                utoa
- .text.avr-libc
-                0x000008a4       0x20 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
-                0x000008a4                strrev
- .text.libgcc   0x000008c4       0x28 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_udivmodhi4.o)
-                0x000008c4                __udivmodhi4
-                0x000008ec                . = ALIGN (0x2)
+ .text.startup  0x000006ea       0xb2 MSXConv.o
+                0x000006ea                main
+ .text.libgcc   0x0000079c        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x0000079c        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x0000079c        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
+                0x0000079c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000008ec        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
-                0x000008ec                _exit
-                0x000008ec                exit
+ .fini9         0x0000079c        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+                0x0000079c                _exit
+                0x0000079c                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -287,71 +271,65 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000008ec        0x4 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ .fini0         0x0000079c        0x4 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000008f0                _etext = .
+                0x000007a0                _etext = .
 
-.data           0x00800100       0x38 load address 0x000008f0
+.data           0x00800100       0x26 load address 0x000007a0
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
- .data          0x00800100        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
- .data          0x00800100       0x23 MSXConv.o
-                0x00800112                PrimaryUART
-                0x00800122                dataSent
- .data          0x00800123       0x14 hardUart.o
-                0x00800123                TransmitBuffer
-                0x0080012d                ReceiveBuffer
- .data          0x00800137        0x0 ringbuffer.o
- .data          0x00800137        0x0 MSX_Mouse.o
- .data          0x00800137        0x0 PS2_Mouse.o
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
- .data          0x00800137        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_udivmodhi4.o)
+ .data          0x00800100        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
+ .data          0x00800100       0x11 MSXConv.o
+                0x00800100                dataSent
+                0x00800101                PrimaryUART
+ .data          0x00800111       0x14 hardUart.o
+                0x00800111                ReceiveBuffer
+                0x0080011b                TransmitBuffer
+ .data          0x00800125        0x0 ringbuffer.o
+ .data          0x00800125        0x0 MSX_Mouse.o
+ .data          0x00800125        0x0 PS2_Mouse.o
+ .data          0x00800125        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .data          0x00800125        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .data          0x00800125        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x00800138                . = ALIGN (0x2)
- *fill*         0x00800137        0x1 00
-                0x00800138                _edata = .
-                0x00800138                PROVIDE (__data_end, .)
+                0x00800126                . = ALIGN (0x2)
+ *fill*         0x00800125        0x1 00
+                0x00800126                _edata = .
+                0x00800126                PROVIDE (__data_end, .)
 
-.bss            0x00800138       0x29
-                0x00800138                PROVIDE (__bss_start, .)
+.bss            0x00800126       0x29
+                0x00800126                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x00800138        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
- .bss           0x00800138        0x0 MSXConv.o
- .bss           0x00800138       0x20 hardUart.o
- .bss           0x00800158        0x0 ringbuffer.o
- .bss           0x00800158        0x0 MSX_Mouse.o
- .bss           0x00800158        0x1 PS2_Mouse.o
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
- .bss           0x00800159        0x0 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_udivmodhi4.o)
+ .bss           0x00800126        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
+ .bss           0x00800126        0x0 MSXConv.o
+ .bss           0x00800126       0x20 hardUart.o
+ .bss           0x00800146        0x0 ringbuffer.o
+ .bss           0x00800146        0x0 MSX_Mouse.o
+ .bss           0x00800146        0x1 PS2_Mouse.o
+ .bss           0x00800147        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .bss           0x00800147        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00800147        0x0 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800159        0x7 MSXConv.o
-                0x00800159                readyData
-                0x0080015c                event
-                0x0080015f                dataReady
- COMMON         0x00800160        0x1 hardUart.o
-                0x00800160                transmitState
-                0x00800161                PROVIDE (__bss_end, .)
-                0x000008f0                __data_load_start = LOADADDR (.data)
-                0x00000928                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800147        0x7 MSXConv.o
+                0x00800147                readyData
+                0x0080014a                event
+                0x0080014d                dataReady
+ COMMON         0x0080014e        0x1 hardUart.o
+                0x0080014e                transmitState
+                0x0080014f                PROVIDE (__bss_end, .)
+                0x000007a0                __data_load_start = LOADADDR (.data)
+                0x000007c6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800161        0x0
-                0x00800161                PROVIDE (__noinit_start, .)
+.noinit         0x0080014f        0x0
+                0x0080014f                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800161                PROVIDE (__noinit_end, .)
-                0x00800161                _end = .
-                0x00800161                PROVIDE (__heap_start, .)
+                0x0080014f                PROVIDE (__noinit_end, .)
+                0x0080014f                _end = .
+                0x0080014f                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -369,17 +347,13 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
 .signature
  *(.signature*)
 
-.stab           0x00000000      0x8d0
+.stab           0x00000000      0x6cc
  *(.stab)
- .stab          0x00000000      0x6cc d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
- .stab          0x000006cc      0x12c d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(utoa.o)
-                                0x138 (size before relaxing)
- .stab          0x000007f8       0xd8 d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
-                                 0xe4 (size before relaxing)
+ .stab          0x00000000      0x6cc d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
 
-.stabstr        0x00000000      0x14d
+.stabstr        0x00000000       0x85
  *(.stabstr)
- .stabstr       0x00000000      0x14d d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm328p.o
+ .stabstr       0x00000000       0x85 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/../../../../avr/lib/avr5/crtm328p.o
 
 .stab.excl
  *(.stab.excl)
@@ -408,86 +382,90 @@ LOAD d:/avrtoolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xa0
+.debug_aranges  0x00000000      0x108
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x20 MSXConv.o
+                0x00000000       0x28 MSXConv.o
  .debug_aranges
-                0x00000020       0x20 hardUart.o
+                0x00000028       0x20 hardUart.o
  .debug_aranges
-                0x00000040       0x20 ringbuffer.o
+                0x00000048       0x20 ringbuffer.o
  .debug_aranges
-                0x00000060       0x20 MSX_Mouse.o
+                0x00000068       0x20 MSX_Mouse.o
  .debug_aranges
-                0x00000080       0x20 PS2_Mouse.o
+                0x00000088       0x20 PS2_Mouse.o
+ .debug_aranges
+                0x000000a8       0x20 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .debug_aranges
+                0x000000c8       0x20 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .debug_aranges
+                0x000000e8       0x20 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
 
 .debug_pubnames
-                0x00000000      0x28b
  *(.debug_pubnames)
- .debug_pubnames
-                0x00000000       0x7e MSXConv.o
- .debug_pubnames
-                0x0000007e       0xd5 hardUart.o
- .debug_pubnames
-                0x00000153       0x77 ringbuffer.o
- .debug_pubnames
-                0x000001ca       0x52 MSX_Mouse.o
- .debug_pubnames
-                0x0000021c       0x6f PS2_Mouse.o
 
-.debug_info     0x00000000      0xe5a
+.debug_info     0x00000000     0x11d0
  *(.debug_info)
- .debug_info    0x00000000      0x2f4 MSXConv.o
- .debug_info    0x000002f4      0x484 hardUart.o
- .debug_info    0x00000778      0x1ba ringbuffer.o
- .debug_info    0x00000932      0x257 MSX_Mouse.o
- .debug_info    0x00000b89      0x2d1 PS2_Mouse.o
+ .debug_info    0x00000000      0x345 MSXConv.o
+ .debug_info    0x00000345      0x4ca hardUart.o
+ .debug_info    0x0000080f      0x1a0 ringbuffer.o
+ .debug_info    0x000009af      0x21a MSX_Mouse.o
+ .debug_info    0x00000bc9      0x370 PS2_Mouse.o
+ .debug_info    0x00000f39       0xdd d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .debug_info    0x00001016       0xdd d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .debug_info    0x000010f3       0xdd d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x593
+.debug_abbrev   0x00000000      0x662
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x117 MSXConv.o
- .debug_abbrev  0x00000117      0x10c hardUart.o
- .debug_abbrev  0x00000223      0x10c ringbuffer.o
- .debug_abbrev  0x0000032f      0x107 MSX_Mouse.o
- .debug_abbrev  0x00000436      0x15d PS2_Mouse.o
+ .debug_abbrev  0x00000000      0x103 MSXConv.o
+ .debug_abbrev  0x00000103      0x15d hardUart.o
+ .debug_abbrev  0x00000260       0xbe ringbuffer.o
+ .debug_abbrev  0x0000031e      0x122 MSX_Mouse.o
+ .debug_abbrev  0x00000440      0x1e6 PS2_Mouse.o
+ .debug_abbrev  0x00000626       0x14 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .debug_abbrev  0x0000063a       0x14 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .debug_abbrev  0x0000064e       0x14 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
 
-.debug_line     0x00000000      0xd88
+.debug_line     0x00000000      0x844
  *(.debug_line)
- .debug_line    0x00000000      0x2cb MSXConv.o
- .debug_line    0x000002cb      0x2f0 hardUart.o
- .debug_line    0x000005bb      0x150 ringbuffer.o
- .debug_line    0x0000070b      0x22d MSX_Mouse.o
- .debug_line    0x00000938      0x450 PS2_Mouse.o
+ .debug_line    0x00000000      0x17e MSXConv.o
+ .debug_line    0x0000017e      0x15f hardUart.o
+ .debug_line    0x000002dd       0x8a ringbuffer.o
+ .debug_line    0x00000367      0x128 MSX_Mouse.o
+ .debug_line    0x0000048f      0x20e PS2_Mouse.o
+ .debug_line    0x0000069d       0x88 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_exit.o)
+ .debug_line    0x00000725       0x91 d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_copy_data.o)
+ .debug_line    0x000007b6       0x8e d:/avr toolchain/bin/../lib/gcc/avr/4.6.2/avr5\libgcc.a(_clear_bss.o)
 
-.debug_frame    0x00000000      0x1e0
+.debug_frame    0x00000000      0x344
  *(.debug_frame)
- .debug_frame   0x00000000       0x40 MSXConv.o
- .debug_frame   0x00000040       0xa0 hardUart.o
- .debug_frame   0x000000e0       0x60 ringbuffer.o
- .debug_frame   0x00000140       0x40 MSX_Mouse.o
- .debug_frame   0x00000180       0x60 PS2_Mouse.o
+ .debug_frame   0x00000000       0xd4 MSXConv.o
+ .debug_frame   0x000000d4      0x134 hardUart.o
+ .debug_frame   0x00000208       0x64 ringbuffer.o
+ .debug_frame   0x0000026c       0x44 MSX_Mouse.o
+ .debug_frame   0x000002b0       0x94 PS2_Mouse.o
 
-.debug_str      0x00000000      0x469
+.debug_str      0x00000000      0x46b
  *(.debug_str)
  .debug_str     0x00000000      0x190 MSXConv.o
                                 0x1d0 (size before relaxing)
- .debug_str     0x00000190      0x122 hardUart.o
-                                0x258 (size before relaxing)
- .debug_str     0x000002b2       0x95 ringbuffer.o
+ .debug_str     0x00000190      0x118 hardUart.o
+                                0x24e (size before relaxing)
+ .debug_str     0x000002a8       0x95 ringbuffer.o
                                 0x118 (size before relaxing)
- .debug_str     0x00000347       0x9d MSX_Mouse.o
-                                0x169 (size before relaxing)
- .debug_str     0x000003e4       0x85 PS2_Mouse.o
-                                0x195 (size before relaxing)
+ .debug_str     0x0000033d       0xa9 MSX_Mouse.o
+                                0x16c (size before relaxing)
+ .debug_str     0x000003e6       0x85 PS2_Mouse.o
+                                0x1b0 (size before relaxing)
 
-.debug_loc      0x00000000      0x703
+.debug_loc      0x00000000      0xbb9
  *(.debug_loc)
- .debug_loc     0x00000000       0x4f MSXConv.o
- .debug_loc     0x0000004f      0x32a hardUart.o
- .debug_loc     0x00000379       0xa0 ringbuffer.o
- .debug_loc     0x00000419       0xbd MSX_Mouse.o
- .debug_loc     0x000004d6      0x22d PS2_Mouse.o
+ .debug_loc     0x00000000      0x22f MSXConv.o
+ .debug_loc     0x0000022f      0x4e9 hardUart.o
+ .debug_loc     0x00000718       0xf6 ringbuffer.o
+ .debug_loc     0x0000080e      0x1b4 MSX_Mouse.o
+ .debug_loc     0x000009c2      0x1f7 PS2_Mouse.o
 
 .debug_macinfo
  *(.debug_macinfo)

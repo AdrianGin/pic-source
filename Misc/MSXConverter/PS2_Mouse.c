@@ -29,7 +29,7 @@ void PS2_Init(void)
 
 
     /* Set Report Rate */
-    /* Set sample rate to 200 */
+    /* Set sample rate to 20 */
     PS2_SendByte(0xF3);
 
     while( dataIn != 0xFA )
@@ -37,71 +37,104 @@ void PS2_Init(void)
         PS2_GetByte(&dataIn);
     }
 
-    PS2_SendByte(20);
-
+    PS2_SendByte(80);
     while( dataIn != 0xFA )
     {
         PS2_GetByte(&dataIn);
     }
 
+	//Set poll mode
+	PS2_SendByte(0xF0);
+    while( dataIn != 0xFA )
+    {
+        PS2_GetByte(&dataIn);
+    }
+
+	//Begin reporting steaming.
     PS2_SendByte(0xF4);
 
 }
 
 
+
+
 uint8_t PS2_GetPositionPacket(PS2_Position_t* event)
 {
     uint8_t inByte;
+	uint8_t dataIn = 0;
+	uint8_t status = PS2_DATA_ERROR;
+	uint8_t i;
     static uint8_t dataCount = 0;
 
-    uint8_t status = PS2_GetByte(&inByte);
+	if( dataCount == 0 )
+	{
+		PS2_SendByte(0xEB);
+		//Wait for ACK
+		for(i =0; i < 250; i++)
+		{
+	        PS2_GetByte(&dataIn);
+			if(dataIn == 0xFA)
+			{
+				break;
+			}
+	    }
+	}
 
+
+
+/*
     if( status == PS2_DATA_ERROR )
     {
         dataCount = 0;
         return 0;
-    }
+    }*/
 
-    if( status == PS2_DATA_READY )
-    {
-        switch(dataCount)
-        {
-            case 0:
-                /* The firstByte must have 0x08 set */
-                if( !(inByte & 0x08) )
-                {
-                    dataCount = 0;
-                    return 0;
-                }
-                event->buttonMap = inByte;
+	for(i =0; i < 250; i++)
+	{
+    	status = PS2_GetByte(&inByte);
 
-                break;
+	    if( status == PS2_DATA_READY )
+	    {
+	        switch(dataCount)
+	        {
+	            case 0:
+	                /* The firstByte must have 0x08 set */
+	                if( !(inByte & 0x08) )
+	                {
+	                    dataCount = 0;
+	                    return 0;
+	                }
+	                event->buttonMap = inByte;
 
-            case 1:
-                event->xPos = inByte;
-                break;
+	                break;
 
-            case 2:
-                event->yPos = inByte;
-                break;
+	            case 1:
+	                event->xPos = inByte;
+	                break;
 
-        }
+	            case 2:
+	                event->yPos = inByte;
+	                break;
 
-
-
-        if( dataCount >= 2 )
-        {
-            dataCount = 0;
-            if( PS2_ValidateData(event) == 0 )
-            {
-                return 0;
-            }
-            return 1;
-        }
-        dataCount++;
-    }
+	        }
 
 
+
+	        if( dataCount >= 2 )
+	        {
+	            dataCount = 0;
+	            if( PS2_ValidateData(event) == 0 )
+	            {
+	                return 0;
+	            }
+	            return 1;
+	        }
+	        dataCount++;
+	    }
+	}
+
+
+	dataCount = 0;
     return 0;
 }
 

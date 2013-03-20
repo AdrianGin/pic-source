@@ -75,7 +75,7 @@ uint8_t MSX_SendButtons(uint8_t buttonMap)
 
     if( buttonCount )
     {
-        _delay_ms(20);
+        //_delay_ms(20);
     }
 
     return buttonCount;

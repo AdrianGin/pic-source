@@ -66,6 +66,9 @@ int main(void)
             uint8_t yPos = event.yPos;
             uint8_t buttonMap = event.buttonMap;
 
+			uartTx(&PrimaryUART, buttonMap);
+
+/*
             uartTxString(&PrimaryUART, "Buttons: ");
             utoa(buttonMap, outputString, 16);
             uartTxString(&PrimaryUART, outputString);
@@ -79,9 +82,10 @@ int main(void)
             uartTxString(&PrimaryUART, "Y: ");
             utoa(yPos, outputString, 10);
             uartTxString(&PrimaryUART, outputString);
-            uartNewLine(&PrimaryUART);
+            uartNewLine(&PrimaryUART);*/
             //MSX_SendPosition(event.xPos, event.yPos);         
         }
+
 
         if( MSX_Ready == 0 )
         {
