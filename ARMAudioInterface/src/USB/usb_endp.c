@@ -28,6 +28,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usb_lib.h"
 #include "usb_istr.h"
+#include "usb_conf.h"
 #include <string.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -41,12 +42,11 @@
 AudioBuffer_t streambuffers[AUDIO_BUFFER_COUNT];
 uint8_t bufferCount;
 
+
 uint16_t Stream_Buff[256];
 uint16_t Stream_Buff2[256];
 uint16_t In_Data_Offset;
 uint16_t In_Data_Offset2;
-extern uint16_t Out_Data_Offset;
-extern uint16_t Out_Data_Offset2;
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -70,7 +70,6 @@ void EP1_OUT_Callback(void)
 		//memcpy( (uint8_t*)&streambuffers[bufferCount].buffer, (uint8_t*)(PMAAddr + ENDP1_BUF0Addr * 2), Data_Len);
 		streambuffers[bufferCount].dataLen = Data_Len;
 		streambuffers[bufferCount].dataPtr = 0;
-
 	}
 	else
 	{
@@ -82,6 +81,7 @@ void EP1_OUT_Callback(void)
 		streambuffers[bufferCount].dataPtr = 0;
 	}
 
+	//xprintf("%d\n",Data_Len);
 	streambuffers[bufferCount].dataLen = Data_Len;
 	streambuffers[bufferCount].dataPtr = 0;
 	bufferCount++;

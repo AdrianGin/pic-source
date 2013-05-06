@@ -254,7 +254,7 @@ void TIM2_IRQHandler(void)
 
 
 
-    if( *inData )
+    if( *inData  && ((uint8_t)(MUTE_DATA) == 0) )
     {
 
 

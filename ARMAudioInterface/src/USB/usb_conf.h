@@ -30,30 +30,34 @@
 #ifndef __USB_CONF_H
 #define __USB_CONF_H
 
+//in kHz
+#define MAX_AUDIO_FREQ	(96)
+#define MAX_AUDIO_BIT_RESOLUTION (24)
+#define MAX_AUDIO_CHANNELS (2)
+#define MAX_AUDIO_PACKET_SIZE	(MAX_AUDIO_FREQ*MAX_AUDIO_BIT_RESOLUTION*MAX_AUDIO_CHANNELS / 8)
+
 /*-------------------------------------------------------------*/
 /* EP_NUM */
 /* defines how many endpoints are used by the device */
 /*-------------------------------------------------------------*/
-
 #define EP_NUM              (2)
-
 /*-------------------------------------------------------------*/
 /* --------------   Buffer Description Table  -----------------*/
 /*-------------------------------------------------------------*/
 /* buffer table base address */
 /* buffer table base address */
 #define BTABLE_ADDRESS      (0x00)
-
 /* EP0  */
 /* rx/tx buffer base address */
 #define ENDP0_RXADDR        (EP_NUM*0x08)
 #define ENDP0_TXADDR        (ENDP0_RXADDR+0x40)
 
-
 /* EP1  */
 /* buffer base address */
-#define ENDP1_BUF0Addr      (0x90)
-#define ENDP1_BUF1Addr      (0xC0)
+#define ENDP1_BUF0Addr      (ENDP0_TXADDR+0x40)
+//BUF1 uses the same address
+#define ENDP1_BUF1Addr      (ENDP1_BUF0Addr)
+
 
 /*-------------------------------------------------------------*/
 /* -------------------   ISTR events  -------------------------*/

@@ -188,7 +188,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
 		//0xBB,
 		//0x00,
 		//0x7D,
-		0x44,
+		0x44, //44kHz
 		0xAC,
     0x00,
     /* 11 byte*/
@@ -200,8 +200,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_ENDPOINT_TYPE_ISOCHRONOUS,        /* bmAttributes */
     //44*2,                                 /* wMaxPacketSize 22 bytes*/
 		//0x16
-    0x60,
-		0x01,
+    0x60, 0x01,
     0x01,                                 /* bInterval */
     0x00,                                 /* bRefresh */
     0x00,                                 /* bSynchAddress */

@@ -131,6 +131,7 @@ void Speaker_init()
   bDeviceState = UNCONNECTED;
 }
 
+
 /*******************************************************************************
 * Function Name  : Speaker_Reset.
 * Description    : Speaker reset routine.

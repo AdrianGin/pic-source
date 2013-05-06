@@ -63,7 +63,6 @@
 /* by the device application software */
 #define IMR_MSK (CNTR_CTRM  | CNTR_RESETM | CNTR_ERRM | CNTR_ESOFM | CNTR_DOVRM)
 
-
 #define CTR_CALLBACK
 /*#define DOVR_CALLBACK*/
 #define ERR_CALLBACK
