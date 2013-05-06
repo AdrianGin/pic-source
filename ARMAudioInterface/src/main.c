@@ -54,9 +54,17 @@ extern uint8_t IT_Clock_Sent;
 int main(void)
 {
   Set_System();
+
+  USART_Configuration();
+
+
+
   Set_USBClock();
   USB_Config();
   USB_Init();
+
+  xprintf("Hi Dr. Nick!\n");
+
   Speaker_Config();
   while (1)
   {}

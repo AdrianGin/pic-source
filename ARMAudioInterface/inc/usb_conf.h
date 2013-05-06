@@ -46,8 +46,9 @@
 
 /* EP0  */
 /* rx/tx buffer base address */
-#define ENDP0_RXADDR        (0x10)
-#define ENDP0_TXADDR        (0x50)
+#define ENDP0_RXADDR        (EP_NUM*0x08)
+#define ENDP0_TXADDR        (ENDP0_RXADDR+0x40)
+
 
 /* EP1  */
 /* buffer base address */
@@ -69,7 +70,7 @@
 /*#define WKUP_CALLBACK*/
 /*#define SUSP_CALLBACK*/
 /*#define RESET_CALLBACK*/
-#define SOF_CALLBACK
+//#define SOF_CALLBACK
 /*#define ESOF_CALLBACK*/
 
 

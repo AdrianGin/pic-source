@@ -14,17 +14,11 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" name="ARM_DBG" parent="cdt.managedbuild.config.arm.thumb.executable.debug" postannouncebuildStep="" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" preannouncebuildStep="" prebuildStep="make -v">
+				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" name="ARM_DBG" parent="cdt.managedbuild.config.arm.thumb.executable.debug" postannouncebuildStep="" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" preannouncebuildStep="" prebuildStep="">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122." name="/" resourcePath="">
-						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.arm.thumb.executable.debug.762435628" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.thumb.executable.debug">
+						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.arm.thumb.executable.debug.762435628" name="ARM Tool Chain" nonInternalBuilderId="cdt.managedbuild.target.arm.builder.thumb.executable.debug" superClass="cdt.managedbuild.toolchain.arm.thumb.executable.debug">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.arm.thumb.executable.debug.1566335397" superClass="cdt.managedbuild.target.arm.thumb.executable.debug"/>
-							<builder arguments="-k -j4" buildPath="${workspace_loc:/STM32TouchPanel/Debug}" command="make" errorParsers="" id="cdt.managedbuild.target.arm.builder.thumb.executable.debug.270251497" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make" superClass="cdt.managedbuild.target.arm.builder.thumb.executable.debug">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="ARM_DBG"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="ARM"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="GCC"/>
-								</outputEntries>
-							</builder>
+							<builder arguments="-k -j4" buildPath="${workspace_loc:/ARMAudioInterface/ARM_DBG}" id="cdt.managedbuild.target.arm.builder.thumb.executable.debug.981928435" name="Gnu Make" superClass="cdt.managedbuild.target.arm.builder.thumb.executable.debug"/>
 							<tool command="armcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="cdt.managedbuild.tool.arm.armcc.thumb.executable.debug.948706446" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.thumb.executable.debug">
 								<option id="arm.rvct.armcc.option.INCLUDE_PATH.1783169747" name="User Include Paths (-I)" superClass="arm.rvct.armcc.option.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\CM3\CoreSupport}&quot;"/>
@@ -143,7 +137,7 @@
 								<inputType id="cdt.managedbuild.tool.abstract.arm.armasm.input.678903458" superClass="cdt.managedbuild.tool.abstract.arm.armasm.input"/>
 							</tool>
 							<tool command="armlink" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="cdt.managedbuild.tool.arm.armlink.thumb.executable.debug.1081269592" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.thumb.executable.debug">
-								<option id="arm.rvct.armlink.option.SCATTER.742750398" name="Scatter description&#10;file (--scatter=)" superClass="arm.rvct.armlink.option.SCATTER" value="M:\Robotics\Source\ArmTouchPanel\Project.sct" valueType="string"/>
+								<option id="arm.rvct.armlink.option.SCATTER.742750398" name="Scatter description&#10;file (--scatter=)" superClass="arm.rvct.armlink.option.SCATTER" value="M:\Robotics\Source\ARMAudioInterface\Project.sct" valueType="string"/>
 								<option id="arm.rvct.armlink.option.CALL_GRAPH.118547589" name="Static Callgraph (--callgraph)" superClass="arm.rvct.armlink.option.CALL_GRAPH" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.MAP.933067437" name="Image map (--map)" superClass="arm.rvct.armlink.option.MAP" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.SYMBOLS.1629790347" name="Symbols (--symbols)" superClass="arm.rvct.armlink.option.SYMBOLS" value="true" valueType="boolean"/>
@@ -158,7 +152,7 @@
 								<option id="arm.rvct.armlink.option.XREF.1074168359" name="Section cross-references (--xref)" superClass="arm.rvct.armlink.option.XREF" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.STRICT.1633800772" name="Report &quot;might fail&quot; conditions (--strict)" superClass="arm.rvct.armlink.option.STRICT" value="true" valueType="boolean"/>
 								<option id="arm.rvct.armlink.option.VERBOSE.621469875" name="Give progress information while linking (--verbose)" superClass="arm.rvct.armlink.option.VERBOSE" value="true" valueType="boolean"/>
-								<option id="arm.rvct.armlink.option.LIST.938054816" name="List file name&#10; (--list=)" superClass="arm.rvct.armlink.option.LIST" value="M:\Robotics\Source\MIDIPiano\ARM_DBG\Project.lst" valueType="string"/>
+								<option id="arm.rvct.armlink.option.LIST.938054816" name="List file name&#10; (--list=)" superClass="arm.rvct.armlink.option.LIST" value="M:\Robotics\Source\ARMAudioInterface\Project.lst" valueType="string"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
@@ -236,7 +230,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;/${ProjName}/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
 								</option>
 								<option id="arm.rvct.armcc.option.OPTTIME.1352521867" name="Optimize for (-O)" superClass="arm.rvct.armcc.option.OPTTIME" value="arm.rvct.armcc.option.OPTTIME.time" valueType="enumerated"/>
 								<option id="arm.rvct.armcc.option.CONFIG_DEFINE.2137614514" name="List of #DEFINEs (-D)" superClass="arm.rvct.armcc.option.CONFIG_DEFINE" valueType="definedSymbols">
@@ -791,7 +785,7 @@
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
 		</configuration>
 		<configuration configurationName="ARM_DBG">
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
+			<resource resourceType="FOLDER" workspacePath="/ARMAudioInterface/ARM_DBG"/>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>

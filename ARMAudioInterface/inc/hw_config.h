@@ -49,6 +49,9 @@
 #define BufferSize        100
 #define CodecAddress      0x27
 
+//#define DAC_OUTPUT_L		  PA4
+//#define DAC_OUTPUTS_R		  PA5
+
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/

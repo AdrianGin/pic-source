@@ -28,14 +28,25 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usb_lib.h"
 #include "usb_istr.h"
-
+#include <string.h>
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
+#include "AudioBuffer/audiobuffer.h"
+
+
+#define AUDIO_BUFFER_COUNT	(10)
+AudioBuffer_t streambuffers[AUDIO_BUFFER_COUNT];
+uint8_t bufferCount;
+
 uint16_t Stream_Buff[256];
+uint16_t Stream_Buff2[256];
 uint16_t In_Data_Offset;
+uint16_t In_Data_Offset2;
 extern uint16_t Out_Data_Offset;
+extern uint16_t Out_Data_Offset2;
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -55,17 +66,33 @@ void EP1_OUT_Callback(void)
 	{
 		/*read from ENDP1_BUF0Addr buffer*/
 		Data_Len = GetEPDblBuf0Count(ENDP1);
-		PMAToUserBufferCopy( (uint8_t*)Stream_Buff, ENDP1_BUF0Addr, Data_Len);
+		PMAToUserBufferCopy( (uint8_t*)&streambuffers[bufferCount].buffer, ENDP1_BUF0Addr, Data_Len);
+		//memcpy( (uint8_t*)&streambuffers[bufferCount].buffer, (uint8_t*)(PMAAddr + ENDP1_BUF0Addr * 2), Data_Len);
+		streambuffers[bufferCount].dataLen = Data_Len;
+		streambuffers[bufferCount].dataPtr = 0;
+
 	}
 	else
 	{
 		/*read from ENDP1_BUF1Addr buffer*/
-		Data_Len = Out_Data_Offset;
 		Data_Len = GetEPDblBuf1Count(ENDP1);
-		PMAToUserBufferCopy((uint8_t*)Stream_Buff, ENDP1_BUF1Addr, Data_Len);
+		//memcpy( (uint8_t*)&streambuffers[bufferCount].buffer, (uint8_t*)(PMAAddr + ENDP1_BUF1Addr * 2), Data_Len);
+		PMAToUserBufferCopy( (uint8_t*)&streambuffers[bufferCount].buffer, ENDP1_BUF1Addr, Data_Len);
+		streambuffers[bufferCount].dataLen = Data_Len;
+		streambuffers[bufferCount].dataPtr = 0;
 	}
+
+	streambuffers[bufferCount].dataLen = Data_Len;
+	streambuffers[bufferCount].dataPtr = 0;
+	bufferCount++;
+
+	if( bufferCount >= AUDIO_BUFFER_COUNT )
+	{
+		bufferCount = 0;
+	}
+
 	FreeUserBuffer(ENDP1, EP_DBUF_OUT);
-	In_Data_Offset += Data_Len;
+	//In_Data_Offset += Data_Len;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

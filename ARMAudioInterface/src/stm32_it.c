@@ -34,19 +34,24 @@
 #include "usb_lib.h"
 #include "usb_pwr.h"
 
+#include "AudioBuffer/audiobuffer.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define DUMMYDATA  0x1111
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint16_t Out_Data_Offset;
+uint16_t Out_Data_Offset = 0;
+uint16_t Out_Data_Offset2 = 0;
 uint16_t StreamPtr;
 extern uint16_t In_Data_Offset;
+extern uint16_t In_Data_Offset2;
 
 #define STREAM_BUF_SIZE (256)
 
 extern uint16_t Stream_Buff[256];
+extern uint16_t Stream_Buff2[256];
 extern uint32_t MUTE_DATA;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -211,26 +216,87 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 *******************************************************************************/
 void TIM2_IRQHandler(void)
 {
+
+	static uint8_t bufFlag = 0;
+	AudioBuffer_t* streamBuf;
+	uint16_t* buffer;
+	uint16_t* inData;
+	uint16_t* outData;
+
+	extern AudioBuffer_t streambuffers[];
+
+
+
   if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
   {
     /* Clear TIM2 update interrupt */
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-    if ((Out_Data_Offset < In_Data_Offset) && ((uint8_t)(MUTE_DATA) == 0))
-    {
-      //TIM_SetCompare3(TIM4, Stream_Buff[Out_Data_Offset]);
-			//DAC_SetChannel1Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);  //for 8bit.
-			//DAC_SetChannel2Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);
-			
-			//DAC_SetChannel1Data(DAC_Align_12b_L, Stream_Buff[Out_Data_Offset] + 32768); //for mono 16bit
-			//DAC_SetChannel2Data(DAC_Align_12b_L, Stream_Buff[Out_Data_Offset] + 32768);
-			
-			DAC_SetChannel1Data(DAC_Align_12b_L, (uint16_t)Stream_Buff[Out_Data_Offset] + 32768); //for stereo 16bit
-			//DAC_SetChannel2Data(DAC_Align_12b_L, (uint16_t)Stream_Buff[Out_Data_Offset+1] + 32768);			
-			
 
-			Out_Data_Offset += 2;
+    streamBuf = &streambuffers[bufFlag];
+    buffer = (uint16_t*)&streambuffers[bufFlag].buffer;
+    inData =  &streambuffers[bufFlag].dataLen;
+    outData =  &streambuffers[bufFlag].dataPtr;
+
+
+    if( *inData )
+    {
+
+		if ((*outData < *inData) && ((uint8_t)(MUTE_DATA) == 0))
+		{
+				//Out_Data_Offset += 2;
+		}
+		else
+		{
+		}
     }
+
+
+
+
+    if( *inData )
+    {
+
+
+//    	For 8 bits
+//    	uint8_t eightBit;
+//    	uint8_t* eightBitBuffer;
+//
+//    	eightBitBuffer = (uint8_t*)buffer;
+//    	eightBit = (uint8_t)eightBitBuffer[*outData];
+//        //TIM_SetCompare3(TIM4, Stream_Buff[Out_Data_Offset]);
+//  			DAC_SetChannel1Data(DAC_Align_8b_R, eightBit);  //for 8bit.
+//  			DAC_SetChannel2Data(DAC_Align_8b_R, eightBit);
+//    	*outData = *outData + 1;
+
+    	    	uint16_t sixteenBit;
+    	    	uint16_t* sixteenBitBuffer;
+
+    	    	sixteenBitBuffer = (uint16_t*)buffer;
+    	    	sixteenBit = (uint16_t)sixteenBitBuffer[*outData];
+
+
+  			DAC_SetChannel1Data(DAC_Align_12b_L, sixteenBit + 32768); //for mono 16bit
+  			DAC_SetChannel2Data(DAC_Align_12b_L, sixteenBit + 32768);
+  			*outData = *outData + 1;
+
+  			//DAC_SetChannel1Data(DAC_Align_12b_L, (uint16_t)buffer[Out_Data_Offset] + 32768); //for stereo 16bit
+  			//DAC_SetChannel2Data(DAC_Align_12b_L, (uint16_t)buffer[Out_Data_Offset] + 32768); //for stereo 16bit
+  			//DAC_SetChannel2Data(DAC_Align_12b_L, (uint16_t)Stream_Buff[Out_Data_Offset+1] + 32768);
+    }
+
+    if( *outData * 2 >= *inData )
+    {
+    	*inData = 0;
+    	*outData = 0;
+
+    	bufFlag++;
+    	if( bufFlag >= 10 )
+    	{
+    		bufFlag = 0;
+    	}
+    }
+
 
   }
 }

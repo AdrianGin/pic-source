@@ -196,8 +196,9 @@ void SOF_Callback(void)
 	{
 		GPIO_SetBits(GPIOB, GPIO_Pin_12);
 	}
-  In_Data_Offset = 0;
-  Out_Data_Offset = 0;
+	//xprintf("S\n");
+  //In_Data_Offset = 0;
+  //Out_Data_Offset = 0;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

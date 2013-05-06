@@ -169,6 +169,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
     0x01,                                 /* bTerminalLink */
     0x01,                                 /* bDelay */
     0x01,                                 /* wFormatTag AUDIO_FORMAT_PCM8  0x0002*/
+    //0x02,
     0x00,
     /* 07 byte*/
 
@@ -183,12 +184,12 @@ const uint8_t Speaker_ConfigDescriptor[] =
     0x01,                                 /* bSamFreqType */
     //0xF0,                                 /* tSamFreq 22000 = 0x55F0 */
     //0x55,
-		0x80, //48k
-		0xBB,
+		//0x80, //48k
+		//0xBB,
 		//0x00,
 		//0x7D,
-		//0x44,
-		//0xAC,
+		0x44,
+		0xAC,
     0x00,
     /* 11 byte*/
 
