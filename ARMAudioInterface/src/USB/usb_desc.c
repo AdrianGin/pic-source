@@ -181,7 +181,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
     AUDIO_INTERFACE_DESCRIPTOR_TYPE,      /* bDescriptorType */
     AUDIO_STREAMING_FORMAT_TYPE,          /* bDescriptorSubtype */
     AUDIO_FORMAT_TYPE_I,                  /* bFormatType */
-    0x01,                                 /* bNrChannels */
+    MAX_AUDIO_CHANNELS,                                 /* bNrChannels */
     0x02,                                 /* bSubFrameSize */
     16,                                    /* bBitResolution */
     0x01,                                 /* bSamFreqType */
@@ -209,7 +209,8 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_ENDPOINT_TYPE_ISOCHRONOUS,        /* bmAttributes */
     //44*2,                                 /* wMaxPacketSize 22 bytes*/
 		//0x16
-    0x80, 0x01,
+    USB_DESC_BYTE(USB_ENDP_MAX_PACKET_SIZE, 0),
+    USB_DESC_BYTE(USB_ENDP_MAX_PACKET_SIZE, 1),
     0x01,                                 /* bInterval */
     0x00,                                 /* bRefresh */
     0x00,                                 /* bSynchAddress */

@@ -75,7 +75,7 @@ int main(void)
 //	  DAC_DMA_SendToDMABuffer((uint8_t*)&test, 10*2);
 //  }
 
-  DAC_DMA_Configuration(0, (2*2*MAX_AUDIO_FREQ) / (MAX_AUDIO_CHANNELS * MAX_AUDIO_BIT_RESOLUTION / 8) );
+
 
   while (1)
   {
@@ -95,6 +95,13 @@ int main(void)
 
 	    if( *inData )
 	    {
+
+	    	if( DAC_DMA_GetStatus() == NO_SOUND )
+	    	{
+	    		//Stereo, L/R and all data is 16bit.
+	    		DAC_DMA_Configuration(0, (2*2*MAX_AUDIO_FREQ) / (MAX_AUDIO_BIT_RESOLUTION / 8) );
+	    	}
+
 		    if( (Audio_buffer_fill & LOW_EMPTY) )
 		    {
 		    	DAC_DMA_SendToDMABuffer((uint8_t*)buffer, (*inData), 0 );
@@ -124,9 +131,9 @@ int main(void)
 	    }
 	    else
 	    {
-	    	if( (Audio_buffer_fill & HIGH_EMPTY) )
+	    	if( (Audio_buffer_fill == 0x03) )
 	    	{
-	    		//DAC_DMA_Stop();
+	    		DAC_DMA_Stop();
 	    	}
 	    }
 

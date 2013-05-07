@@ -46,7 +46,6 @@ DEVICE Device_Table =
     1
   };
 
-#define MAX_USB_PACKET_SIZE	(384)
 
 DEVICE_PROP Device_Property =
   {
@@ -159,7 +158,7 @@ void Speaker_Reset()
   /* Initialize Endpoint 1 */
   SetEPType(ENDP1, EP_ISOCHRONOUS);
   SetEPDblBuffAddr(ENDP1, ENDP1_BUF0Addr, ENDP1_BUF1Addr);
-  SetEPDblBuffCount(ENDP1, EP_DBUF_OUT, MAX_USB_PACKET_SIZE);
+  SetEPDblBuffCount(ENDP1, EP_DBUF_OUT, USB_ENDP_MAX_PACKET_SIZE);
   ClearDTOG_RX(ENDP1);
   ClearDTOG_TX(ENDP1);
   ToggleDTOG_TX(ENDP1);

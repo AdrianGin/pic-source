@@ -46,7 +46,8 @@
 /* buffer table base address */
 #define BTABLE_ADDRESS      (0x00)
 
-
+#define USB_ENDP_MAX_PACKET_SIZE (512)
+//#define USB_ENDP_MAX_PACKET_SIZE (MAX_AUDIO_PACKET_SIZE)
 
 /* EP0  */
 /* rx/tx buffer base address */

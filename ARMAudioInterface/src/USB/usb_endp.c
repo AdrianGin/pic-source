@@ -77,7 +77,7 @@ void EP1_OUT_Callback(void)
 		streambuffers[bufferCount].dataPtr = 0;
 	}
 
-	//xprintf("%d\n",Data_Len);
+	xprintf("%d\n",Data_Len);
 	streambuffers[bufferCount].dataLen = Data_Len;
 	streambuffers[bufferCount].dataPtr = 0;
 	bufferCount++;
