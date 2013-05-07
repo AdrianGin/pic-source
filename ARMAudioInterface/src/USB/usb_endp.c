@@ -39,14 +39,10 @@
 
 
 #define AUDIO_BUFFER_COUNT	(10)
-AudioBuffer_t streambuffers[AUDIO_BUFFER_COUNT];
+volatile AudioBuffer_t streambuffers[AUDIO_BUFFER_COUNT];
 uint8_t bufferCount;
 
 
-uint16_t Stream_Buff[256];
-uint16_t Stream_Buff2[256];
-uint16_t In_Data_Offset;
-uint16_t In_Data_Offset2;
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/

@@ -36,8 +36,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define FREQ	(44100)
-#define TIM2ARRValue    72e6/FREQ /* 22KHz = 72MHz / 3273 */
+
+#define TIM2ARRValue    72e6/AUDIO_FREQ /* 22KHz = 72MHz / 3273 */
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 ErrorStatus HSEStartUpStatus;
@@ -212,7 +212,7 @@ void USB_Config(void)
 #endif /* STM32L1XX_MD */
   
   /* Audio Components Interrupt configuration */
-  Audio_Config();
+
 }
 /*******************************************************************************
 * Function Name  : USB_Interrupts_Config
@@ -223,41 +223,12 @@ void USB_Config(void)
 void Audio_Config(void)
 {
   NVIC_InitTypeDef NVIC_InitStructure;
-  	  /* Enable the TIM2 Interrupt */
- // NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;
-  //NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-  //NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  ///NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  //NVIC_Init(&NVIC_InitStructure);
-	
   /* Enable the TIM2 Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-	
-#if defined(USE_STM32L152_EVAL)
-  /* Enable the TIM2 Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
-
-	
-
-  NVIC_Init(&NVIC_InitStructure);
-  
-#elif defined(USE_STM3210E_EVAL)
-  /* SPI2 IRQ Channel configuration */
-  NVIC_InitStructure.NVIC_IRQChannel = SPI2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-#endif /* USE_STM3210B_EVAL */
 }
 /*******************************************************************************
 * Function Name  : USB_Cable_Config

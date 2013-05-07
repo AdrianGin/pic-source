@@ -46,8 +46,8 @@ DEVICE Device_Table =
     1
   };
 
-#define MAX_USB_PACKET_SIZE	(256)
-	
+#define MAX_USB_PACKET_SIZE	(384)
+
 DEVICE_PROP Device_Property =
   {
     Speaker_init,
@@ -61,7 +61,7 @@ DEVICE_PROP Device_Property =
     Speaker_GetConfigDescriptor,
     Speaker_GetStringDescriptor,
     0,
-    0x40 /*MAX PACKET SIZE*/
+    END0_PACKET_SIZE /*MAX PACKET SIZE*/ // Must match the descriptor
   };
 
 USER_STANDARD_REQUESTS User_Standard_Requests =
@@ -99,8 +99,6 @@ ONE_DESCRIPTOR String_Descriptor[4] =
 
 /* Extern variables ----------------------------------------------------------*/
 /* Extern variables ----------------------------------------------------------*/
-extern uint16_t In_Data_Offset;
-extern uint16_t Out_Data_Offset;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -174,8 +172,6 @@ void Speaker_Reset()
 
   bDeviceState = ATTACHED;
 
-  In_Data_Offset = 0;
-  Out_Data_Offset = 0;
 }
 /*******************************************************************************
 * Function Name  : Speaker_SetConfiguration.

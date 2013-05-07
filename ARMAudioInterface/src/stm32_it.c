@@ -42,16 +42,8 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint16_t Out_Data_Offset = 0;
-uint16_t Out_Data_Offset2 = 0;
-uint16_t StreamPtr;
-extern uint16_t In_Data_Offset;
-extern uint16_t In_Data_Offset2;
-
 #define STREAM_BUF_SIZE (256)
 
-extern uint16_t Stream_Buff[256];
-extern uint16_t Stream_Buff2[256];
 extern uint32_t MUTE_DATA;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -232,27 +224,10 @@ void TIM2_IRQHandler(void)
     /* Clear TIM2 update interrupt */
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-
     streamBuf = &streambuffers[bufFlag];
     buffer = (uint16_t*)&streambuffers[bufFlag].buffer;
     inData =  &streambuffers[bufFlag].dataLen;
     outData =  &streambuffers[bufFlag].dataPtr;
-
-
-    if( *inData )
-    {
-
-		if ((*outData < *inData) && ((uint8_t)(MUTE_DATA) == 0))
-		{
-				//Out_Data_Offset += 2;
-		}
-		else
-		{
-		}
-    }
-
-
-
 
     if( *inData  && ((uint8_t)(MUTE_DATA) == 0) )
     {
@@ -308,12 +283,11 @@ void TIM6_IRQHandler(void)
     /* Clear TIM6 update interrupt */
     TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
 
-    if ((Out_Data_Offset < In_Data_Offset) && ((uint8_t)(MUTE_DATA) == 0))
+    //if ((Out_Data_Offset < In_Data_Offset) && ((uint8_t)(MUTE_DATA) == 0))
     {
       /* Set DAC Channel1 DHR register */
-      DAC_SetChannel1Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);      
-			DAC_SetChannel2Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);
-      Out_Data_Offset++;
+      //DAC_SetChannel1Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);
+		//	DAC_SetChannel2Data(DAC_Align_8b_R, Stream_Buff[Out_Data_Offset]);
     }
   }
 }

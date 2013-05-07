@@ -29,22 +29,25 @@
 #include "usb_lib.h"
 #include "usb_desc.h"
 
+#include "hw_config.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private constants----------------------------------------------------------*/
 /* USB Standard Device Descriptor */
+
 const uint8_t Speaker_DeviceDescriptor[] =
   {
     SPEAKER_SIZ_DEVICE_DESC,          /* bLength */
     USB_DEVICE_DESCRIPTOR_TYPE,           /* bDescriptorType */
-    0x00,          /* 2.00 */             /* bcdUSB */
-    0x02,
+    0x10,          /* 2.00 */             /* bcdUSB */
+    0x01,
     0x00,                                 /* bDeviceClass */
     0x00,                                 /* bDeviceSubClass */
     0x00,                                 /* bDeviceProtocol */
-    0x40,                                 /* bMaxPacketSize 40 */
+    END0_PACKET_SIZE,                                 /* bMaxPacketSize 40 */
     0x83,                                 /* idVendor */
     0x04,
     0x30,                                 /* idProduct  = 0x5730*/
@@ -188,9 +191,15 @@ const uint8_t Speaker_ConfigDescriptor[] =
 		//0xBB,
 		//0x00,
 		//0x7D,
-		0x44, //44kHz
-		0xAC,
-    0x00,
+    USB_AUDIO_FREQ_BYTE(0), //44kHz
+	USB_AUDIO_FREQ_BYTE(1),
+	USB_AUDIO_FREQ_BYTE(2),
+    //0x00,
+    //0x77,
+    //0x01,
+    ///0x00, // 192k
+    //0xEE,
+    //0x02,
     /* 11 byte*/
 
     /* Endpoint 1 - Standard Descriptor */
@@ -200,7 +209,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_ENDPOINT_TYPE_ISOCHRONOUS,        /* bmAttributes */
     //44*2,                                 /* wMaxPacketSize 22 bytes*/
 		//0x16
-    0x60, 0x01,
+    0x80, 0x01,
     0x01,                                 /* bInterval */
     0x00,                                 /* bRefresh */
     0x00,                                 /* bSynchAddress */

@@ -30,11 +30,9 @@
 #ifndef __USB_CONF_H
 #define __USB_CONF_H
 
-//in kHz
-#define MAX_AUDIO_FREQ	(96)
-#define MAX_AUDIO_BIT_RESOLUTION (24)
-#define MAX_AUDIO_CHANNELS (2)
-#define MAX_AUDIO_PACKET_SIZE	(MAX_AUDIO_FREQ*MAX_AUDIO_BIT_RESOLUTION*MAX_AUDIO_CHANNELS / 8)
+
+#define END0_PACKET_SIZE	(0x08)
+
 
 /*-------------------------------------------------------------*/
 /* EP_NUM */
@@ -47,10 +45,13 @@
 /* buffer table base address */
 /* buffer table base address */
 #define BTABLE_ADDRESS      (0x00)
+
+
+
 /* EP0  */
 /* rx/tx buffer base address */
 #define ENDP0_RXADDR        (EP_NUM*0x08)
-#define ENDP0_TXADDR        (ENDP0_RXADDR+0x40)
+#define ENDP0_TXADDR        (ENDP0_RXADDR+END0_PACKET_SIZE)
 
 /* EP1  */
 /* buffer base address */

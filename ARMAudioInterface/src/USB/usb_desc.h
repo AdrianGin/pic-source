@@ -32,6 +32,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_conf.h"
+#include "hw_config.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
@@ -85,7 +86,14 @@
 #define AUDIO_FORMAT_TYPE_I                           0x01
 #define AUDIO_FORMAT_TYPE_III                           0x03
 
-#define USB_ENDPOINT_TYPE_ISOCHRONOUS                 0x05
+#define USB_ENDPOINT_ATTRIBUTE_ASYNC				 (0x01 << 2)
+#define USB_ENDPOINT_ATTRIBUTE_ADAPTIVE				 (0x02 << 2)
+#define USB_ENDPOINT_ATTRIBUTE_SYNC				 	 (0x03 << 2)
+
+
+#define USB_AUDIO_FREQ_BYTE(n) (((AUDIO_FREQ) >> (8*n)) & 0xFF)
+
+#define USB_ENDPOINT_TYPE_ISOCHRONOUS                 0x01 | USB_ENDPOINT_ATTRIBUTE_ASYNC
 #define AUDIO_ENDPOINT_GENERAL                        0x01
 
 /* Exported functions ------------------------------------------------------- */
