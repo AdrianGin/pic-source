@@ -12,6 +12,14 @@
 
 #include <stdint.h>
 
+#define AUDIO_FREQ	(48000)
+
+//in kHz
+#define MAX_AUDIO_FREQ	(AUDIO_FREQ/1000)
+#define MAX_AUDIO_BIT_RESOLUTION (16)
+#define MAX_AUDIO_CHANNELS (2)
+#define MAX_AUDIO_PACKET_SIZE	(MAX_AUDIO_FREQ*MAX_AUDIO_BIT_RESOLUTION*MAX_AUDIO_CHANNELS / 8)
+
 
 typedef enum { FULL=0,LOW_EMPTY=1,HIGH_EMPTY=2 }                AUDIO_PlaybackBuffer_Status ;
 typedef enum { MONO, STEREO}                                    AUDIO_Format_enum;

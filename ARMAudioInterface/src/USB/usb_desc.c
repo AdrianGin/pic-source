@@ -132,8 +132,10 @@ const uint8_t Speaker_ConfigDescriptor[] =
     AUDIO_INTERFACE_DESCRIPTOR_TYPE,      /* bDescriptorType */
     AUDIO_CONTROL_OUTPUT_TERMINAL,        /* bDescriptorSubtype */
     0x03,                                 /* bTerminalID */
-    0x02,                                 /* wTerminalType  0x0301*/
-    0x03,
+    //0x03,                                 /* wTerminalType  0x0301*/
+    //0x03,
+    USB_DESC_BYTE(AUDIO_TERMINAL_TYPE, 0),
+    USB_DESC_BYTE(AUDIO_TERMINAL_TYPE, 1),
     0x00,                                 /* bAssocTerminal */
     0x02,                                 /* bSourceID */
     0x00,                                 /* iTerminal */
@@ -182,24 +184,15 @@ const uint8_t Speaker_ConfigDescriptor[] =
     AUDIO_STREAMING_FORMAT_TYPE,          /* bDescriptorSubtype */
     AUDIO_FORMAT_TYPE_I,                  /* bFormatType */
     MAX_AUDIO_CHANNELS,                                 /* bNrChannels */
-    0x02,                                 /* bSubFrameSize */
-    16,                                    /* bBitResolution */
+    MAX_AUDIO_BIT_RESOLUTION/8,                                 /* bSubFrameSize */
+    MAX_AUDIO_BIT_RESOLUTION,                                    /* bBitResolution */
     0x01,                                 /* bSamFreqType */
     //0xF0,                                 /* tSamFreq 22000 = 0x55F0 */
     //0x55,
-		//0x80, //48k
-		//0xBB,
-		//0x00,
-		//0x7D,
-    USB_AUDIO_FREQ_BYTE(0), //44kHz
+    USB_AUDIO_FREQ_BYTE(0),
 	USB_AUDIO_FREQ_BYTE(1),
 	USB_AUDIO_FREQ_BYTE(2),
-    //0x00,
-    //0x77,
-    //0x01,
-    ///0x00, // 192k
-    //0xEE,
-    //0x02,
+
     /* 11 byte*/
 
     /* Endpoint 1 - Standard Descriptor */
@@ -207,6 +200,7 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_ENDPOINT_DESCRIPTOR_TYPE,         /* bDescriptorType */
     0x01,                                 /* bEndpointAddress 1 out endpoint*/
     USB_ENDPOINT_TYPE_ISOCHRONOUS,        /* bmAttributes */
+
     //44*2,                                 /* wMaxPacketSize 22 bytes*/
 		//0x16
     USB_DESC_BYTE(USB_ENDP_MAX_PACKET_SIZE, 0),

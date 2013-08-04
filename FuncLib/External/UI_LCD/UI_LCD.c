@@ -33,7 +33,6 @@ THE SOFTWARE.
 
 
 
-
 //uint8_t LCDOutputBuffer[LCD_OUTPUT_BUFFER_SIZE];
 //RINGBUFFER_T LCDBuffer = {LCDOutputBuffer, sizeof (LCDOutputBuffer)};
 

@@ -11,7 +11,7 @@
 
 #include <string.h>
 #include "stm32f10x_dma.h"
-
+#include "stm32f10x_dac.h"
 
 //Private Declarations
 volatile AUDIO_PlaybackBuffer_Status Audio_buffer_fill;
@@ -199,13 +199,13 @@ uint16_t DAC_DMA_SendToDMABuffer(uint8_t* readBuf, uint16_t count, uint8_t bufIn
 	BufferStatus = AUDIO_PlaybackBuffer_GetStatus((AUDIO_PlaybackBuffer_Status) 0);
 	if( bufIndex == 0 )
 	{
-		ret = WavePlayer_ConvertPCM(MAX_AUDIO_CHANNELS, 16, &readBuf[0], (uint16_t*)&AudioBuffer[0], count);
+		ret = WavePlayer_ConvertPCM(MAX_AUDIO_CHANNELS, MAX_AUDIO_BIT_RESOLUTION, &readBuf[0], (uint16_t*)&AudioBuffer[0], count);
 		//memcpy((void*)&AudioBuffer[0], &readBuf[0], count);
 		BufferStatus = AUDIO_PlaybackBuffer_GetStatus(LOW_EMPTY);
 	}
 	else
 	{
-		ret = WavePlayer_ConvertPCM(MAX_AUDIO_CHANNELS, 16, &readBuf[0], (uint16_t*)&AudioBuffer[MAX_AUDIO_FREQ*2], count);
+		ret = WavePlayer_ConvertPCM(MAX_AUDIO_CHANNELS, MAX_AUDIO_BIT_RESOLUTION, &readBuf[0], (uint16_t*)&AudioBuffer[MAX_AUDIO_FREQ*2], count);
 		//memcpy((void*)&AudioBuffer[0], &readBuf[0], count);
 		BufferStatus = AUDIO_PlaybackBuffer_GetStatus(HIGH_EMPTY);
 	}
@@ -301,7 +301,13 @@ uint16_t WavePlayer_ConvertPCM(uint8_t nChans, uint8_t bitlength, void* buff, ui
 	uint8_t*  u8buffer;
 	uint16_t  ret;
 
-	if( bitlength == 16)
+	if( bitlength == 24 )
+	{
+
+	}
+
+
+	if( bitlength >= 16)
 	{
 		u16buffer = (uint16_t*)buff;
 		if( nChans == 1 )

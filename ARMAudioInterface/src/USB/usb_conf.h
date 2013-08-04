@@ -46,8 +46,8 @@
 /* buffer table base address */
 #define BTABLE_ADDRESS      (0x00)
 
-#define USB_ENDP_MAX_PACKET_SIZE (512)
-//#define USB_ENDP_MAX_PACKET_SIZE (MAX_AUDIO_PACKET_SIZE)
+//#define USB_ENDP_MAX_PACKET_SIZE (512)
+#define USB_ENDP_MAX_PACKET_SIZE (MAX_AUDIO_PACKET_SIZE)
 
 /* EP0  */
 /* rx/tx buffer base address */
@@ -56,7 +56,8 @@
 
 /* EP1  */
 /* buffer base address */
-#define ENDP1_BUF0Addr      (ENDP0_TXADDR+0x40)
+//#define ENDP1_BUF0Addr      (ENDP0_TXADDR+0x40)
+#define ENDP1_BUF0Addr      (ENDP0_RXADDR)
 //BUF1 uses the same address
 #define ENDP1_BUF1Addr      (ENDP1_BUF0Addr)
 

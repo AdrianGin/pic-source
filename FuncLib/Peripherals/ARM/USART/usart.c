@@ -45,7 +45,7 @@ void USART_Configuration(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure);		   
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;	        
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 /*

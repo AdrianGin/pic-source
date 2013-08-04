@@ -49,13 +49,6 @@
 #define BufferSize        100
 #define CodecAddress      0x27
 
-#define AUDIO_FREQ	(96000)
-
-//in kHz
-#define MAX_AUDIO_FREQ	(AUDIO_FREQ/1000)
-#define MAX_AUDIO_BIT_RESOLUTION (16)
-#define MAX_AUDIO_CHANNELS (2)
-#define MAX_AUDIO_PACKET_SIZE	(MAX_AUDIO_FREQ*MAX_AUDIO_BIT_RESOLUTION*MAX_AUDIO_CHANNELS / 8)
 
 
 
