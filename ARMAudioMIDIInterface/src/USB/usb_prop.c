@@ -46,6 +46,7 @@ DEVICE Device_Table =
     1
   };
 
+
 DEVICE_PROP Device_Property =
   {
     Speaker_init,
@@ -59,7 +60,7 @@ DEVICE_PROP Device_Property =
     Speaker_GetConfigDescriptor,
     Speaker_GetStringDescriptor,
     0,
-    0x08 /*MAX PACKET SIZE*/
+    END0_PACKET_SIZE /*MAX PACKET SIZE*/ // Must match the descriptor
   };
 
 USER_STANDARD_REQUESTS User_Standard_Requests =
@@ -78,13 +79,21 @@ USER_STANDARD_REQUESTS User_Standard_Requests =
 ONE_DESCRIPTOR Device_Descriptor =
   {
     (uint8_t*)Speaker_DeviceDescriptor,
-    USBDESC_DEVICE_SIZE
+    SPEAKER_SIZ_DEVICE_DESC
   };
 
 ONE_DESCRIPTOR Config_Descriptor =
   {
     (uint8_t*)Speaker_ConfigDescriptor,
-    USBDESC_CONFIG_SIZE
+    SPEAKER_SIZ_CONFIG_DESC
+  };
+
+ONE_DESCRIPTOR String_Descriptor[4] =
+  {
+    {(uint8_t*)Speaker_StringLangID, SPEAKER_SIZ_STRING_LANGID},
+    {(uint8_t*)Speaker_StringVendor, SPEAKER_SIZ_STRING_VENDOR},
+    {(uint8_t*)Speaker_StringProduct, SPEAKER_SIZ_STRING_PRODUCT},
+    {(uint8_t*)Speaker_StringSerial, SPEAKER_SIZ_STRING_SERIAL},
   };
 
 
@@ -100,8 +109,6 @@ const uint8_t* USBDesciptors[] = {USBDesc_LangID, USBDesc_StringVendor, USBDesc_
 
 /* Extern variables ----------------------------------------------------------*/
 /* Extern variables ----------------------------------------------------------*/
-extern uint16_t In_Data_Offset;
-extern uint16_t Out_Data_Offset;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -118,7 +125,7 @@ void Speaker_init()
 {
   /* Update the serial number string descriptor with the data from the unique
   ID*/
-  //Get_SerialNum();
+  Get_SerialNum();
 
   /* Initialize the current configuration */
   pInformation->Current_Configuration = 0;
@@ -132,6 +139,7 @@ void Speaker_init()
   bDeviceState = UNCONNECTED;
 }
 
+
 /*******************************************************************************
 * Function Name  : Speaker_Reset.
 * Description    : Speaker reset routine.
@@ -141,45 +149,32 @@ void Speaker_init()
 *******************************************************************************/
 void Speaker_Reset()
 {
-
-	
   /* Set Speaker device as not configured state */
   pInformation->Current_Configuration = 0;
 
   /* Current Feature initialization */
   pInformation->Current_Feature = Speaker_ConfigDescriptor[7];
-	pInformation->Current_Interface = 0;
-	
+
   SetBTABLE(BTABLE_ADDRESS);
 
   /* Initialize Endpoint 0 */
   SetEPType(ENDP0, EP_CONTROL);
-  SetEPTxStatus(ENDP0, EP_TX_STALL);
+  SetEPTxStatus(ENDP0, EP_TX_NAK);
   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+  SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
   Clear_Status_Out(ENDP0);
-	SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
   SetEPRxValid(ENDP0);
 
   /* Initialize Endpoint 1 */
-	
-  SetEPType(ENDP1, EP_BULK);
-  SetEPTxAddr(ENDP1, ENDP1_BUF1Addr);
-  SetEPTxCount(ENDP1, 0x40);
-	SetEPTxStatus(ENDP1, EP_TX_NAK);
-	
-  SetEPRxAddr(ENDP1, ENDP1_BUF0Addr);
-  SetEPRxCount(ENDP1, 0x40);
+  SetEPType(ENDP1, EP_ISOCHRONOUS);
+  SetEPDblBuffAddr(ENDP1, ENDP1_BUF0Addr, ENDP1_BUF1Addr);
+  SetEPDblBuffCount(ENDP1, EP_DBUF_OUT, USB_ENDP_MAX_PACKET_SIZE);
+  ClearDTOG_RX(ENDP1);
+  ClearDTOG_TX(ENDP1);
+  ToggleDTOG_TX(ENDP1);
   SetEPRxStatus(ENDP1, EP_RX_VALID);
-
-//   SetEPType(ENDP1, EP_BULK);
-//   SetEPDblBuffAddr(ENDP1, ENDP1_BUF0Addr, ENDP1_BUF1Addr);
-//   SetEPDblBuffCount(ENDP1, EP_DBUF_OUT, 0x08);
-// 	SetEPDblBuffCount(ENDP1, EP_DBUF_IN, 0x08);
-//   ClearDTOG_RX(ENDP1);
-//   ClearDTOG_TX(ENDP1);
-//   SetEPRxStatus(ENDP1, EP_RX_VALID);
-//   SetEPTxStatus(ENDP1, EP_TX_NAK);
+  SetEPTxStatus(ENDP1, EP_TX_DIS);
 
   SetEPRxValid(ENDP0);
   /* Set this device to response on default address */
@@ -198,22 +193,9 @@ void Speaker_Reset()
 void Speaker_SetConfiguration(void)
 {
   DEVICE_INFO *pInfo = &Device_Info;
-		uint8_t i;
-	uint16_t ret;
-	
-// 	for( i = 0; i < 255; i++ )
-// 	{
-// 		ret = GetEPTxStatus(ENDP1);
-// 	 			while( ret != EP_TX_NAK )
-//  			{
-//  			}		
-// 		SetEPTxValid(ENDP1);
-// 	}	
-// 	
+
   if (pInfo->Current_Configuration != 0)
   {
-		SetCNTR(IMR_MSK);
-		//printf("USB CONNECTED");
     /* Device configured */
     bDeviceState = CONFIGURED;
   }
@@ -258,7 +240,23 @@ void Speaker_Status_Out (void)
 *******************************************************************************/
 RESULT Speaker_Data_Setup(uint8_t RequestNo)
 {
-   return USB_UNSUPPORT;
+  uint8_t *(*CopyRoutine)(uint16_t);
+  CopyRoutine = NULL;
+
+  if ((RequestNo == GET_CUR) || (RequestNo == SET_CUR))
+  {
+    CopyRoutine = Mute_Command;
+  }
+
+  else
+  {
+    return USB_UNSUPPORT;
+  }
+
+  pInformation->Ctrl_Info.CopyData = CopyRoutine;
+  pInformation->Ctrl_Info.Usb_wOffset = 0;
+  (*CopyRoutine)(0);
+  return USB_SUCCESS;
 }
 
 /*******************************************************************************
@@ -311,14 +309,14 @@ uint8_t *Speaker_GetStringDescriptor(uint16_t Length)
 	uint8_t i, len;
 	ONE_DESCRIPTOR desc;
 	//Buffer used to create the buffer string descriptor.
-	
+
   if (wValue0 > 4)
   {
     return NULL;
   }
   else
   {
-		
+
 		switch(wValue0)
 		{
 			case LANGID_STRINGID:
@@ -328,10 +326,10 @@ uint8_t *Speaker_GetStringDescriptor(uint16_t Length)
 				  len = 4;
 					break;
 			}
-				
+
 			default:
 			{
-					for(i=0, len=2; USBDesciptors[wValue0][i] != 0; i++) 
+					for(i=0, len=2; USBDesciptors[wValue0][i] != 0; i++)
 					{
 							buffer[len++] = USBDesciptors[wValue0][i];
 							buffer[len++] = 0;
@@ -339,7 +337,7 @@ uint8_t *Speaker_GetStringDescriptor(uint16_t Length)
 					break;
 			}
 		}
-		
+
 		buffer[0] = len;
 		buffer[1] = USB_STRING_DESCRIPTOR_TYPE;
 		desc.Descriptor = &buffer[0];
@@ -348,6 +346,7 @@ uint8_t *Speaker_GetStringDescriptor(uint16_t Length)
     return Standard_GetDescriptorData(Length, &desc);
   }
 }
+
 
 /*******************************************************************************
 * Function Name  : Speaker_Get_Interface_Setting.
@@ -360,17 +359,37 @@ uint8_t *Speaker_GetStringDescriptor(uint16_t Length)
 *******************************************************************************/
 RESULT Speaker_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
 {
-  if (AlternateSetting > 0)
+  if (AlternateSetting > 1)
   {
     return USB_UNSUPPORT;
   }
-  else if (Interface > 2)
+  else if (Interface > 1)
   {
     return USB_UNSUPPORT;
   }
   return USB_SUCCESS;
 }
 
+/*******************************************************************************
+* Function Name  : Mute_Command
+* Description    : Handle the GET MUTE and SET MUTE command.
+* Input          : Length : uint16_t.
+* Output         : None.
+* Return         : The address of the string descriptors.
+*******************************************************************************/
+uint8_t *Mute_Command(uint16_t Length)
+{
+
+  if (Length == 0)
+  {
+    pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w;
+    return NULL;
+  }
+  else
+  {
+    return((uint8_t*)(&MUTE_DATA));
+  }
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 
