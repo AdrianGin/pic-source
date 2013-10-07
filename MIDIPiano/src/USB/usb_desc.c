@@ -897,15 +897,6 @@ const uint8_t Speaker_ConfigDescriptor[] =
 
   };
 
-/* LangID = 0x0409: U.S. English */
-const uint8_t USBDesc_LangID[] = {0x09, 0x04};
-const uint8_t USBDesc_StringVendor[] = "AG Funds Ltd";
-const uint8_t USBDesc_StringProduct[] = "MIDI Light";
-const uint8_t USBDesc_StringSerial[] = "MIDI Piano";
-
-const uint8_t* USBDesciptors[] = {USBDesc_LangID, USBDesc_StringVendor, USBDesc_StringProduct, USBDesc_StringSerial};
-
-\
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
