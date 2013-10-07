@@ -44,11 +44,45 @@
 #define PRODUCT_STRINGID	(2)
 #define SERIAL_STRINGID		(3)
 
+#define USB_MIDI_MAX_CABLE_COUNT (16)
+#define USBDESC_INTERFACE_SIZE               9
+
+#define MIDI_EMBEDDED_JACK	(0x01)
+#define MIDI_EXTERNAL_JACK	(0x02)
+//Allow for upto 16 IN/OUT ports
+#define USBDESC_MIDI_IN_JACKID_BASE					  (0x01)
+#define USBDESC_MIDI_OUT_JACKID_BASE					(USBDESC_MIDI_IN_JACKID_BASE+USB_MIDI_MAX_CABLE_COUNT*2)
+
+/* Audio Descriptor Types */
+#define AUDIO_INTERFACE_DESCRIPTOR_TYPE               0x24
+#define AUDIO_ENDPOINT_DESCRIPTOR_TYPE                0x25
+
+#define USBDESC_MIDI_ENDPOINT_SIZE				0x09
+#define USBDESC_MIDI_CLASS_ENDPOINT_SIZE	(0x04)
+#define USBDESC_MIDI_INTERFACE_SIZE		(0x09)
+#define USBDESC_MIDI_STREAMING_SIZE		(0x07)
+#define USBDESC_MIDI_IN_SIZE (0x06)
+#define USBDESC_MIDI_OUT_SIZE (0x09)
+
+#define USB_MIDI_CABLE_COUNT (1)
+
+#define USBDESC_CONFIG_SIZE             (USBDESC_INTERFACE_SIZE*2 + \
+										USBDESC_MIDI_INTERFACE_SIZE + \
+										USBDESC_MIDI_STREAMING_SIZE + \
+										USB_MIDI_CABLE_COUNT*2*(USBDESC_MIDI_OUT_SIZE+USBDESC_MIDI_IN_SIZE) + \
+										USBDESC_MIDI_ENDPOINT_SIZE*2 + \
+										(USBDESC_MIDI_CLASS_ENDPOINT_SIZE+USB_MIDI_CABLE_COUNT) * 2)
+
 
 
 #define SPEAKER_SIZ_DEVICE_DESC                       18
 #define SPEAKER_SIZ_CONFIG_DESC                       109
 #define SPEAKER_SIZ_INTERFACE_DESC_SIZE               9
+
+
+//#define COMPOSITE_SIZE_CONFIG_DESC	(SPEAKER_SIZ_CONFIG_DESC)
+#define COMPOSITE_SIZE_CONFIG_DESC	(SPEAKER_SIZ_CONFIG_DESC+USBDESC_CONFIG_SIZE)
+
 
 #define SPEAKER_SIZ_STRING_LANGID                     0x04
 #define SPEAKER_SIZ_STRING_VENDOR                     0x26
@@ -140,7 +174,7 @@
 
 /* Exported functions ------------------------------------------------------- */
 extern const uint8_t Speaker_DeviceDescriptor[SPEAKER_SIZ_DEVICE_DESC];
-extern const uint8_t Speaker_ConfigDescriptor[SPEAKER_SIZ_CONFIG_DESC];
+extern const uint8_t Speaker_ConfigDescriptor[COMPOSITE_SIZE_CONFIG_DESC];
 extern const uint8_t Speaker_StringLangID[SPEAKER_SIZ_STRING_LANGID];
 extern const uint8_t Speaker_StringVendor[SPEAKER_SIZ_STRING_VENDOR];
 extern const uint8_t Speaker_StringProduct[SPEAKER_SIZ_STRING_PRODUCT];

@@ -91,5 +91,26 @@ void EP1_OUT_Callback(void)
 	//In_Data_Offset += Data_Len;
 }
 
+uint8_t Bulk_Data_Buff[0x80]; /* data buffer*/
+
+void EP2_OUT_Callback(void)
+{
+	uint16_t Data_Len; /* data length*/
+	uint16_t i;
+
+	Data_Len = USB_SIL_Read(EP2_OUT, Bulk_Data_Buff);
+	/* Enable the receive of data on EP1 */
+	SetEPRxValid(ENDP2);
+}
+
+
+void EP2_IN_Callback(void)
+{
+	uint16_t USB_Tx_ptr;
+	uint16_t USB_Tx_length;
+
+}
+
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 
