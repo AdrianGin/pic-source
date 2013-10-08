@@ -64,7 +64,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 FATFS fs[_VOLUMES];
 MIDI_HEADER_CHUNK_t MIDIHdr;
 

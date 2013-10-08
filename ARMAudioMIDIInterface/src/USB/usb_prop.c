@@ -85,10 +85,10 @@ ONE_DESCRIPTOR Device_Descriptor =
 ONE_DESCRIPTOR Config_Descriptor =
   {
     (uint8_t*)Speaker_ConfigDescriptor,
-    SPEAKER_SIZ_CONFIG_DESC
+    COMPOSITE_SIZE_CONFIG_DESC
   };
 
-ONE_DESCRIPTOR String_Descriptor[4] =
+ONE_DESCRIPTOR String_Descriptor[] =
   {
     {(uint8_t*)Speaker_StringLangID, SPEAKER_SIZ_STRING_LANGID},
     {(uint8_t*)Speaker_StringVendor, SPEAKER_SIZ_STRING_VENDOR},
@@ -99,11 +99,16 @@ ONE_DESCRIPTOR String_Descriptor[4] =
 
 /* LangID = 0x0409: U.S. English */
 const uint8_t USBDesc_LangID[] = {0x09, 0x04};
-const uint8_t USBDesc_StringVendor[] = "AG Funds Ltd";
-const uint8_t USBDesc_StringProduct[] = "MIDI Light";
+const uint8_t USBDesc_StringVendor[] = "Creative Instruments Team";
+const uint8_t USBDesc_StringProduct[] = "BEST MIDI";
 const uint8_t USBDesc_StringSerial[] = "MIDI Piano";
+const uint8_t USBDesc_StringProduct2[] = "BEST Audio";
 
-const uint8_t* USBDesciptors[] = {USBDesc_LangID, USBDesc_StringVendor, USBDesc_StringProduct, USBDesc_StringSerial};
+const uint8_t* USBDesciptors[] = {	USBDesc_LangID,
+									USBDesc_StringVendor,
+									USBDesc_StringProduct,
+									USBDesc_StringSerial,
+									USBDesc_StringProduct2};
 
 
 
@@ -177,6 +182,19 @@ void Speaker_Reset()
   SetEPTxStatus(ENDP1, EP_TX_DIS);
 
   SetEPRxValid(ENDP0);
+
+
+  SetEPType(ENDP2, EP_BULK);
+  SetEPTxAddr(ENDP2, ENDP2_BUF1Addr);
+  SetEPTxCount(ENDP2, 0x40);
+  SetEPTxStatus(ENDP2, EP_TX_NAK);
+
+  SetEPRxAddr(ENDP2, ENDP2_BUF0Addr);
+  SetEPRxCount(ENDP2, 0x40);
+  SetEPRxStatus(ENDP2, EP_RX_VALID);
+
+
+
   /* Set this device to response on default address */
   SetDeviceAddress(0);
 
@@ -363,7 +381,8 @@ RESULT Speaker_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting
   {
     return USB_UNSUPPORT;
   }
-  else if (Interface > 1)
+  //else if (Interface > 1)
+  else if (Interface > 4)
   {
     return USB_UNSUPPORT;
   }

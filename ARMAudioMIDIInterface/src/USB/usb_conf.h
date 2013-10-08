@@ -38,7 +38,7 @@
 /* EP_NUM */
 /* defines how many endpoints are used by the device */
 /*-------------------------------------------------------------*/
-#define EP_NUM              (2)
+#define EP_NUM              (3)
 /*-------------------------------------------------------------*/
 /* --------------   Buffer Description Table  -----------------*/
 /*-------------------------------------------------------------*/
@@ -60,6 +60,13 @@
 #define ENDP1_BUF0Addr      (ENDP0_RXADDR)
 //BUF1 uses the same address
 #define ENDP1_BUF1Addr      (ENDP1_BUF0Addr)
+
+
+
+/* EP1  */
+/* buffer base address */
+#define ENDP2_BUF0Addr      (ENDP1_BUF1Addr+MAX_AUDIO_PACKET_SIZE+0x40)
+#define ENDP2_BUF1Addr      (ENDP2_BUF0Addr+0x40)
 
 
 /*-------------------------------------------------------------*/
@@ -85,7 +92,7 @@
 /* CTR service routines */
 /* associated to defined endpoints */
 #define  EP1_IN_Callback   NOP_Process
-#define  EP2_IN_Callback   NOP_Process
+//#define  EP2_IN_Callback   NOP_Process
 #define  EP3_IN_Callback   NOP_Process
 #define  EP4_IN_Callback   NOP_Process
 #define  EP5_IN_Callback   NOP_Process
@@ -93,7 +100,7 @@
 #define  EP7_IN_Callback   NOP_Process
 
 /*#define  EP1_OUT_Callback   NOP_Process*/
-#define  EP2_OUT_Callback   NOP_Process
+//#define  EP2_OUT_Callback   NOP_Process
 #define  EP3_OUT_Callback   NOP_Process
 #define  EP4_OUT_Callback   NOP_Process
 #define  EP5_OUT_Callback   NOP_Process

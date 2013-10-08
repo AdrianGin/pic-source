@@ -27,7 +27,7 @@
 		<link>
 			<name>Libraries</name>
 			<type>2</type>
-			<location>C:/Users/Adrian.Gin/Source/pic-source/FuncLib/ThirdPartyDrivers/Libraries</location>
+			<locationURI>PARENT-1-PROJECT_LOC/FuncLib/ThirdPartyDrivers/Libraries</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
