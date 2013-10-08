@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" moduleId="org.eclipse.cdt.core.settings" name="ARM_DBG">
@@ -312,6 +310,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191." name="/" resourcePath="">
 						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.cross.base.476395575" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="cdt.managedbuild.tool.gnu.cross.cpp.compiler;cdt.managedbuild.tool.gnu.cross.c.linker">
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.1573582224" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="arm-none-eabi-" valueType="string"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.1322969493" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.2116863680" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
 							<builder arguments="-k -j10" buildPath="${workspace_loc:/MIDIPiano_ARM/GCC}" enableCleanBuild="true" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="cdt.managedbuild.builder.gnu.cross.1239814322" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool command="as" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.cross.assembler.1032901653" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
@@ -364,7 +363,7 @@
 									<listOptionValue builtIn="false" value="--gc-sections"/>
 									<listOptionValue builtIn="false" value="-Map=${ProjName}.map"/>
 								</option>
-								<option id="gnu.cpp.link.option.flags.811983604" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-T&quot;M:\Robotics\Source\MIDIPiano\stm32_flash.ld&quot;  -mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft -g3 -ggdb" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.811983604" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-T&quot;../stm32_flash.ld&quot;  -mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft -g3 -ggdb" valueType="string"/>
 								<option id="gnu.cpp.link.option.userobjs.882778772" name="Other objects" superClass="gnu.cpp.link.option.userobjs"/>
 								<option id="gnu.cpp.link.option.libs.1854151310" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
 								<option defaultValue="true" id="gnu.cpp.link.option.shared.761904876" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
@@ -523,8 +522,8 @@
 		<configuration configurationName="GCC_DBG">
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC_DBG"/>
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC"/>
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
 		</configuration>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
