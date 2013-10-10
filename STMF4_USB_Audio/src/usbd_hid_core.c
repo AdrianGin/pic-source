@@ -44,7 +44,8 @@
 #include "usbd_hid_core.h"
 #include "usbd_desc.h"
 #include "usbd_req.h"
-
+#include "usbd_audio_core.h"
+#include "usbd_audio_out_if.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -288,6 +289,24 @@ static uint8_t  USBD_HID_Init (void  *pdev,
               HID_OUT_PACKET,
               USB_OTG_EP_INT);
   
+  /* Open EP OUT */
+  DCD_EP_Open(pdev,
+              AUDIO_OUT_EP,
+              AUDIO_OUT_PACKET,
+              USB_OTG_EP_ISOC);
+
+  /* Initialize the Audio output Hardware layer */
+  if (AUDIO_OUT_fops.Init(USBD_AUDIO_FREQ, DEFAULT_VOLUME, 0) != USBD_OK)
+  {
+    return USBD_FAIL;
+  }
+
+  /* Prepare Out endpoint to receive audio data */
+//  DCD_EP_PrepareRx(pdev,
+//                   AUDIO_OUT_EP,
+//                   (uint8_t*)IsocOutBuff,
+//                   AUDIO_OUT_PACKET);
+
   return USBD_OK;
 }
 
