@@ -28,6 +28,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "usbd_audio_core.h"
+#include "usbd_usr.h"
+#include "usb_conf.h"
+
+
+
+
 /** @addtogroup Template_Project
   * @{
   */ 
@@ -49,6 +56,10 @@ static void Delay(__IO uint32_t nTime);
   * @param  None
   * @retval None
   */
+
+USB_OTG_CORE_HANDLE           USB_OTG_dev;
+
+
 int main(void)
 {
   /*!< At this stage the microcontroller clock setting is already configured, 
@@ -58,7 +69,6 @@ int main(void)
        application main. To reconfigure the default setting of SystemInit() 
        function, refer to system_stm32f4xx.c file
      */  
-
   /* SysTick end of count event each 10ms */
   RCC_GetClocksFreq(&RCC_Clocks);
   SysTick_Config(RCC_Clocks.HCLK_Frequency / 100);
@@ -66,6 +76,12 @@ int main(void)
   /* Add your application code here */
   /* Insert 50 ms delay */
   Delay(5);
+
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID,
+            &USR_desc,
+            &AUDIO_cb,
+            &USR_cb);
+
       
   /* Infinite loop */
   while (1)
