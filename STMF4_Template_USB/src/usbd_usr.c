@@ -202,13 +202,13 @@ void EVAL_AUDIO_TransferComplete_CallBack(uint32_t pBuffer, uint32_t Size)
 uint32_t Codec_TIMEOUT_UserCallback(void)
 {
   I2C_InitTypeDef I2C_InitStructure;
-  
+
   I2C_GenerateSTOP(I2C1, ENABLE);
   I2C_SoftwareResetCmd(I2C1, ENABLE);
   I2C_SoftwareResetCmd(I2C1, DISABLE);
-    
+
   I2C_DeInit(I2C1);
-  
+
   /* CODEC_I2C peripheral configuration */
   I2C_DeInit(I2C1);
   I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
@@ -218,8 +218,8 @@ uint32_t Codec_TIMEOUT_UserCallback(void)
   I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
   I2C_InitStructure.I2C_ClockSpeed = I2C_SPEED;
   /* Enable the I2C peripheral */
-  I2C_Cmd(I2C1, ENABLE);  
-  I2C_Init(I2C1, &I2C_InitStructure);  
+  I2C_Cmd(I2C1, ENABLE);
+  I2C_Init(I2C1, &I2C_InitStructure);
 
 
   return 0;

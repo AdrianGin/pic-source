@@ -29,6 +29,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
+#include "usb_dcd_int.h"
+#include "main.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -149,6 +151,17 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
+
+/**
+  * @brief  This function handles USB-On-The-Go FS global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void OTG_FS_IRQHandler(void)
+{
+  USBD_OTG_ISR_Handler(&USB_OTG_dev);
+}
+
 
 /**
   * @brief  This function handles PPP interrupt request.
