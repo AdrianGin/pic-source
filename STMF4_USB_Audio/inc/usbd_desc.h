@@ -39,6 +39,8 @@
 /** @defgroup USB_DESC_Exported_Defines
   * @{
   */
+
+
 #define USB_DEVICE_DESCRIPTOR_TYPE              0x01
 #define USB_CONFIGURATION_DESCRIPTOR_TYPE       0x02
 #define USB_STRING_DESCRIPTOR_TYPE              0x03

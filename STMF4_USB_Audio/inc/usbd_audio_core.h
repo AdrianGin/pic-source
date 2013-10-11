@@ -60,11 +60,23 @@
 /* Total size of the audio transfer buffer */
 #define TOTAL_OUT_BUF_SIZE                           ((uint32_t)(AUDIO_OUT_PACKET * OUT_PACKET_NUM))
 
-#define AUDIO_CONFIG_DESC_SIZE                        109
+
+#define AUDIO_CONFIG_DESC_SIZE						  (0x09)
 #define AUDIO_INTERFACE_DESC_SIZE                     9
 #define USB_AUDIO_DESC_SIZ                            0x09
 #define AUDIO_STANDARD_ENDPOINT_DESC_SIZE             0x09
 #define AUDIO_STREAMING_ENDPOINT_DESC_SIZE            0x07
+
+#ifdef USBD_IAD
+#define AUDIO_INTERFACE_ASSOCIATION_DESC_SIZE		  (0x08)
+#define AUDIO_IAD_DESCRIPTOR_TYPE                     (0x0B)
+#else
+#define AUDIO_INTERFACE_ASSOCIATION_DESC_SIZE		  (0x00)
+#endif
+
+#define AUDIO_INTERFACE_COUNT						  (0x02)
+#define AUDIO_IAD_SUBCLASS							  (0x00)
+#define AUDIO_IAD_PROTOCOL							  (0x20)
 
 #define AUDIO_DESCRIPTOR_TYPE                         0x21
 #define USB_DEVICE_CLASS_AUDIO                        0x01
@@ -86,12 +98,16 @@
 
 #define AUDIO_INPUT_TERMINAL_DESC_SIZE                0x0C
 #define AUDIO_OUTPUT_TERMINAL_DESC_SIZE               0x09
+#define AUDIO_FEATURE_UNIT_DESC_SIZE				  (0x09)
+
 #define AUDIO_STREAMING_INTERFACE_DESC_SIZE           0x07
 
 #define AUDIO_CONTROL_MUTE                            0x0001
 
 #define AUDIO_FORMAT_TYPE_I                           0x01
 #define AUDIO_FORMAT_TYPE_III                         0x03
+
+#define AUDIO_FORMAT_TYPE_DESC_SIZE				  (0x0B)
 
 #define USB_ENDPOINT_TYPE_ISOCHRONOUS                 0x01
 #define AUDIO_ENDPOINT_GENERAL                        0x01
@@ -100,6 +116,20 @@
 #define AUDIO_REQ_SET_CUR                             0x01
 
 #define AUDIO_OUT_STREAMING_CTRL                      0x02
+
+#define AUDIO_TOTAL_CONFIG_DESC_SIZE                  (AUDIO_CONFIG_DESC_SIZE		+ \
+													   AUDIO_INTERFACE_ASSOCIATION_DESC_SIZE + \
+													   AUDIO_INTERFACE_DESC_SIZE 	+ \
+													   AUDIO_INTERFACE_DESC_SIZE	+ \
+													   AUDIO_INPUT_TERMINAL_DESC_SIZE 	+ \
+													   AUDIO_FEATURE_UNIT_DESC_SIZE		+ \
+													   AUDIO_OUTPUT_TERMINAL_DESC_SIZE  + \
+													   AUDIO_INTERFACE_DESC_SIZE	+ \
+													   AUDIO_INTERFACE_DESC_SIZE	+ \
+													   AUDIO_STREAMING_INTERFACE_DESC_SIZE + \
+													   AUDIO_FORMAT_TYPE_DESC_SIZE	+ \
+													   AUDIO_STANDARD_ENDPOINT_DESC_SIZE + \
+													   AUDIO_STREAMING_ENDPOINT_DESC_SIZE)
 
 /**
   * @}

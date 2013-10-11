@@ -96,6 +96,8 @@
 
 #define USBD_SELF_POWERED
 
+#define USBD_IAD
+
 /**
   * @}
   */
