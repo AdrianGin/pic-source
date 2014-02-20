@@ -11,7 +11,7 @@
 #include "Graphics/gfxWidget.h"
 //#include "TouchPanel\FluidTouch.h" //need to decouple this from hardware
 #include "Graphics/Tahoma.h"
-#include "Graphics/ComicSans.h"
+//#include "Graphics/ComicSans.h"
 #include "Graphics/arial.h"
 #include "Graphics/droidsansAA.h"
 #include "GLCD/GLCD.h"

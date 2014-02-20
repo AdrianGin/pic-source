@@ -61,6 +61,7 @@
 
 /* get compiler defined type definitions (NULL, size_t, etc) */
 #include <stddef.h> 
+#include "FatFs/integer.h"
 
 #define __PIC32MX__
 
@@ -74,7 +75,7 @@ typedef enum _BOOL { FALSE = 0, TRUE } BOOL;    /* Undefined size */
 
 
 /* INT is processor specific in length may vary in size */
-typedef signed int          INT;
+//typedef signed int          INT;
 typedef signed char         INT8;
 typedef signed short int    INT16;
 typedef signed long int     INT32;
@@ -85,7 +86,7 @@ __EXTENSION typedef signed long long    INT64;
 #endif
 
 /* UINT is processor specific in length may vary in size */
-typedef unsigned int        UINT;
+//typedef unsigned int        UINT;
 typedef unsigned char       UINT8;
 typedef unsigned short int  UINT16;
 /* 24-bit type only available on C18 */
@@ -343,15 +344,15 @@ typedef void                    VOID;
 typedef char                    CHAR8;
 typedef unsigned char           UCHAR8;
 
-typedef unsigned char           BYTE;                           /* 8-bit unsigned  */
-typedef unsigned short int      WORD;                           /* 16-bit unsigned */
-typedef unsigned long           DWORD;                          /* 32-bit unsigned */
+//typedef unsigned char           BYTE;                           /* 8-bit unsigned  */
+//typedef unsigned short int      WORD;                           /* 16-bit unsigned */
+//typedef unsigned long           DWORD;                          /* 32-bit unsigned */
 /* MPLAB C Compiler for PIC18 does not support 64-bit integers */
 __EXTENSION
 typedef unsigned long long      QWORD;                          /* 64-bit unsigned */
 //typedef signed char             CHAR;                           /* 8-bit signed    */
-typedef signed short int        SHORT;                          /* 16-bit signed   */
-typedef signed long             LONG;                           /* 32-bit signed   */
+//typedef signed short int        SHORT;                          /* 16-bit signed   */
+//typedef signed long             LONG;                           /* 32-bit signed   */
 /* MPLAB C Compiler for PIC18 does not support 64-bit integers */
 __EXTENSION
 typedef signed long long        LONGLONG;                       /* 64-bit signed   */

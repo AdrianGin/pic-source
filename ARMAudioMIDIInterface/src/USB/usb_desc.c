@@ -45,9 +45,9 @@ const uint8_t Speaker_DeviceDescriptor[] =
     USB_DEVICE_DESCRIPTOR_TYPE,           /* bDescriptorType */
     0x00,          /* 2.00 */             /* bcdUSB */
     0x02,
-    0x00,                                 /* bDeviceClass */
-    0x00,                                 /* bDeviceSubClass */
-    0x00,                                 /* bDeviceProtocol */
+    0xEF,                                 /* bDeviceClass */
+    0x02,                                 /* bDeviceSubClass */
+    0x01,                                 /* bDeviceProtocol */
     END0_PACKET_SIZE,                                 /* bMaxPacketSize 40 */
     0x83,                                 /* idVendor */
     0x04,
@@ -79,6 +79,29 @@ const uint8_t Speaker_ConfigDescriptor[] =
     /* 09 byte*/
 
 
+//    Interface Association Descriptor Audio
+//    Offset Field Size Value Description
+//    0 bLength 1 08h
+//    1 bDescriptorType 1 0Bh Interface Association
+//    2 bFirstInterface 1 00h
+//    3 bInterfaceCount 1 03h
+//    4 bFunctionClass 1 01h Audio
+//    5 bFunctionSubClass 1 00h
+//    6 bFunctionProtocol 1 20h
+//    7 iFunction 1 00h
+
+
+    /* Interface Association Descriptor */
+    0x08,                                 /* bLength */
+    0x0B,    							  /* bDescriptorType */
+    0x00,                                 /* bFirstInterface*/
+    0x04,								  /* bInterfaceCount */
+    0x01,                                 /* bFunctionClass Audio */
+    0x00,                                 /* bFunctionSubClass */
+    0x20,                                 /* bFunctionProtocol */
+    0x09,                                 /* iFunction*/
+    /* 08 byte*/
+
 
     /* USB Speaker Standard interface descriptor */
     SPEAKER_SIZ_INTERFACE_DESC_SIZE,      /* bLength */
@@ -89,7 +112,6 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_DEVICE_CLASS_AUDIO,               /* bInterfaceClass */
     AUDIO_SUBCLASS_AUDIOCONTROL,          /* bInterfaceSubClass */
     AUDIO_PROTOCOL_UNDEFINED,             /* bInterfaceProtocol */
-    0x04,                                 /* iInterface */
     /* 09 byte*/
 
     /* USB Speaker Class-specific AC Interface Descriptor */
@@ -168,7 +190,6 @@ const uint8_t Speaker_ConfigDescriptor[] =
     USB_DEVICE_CLASS_AUDIO,               /* bInterfaceClass */
     AUDIO_SUBCLASS_AUDIOSTREAMING,        /* bInterfaceSubClass */
     AUDIO_PROTOCOL_UNDEFINED,             /* bInterfaceProtocol */
-    0x04,                                 /* iInterface */
     /* 09 byte*/
 
     /* USB Speaker Audio Streaming Interface Descriptor */
