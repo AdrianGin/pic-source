@@ -1,0 +1,13 @@
+Dependencies for Project 'STMF4Synth', Target 'Target 1': (DO NOT MODIFY !)
+F (.\src\main.c)(0x5306722A)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I M:\Robotics\Source\STMF4_Synth\RTE-I M:\Robotics\Source\STMF4_Synth\RTE\Device\STM32F407VG-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\Keil\STM32F4xx_DFP\1.0.5\Device\Include-D_RTE_ -DSTM32F40XX -o .\main.o --omf_browse .\main.crf --depend .\main.d)
+F (D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib)(0x523FF7E8)()
+F (RTE\Device\STM32F407VG\RTE_Device.h)(0x5232BC40)()
+F (RTE\Device\STM32F407VG\startup_stm32f40xx.s)(0x51AF1936)(--cpu Cortex-M4.fp -g --apcs=interwork -I M:\Robotics\Source\STMF4_Synth\RTE-I M:\Robotics\Source\STMF4_Synth\RTE\Device\STM32F407VG-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\Keil\STM32F4xx_DFP\1.0.5\Device\Include--list .\startup_stm32f40xx.lst --xref -o .\startup_stm32f40xx.o --depend .\startup_stm32f40xx.d)
+F (RTE\Device\STM32F407VG\system_stm32f4xx.c)(0x51AF0892)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I M:\Robotics\Source\STMF4_Synth\RTE-I M:\Robotics\Source\STMF4_Synth\RTE\Device\STM32F407VG-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include-I D:\Keil\ARM\PACK\Keil\STM32F4xx_DFP\1.0.5\Device\Include-D_RTE_ -DSTM32F40XX -o .\system_stm32f4xx.o --omf_browse .\system_stm32f4xx.crf --depend .\system_stm32f4xx.d)
+I (D:\Keil\ARM\PACK\Keil\STM32F4xx_DFP\1.0.5\Device\Include\stm32f4xx.h)(0x51B071F0)
+I (D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include\core_cm4.h)(0x512C9CF2)
+I (D:\Keil\ARM\ARMCC\include\stdint.h)(0x51C827C4)
+I (D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include\core_cmInstr.h)(0x51BAD3F4)
+I (D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include\core_cmFunc.h)(0x512C9CF2)
+I (D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Include\core_cm4_simd.h)(0x522DB978)
+I (D:\Keil\ARM\PACK\Keil\STM32F4xx_DFP\1.0.5\Device\Include\system_stm32f4xx.h)(0x51AF16A2)

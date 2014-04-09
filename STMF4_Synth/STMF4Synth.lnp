@@ -1,0 +1,9 @@
+--cpu Cortex-M4.fp
+".\main.o"
+"D:\Keil\ARM\PACK\ARM\CMSIS\3.20.3\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib"
+".\startup_stm32f40xx.o"
+".\system_stm32f4xx.o"
+--strict --scatter ".\STMF4Synth.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\STMF4Synth.map" -o .\STMF4Synth.axf
