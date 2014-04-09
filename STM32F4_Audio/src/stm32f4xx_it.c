@@ -158,9 +158,7 @@ void SysTick_Handler(void)
     buf = USBD_HID_GetPos();
     if((buf[1] != 0) ||(buf[2] != 0))
     {
-      USBD_HID_SendReport (&USB_OTG_dev, 
-                           buf,
-                           4);
+
     } 
     Counter ++;
     if (Counter == 10)
