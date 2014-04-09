@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STMF4Synth' 
- * Target:  'Target 1' 
+ * Target:  'STM32F4 Synth' 
  */
 
 #ifndef RTE_COMPONENTS_H
