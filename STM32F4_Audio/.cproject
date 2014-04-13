@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" moduleId="org.eclipse.cdt.core.settings" name="ARM_DBG">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" name="ARM_DBG" parent="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" postannouncebuildStep="" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" preannouncebuildStep="" prebuildStep="make -v">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122." name="/" resourcePath="">
-						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.arm.thumb.executable.debug.762435628" name="ARM Tool Chain">
-							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.arm.thumb.executable.debug.1566335397"/>
-							<builder arguments="-k -j4" buildPath="${workspace_loc:/STM32TouchPanel/Debug}" command="make" errorParsers="" id="cdt.managedbuild.target.arm.builder.thumb.executable.debug.270251497" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="ARM_DBG"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="ARM"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="GCC"/>
-								</outputEntries>
-							</builder>
+						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.257595424" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.executable.debug">
+							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.590521908" superClass="cdt.managedbuild.target.arm.executable.debug"/>
+							<builder buildPath="${workspace_loc:/STM32F4_Audio}/ARM_DBG" id="cdt.managedbuild.target.arm.builder.executable.debug.1781967729" name="Gnu Make.ARM_DBG" superClass="cdt.managedbuild.target.arm.builder.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armcc.executable.debug.677783032" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armasm.executable.debug.650647621" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armlink.executable.debug.270457004" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.executable.debug"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
@@ -45,14 +40,19 @@
 				<extensions>
 					<extension id="com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" name="ARM" parent="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" prebuildStep="make -v">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.arm.thumb.executable.release.78760310" name="ARM Tool Chain">
-							<targetPlatform id="cdt.managedbuild.target.arm.thumb.executable.release.8717693"/>
-							<builder arguments="-k -j4" buildPath="${workspace_loc:/STM32TouchPanel/Release}" command="make" id="cdt.managedbuild.target.arm.builder.thumb.executable.release.1057697031" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make"/>
+						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.1253972701" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.executable.debug">
+							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.260761328" superClass="cdt.managedbuild.target.arm.executable.debug"/>
+							<builder buildPath="${workspace_loc:/STM32F4_Audio}/ARM" id="cdt.managedbuild.target.arm.builder.executable.debug.1106073331" name="Gnu Make.ARM" superClass="cdt.managedbuild.target.arm.builder.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armcc.executable.debug.135537303" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armasm.executable.debug.1241537474" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.executable.debug"/>
+							<tool id="cdt.managedbuild.tool.arm.armlink.executable.debug.781374881" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.executable.debug"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
@@ -77,12 +77,12 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -165,13 +165,13 @@
 								</inputType>
 							</tool>
 							<tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.optimization.level.740179390" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.debugging.level.1987671364" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.debugging.other.1280282155" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="-ggdb" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.other.other.1582947796" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mcpu=cortex-m4 -mthumb -ffunction-sections -fdata-sections" valueType="string"/>
-								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths"/>
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols"/>
-								<option id="gnu.cpp.compiler.option.include.paths.373195513" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.optimization.level.740179390" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.debugging.level.1987671364" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.debugging.other.1280282155" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" useByScannerDiscovery="false" value="-ggdb" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.1582947796" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mcpu=cortex-m4 -mthumb -ffunction-sections -fdata-sections" valueType="string"/>
+								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false"/>
+								<option id="gnu.cpp.compiler.option.include.paths.373195513" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
@@ -212,7 +212,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F10x\Include}&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.1173193072" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1173193072" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="STM32F4XX"/>
 									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
@@ -220,9 +220,9 @@
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cross.c.compiler.1089196536" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1456036248" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.debugging.level.1265982091" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1456036248" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.level.1265982091" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F4xx_StdPeriph_Driver\inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
@@ -268,17 +268,17 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F4xx\Include}&quot;"/>
 								</option>
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="USE_USB_OTG_FS"/>
 									<listOptionValue builtIn="false" value="STM32F40_41xxx"/>
 									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
 								</option>
-								<option id="gnu.c.compiler.option.debugging.other.1720564761" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" value="-ggdb" valueType="string"/>
-								<option id="gnu.c.compiler.option.debugging.prof.1873927377" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" value="false" valueType="boolean"/>
-								<option id="gnu.c.compiler.option.debugging.gprof.953936120" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" value="false" valueType="boolean"/>
-								<option id="gnu.c.compiler.option.misc.other.1004324255" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -mcpu=cortex-m4 -mthumb -ffunction-sections  -fdata-sections" valueType="string"/>
-								<option id="gnu.c.compiler.option.misc.verbose.1180655434" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.other.1720564761" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" useByScannerDiscovery="false" value="-ggdb" valueType="string"/>
+								<option id="gnu.c.compiler.option.debugging.prof.1873927377" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.gprof.953936120" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.misc.other.1004324255" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mcpu=cortex-m4 -mthumb -ffunction-sections  -fdata-sections" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.verbose.1180655434" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.198740861" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>
@@ -305,12 +305,12 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -529,8 +529,8 @@
 		<configuration configurationName="GCC_DBG">
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC_DBG"/>
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC"/>
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
 		</configuration>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
