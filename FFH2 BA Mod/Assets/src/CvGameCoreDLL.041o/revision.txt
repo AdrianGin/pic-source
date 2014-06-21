@@ -1,0 +1,12 @@
+Path: CvGameCoreDLL-FFHSpells
+URL: http://localhost:8008/repos/FFHSpells/trunk/CvGameCoreDLL-FFHSpells
+Repository Root: http://localhost:8008/repos/FFHSpells
+Repository UUID: c84aa521-ac1a-394c-a9b0-0a31f6012edd
+Revision: 62
+Node Kind: directory
+Schedule: normal
+Last Changed Author: Talchas
+Last Changed Rev: 60
+Last Changed Date: 2006-05-06 14:44:32 -0400 (Sat, 06 May 2006)
+Properties Last Updated: 2006-04-24 22:30:14 -0400 (Mon, 24 Apr 2006)
+
