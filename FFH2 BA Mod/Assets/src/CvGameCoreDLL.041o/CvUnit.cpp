@@ -8001,7 +8001,11 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 
 	{
 		changeLevel(1);
-		changeDamage(-(getDamage() / 2));
+		//changeDamage(-(getDamage() / 2));
+		int iHealDamage = 0;
+		iHealDamage = (getDamage() * GC.getDefineINT("PROMOTIONS_HEAL_PERCENTAGE_DAMAGE")) / 100;
+		changeDamage(-iHealDamage);
+		//PROMOTIONS_HEAL_PERCENTAGE
 	}
 
 //FfH: Added by Kael 01/09/2008
