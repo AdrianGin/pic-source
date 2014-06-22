@@ -10,7 +10,7 @@
 			<Type>GAMEOPTION_ADVANCED_START</Type>
 			<Description>TXT_KEY_GAME_OPTION_ADVANCED_START</Description>
 			<Help>TXT_KEY_GAME_OPTION_ADVANCED_START_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -150,14 +150,14 @@
 			<Type>GAMEOPTION_NO_TECH_TRADING</Type>
 			<Description>TXT_KEY_GAME_OPTION_NO_TECH_TRADING</Description>
 			<Help>TXT_KEY_GAME_OPTION_NO_TECH_TRADING_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_NO_TECH_BROKERING</Type>
 			<Description>TXT_KEY_GAME_OPTION_NO_TECH_BROKERING</Description>
 			<Help>TXT_KEY_GAME_OPTION_NO_TECH_BROKERING_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -192,7 +192,7 @@
 			<Type>GAMEOPTION_NEW_RANDOM_SEED</Type>
 			<Description>TXT_KEY_GAME_OPTION_NEW_RANDOM_SEED</Description>
 			<Help>TXT_KEY_GAME_OPTION_NEW_RANDOM_SEED_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -276,7 +276,7 @@
 			<Type>GAMEOPTION_NO_HYBOREM_OR_BASIUM</Type>
 			<Description>TXT_KEY_GAME_OPTION_NO_HYBOREM_OR_BASIUM</Description>
 			<Help>TXT_KEY_GAME_OPTION_NO_HYBOREM_OR_BASIUM_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -374,7 +374,7 @@
 			<Type>GAMEOPTION_NO_ACHERON</Type>
 			<Description>TXT_KEY_GAME_OPTION_NO_ACHERON</Description>
 			<Help>TXT_KEY_GAME_OPTION_NO_ACHERON_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -388,7 +388,7 @@
 			<Type>GAMEOPTION_NO_ORTHUS</Type>
 			<Description>TXT_KEY_GAME_OPTION_NO_ORTHUS</Description>
 			<Help>TXT_KEY_GAME_OPTION_NO_ORTHUS_HELP</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
