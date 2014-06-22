@@ -2819,14 +2819,18 @@ def reqStasis(caster):
 
 def spellStasis(caster):
 	pPlayer = gc.getPlayer(caster.getOwner())
-	iDelay = 20
+#	iDelay = 20
+	iDelay = 10
 	iTeam = pPlayer.getTeam()
 	if CyGame().getGameSpeedType() == gc.getInfoTypeForString('GAMESPEED_QUICK'):
-		iDelay = 14
+		#iDelay = 14
+		iDelay = 7
 	if CyGame().getGameSpeedType() == gc.getInfoTypeForString('GAMESPEED_EPIC'):
-		iDelay = 30
+		#iDelay = 30
+		iDelay = 15
 	if CyGame().getGameSpeedType() == gc.getInfoTypeForString('GAMESPEED_MARATHON'):
-		iDelay = 60
+		#iDelay = 60
+		iDelay = 30
 	for iPlayer2 in range(gc.getMAX_PLAYERS()):
 		pPlayer2 = gc.getPlayer(iPlayer2)
 		if pPlayer2.isAlive():
