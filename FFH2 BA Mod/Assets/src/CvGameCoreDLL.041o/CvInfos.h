@@ -1183,6 +1183,11 @@ public:
 	int getAdvancedStartCostIncrease() const;				// Exposed to Python
 	int getMinAreaSize() const;				// Exposed to Python
 	int getMoves() const;				// Exposed to Python
+//Unit Per Tile -- START
+	int getUnitPlotCost() const;
+	void setUnitPlotCost(int i);
+//Unit Per Tile -- END
+
 	int getAirRange() const;				// Exposed to Python
 	int getAirUnitCap() const;				// Exposed to Python
 	int getDropRange() const;				// Exposed to Python
@@ -1441,6 +1446,11 @@ protected:
 	int m_iAdvancedStartCostIncrease;
 	int m_iMinAreaSize;
 	int m_iMoves;
+
+	//Unit Per Tile -- START
+	int m_iUnitPlotCost;
+	//Unit Per Tile -- END
+
 	int m_iAirRange;
 	int m_iAirUnitCap;
 	int m_iDropRange;
@@ -3474,6 +3484,10 @@ public:
 	int getImprovementUpgrade() const;				// Exposed to Python
 	void setImprovementUpgrade(int i);
 
+	//Unit Per Tile -- START
+	int getUnitPlotSupport() const;
+	//Unit Per Tile -- END
+
 	bool isActsAsCity() const;				// Exposed to Python
 	bool isHillsMakesValid() const;				// Exposed to Python
 	bool isFreshWaterMakesValid() const;				// Exposed to Python
@@ -3565,7 +3579,9 @@ protected:
 	int m_iPillageGold;
 	int m_iImprovementPillage;
 	int m_iImprovementUpgrade;
-
+	//Unit Per Tile -- START
+	int m_iUnitPlotSupport;
+	//Unit Per Tile -- END
 	bool m_bActsAsCity;
 	bool m_bHillsMakesValid;
 	bool m_bFreshWaterMakesValid;
@@ -3817,6 +3833,9 @@ public:
 	virtual ~CvFeatureInfo();
 
 	int getMovementCost() const;							// Exposed to Python
+	//Unit Per Tile -- START
+	int getUnitPlotSupport() const;
+	//Unit Per Tile -- END
 	int getSeeThroughChange() const;					// Exposed to Python
 	int getHealthPercent() const;							// Exposed to Python
 	int getAppearanceProbability() const;			// Exposed to Python
@@ -3877,6 +3896,9 @@ public:
 protected:
 
 	int m_iMovementCost;
+	//Unit Per Tile -- START
+	int m_iUnitPlotSupport;
+	//Unit Per Tile -- END
 	int m_iSeeThroughChange;
 	int m_iHealthPercent;
 	int m_iAppearanceProbability;
@@ -4043,6 +4065,9 @@ public:
 	virtual ~CvTerrainInfo();
 
 	int getMovementCost() const;				// Exposed to Python
+	//Unit Per Tile -- START
+	int getUnitPlotSupport() const;
+	//Unit Per Tile -- END
 	int getSeeFromLevel() const;				// Exposed to Python
 	int getSeeThroughLevel() const;			// Exposed to Python
 	int getBuildModifier() const;				// Exposed to Python
@@ -4089,6 +4114,9 @@ public:
 protected:
 
 	int m_iMovementCost;
+	//Unit Per Tile -- START
+	int m_iUnitPlotSupport;
+	//Unit Per Tile -- END
 	int m_iSeeFromLevel;
 	int m_iSeeThroughLevel;
 	int m_iBuildModifier;

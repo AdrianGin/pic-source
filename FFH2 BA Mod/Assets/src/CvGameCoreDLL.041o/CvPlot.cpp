@@ -3412,6 +3412,74 @@ bool CvPlot::isVisibleToCivTeam() const
 	return false;
 }
 
+// Unit Capacity START
+int CvPlot::getUnitPlotCost(bool flyingUnitsOnly) const
+{
+	int iFlyingUnitCost = 0;
+	int iLandUnitCost = 0;
+
+	for ( int iNumberOfUnit = 0 ; iNumberOfUnit < this->getNumUnits(); iNumberOfUnit++  ) { //Got through all units on plot and add the UnitPlotCost
+		CvUnit* unitOnPlot = this->getUnitByIndex(iNumberOfUnit);
+
+		if( unitOnPlot->validUnitForCost(this) )
+		{
+			if( unitOnPlot->isFlying())
+			{
+				iFlyingUnitCost += GC.getUnitInfo(unitOnPlot->getUnitType()).getUnitPlotCost(); // Get the UnitPlotcost from the Unit the pointer shows
+			}
+			else
+			{
+				iLandUnitCost += GC.getUnitInfo(unitOnPlot->getUnitType()).getUnitPlotCost(); // Get the UnitPlotcost from the Unit the pointer shows
+			}
+		}
+	}
+
+	if( flyingUnitsOnly )
+	{
+		return iFlyingUnitCost;
+	}
+
+	return iLandUnitCost;
+}
+
+
+int CvPlot::getUnitPlotCapacity() const
+{
+	int iMaxUnit = GC.getTerrainInfo( this->getTerrainType()).getUnitPlotSupport();
+	if ( this->getFeatureType() != NO_FEATURE ){
+		iMaxUnit += GC.getFeatureInfo( this->getFeatureType()).getUnitPlotSupport();
+	}
+	if ( this->getImprovementType() != NO_IMPROVEMENT ){
+		iMaxUnit += GC.getImprovementInfo( this->getImprovementType()).getUnitPlotSupport();
+	}
+
+	if( this->isHills() )
+	{
+		iMaxUnit += GC.getDefineINT("HIILS_CAPACITY_MODIFIER");
+	}
+
+	if( this->isCity(true) )
+	{
+		iMaxUnit += GC.getDefineINT("City_Unit_Capacity");
+
+		CvCity* pCity = getPlotCity();
+		int cityPopulation = 0;
+		if( pCity )
+		{
+			cityPopulation = pCity->getPopulation();
+		}
+			
+		iMaxUnit += (GC.getDefineINT("CITY_POPULATION_CAPACITY_FACTOR") * ( cityPopulation / GC.getDefineINT("CITY_POPULATION_CAPACITY_DIVISOR") ));		
+
+
+		//Subtract the terrain 
+		iMaxUnit -= GC.getTerrainInfo( this->getTerrainType()).getUnitPlotSupport();
+	}
+
+	return iMaxUnit;
+}
+// Unit Capacity END
+
 
 bool CvPlot::isVisibleToWatchingHuman() const
 {

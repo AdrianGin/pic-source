@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- edited with XMLSpy v2014 rel. 2 sp1 (http://www.altova.com) by Adrian (AG) -->
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Firaxis Games (Firaxis Games) -->
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
@@ -15,6 +16,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -120,7 +123,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -136,6 +139,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>-40</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>-25</iHealthPercent>
 			<iDefense>25</iDefense>
@@ -242,7 +247,7 @@
 			<bFlammable>1</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -258,6 +263,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>40</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -360,7 +367,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -380,6 +387,8 @@
 			</RiverYieldChange>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>20</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>-40</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -481,7 +490,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -497,6 +506,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>-20</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>50</iHealthPercent>
 			<iDefense>25</iDefense>
@@ -599,7 +610,7 @@
 			<bFlammable>1</bFlammable>
 			<FeatureUpgrade>FEATURE_FOREST_ANCIENT</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -615,6 +626,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>-20</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -721,7 +734,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>FEATURE_FOREST_NEW</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -737,6 +750,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>-20</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>25</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -843,7 +858,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>FEATURE_FOREST</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -859,6 +874,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>-50</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -972,7 +989,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -988,6 +1005,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>-20</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>50</iHealthPercent>
 			<iDefense>50</iDefense>
@@ -1090,7 +1109,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>RELIGION_FELLOWSHIP_OF_LEAVES</PrereqStateReligion>
-            <PythonOnMove>onMoveAncientForest(pCaster, pPlot)</PythonOnMove>
+			<PythonOnMove>onMoveAncientForest(pCaster, pPlot)</PythonOnMove>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1102,6 +1121,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>-25</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1196,7 +1217,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>DAMAGE_FIRE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1216,6 +1237,8 @@
 			</RiverYieldChange>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>-40</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1309,7 +1332,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1321,6 +1344,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>2</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1451,7 +1476,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1467,6 +1492,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1561,7 +1588,7 @@
 			<bFlammable>1</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1573,6 +1600,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1678,7 +1707,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove>onMoveBlizzard(pCaster, pPlot)</PythonOnMove>
+			<PythonOnMove>onMoveBlizzard(pCaster, pPlot)</PythonOnMove>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1694,6 +1723,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1782,7 +1813,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1794,6 +1825,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>5</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1890,7 +1923,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -1902,6 +1935,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -1998,7 +2033,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -2010,6 +2045,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>5</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -2106,7 +2143,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -2118,6 +2155,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -2214,7 +2253,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 		<FeatureInfo>
@@ -2226,6 +2265,8 @@
 			<RiverYieldChange/>
 			<HillsYieldChange/>
 			<iMovement>1</iMovement>
+			<!-- VKs Plot Capacity-->
+			<iUnitPlotSupport>0</iUnitPlotSupport>
 			<iSeeThrough>9</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
@@ -2322,7 +2363,7 @@
 			<bFlammable>0</bFlammable>
 			<FeatureUpgrade>NONE</FeatureUpgrade>
 			<PrereqStateReligion>NONE</PrereqStateReligion>
-            <PythonOnMove></PythonOnMove>
+			<PythonOnMove/>
 			<RequireResist>NONE</RequireResist>
 		</FeatureInfo>
 	</FeatureInfos>

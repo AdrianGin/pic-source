@@ -1831,6 +1831,44 @@ bool CvCity::isBuildingsMaxed() const
 //bool CvCity::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost, bool bIgnoreUpgrades) const
 bool CvCity::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost, bool bIgnoreUpgrades) const
 {
+
+	//check
+	//Count all the cost of units in the tile
+	// Unit Capacity START
+	int iLandUnitCost;
+	int iFlyingUnitCost;
+	CvPlot* pPlot;
+	pPlot = plot();
+	int iMaxUnit;
+
+
+	iMaxUnit = GC.getDefineINT("City_Unit_Capacity");
+	iMaxUnit += (GC.getDefineINT("CITY_POPULATION_CAPACITY_FACTOR") * ( this->getPopulation() / GC.getDefineINT("CITY_POPULATION_CAPACITY_DIVISOR") ));
+
+	
+
+	iLandUnitCost = pPlot->getUnitPlotCost(false);
+	iFlyingUnitCost = pPlot->getUnitPlotCost(true);
+
+	//Can always build 'non defensive' units
+	if( GC.getUnitInfo(eUnit).getUnitPlotCost() != 0)
+	{
+		if( (GC.getUnitInfo(eUnit).getDomainType() != DOMAIN_SEA) )
+		{
+			if( iLandUnitCost > pPlot->getUnitPlotCapacity() )
+			{
+				return false;
+			}
+			
+			if( (iFlyingUnitCost + iLandUnitCost) > iMaxUnit)
+			{
+				return false;
+			}
+		}
+	}
+
+
+	// Unit Capacity END
 	if (eUnit == NO_UNIT)
 	{
 		return false;

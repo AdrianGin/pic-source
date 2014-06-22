@@ -1,3 +1,4 @@
+<!-- edited with XMLSpy v2014 rel. 2 sp1 (http://www.altova.com) by Adrian (AG) -->
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Alex Mantzaris (Firaxis Games) -->
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
@@ -26,6 +27,7 @@
 	<ElementType name="bFoundCoast" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bFoundFreshWater" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iMovement" content="textOnly" dt:type="int"/>
+	<ElementType name="iUnitPlotSupport" content="textOnly" dt:type="int"/>
 	<ElementType name="iSeeFrom" content="textOnly" dt:type="int"/>
 	<ElementType name="iSeeThrough" content="textOnly" dt:type="int"/>
 	<ElementType name="iBuildModifier" content="textOnly" dt:type="int"/>
@@ -65,6 +67,7 @@
 		<element type="bFoundCoast"/>
 		<element type="bFoundFreshWater"/>
 		<element type="iMovement"/>
+		<element type="iUnitPlotSupport" minOccurs="0"/>
 		<element type="iSeeFrom"/>
 		<element type="iSeeThrough"/>
 		<element type="iBuildModifier"/>
@@ -168,6 +171,7 @@
 		<element type="RiverYieldChange"/>
 		<element type="HillsYieldChange"/>
 		<element type="iMovement"/>
+		<element type="iUnitPlotSupport" minOccurs="0"/>
 		<element type="iSeeThrough"/>
 		<element type="iHealthPercent"/>
 		<element type="iDefense"/>
@@ -506,6 +510,7 @@
 		<element type="iDefenseModifier"/>
 		<element type="iHappiness"/>
 		<element type="iPillageGold"/>
+		<element type="iUnitPlotSupport" minOccurs="0"/>
 		<element type="bOutsideBorders"/>
 		<element type="TerrainMakesValids"/>
 		<element type="FeatureMakesValids"/>

@@ -103,6 +103,8 @@ public:
 	bool canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage = false) const;						// Exposed to Python
 	bool canEnterArea(TeamTypes eTeam, const CvArea* pArea, bool bIgnoreRightOfPassage = false) const;						// Exposed to Python
 	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;															// Exposed to Python
+	bool validUnitForCost(const CvPlot* pPlot) const;
+	bool hasMaxUnitPerTile(const CvPlot* pPlot) const;
 	bool canMoveInto(const CvPlot* pPlot, bool bAttack = false, bool bDeclareWar = false, bool bIgnoreLoad = false) const;	// Exposed to Python
 	bool canMoveOrAttackInto(const CvPlot* pPlot, bool bDeclareWar = false) const;								// Exposed to Python
 	bool canMoveThrough(const CvPlot* pPlot) const;																								// Exposed to Python
@@ -470,7 +472,13 @@ public:
 	void changeDamage(int iChange, PlayerTypes ePlayer = NO_PLAYER);													// Exposed to Python
 
 	int getMoves() const;																																			// Exposed to Python
-	void setMoves(int iNewValue);																										// Exposed to Python
+	void setMoves(int iNewValue);	
+	
+	// Exposed to Python
+	//Unit Per Tile -- START
+	int UnitPlotCost() const;
+	void setUnitPlotCost(int i);
+	//Unit Per Tile -- END
 	void changeMoves(int iChange);																														// Exposed to Python
 	void finishMoves();																																				// Exposed to Python
 
@@ -992,6 +1000,9 @@ protected:
 	int m_iGameTurnCreated;
 	int m_iDamage;
 	int m_iMoves;
+	//Unit Per Tile -- START
+	int m_iUnitPlotCost;
+	//Unit Per Tile -- END
 	int m_iExperience;
 	int m_iLevel;
 	int m_iCargo;

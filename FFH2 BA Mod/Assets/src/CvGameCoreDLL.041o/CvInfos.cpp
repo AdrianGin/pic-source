@@ -4700,6 +4700,9 @@ m_iAdvancedStartCost(0),
 m_iAdvancedStartCostIncrease(0),
 m_iMinAreaSize(0),
 m_iMoves(0),
+//Unit Per Tile -- START
+m_iUnitPlotCost(0),
+//Unit Per Tile -- END
 m_iAirRange(0),
 m_iAirUnitCap(0),
 m_iDropRange(0),
@@ -4990,6 +4993,19 @@ int CvUnitInfo::getMoves() const
 {
 	return m_iMoves;
 }
+
+//Unit Per Tile -- START
+int CvUnitInfo::getUnitPlotCost() const
+{
+	return m_iUnitPlotCost;
+}
+
+void CvUnitInfo::setUnitPlotCost(int i)
+{
+	m_iUnitPlotCost = i;
+}
+//Unit Per Tile -- START
+
 
 int CvUnitInfo::getAirRange() const
 {
@@ -6207,6 +6223,9 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAdvancedStartCostIncrease);
 	stream->Read(&m_iMinAreaSize);
 	stream->Read(&m_iMoves);
+//Unit Per Tile -- START	
+	stream->Read(&m_iUnitPlotCost);
+//Unit Per Tile -- END	
 	stream->Read(&m_iAirRange);
 	stream->Read(&m_iAirUnitCap);
 	stream->Read(&m_iDropRange);
@@ -6567,6 +6586,9 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iAdvancedStartCostIncrease);
 	stream->Write(m_iMinAreaSize);
 	stream->Write(m_iMoves);
+	//Unit Per Tile -- START
+	stream->Write(m_iUnitPlotCost);
+	//Unit Per Tile -- END
 	stream->Write(m_iAirRange);
 	stream->Write(m_iAirUnitCap);
 	stream->Write(m_iDropRange);
@@ -7007,6 +7029,11 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease");
 	pXML->GetChildXmlValByName(&m_iMinAreaSize, "iMinAreaSize");
 	pXML->GetChildXmlValByName(&m_iMoves, "iMoves");
+
+	//Unit Per Tile -- START
+	pXML->GetChildXmlValByName(&m_iUnitPlotCost, "iUnitPlotCost");
+	//Unit Per Tile -- END
+
 	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange");
 	pXML->GetChildXmlValByName(&m_iAirUnitCap, "iAirUnitCap");
 	pXML->GetChildXmlValByName(&m_iDropRange, "iDropRange");
@@ -14249,6 +14276,9 @@ m_iAirBombDefense(0),
 m_iDefenseModifier(0),
 m_iHappiness(0),
 m_iPillageGold(0),
+//Unit Per Tile -- START
+m_iUnitPlotSupport(0),
+//Unit Per Tile -- END
 m_iImprovementPillage(NO_IMPROVEMENT),
 m_iImprovementUpgrade(NO_IMPROVEMENT),
 m_bActsAsCity(true),
@@ -14356,6 +14386,11 @@ int CvImprovementInfo::getGoodyUniqueRange() const
 {
 	return m_iGoodyUniqueRange;
 }
+//Unit Per Tile -- START
+int CvImprovementInfo::getUnitPlotSupport() const {
+    return m_iUnitPlotSupport;
+}
+//Unit Per Tile -- END
 
 int CvImprovementInfo::getFeatureGrowthProbability() const
 {
@@ -14739,6 +14774,10 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iImprovementPillage);
 	stream->Read(&m_iImprovementUpgrade);
 
+	//Unit Per Tile -- START
+	stream->Read(&m_iUnitPlotSupport);
+	//Unit Per Tile -- END
+
 	stream->Read(&m_bActsAsCity);
 	stream->Read(&m_bHillsMakesValid);
 	stream->Read(&m_bFreshWaterMakesValid);
@@ -14865,6 +14904,10 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPillageGold);
 	stream->Write(m_iImprovementPillage);
 	stream->Write(m_iImprovementUpgrade);
+
+	//Unit Per Tile -- START
+	stream->Write(m_iUnitPlotSupport);
+	//Unit Per Tile -- END
 
 	stream->Write(m_bActsAsCity);
 	stream->Write(m_bHillsMakesValid);
@@ -15019,6 +15062,10 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness");
 	pXML->GetChildXmlValByName(&m_iPillageGold, "iPillageGold");
 	pXML->GetChildXmlValByName(&m_bOutsideBorders, "bOutsideBorders");
+
+	//Unit Per Tile -- START
+	pXML->GetChildXmlValByName(&m_iUnitPlotSupport, "iUnitPlotSupport");
+	//Unit Per Tile -- END
 
 	pXML->SetVariableListTagPair(&m_pbTerrainMakesValid, "TerrainMakesValids", sizeof(GC.getTerrainInfo((TerrainTypes)0)), GC.getNumTerrainInfos());
 	pXML->SetVariableListTagPair(&m_pbFeatureMakesValid, "FeatureMakesValids", sizeof(GC.getFeatureInfo((FeatureTypes)0)), GC.getNumFeatureInfos());
@@ -15847,6 +15894,9 @@ bool CvBonusInfo::readPass3()
 //------------------------------------------------------------------------------------------------------
 CvFeatureInfo::CvFeatureInfo() :
 m_iMovementCost(0),
+//Unit Per Tile -- START
+m_iUnitPlotSupport(0),
+//Unit Per Tile -- END
 m_iSeeThroughChange(0),
 m_iHealthPercent(0),
 m_iAppearanceProbability(0),
@@ -15904,6 +15954,12 @@ int CvFeatureInfo::getMovementCost() const
 {
 	return m_iMovementCost;
 }
+
+//Unit Per Tile -- START
+int CvFeatureInfo::getUnitPlotSupport() const {
+    return m_iUnitPlotSupport;
+}
+//Unit Per Tile -- END
 
 int CvFeatureInfo::getSeeThroughChange() const
 {
@@ -16160,6 +16216,11 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 	}
 
 	pXML->GetChildXmlValByName(&m_iMovementCost, "iMovement");
+
+	//Unit Per Tile -- START
+	pXML->GetChildXmlValByName(&m_iUnitPlotSupport, "iUnitPlotSupport");
+	//Unit Per Tile -- END
+
 	pXML->GetChildXmlValByName(&m_iSeeThroughChange, "iSeeThrough");
 	pXML->GetChildXmlValByName(&m_iHealthPercent, "iHealthPercent");
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefense");
@@ -16490,6 +16551,9 @@ bool CvYieldInfo::read(CvXMLLoadUtility* pXML)
 //------------------------------------------------------------------------------------------------------
 CvTerrainInfo::CvTerrainInfo() :
 m_iMovementCost(0),
+//Unit Per Tile -- START
+m_iUnitPlotSupport(100),
+//Unit Per Tile -- END
 m_iSeeFromLevel(0),
 m_iSeeThroughLevel(0),
 m_iBuildModifier(0),
@@ -16541,6 +16605,13 @@ int CvTerrainInfo::getMovementCost() const
 {
 	return m_iMovementCost;
 }
+
+//Unit Per Tile -- START
+int CvTerrainInfo::getUnitPlotSupport() const{
+    return m_iUnitPlotSupport;
+}
+//Unit Per Tile -- END
+
 
 int CvTerrainInfo::getSeeFromLevel() const
 {
@@ -16717,6 +16788,9 @@ bool CvTerrainInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bFoundFreshWater, "bFoundFreshWater");
 
 	pXML->GetChildXmlValByName(&m_iMovementCost, "iMovement");
+	//Unit Per Tile -- START
+	pXML->GetChildXmlValByName(&m_iUnitPlotSupport, "iUnitPlotSupport");
+	//Unit Per Tile -- END
 	pXML->GetChildXmlValByName(&m_iSeeFromLevel, "iSeeFrom");
 	pXML->GetChildXmlValByName(&m_iSeeThroughLevel, "iSeeThrough");
 	pXML->GetChildXmlValByName(&m_iBuildModifier, "iBuildModifier");

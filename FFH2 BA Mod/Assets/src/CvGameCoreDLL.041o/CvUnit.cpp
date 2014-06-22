@@ -351,6 +351,9 @@ void CvUnit::reset(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool bConstruct
 	m_iGameTurnCreated = 0;
 	m_iDamage = 0;
 	m_iMoves = 0;
+//Unit Per Tile -- START
+	m_iUnitPlotCost = 0;
+//Unit Per Tile -- END
 	m_iExperience = 0;
 	m_iLevel = 1;
 	m_iCargo = 0;
@@ -674,6 +677,9 @@ void CvUnit::convert(CvUnit* pUnit)
 	setGameTurnCreated(pUnit->getGameTurnCreated());
 	setDamage(pUnit->getDamage());
 	setMoves(pUnit->getMoves());
+//Unit Per Tile -- START	
+	setUnitPlotCost(pUnit->UnitPlotCost());
+//Unit Per Tile -- END
 
 	setLevel(pUnit->getLevel());
 	int iOldModifier = std::max(1, 100 + GET_PLAYER(pUnit->getOwnerINLINE()).getLevelExperienceModifier());
@@ -3077,6 +3083,148 @@ bool CvUnit::willRevealByMove(const CvPlot* pPlot) const
 	return false;
 }
 
+// Unit Capacity START
+bool CvUnit::validUnitForCost(const CvPlot* pPlot) const
+{
+	if( isCargo() || !canDefend(pPlot) )
+	{
+		return false;
+	}
+	return true;
+}
+
+bool CvUnit::hasMaxUnitPerTile(const CvPlot* pPlot) const
+{
+	int iMaxUnit = pPlot->getUnitPlotCapacity();
+	int iFlyingMaxUnit = GC.getDefineINT("AIR_SPACE_CAPACITY");
+	int iFlyingUnitCost = 0;
+
+	if( pPlot->isCity(true) )
+	{
+
+		CvCity* pCity = pPlot->getPlotCity();
+
+		iFlyingMaxUnit = GC.getDefineINT("City_Unit_Capacity");
+		iFlyingMaxUnit += (GC.getDefineINT("CITY_POPULATION_CAPACITY_FACTOR") * ( pCity->getPopulation() / GC.getDefineINT("CITY_POPULATION_CAPACITY_DIVISOR") ));
+	}
+
+	int iLandUnitCost = 0;
+	int iActualUnitWithCargo = UnitPlotCost();
+
+
+	//FFH Only START
+	//Flying units are unaffacted by hills/features and improvements.
+	
+	iFlyingMaxUnit -= iMaxUnit;
+	if( iFlyingMaxUnit < 0 )
+	{
+		iFlyingMaxUnit = 0;
+	}
+
+	if( isFlying() )
+	{
+		iFlyingUnitCost = UnitPlotCost();
+	}
+	else
+	{
+		iLandUnitCost = UnitPlotCost();
+	}
+
+	//FFH ONLY END
+
+	//count up all the cost of a transport and its cargo.
+	if( hasCargo() )
+	{
+		std::vector<CvUnit*> aCargoUnits;
+		getCargoUnits(aCargoUnits);
+		for( uint i = 0; i < aCargoUnits.size(); i++ )
+		{
+			if( aCargoUnits[i]->canDefend(pPlot) )
+			{
+				iActualUnitWithCargo += GC.getUnitInfo(aCargoUnits[i]->getUnitType()).getUnitPlotCost();
+			}
+		}
+	}
+
+	//Zero cost units can always move
+	if( (iLandUnitCost == 0) && (iFlyingUnitCost == 0) )
+	{
+		return false;
+	}
+
+	//Units which cant defend can have unlimited of
+	if( !canDefend(pPlot) )
+	{
+		return false;
+	}
+
+
+	//Units going into a transport can always do so long as there is space.
+	//Also make sure it's not flying.
+	if( (getDomainType() == DOMAIN_LAND) && (pPlot->isWater()) && !isFlying() )
+	{
+		return false;
+	}
+
+	for ( int iNumberOfUnit = 0 ; iNumberOfUnit < pPlot->getNumUnits(); iNumberOfUnit++  ) { //Got through all units on plot and add the UnitPlotCost
+		CvUnit* unitOnPlot = pPlot->getUnitByIndex(iNumberOfUnit);
+
+		if( unitOnPlot->validUnitForCost(pPlot) )
+		{
+			if( unitOnPlot->isFlying())
+			{
+				iFlyingUnitCost += GC.getUnitInfo(unitOnPlot->getUnitType()).getUnitPlotCost(); // Get the UnitPlotcost from the Unit the pointer shows
+			}
+			else
+			{
+				iLandUnitCost += GC.getUnitInfo(unitOnPlot->getUnitType()).getUnitPlotCost(); // Get the UnitPlotcost from the Unit the pointer shows
+			}
+		}
+	}
+
+
+
+	//if(!pPlot->isCity(true))
+	{ //Is Plot not a city
+		if( isFlying() )
+		{
+			iFlyingMaxUnit -= iFlyingUnitCost;
+			if( iFlyingMaxUnit < 0 )
+			{
+				iMaxUnit += iFlyingMaxUnit;
+			}
+			
+			iMaxUnit -= iLandUnitCost;
+
+			int result = iMaxUnit;
+			if( result < 0 )
+			{
+				return true;
+			}
+			return false;
+		}
+		else
+		{
+
+			iFlyingMaxUnit -= iFlyingUnitCost;
+			if( iFlyingMaxUnit < 0 )
+			{
+				iMaxUnit += iFlyingMaxUnit;
+			}
+
+			if( (iLandUnitCost) > (iMaxUnit) ){
+				return true;
+			}
+			return false;
+		}
+	} 
+
+
+	return false;
+}
+
+// Unit Capacity END
+
 bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bool bIgnoreLoad) const
 {
 	FAssertMsg(pPlot != NULL, "Plot is not assigned a valid value");
@@ -3093,6 +3241,46 @@ bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bo
 			return false;
 		}
 	}
+
+
+
+/*
+###########################################################
+# 	VKs Plot Capacity - Start
+###########################################################
+*/
+    if ( (pPlot->getNumUnits() > 0) ) //only go through when there is a Unit on the Plot, and it's not attackable.
+                                                                    //Plot have to be Land, because of Transporters.
+        {
+
+			if( !bAttack )
+			{
+				if( hasMaxUnitPerTile(pPlot) == true )
+				{
+					return false;
+				}
+			}
+
+			else
+			{
+				if( pPlot->isFriendlyCity(*this, true) )
+				{
+					if( hasMaxUnitPerTile(pPlot) == true )
+					{
+						return false;
+					}
+				}
+			}
+
+		}
+/*
+###########################################################
+# 	VKs Plot Capacity - End
+###########################################################
+*/
+
+
+
 
 	// Cannot move around in unrevealed land freely
 	if (m_pUnitInfo->isNoRevealMap() && willRevealByMove(pPlot))
@@ -4332,6 +4520,13 @@ bool CvUnit::canUnload() const
 			}
 		}
 	}
+
+	if( hasMaxUnitPerTile(&kPlot) )
+	{
+		return false;
+	}
+
+
 
 	return true;
 }
@@ -8992,7 +9187,7 @@ int CvUnit::baseCombatStrDefense() const
 //		pPlot valid, pAttacker valid for combat when this is the defender
 //		pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
 //		pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc approx str
-//			note, in this last case, it is expected pCombatDetails == NULL, it does not have to be, but some
+//			note, in this last case, it is expected pCombatDetails == NULL, it does not have to be, but some 
 //			values may be unexpectedly reversed in this case (iModifierTotal will be the negative sum)
 int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails) const
 {
@@ -11766,6 +11961,30 @@ void CvUnit::setMoves(int iNewValue)
 		}
 	}
 }
+
+/*
+###########################################################
+# 	VKs Plot Capacity - Start
+###########################################################
+*/
+void CvUnit::setUnitPlotCost(int i)
+{
+		m_iUnitPlotCost = i;
+
+}
+
+int CvUnit::UnitPlotCost() const {
+
+    	return GC.getUnitInfo(getUnitType()).getUnitPlotCost();
+}
+/*
+###########################################################
+# 	VKs Plot Capacity - End
+###########################################################
+*/
+
+
+
 
 
 void CvUnit::changeMoves(int iChange)
@@ -16901,6 +17120,9 @@ void CvUnit::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iGameTurnCreated);
 	pStream->Read(&m_iDamage);
 	pStream->Read(&m_iMoves);
+// 	VKs Plot Capacity - Start
+	pStream->Read(&m_iUnitPlotCost);
+//  VKs Plot Capacity - End
 	pStream->Read(&m_iExperience);
 	pStream->Read(&m_iLevel);
 	pStream->Read(&m_iCargo);
@@ -17077,6 +17299,9 @@ void CvUnit::write(FDataStreamBase* pStream)
 	pStream->Write(m_iGameTurnCreated);
 	pStream->Write(m_iDamage);
 	pStream->Write(m_iMoves);
+//  VKs Plot Capacity - Start
+	pStream->Write(m_iUnitPlotCost);
+//  VKs Plot Capacity - End
 	pStream->Write(m_iExperience);
 	pStream->Write(m_iLevel);
 	pStream->Write(m_iCargo);

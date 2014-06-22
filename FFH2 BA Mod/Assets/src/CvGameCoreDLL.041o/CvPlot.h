@@ -157,6 +157,11 @@ public:
 	DllExport bool isVisibleToCivTeam() const;																																	// Exposed to Python
 //FfH: End Modify
 
+//	Unit Capacity Start
+	int getUnitPlotCost(bool flyingUnitsOnly) const;
+	int getUnitPlotCapacity() const;
+//	Unit Capacity end
+
 	bool isVisibleToWatchingHuman() const;																														// Exposed to Python
 	bool isAdjacentVisible(TeamTypes eTeam, bool bDebug) const;																				// Exposed to Python
 	bool isAdjacentNonvisible(TeamTypes eTeam) const;																				// Exposed to Python
