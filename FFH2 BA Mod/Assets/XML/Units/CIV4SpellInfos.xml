@@ -4532,5 +4532,22 @@
             <Sound>AS3D_SPELL_DEFILE</Sound>
             <Button>Art/Interface/Buttons/Spells/Worldbreak.dds</Button>
         </SpellInfo>
+        <SpellInfo>
+            <Type>SPELL_SHARPEN_SENSES</Type>
+            <Description>TXT_KEY_SHARPEN_SENSES</Description>
+            <Civilopedia>TXT_KEY_SPELL_SHARPEN_SENSES_PEDIA</Civilopedia>
+            <Help>TXT_KEY_SPELL_SHARPEN_SENSES_HELP</Help>
+            <CivilizationPrereq>CIVILIZATION_SVARTALFAR</CivilizationPrereq>
+            <bAllowAI>1</bAllowAI>
+            <bGlobal>1</bGlobal>
+            <iAIWeight>300</iAIWeight>
+            <bDisplayWhenDisabled>1</bDisplayWhenDisabled>
+            <bHasCasted>1</bHasCasted>
+            <PyResult>spellSharpenSenses(pCaster)</PyResult>
+            <PyRequirement>reqSharpenSenses(pCaster)</PyRequirement>
+            <Effect>EFFECT_SPELL1</Effect>
+            <Sound>AS3D_SPELL_BLESS</Sound>
+            <Button>Art/Interface/Buttons/Spells/Veil of Night.dds</Button>
+        </SpellInfo>        
     </SpellInfos>
 </Civ4SpellInfos>

@@ -3665,3 +3665,31 @@ def voteFundDissidents():
 					if CyGame().getSorenRandNum(100, "Fund Dissidents") < 50:
 						pCity = pyCity.GetCy()
 						pCity.changeHurryAngerTimer(1 + CyGame().getSorenRandNum(3, "Fund Dissidents"))
+						
+						
+						
+def reqSharpenSenses(caster):
+	pPlayer = gc.getPlayer(caster.getOwner())
+	if pPlayer.isHuman() == False:
+		if pPlayer.getNumUnits() < 40:
+			return False
+	return True
+
+def spellSharpenSenses(caster):
+	iSentry1 = gc.getInfoTypeForString('PROMOTION_SENTRY')
+	iSentry2 = gc.getInfoTypeForString('PROMOTION_SENTRY2')
+	py = PyPlayer(caster.getOwner())
+	for pUnit in py.getUnitList():
+		pUnit.setHasPromotion(iSentry1, True)
+		pUnit.setHasPromotion(iSentry2, True)			
+		
+		
+		
+
+
+
+
+
+
+
+	
