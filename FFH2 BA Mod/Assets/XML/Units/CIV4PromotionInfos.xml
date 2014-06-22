@@ -3238,6 +3238,12 @@
                     <iResist>-50</iResist>
                 </DamageTypeResist>
             </DamageTypeResists>
+            <TerrainDoubleMoves>
+                <TerrainDoubleMove>
+                    <TerrainType>TERRAIN_SNOW</TerrainType>
+                    <bTerrainDoubleMove>1</bTerrainDoubleMove>
+                </TerrainDoubleMove>
+            </TerrainDoubleMoves>
         </PromotionInfo>
         <PromotionInfo>
             <Type>PROMOTION_GELA</Type>
@@ -7283,6 +7289,12 @@
                     <iResist>-10</iResist>
                 </DamageTypeResist>
             </DamageTypeResists>
+            <TerrainDoubleMoves>
+                <TerrainDoubleMove>
+                    <TerrainType>TERRAIN_SNOW</TerrainType>
+                    <bTerrainDoubleMove>1</bTerrainDoubleMove>
+                </TerrainDoubleMove>
+            </TerrainDoubleMoves>
         </PromotionInfo>
         <PromotionInfo>
             <Type>PROMOTION_WITHERED</Type>
