@@ -4549,5 +4549,22 @@
             <Sound>AS3D_SPELL_BLESS</Sound>
             <Button>Art/Interface/Buttons/Spells/Veil of Night.dds</Button>
         </SpellInfo>        
+        <SpellInfo>
+            <Type>SPELL_HEALING_WATERS</Type>
+            <Description>TXT_KEY_SPELL_HEALING_WATERS</Description>
+            <Civilopedia>TXT_KEY_SPELL_HEALING_WATERS_PEDIA</Civilopedia>
+            <Help>TXT_KEY_SPELL_HEALING_WATERS_HELP</Help>
+            <PromotionPrereq1>PROMOTION_LIFE1</PromotionPrereq1>
+            <PromotionPrereq2>PROMOTION_CHANNELING1</PromotionPrereq2>
+            <bAllowAI>1</bAllowAI>
+            <bInCityOnly>1</bInCityOnly>
+            <iAIWeightCity>50</iAIWeightCity>
+            <bDisplayWhenDisabled>1</bDisplayWhenDisabled>
+            <bHasCasted>1</bHasCasted>
+            <CreateBuildingType>BUILDING_HEALING_WATERS</CreateBuildingType>
+            <Effect>EFFECT_CREATION</Effect>
+            <Sound>AS3D_SPELL_INSPIRATION</Sound>
+            <Button>,Art/Interface/Buttons/Buildings/Wall.dds,Art/Interface/Buttons/Beyond_the_Sword_Atlas.dds,5,8</Button>
+        </SpellInfo>
     </SpellInfos>
 </Civ4SpellInfos>
