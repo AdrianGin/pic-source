@@ -9185,11 +9185,18 @@ int CvUnit::baseCombatStrDefense() const
 // maxCombatStr can be called in four different configurations
 //		pPlot == NULL, pAttacker == NULL for combat when this is the attacker
 //		pPlot valid, pAttacker valid for combat when this is the defender
+/**** Dexy - Surround and Destroy START ****/
+//		pPlot == NULL, pAttacker valid for combat when this is the defender, attacker is just surrounding us (then defender gets no plot defensive bonuses)
+/**** Dexy - Surround and Destroy  END  ****/
 //		pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
 //		pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc approx str
 //			note, in this last case, it is expected pCombatDetails == NULL, it does not have to be, but some 
 //			values may be unexpectedly reversed in this case (iModifierTotal will be the negative sum)
-int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails) const
+/**** Dexy - Surround and Destroy START ****/
+int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails, bool bSurroundedModifier) const
+// OLD CODE
+// int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails) const
+/**** Dexy - Surround and Destroy  END  ****/
 {
 	int iCombat;
 
@@ -9667,6 +9674,16 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 			}
 		}
 
+
+		/**** Dexy - Surround and Destroy START ****/
+		if (bSurroundedModifier)
+		{
+			// the stronger the surroundings -> decrease the iModifier more
+			iExtraModifier = -pAttacker->surroundedDefenseModifier(pAttackedPlot, bAttackingUnknownDefender ? NULL : this);
+			iTempModifier += iExtraModifier;
+		}
+		/**** Dexy - Surround and Destroy  END  ****/
+
 		// if we are attacking an unknown defender, then use the reverse of the modifier
 		if (bAttackingUnknownDefender)
 		{
@@ -9752,10 +9769,18 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 }
 
 
-int CvUnit::currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails) const
+/**** Dexy - Surround and Destroy START ****/
+int CvUnit::currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails, bool bSurroundedModifier) const
 {
-	return ((maxCombatStr(pPlot, pAttacker, pCombatDetails) * currHitPoints()) / maxHitPoints());
+	return ((maxCombatStr(pPlot, pAttacker, pCombatDetails, bSurroundedModifier) * currHitPoints()) / maxHitPoints());
 }
+// OLD CODE
+// int CvUnit::currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails) const
+// {
+// 	   return ((maxCombatStr(pPlot, pAttacker, pCombatDetails) * currHitPoints()) / maxHitPoints());
+// }
+/**** Dexy - Surround and Destroy  END  ****/
+
 
 
 int CvUnit::currFirepower(const CvPlot* pPlot, const CvUnit* pAttacker) const
@@ -10688,6 +10713,116 @@ int CvUnit::terrainDefenseModifier(TerrainTypes eTerrain) const
 	return (m_pUnitInfo->getTerrainDefenseModifier(eTerrain) + getExtraTerrainDefensePercent(eTerrain));
 }
 
+
+
+/**** Dexy - Surround and Destroy START ****/
+int CvUnit::surroundedDefenseModifier(const CvPlot *pPlot, const CvUnit *pDefender) const
+{
+	CvPlot *pLoopPlot;
+	DirectionTypes dtDirectionAttacker = directionXY(pPlot, plot());		
+	int iExtraModifier = 0, iI;
+	
+	if( dtDirectionAttacker == NO_DIRECTION )
+	{
+		return 0;
+	}
+
+	for (iI = 0; iI < NUM_DIRECTION_TYPES; iI++)
+	{
+		pLoopPlot = plotDirection(pPlot->getX_INLINE(), pPlot->getY_INLINE(), ((DirectionTypes)iI));
+
+		if ((pLoopPlot != NULL) && (pLoopPlot->isWater() == pPlot->isWater()) && (iI != dtDirectionAttacker))
+		{
+			CLLNode<IDInfo>* pUnitNode;
+			CvUnit* pLoopUnit;
+			CvUnit* pBestUnit;
+			int iBestCurrCombatStr, iLowestCurrCombatStr;
+
+			pBestUnit = NULL;
+			iBestCurrCombatStr = 0;
+			iLowestCurrCombatStr = INT_MAX;
+			pUnitNode = pLoopPlot->headUnitNode();
+
+			while (pUnitNode != NULL)
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				pUnitNode = pLoopPlot->nextUnitNode(pUnitNode);	
+				
+				if (pLoopUnit->getTeam() == getTeam())
+				{
+					// if pDefender == null - use the last config of maxCombatStr() where pAttacker == this, else - use the pDefender to find the best attacker
+					if (pDefender != NULL)
+					{
+						// pPlot == NULL -> defender gets no plot defense bonuses (hills, forest, fortify, etc.) against surrounding units (will have them for the attacker)
+						int iTmpCurrCombatStr = pDefender->currCombatStr(NULL, pLoopUnit, NULL, false);
+						
+						if (iTmpCurrCombatStr < iLowestCurrCombatStr)
+						{
+							iLowestCurrCombatStr = iTmpCurrCombatStr;
+							pBestUnit = pLoopUnit;
+						}
+					} 
+					else
+					{
+						int iTmpCurrCombatStr = pLoopUnit->currCombatStr(pPlot, pLoopUnit, NULL, false);
+						
+						if (iTmpCurrCombatStr > iBestCurrCombatStr)
+						{
+							iBestCurrCombatStr = iTmpCurrCombatStr;
+							pBestUnit = pLoopUnit;
+						}
+					}
+				}
+			}
+
+			double fAttDeffFactor = 0.0;
+			if (pDefender != NULL)
+			{
+				if (pBestUnit != NULL)
+				{
+					fAttDeffFactor = ((double) pBestUnit->currCombatStr(pPlot, pBestUnit, NULL, false)) / iLowestCurrCombatStr;
+				}
+			} 
+			else 
+			{
+				fAttDeffFactor = (double) iBestCurrCombatStr;
+			}
+
+			/* surrounding distance = 1, 2, 3 or 4; the bigger the better */
+			int iSurroundingDistance = abs(std::min(abs(iI - dtDirectionAttacker), abs(abs(iI - dtDirectionAttacker) - 8)));
+		
+			double fSurroundingDistanceFactor;
+			
+			switch (iSurroundingDistance)
+			{
+			case 1:
+				fSurroundingDistanceFactor = GC.getDefineFLOAT("SAD_FACTOR_1");
+				break;
+			case 2:
+				fSurroundingDistanceFactor = GC.getDefineFLOAT("SAD_FACTOR_2");
+				break;
+			case 3:
+				fSurroundingDistanceFactor = GC.getDefineFLOAT("SAD_FACTOR_3");
+				break;
+			case 4:
+				fSurroundingDistanceFactor = GC.getDefineFLOAT("SAD_FACTOR_4");
+				break;
+			}
+
+			if (fAttDeffFactor == 1)
+			{
+				iExtraModifier += int(fSurroundingDistanceFactor);
+			}
+			else if (fAttDeffFactor != 0)
+			{
+				iExtraModifier += int(fSurroundingDistanceFactor * ((fAttDeffFactor - 1) * pow(abs(fAttDeffFactor - 1), -0.75) + 1));				
+			}
+		}
+	}
+	
+	return std::min(GC.getDefineINT("SAD_MAX_MODIFIER"), iExtraModifier);
+}
+/**** Dexy - Surround and Destroy  END  ****/
 
 int CvUnit::featureAttackModifier(FeatureTypes eFeature) const
 {

@@ -438,8 +438,8 @@
 		<DefineName>WRATH_CONVERT_CHANCE</DefineName>
 		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
-	<Define>
-		<DefineName>City_Unit_Capacity</DefineName>
+	<!-- Dexy - Surround and Destroy START -->	<Define>
+		<DefineName>SAD_FACTOR_1</DefineName>		<fDefineFloatVal>6.0</fDefineFloatVal>	</Define>	<Define>		<DefineName>SAD_FACTOR_2</DefineName>		<fDefineFloatVal>10.0</fDefineFloatVal>	</Define>	<Define>		<DefineName>SAD_FACTOR_3</DefineName>		<fDefineFloatVal>15.0</fDefineFloatVal>	</Define>	<Define>		<DefineName>SAD_FACTOR_4</DefineName>		<fDefineFloatVal>20.0</fDefineFloatVal>	</Define>	<Define>		<DefineName>SAD_MAX_MODIFIER</DefineName>		<iDefineIntVal>60</iDefineIntVal>	</Define>	<Define>		<DefineName>City_Unit_Capacity</DefineName>
 	        <iDefineIntVal>100</iDefineIntVal>
 	</Define>
         <Define>

@@ -2877,6 +2877,16 @@ bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot)
             }
 //FfH: End Add
 
+			/**** Dexy - Surround and Destroy START ****/
+			iModifier = pAttacker->surroundedDefenseModifier(pPlot, pDefender);
+			if (iModifier != 0)
+			{
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_COMBAT_SURROUNDED_DEFENSE_MOD", iModifier));
+			}
+			/**** Dexy - Surround and Destroy  END  ****/
+
+
 			iModifier = pAttacker->getKamikazePercent();
 			if (iModifier != 0)
 			{

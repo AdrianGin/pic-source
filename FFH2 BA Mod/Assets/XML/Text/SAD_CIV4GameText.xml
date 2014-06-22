@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<Civ4GameText xmlns="http://www.firaxis.com">
+
+	<TEXT>
+		<Tag>TXT_KEY_COMBAT_SURROUNDED_DEFENSE_MOD</Tag>
+		<English>[ICON_BULLET]%D1_Bonus%% from Surrounding Units</English>
+		<French>[ICON_BULLET]%D1_Bonus%% from Surrounding Units</French>
+		<German>[ICON_BULLET]%D1_Bonus%% from Surrounding Units</German>
+		<Italian>[ICON_BULLET]%D1_Bonus%% from Surrounding Units</Italian>
+		<Spanish>[ICON_BULLET]%D1_Bonus%% from Surrounding Units</Spanish>
+	</TEXT>
+
+</Civ4GameText>

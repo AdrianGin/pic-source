@@ -324,8 +324,14 @@ public:
 
 	void setBaseCombatStr(int iCombat);																																										// Exposed to Python
 	int baseCombatStr() const;																																										// Exposed to Python
-	int maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL) const;		// Exposed to Python
-	int currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL) const;	// Exposed to Python
+	/**** Dexy - Surround and Destroy START ****/
+	int maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL, bool bSurroundedModifier = true) const;		// Exposed to Python
+	int currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL, bool bSurroundedModifier = true) const;	// Exposed to Python
+	// OLD CODE
+	// int maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL) const;		// Exposed to Python
+	// int currCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL) const;	// Exposed to Python
+	/**** Dexy - Surround and Destroy  END  ****/
+
 	int currFirepower(const CvPlot* pPlot, const CvUnit* pAttacker) const;																				// Exposed to Python
 	int currEffectiveStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails = NULL) const;
 	DllExport float maxCombatStrFloat(const CvPlot* pPlot, const CvUnit* pAttacker) const;																	// Exposed to Python
@@ -399,6 +405,9 @@ public:
 	int hillsDefenseModifier() const;																				// Exposed to Python
 	int terrainAttackModifier(TerrainTypes eTerrain) const;								// Exposed to Python
 	int terrainDefenseModifier(TerrainTypes eTerrain) const;								// Exposed to Python
+	/**** Dexy - Surround and Destroy START ****/
+	int surroundedDefenseModifier(const CvPlot *pPlot, const CvUnit *pDefender) const;
+	/**** Dexy - Surround and Destroy  END  ****/
 	int featureAttackModifier(FeatureTypes eFeature) const;								// Exposed to Python
 	int featureDefenseModifier(FeatureTypes eFeature) const;								// Exposed to Python
 	int unitClassAttackModifier(UnitClassTypes eUnitClass) const;						// Exposed to Python
