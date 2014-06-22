@@ -29,7 +29,7 @@
 			<iColonyMaintenancePercent>67</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>400</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>11</iNumCitiesAnarchyPercent>
-			<iAdvancedStartPointsMod>80</iAdvancedStartPointsMod>
+			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
 			<iMaxCitiesMod>-1</iMaxCitiesMod>
 			<iUniqueFeatureChance>-15</iUniqueFeatureChance>
 		</WorldInfo>
@@ -55,7 +55,7 @@
 			<iColonyMaintenancePercent>60</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>200</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>10</iNumCitiesAnarchyPercent>
-			<iAdvancedStartPointsMod>85</iAdvancedStartPointsMod>
+			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
 			<iMaxCitiesMod>-1</iMaxCitiesMod>
 			<iUniqueFeatureChance>-10</iUniqueFeatureChance>
 		</WorldInfo>
@@ -81,7 +81,7 @@
 			<iColonyMaintenancePercent>52</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>150</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>9</iNumCitiesAnarchyPercent>
-			<iAdvancedStartPointsMod>90</iAdvancedStartPointsMod>
+			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
 			<iMaxCitiesMod>0</iMaxCitiesMod>
 			<iUniqueFeatureChance>-5</iUniqueFeatureChance>
 		</WorldInfo>
@@ -133,7 +133,7 @@
 			<iColonyMaintenancePercent>37</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>75</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>7</iNumCitiesAnarchyPercent>
-			<iAdvancedStartPointsMod>110</iAdvancedStartPointsMod>
+			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
 			<iMaxCitiesMod>1</iMaxCitiesMod>
 			<iUniqueFeatureChance>5</iUniqueFeatureChance>
 		</WorldInfo>
@@ -159,7 +159,7 @@
 			<iColonyMaintenancePercent>30</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>50</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>6</iNumCitiesAnarchyPercent>
-			<iAdvancedStartPointsMod>120</iAdvancedStartPointsMod>
+			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
 			<iMaxCitiesMod>2</iMaxCitiesMod>
 			<iUniqueFeatureChance>10</iUniqueFeatureChance>
 		</WorldInfo>
