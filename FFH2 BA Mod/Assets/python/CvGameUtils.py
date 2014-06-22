@@ -556,9 +556,9 @@ class CvGameUtils:
 			if not pPlayer.isFeatAccomplished(FeatTypes.FEAT_GLOBAL_SPELL):
 				return True
 
-		if eProject == gc.getInfoTypeForString('PROJECT_STIR_FROM_SLUMBER'):
-			if pPlayer.getPlayersKilled() == 0:
-				return True
+		#if eProject == gc.getInfoTypeForString('PROJECT_STIR_FROM_SLUMBER'):
+		#	if pPlayer.getPlayersKilled() == 0:
+		#		return True
 
 		if eProject == gc.getInfoTypeForString('PROJECT_GENESIS'):
 			if pPlayer.getCivilizationType() == gc.getInfoTypeForString('CIVILIZATION_ILLIANS'):
