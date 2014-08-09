@@ -57,7 +57,6 @@ usbMIDIMessage_t MIDImsgComplete[MIDI_OUT_BUFFER];
 uint8_t wMIDImsgCount = 0;
 uint8_t rMIDImsgCount = 0; 
 
-usbMIDIcable_t MIDICable[USB_MIDI_CABLE_COUNT+1];
 
 uint8_t usbMIDI_bufferLen(void)
 {  

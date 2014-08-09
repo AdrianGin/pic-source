@@ -98,7 +98,7 @@ extern uint8_t wMIDImsgCount;
 extern uint8_t rMIDImsgCount; 
 
 extern const uint8_t MIDIResponseMap[] PROGRAM_SPACE;
-extern usbMIDIcable_t MIDICable[USB_MIDI_CABLE_COUNT+1];
+extern usbMIDIcable_t MIDICable[];
 
 /* Returns the number of USB-MIDIMessages in the buffer */
 uint8_t usbMIDI_bufferLen(void);
