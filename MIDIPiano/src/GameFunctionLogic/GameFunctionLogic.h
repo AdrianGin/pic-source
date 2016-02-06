@@ -13,5 +13,5 @@
 
 void GFL_User_InitiatePractice(uint8_t channel);
 void GFL_User_InitiateFollow(uint8_t channel);
-
+void GFL_User_Spectate(uint8_t channel);
 #endif /* GAMEFUNCTIONLOGIC_H_ */

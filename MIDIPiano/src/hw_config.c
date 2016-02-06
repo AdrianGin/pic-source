@@ -412,7 +412,7 @@ void USBMIDI_PutByte(uint8_t byte, uint8_t cableNo)
 
 			while(USB_Connected && GetEPTxStatus(ENDP1) == EP_TX_VALID )
 			{
-				//printf("!");
+				//xprintf("!");
 			}
 
        if( usbMIDI_bufferLen() == 1 )

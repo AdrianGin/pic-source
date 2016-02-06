@@ -40,3 +40,19 @@ void GFL_User_InitiateFollow(uint8_t channel)
 	LS_ClearLights();
 	MPB_CL_ClearHaltList();
 }
+
+void GFL_User_Spectate(uint8_t channel)
+{
+
+	MPB_CL_SetChannelMaps(MPB_CL_LIGHTS, (1<<channel));
+	MPB_CL_SetChannelMaps(MPB_CL_MIDIOUT, 0xFFFF);
+	MPB_CL_SetChannelMaps(MPB_CL_HALT, 0);
+	MPB_CL_SetChannelMaps(MPB_CL_SOLO, 0x0000);
+
+	MPB_CL_SetMatchMode(AUTO_PLAY_FOLLOW);
+	MPB_CL_SetMatchFlags(ALLOW_PREHITS | ALLOW_SLIDE | REQUIRE_NOTE_RELEASE);
+
+	LS_ClearLights();
+	MPB_CL_ClearHaltList();
+}
+

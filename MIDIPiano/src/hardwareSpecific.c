@@ -6,7 +6,7 @@
 #include "hardwareSpecific.h"
 
 
-char* itoa(int val, int base)
+char* itoa_portable(int val, int base)
 {
 	static char buf[32] = {0};
 
@@ -61,7 +61,7 @@ void myprintfd(char* string, uint32_t num)
 void myPrintNum(uint32_t num, uint8_t base)
 {
     char* outputString;
-    outputString = itoa(num, base);
+    outputString = itoa_portable(num, base);
     DEBUG(outputString);
 }
 

@@ -6,6 +6,8 @@
 #include "USBMIDI/USBMIDI.h"
 
 
+usbMIDIcable_t MIDICable[USB_MIDI_CABLE_COUNT+1];
+
 const uint8_t MIDIResponseMap[] PROGRAM_SPACE = {
    3, //CIN=0x0, MIDI Size = 1,2 or 3 (Misc)
    3, //CIN=0x1, MIDI Size = 1,2 or 3 (Cable Events)

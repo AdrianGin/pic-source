@@ -120,6 +120,10 @@ void ToggleActiveChannel(uint8_t byte)
 		case 2:
 			MPL_PreviewNote(byte);
 			break;
+
+		case 3:
+			GFL_User_Spectate(byte);
+			break;
 		}
 	}
 

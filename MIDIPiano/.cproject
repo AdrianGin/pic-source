@@ -7,31 +7,22 @@
 				<extensions>
 					<extension id="com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" name="ARM_DBG" parent="cdt.managedbuild.config.arm.thumb.executable.debug.141264122" postannouncebuildStep="" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" preannouncebuildStep="" prebuildStep="make -v">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.debug.141264122." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.482634218" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.executable.debug">
-							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.571904220" superClass="cdt.managedbuild.target.arm.executable.debug"/>
-							<builder buildPath="${workspace_loc:/MIDIPiano}/ARM_DBG" id="cdt.managedbuild.target.arm.builder.executable.debug.1030637409" keepEnvironmentInBuildfile="false" name="Gnu Make" superClass="cdt.managedbuild.target.arm.builder.executable.debug"/>
-							<tool id="cdt.managedbuild.tool.arm.armcc.executable.debug.1854033533" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.executable.debug">
-								<inputType id="cdt.managedbuild.tool.abstract.arm.armcc.input.771531974" superClass="cdt.managedbuild.tool.abstract.arm.armcc.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.arm.armasm.executable.debug.1219485320" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.executable.debug">
-								<inputType id="cdt.managedbuild.tool.abstract.arm.armasm.input.2128006762" superClass="cdt.managedbuild.tool.abstract.arm.armasm.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.arm.armlink.executable.debug.1132385945" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.executable.debug"/>
+						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.482634218" name="ARM Tool Chain">
+							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.571904220"/>
+							<builder buildPath="${workspace_loc:/MIDIPiano}/ARM_DBG" id="cdt.managedbuild.target.arm.builder.executable.debug.1030637409" keepEnvironmentInBuildfile="false" name="Gnu Make"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="GCC_DBG|GCC|ARM_DBG|ARM|syscalls.c|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Peripherals/DAC_DMA|GCC_DBG|GCC|ARM_DBG|ARM|syscalls.c|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_4.c|FatFS/example|FatFS/option/unicode.c|FatFS/diskio.c|FatFS/option/syscall.c|FatFS/option/cc950.c|FatFS/option/cc949.c|FatFS/option/cc936.c|FatFS/option/cc932.c|FreeRTOS/FreeRTOS/Demo|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_2.c|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_1.c|FreeRTOS/FreeRTOS/Source/croutine.c|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM7_LPC21xx|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/readme.txt|FreeRTOS/FreeRTOS/Source/portable/WizC|FreeRTOS/FreeRTOS/Source/portable/Tasking|FreeRTOS/FreeRTOS/Source/portable/Softune|FreeRTOS/FreeRTOS/Source/portable/SDCC|FreeRTOS/FreeRTOS/Source/portable/Rowley|FreeRTOS/FreeRTOS/Source/portable/Renesas|FreeRTOS/FreeRTOS/Source/portable/Paradigm|FreeRTOS/FreeRTOS/Source/portable/oWatcom|FreeRTOS/FreeRTOS/Source/portable/MSVC-MingW|FreeRTOS/FreeRTOS/Source/portable/MPLAB|FreeRTOS/FreeRTOS/Source/portable/Keil|FreeRTOS/FreeRTOS/Source/portable/IAR|FreeRTOS/FreeRTOS/Source/portable/GCC|FreeRTOS/FreeRTOS/Source/portable/CodeWarrior|FreeRTOS/FreeRTOS/Source/portable/CCS|FreeRTOS/FreeRTOS/Source/portable/BCC|FreeRTOS/FreeRTOS-Plus|MIDIParser/main.c|PetitFS|MIDIAdd|Menu|BMPDraw" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Applications"/>
 						<entry excluding="WavePlayer|VUMeter|UI_LCD|UI_GLCD|UI|SSD1289|SD_MMC|MAX7300|LEDArray|CardReader" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="External"/>
 						<entry excluding="CMSIS|STM32F4xx_StdPeriph_Driver|STM32_USB_OTG_Driver|STM32_USB_HOST_Library|STM32_USB_Device_Library|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/TrueSTUDIO|CMSIS/Device/ST/STM32F10x/Source/Templates/TASKING|CMSIS/Device/ST/STM32F10x/Source/Templates/iar|CMSIS/Device/ST/STM32L1xx|CMSIS/Device/ST/STM32F37x|CMSIS/Device/ST/STM32F30x|syscalls.c|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|STM32_USB-FS-Device_Driver/inc/otgd_fs_regs.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_pcd.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_int.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_dev.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_cal.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
-						<entry excluding="usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
+						<entry excluding="voidbuffer/voidbuffer_test.c|usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
 						<entry excluding="MSB2LSB|Delay|Bitfields" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
 				</configuration>
@@ -44,35 +35,22 @@
 				<extensions>
 					<extension id="com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="axf" artifactName="${ProjName}" buildProperties="" cleanCommand="rm -f" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;com.arm.eclipse.cdt.managedbuilder.RealViewCoreToolsErrorParser" id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" name="ARM" parent="cdt.managedbuild.config.arm.thumb.executable.release.1872257760" postbuildStep="fromelf.exe --i32 --output ${ProjName}.hex ${ProjName}.axf" prebuildStep="make -v">
 					<folderInfo id="cdt.managedbuild.config.arm.thumb.executable.release.1872257760." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.2071217919" name="ARM Tool Chain" superClass="cdt.managedbuild.toolchain.arm.executable.debug">
-							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.283926267" superClass="cdt.managedbuild.target.arm.executable.debug"/>
-							<builder buildPath="${workspace_loc:/MIDIPiano}/ARM" id="cdt.managedbuild.target.arm.builder.arm.lib.release.1375898566" superClass="cdt.managedbuild.target.arm.builder.arm.lib.release"/>
-							<tool id="cdt.managedbuild.tool.arm.armcc.executable.debug.1691006259" name="ARM RealView Compiler" superClass="cdt.managedbuild.tool.arm.armcc.executable.debug">
-								<option id="arm.rvct.armcc.option.INCLUDE_PATH.1718759394" superClass="arm.rvct.armcc.option.INCLUDE_PATH" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.abstract.arm.armcc.input.1553622109" superClass="cdt.managedbuild.tool.abstract.arm.armcc.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.arm.armasm.executable.debug.1143199264" name="ARM RealView Assembler" superClass="cdt.managedbuild.tool.arm.armasm.executable.debug">
-								<inputType id="cdt.managedbuild.tool.abstract.arm.armasm.input.1666620141" superClass="cdt.managedbuild.tool.abstract.arm.armasm.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.arm.armlink.executable.debug.53795971" name="ARM RealView Linker" superClass="cdt.managedbuild.tool.arm.armlink.executable.debug"/>
+						<toolChain id="cdt.managedbuild.toolchain.arm.executable.debug.2071217919" name="ARM Tool Chain">
+							<targetPlatform id="cdt.managedbuild.target.arm.executable.debug.283926267"/>
+							<builder buildPath="${workspace_loc:/MIDIPiano}/ARM" id="cdt.managedbuild.target.arm.builder.arm.lib.release.1375898566" keepEnvironmentInBuildfile="false"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="GCC_DBG|GCC|ARM_DBG|ARM|syscalls.c|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Peripherals/DAC_DMA|GCC_DBG|GCC|ARM_DBG|ARM|syscalls.c|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_4.c|FatFS/example|FatFS/option/unicode.c|FatFS/diskio.c|FatFS/option/syscall.c|FatFS/option/cc950.c|FatFS/option/cc949.c|FatFS/option/cc936.c|FatFS/option/cc932.c|FreeRTOS/FreeRTOS/Demo|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_2.c|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_1.c|FreeRTOS/FreeRTOS/Source/croutine.c|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM7_LPC21xx|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/readme.txt|FreeRTOS/FreeRTOS/Source/portable/WizC|FreeRTOS/FreeRTOS/Source/portable/Tasking|FreeRTOS/FreeRTOS/Source/portable/Softune|FreeRTOS/FreeRTOS/Source/portable/SDCC|FreeRTOS/FreeRTOS/Source/portable/Rowley|FreeRTOS/FreeRTOS/Source/portable/Renesas|FreeRTOS/FreeRTOS/Source/portable/Paradigm|FreeRTOS/FreeRTOS/Source/portable/oWatcom|FreeRTOS/FreeRTOS/Source/portable/MSVC-MingW|FreeRTOS/FreeRTOS/Source/portable/MPLAB|FreeRTOS/FreeRTOS/Source/portable/Keil|FreeRTOS/FreeRTOS/Source/portable/IAR|FreeRTOS/FreeRTOS/Source/portable/GCC|FreeRTOS/FreeRTOS/Source/portable/CodeWarrior|FreeRTOS/FreeRTOS/Source/portable/CCS|FreeRTOS/FreeRTOS/Source/portable/BCC|FreeRTOS/FreeRTOS-Plus|MIDIParser/main.c|PetitFS|MIDIAdd|Menu|BMPDraw" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Applications"/>
 						<entry excluding="WavePlayer|VUMeter|UI_LCD|UI_GLCD|UI|SSD1289|SD_MMC|MAX7300|LEDArray|CardReader" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="External"/>
 						<entry excluding="CMSIS|STM32F4xx_StdPeriph_Driver|STM32_USB_OTG_Driver|STM32_USB_HOST_Library|STM32_USB_Device_Library|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/TrueSTUDIO|CMSIS/Device/ST/STM32F10x/Source/Templates/TASKING|CMSIS/Device/ST/STM32F10x/Source/Templates/iar|CMSIS/Device/ST/STM32L1xx|CMSIS/Device/ST/STM32F37x|CMSIS/Device/ST/STM32F30x|syscalls.c|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|STM32_USB-FS-Device_Driver/inc/otgd_fs_regs.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_pcd.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_int.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_dev.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_cal.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
-						<entry excluding="usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
+						<entry excluding="voidbuffer/voidbuffer_test.c|usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
 						<entry excluding="MSB2LSB|Delay|Bitfields" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
 				</configuration>
@@ -89,23 +67,92 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.config.gnu.cross.exe.release.927612988" name="GCC" parent="cdt.managedbuild.config.gnu.cross.exe.release" postannouncebuildStep="" postbuildStep="postbuild.bat ${ProjName}" preannouncebuildStep="" prebuildStep="">
+				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.config.gnu.cross.exe.release.927612988" name="GCC" parent="cdt.managedbuild.config.gnu.cross.exe.release" postannouncebuildStep="" postbuildStep="postbuild.bat ${ProjName}" preannouncebuildStep="" prebuildStep="">
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.927612988." name="/" resourcePath="">
-						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.cross.base.1604722486" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="cdt.managedbuild.tool.gnu.cross.cpp.compiler;cdt.managedbuild.tool.gnu.cross.c.linker">
-							<option id="cdt.managedbuild.option.gnu.cross.prefix.1552487743" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="arm-none-eabi-" valueType="string"/>
-							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.522595269" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder arguments="-k -j10" buildPath="${workspace_loc:/MIDIPiano_ARM/GCC}" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="cdt.managedbuild.builder.gnu.cross.743871284" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
-							<tool command="as" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.cross.assembler.439065741" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
-								<option id="gnu.both.asm.option.include.paths.596168683" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+						<toolChain id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.69075660" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.860196501" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.1819269248" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix" value="arm-none-eabi-" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.suffix.1164854292" name="Suffix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.suffix"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.2093641694" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c" value="gcc" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.1807760069" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp" value="g++" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.1776391505" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar" value="ar" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1141462648" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy" value="objcopy" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.662901897" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump" value="objdump" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.1737296878" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size" value="size" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.1666937112" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make" value="make" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.2094589348" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm" value="rm" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.useglobalpath.1864077611" name="Use global path" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.useglobalpath"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.path.1074689571" name="Path" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.path"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.1030279769" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.914474540" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.506546180" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.64819376" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m3" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.architecture.1175718275" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.architecture"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.728696686" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.2013976995" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.1121181204" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.947977596" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.349604209" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.1987975820" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.family.1864984219" name="AArch64 family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.family"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crc.1087557976" name="Feature crc" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crc"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crypto.1384155351" name="Feature crypto" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crypto"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.fp.101195061" name="Feature fp" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.fp"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.simd.607943979" name="Feature simd" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.simd"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.cmodel.2141663215" name="Code model" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.cmodel"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.strictalign.671064312" name="Strict align (-mstrict-align)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.strictalign"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.target.other.1439433040" name="Other target flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.target.other"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.337461654" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level" value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.size" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.271347421" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.1206551688" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.1988261267" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.684657725" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nocommon.1848359739" name="No common unitialized (-fno-common)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nocommon"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.noinlinefunctions.52640137" name="Do not inline functions (-fno-inline-functions)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.noinlinefunctions"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.freestanding.1619835176" name="Assume freestanding environment (-ffreestanding)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.freestanding"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nobuiltin.1982390315" name="Disable builtin (-fno-builtin)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nobuiltin"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.spconstant.703551358" name="Single precision constants (-fsingle-precision-constant)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.spconstant"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.PIC.687349826" name="Position independent code (-fPIC)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.PIC"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto.581396384" name="Link-time optimizer (-flto)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nomoveloopinvariants.1940885825" name="Disable loop invariant move (-fno-move-loop-invariants)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nomoveloopinvariants"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.other.1316576742" name="Other optimization flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.other"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.111806758" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.syntaxonly.815165402" name="Check syntax only (-fsyntax-only)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.syntaxonly"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedantic.292731913" name="Pedantic (-pedantic)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedantic"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedanticerrors.1485160035" name="Pedantic warnings as errors (-pedantic-errors)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedanticerrors"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.nowarn.2088508211" name="Inhibit all warnings (-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.nowarn"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.unused.1790866441" name="Warn on various unused elements (-Wunused)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.unused"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.69083281" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1401712269" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.extrawarn.465271363" name="Enable extra warnings (-Wextra)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.extrawarn"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration.238794735" name="Warn on undeclared global function (-Wmissing-declaration)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.conversion.2003940735" name="Warn on implicit conversions (-Wconversion)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.conversion"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pointerarith.471501879" name="Warn if pointer arithmetic (-Wpointer-arith)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pointerarith"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.padded.520241094" name="Warn if padding is included (-Wpadded)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.padded"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.shadow.583338454" name="Warn if shadowed variable (-Wshadow)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.shadow"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.logicalop.2045496716" name="Warn if suspicious logical ops (-Wlogical-op)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.logicalop"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn.957965884" name="Warn if struct is returned (-Wagreggate-return)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.floatequal.2007897714" name="Warn if floats are compared as equal (-Wfloat-equal)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.floatequal"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors.430332131" name="Generate errors instead of warnings (-Werror)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.other.1562004746" name="Other warning flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.other"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.1025624231" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1324680713" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.prof.265412803" name="Generate prof information (-p)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.prof" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.gprof.63134617" name="Generate gprof information (-pg)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.gprof" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other.265924783" name="Other debugging flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.402149084" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
+							<builder buildPath="${workspace_loc:/MIDIPiano}/GCC" id="ilg.gnuarmeclipse.managedbuild.cross.builder.1525363500" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1536864717" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.1852412862" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
@@ -146,94 +193,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F10x\Include}&quot;"/>
 								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.849918003" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1433700663" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" value="true" valueType="boolean"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.45328636" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1060310099" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
-							<tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.tool.gnu.cross.cpp.linker.2134044389" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
-								<option id="gnu.cpp.link.option.other.1919986388" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
-									<listOptionValue builtIn="false" value="-Map=${ProjName}.map"/>
-									<listOptionValue builtIn="false" value="-gc-sections"/>
-								</option>
-								<option id="gnu.cpp.link.option.flags.1298183283" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-T&quot;../stm32_flash.ld&quot;  -mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft -g3 -ggdb" valueType="string"/>
-								<option id="gnu.cpp.link.option.userobjs.1273989079" name="Other objects" superClass="gnu.cpp.link.option.userobjs"/>
-								<option id="gnu.cpp.link.option.libs.563550786" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
-								<option defaultValue="true" id="gnu.cpp.link.option.shared.564593934" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1986402646" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
-									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
-									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
-								</inputType>
-								<outputType id="cdt.managedbuild.tool.gnu.cpp.linker.output.so.528578459" outputPrefix="" superClass="cdt.managedbuild.tool.gnu.cpp.linker.output.so"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.612958424" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
-								<option id="gnu.c.link.option.debugging.prof.1737974964" name="Generate prof information (-p)" superClass="gnu.c.link.option.debugging.prof" value="false" valueType="boolean"/>
-								<option id="gnu.c.link.option.debugging.gprof.1685984657" name="Generate gprof information (-pg)" superClass="gnu.c.link.option.debugging.gprof" value="false" valueType="boolean"/>
-								<option id="gnu.c.link.option.ldflags.2047123342" name="Linker flags" superClass="gnu.c.link.option.ldflags" value="-mcpu=cortex-m3 -mthumb" valueType="string"/>
-								<option id="gnu.c.link.option.nodeflibs.453260834" name="Do not use default libraries (-nodefaultlibs)" superClass="gnu.c.link.option.nodeflibs" value="false" valueType="boolean"/>
-								<option defaultValue="true" id="gnu.c.link.option.shared.1794627545" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
-								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1647082399" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
-									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
-									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
-								</inputType>
-							</tool>
-							<tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.optimization.level.740179390" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.debugging.level.1987671364" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.debugging.other.1280282155" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" useByScannerDiscovery="false" value="-ggdb" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.other.other.1582947796" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections" valueType="string"/>
-								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false"/>
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false"/>
-								<option id="gnu.cpp.compiler.option.include.paths.373195513" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix\real}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix\pub}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Audio}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SD_Card}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\FATFS_V0.08A\src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MP3Header}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uCOS-VIEW}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\GLCD}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\ucCos_App}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uC-CPU}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\Font}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uCOS-II}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\GUI_App}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SPI_Flash}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Unicode}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/SysTick}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/USART}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\USB}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Applications}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Other}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\External}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Util}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/FreeRTOS/Source/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\TouchPanel}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\FreeRTOS_Apps}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/OS_Abstraction}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1134165173" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.1704068058" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F10x\Include}&quot;"/>
-								</option>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.1173193072" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
-									<listOptionValue builtIn="false" value="STM32F10X_HD"/>
-									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-							</tool>
-							<tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cross.c.compiler.1089196536" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1456036248" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.most" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.debugging.level.1265982091" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.include.paths.333962850" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
@@ -272,34 +238,123 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Peripherals}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F10x\Include}&quot;"/>
 								</option>
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1171984198" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.1422320668" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="STM32F10X_HD"/>
 									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
 								</option>
-								<option id="gnu.c.compiler.option.debugging.other.1720564761" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" useByScannerDiscovery="false" value="-ggdb" valueType="string"/>
-								<option id="gnu.c.compiler.option.debugging.prof.1873927377" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
-								<option id="gnu.c.compiler.option.debugging.gprof.953936120" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
-								<option id="gnu.c.compiler.option.misc.other.1004324255" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mcpu=cortex-m3 -mthumb -ffunction-sections  -fdata-sections" valueType="string"/>
-								<option id="gnu.c.compiler.option.misc.verbose.1180655434" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" useByScannerDiscovery="false" value="false" valueType="boolean"/>
-								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.198740861" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.1616617462" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="--specs=nano.specs" valueType="string"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.634583133" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.849916350" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1047287216" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\STM32F10x_StdPeriph_Driver\src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\WM8731}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix\real}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\helix\pub}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Audio}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SD_Card}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\FATFS_V0.08A\src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MP3Header}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uCOS-VIEW}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\GLCD}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\ucCos_App}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uC-CPU}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\Font}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\uCOS-II}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\MicrochipGUI_V2.10\GUI_App}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\SPI_Flash}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\Unicode}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/STM32_USB-FS-Device_Driver/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/SysTick}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/USART}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\USB}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Applications}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\External}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Util}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/FreeRTOS/Source/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\TouchPanel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src\FreeRTOS_Apps}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Applications/FreeRTOS/OS_Abstraction}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig/FatFS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/ProjectConfig}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}\Libraries\CMSIS\Device\ST\STM32F10x\Include}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.2008953372" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
+									<listOptionValue builtIn="false" value="STM32F10X_HD"/>
+									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.1079985062" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.615029986" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.374282457" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" value="true" valueType="boolean"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.953522841" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.1476215758" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.1379923318" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/stm32_flash.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.flags.1963933223" name="Linker flags (-Xlinker [option])" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.flags"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nodeflibs.172613275" name="Do not use default libraries (-nodefaultlibs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nodeflibs" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostdlibs.1862982701" name="No startup or default libs (-nostdlib)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostdlibs" value="false" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.usenewlibnano.942975767" name="Use newlib-nano (--specs=nano.specs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.usenewlibnano" value="false" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other.1673644045" name="Other linker flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other" value="--specs=nano.specs" valueType="string"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.printgcsections.230056348" name="Print removed sections (-Xlinker --print-gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.printgcsections" value="false" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart.967739155" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart" value="true" valueType="boolean"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.1279221353" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.986079191" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.8038080" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.374855800" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.1085978063" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.400925618" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.859940943" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.1135990298" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.2121155066" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" value="true" valueType="boolean"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.1126995273" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.42464628" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="GCC_DBG|GCC|ARM_DBG|ARM|src/Physics/PhysCircle.h|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Peripherals/DAC_DMA|GCC_DBG|ARM_DBG|ARM|src/Physics/PhysCircle.h|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_4.c|FreeRTOS/FreeRTOS/Source/portable/GCC/TriCore_1782|FreeRTOS/FreeRTOS/Source/portable/GCC/STR75x|FreeRTOS/FreeRTOS/Source/portable/GCC/RX600|FreeRTOS/FreeRTOS/Source/portable/GCC/PPC440_Xilinx|FreeRTOS/FreeRTOS/Source/portable/GCC/PPC405_Xilinx|FreeRTOS/FreeRTOS/Source/portable/GCC/NiosII|FreeRTOS/FreeRTOS/Source/portable/GCC/MSP430F449|FreeRTOS/FreeRTOS/Source/portable/GCC/MicroBlazeV8|FreeRTOS/FreeRTOS/Source/portable/GCC/MicroBlaze|FreeRTOS/FreeRTOS/Source/portable/GCC/MCF5235|FreeRTOS/FreeRTOS/Source/portable/GCC/HCS12|FreeRTOS/FreeRTOS/Source/portable/GCC/H8S2329|FreeRTOS/FreeRTOS/Source/portable/GCC/CORTUS_APS3|FreeRTOS/FreeRTOS/Source/portable/GCC/ColdFire_V2|FreeRTOS/FreeRTOS/Source/portable/GCC/AVR32_UC3|FreeRTOS/FreeRTOS/Source/portable/GCC/ATMega323|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_LPC23xx|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_LPC2000|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_AT91FR40008|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM3_MPU|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM0|FreeRTOS/FreeRTOS/Source/portable/RVDS|FatFS/example|FatFS/option/unicode.c|FatFS/diskio.c|FatFS/option/syscall.c|FatFS/option/cc950.c|FatFS/option/cc949.c|FatFS/option/cc936.c|FatFS/option/cc932.c|FreeRTOS/FreeRTOS/Demo|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_2.c|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_1.c|FreeRTOS/FreeRTOS/Source/croutine.c|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM7_LPC21xx|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/readme.txt|FreeRTOS/FreeRTOS/Source/portable/WizC|FreeRTOS/FreeRTOS/Source/portable/Tasking|FreeRTOS/FreeRTOS/Source/portable/Softune|FreeRTOS/FreeRTOS/Source/portable/SDCC|FreeRTOS/FreeRTOS/Source/portable/Rowley|FreeRTOS/FreeRTOS/Source/portable/Renesas|FreeRTOS/FreeRTOS/Source/portable/Paradigm|FreeRTOS/FreeRTOS/Source/portable/oWatcom|FreeRTOS/FreeRTOS/Source/portable/MSVC-MingW|FreeRTOS/FreeRTOS/Source/portable/MPLAB|FreeRTOS/FreeRTOS/Source/portable/Keil|FreeRTOS/FreeRTOS/Source/portable/IAR|FreeRTOS/FreeRTOS/Source/portable/CodeWarrior|FreeRTOS/FreeRTOS/Source/portable/CCS|FreeRTOS/FreeRTOS/Source/portable/BCC|FreeRTOS/FreeRTOS-Plus|MIDIParser/main.c|PetitFS|MIDIAdd|Menu|BMPDraw" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Applications"/>
 						<entry excluding="WavePlayer|VUMeter|UI_LCD|UI_GLCD|UI|SSD1289|SD_MMC|MAX7300|LEDArray|CardReader" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="External"/>
 						<entry excluding="CMSIS|STM32F4xx_StdPeriph_Driver|STM32_USB_OTG_Driver|STM32_USB_HOST_Library|STM32_USB_Device_Library|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/TrueSTUDIO|CMSIS/Device/ST/STM32F10x/Source/Templates/TASKING|CMSIS/Device/ST/STM32F10x/Source/Templates/iar|CMSIS/Device/ST/STM32L1xx|CMSIS/Device/ST/STM32F37x|CMSIS/Device/ST/STM32F30x|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|STM32_USB-FS-Device_Driver/inc/otgd_fs_regs.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_pcd.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_int.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_dev.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_cal.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
-						<entry excluding="usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
+						<entry excluding="voidbuffer/voidbuffer_test.c|usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
 						<entry excluding="MSB2LSB|Delay|Bitfields" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs">
+				<option id="cmsis.device.name" value="STM32F103VE"/>
+				<option id="cmsis.subfamily.name" value="STM32F103"/>
+				<option id="cmsis.family.name" value="STM32F1 Series"/>
+				<option id="cmsis.device.vendor.name" value="STMicroelectronics"/>
+				<option id="cmsis.device.vendor.id" value="13"/>
+				<option id="cmsis.device.pack.vendor" value="Keil"/>
+				<option id="cmsis.device.pack.name" value="STM32F1xx_DFP"/>
+				<option id="cmsis.device.pack.version" value="2.0.0"/>
+				<option id="cmsis.core.name" value="Cortex-M3"/>
+				<option id="cmsis.compiler.define" value="STM32F10X_HD"/>
+				<memory section="IRAM1" size="0x10000" start="0x20000000" startup="0"/>
+				<memory section="IROM1" size="0x80000" start="0x08000000" startup="1"/>
+			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191" moduleId="org.eclipse.cdt.core.settings" name="GCC_DBG">
@@ -311,16 +366,16 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191" name="GCC_DBG" parent="cdt.managedbuild.config.gnu.cross.exe.release" postannouncebuildStep="" postbuildStep="postbuild.bat ${ProjName}" preannouncebuildStep="" prebuildStep="">
+				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191" name="GCC_DBG" parent="cdt.managedbuild.config.gnu.cross.exe.release" postannouncebuildStep="" postbuildStep="postbuild.bat ${ProjName}" preannouncebuildStep="" prebuildStep="">
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191." name="/" resourcePath="">
 						<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.cross.base.476395575" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="cdt.managedbuild.tool.gnu.cross.cpp.compiler;cdt.managedbuild.tool.gnu.cross.c.linker">
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.1573582224" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="arm-none-eabi-" valueType="string"/>
@@ -513,11 +568,11 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="GCC_DBG|GCC|ARM_DBG|ARM|src/Physics/PhysCircle.h|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Peripherals/DAC_DMA|GCC_DBG|GCC|ARM_DBG|ARM|src/Physics/PhysCircle.h|USER/FATFS_V0.08A/src/ff.c|USER/FATFS_V0.08A/src/option/ccsbcs.c|Util|External|Libraries|Applications|USER/linkedlist|USER/MIDIPlayback|USER/MIDIParser|USER/MIDICodes|Other|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_pcd.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_int.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_dev.c|Libraries/STM32_USB-FS-Device_Driver/src/otgd_fs_cal.c|USER/FATFS_V0.08A/src/option/unicode.c|USER/FATFS_V0.08A/src/option/syscall.c|USER/FATFS_V0.08A/src/option/cc950.c|USER/FATFS_V0.08A/src/option/cc949.c|USER/FATFS_V0.08A/src/option/cc936.c|USER/FATFS_V0.08A/src/option/cc932.c|USER/SD_Card/stm32_eval_sdio_sd.h|USER/SD_Card/stm32_eval_sdio_sd.c|USER/SD_Card/sdio_sd (2).h|USER/SD_Card/sdio_sd (2).c|USER/GLCD/GLCD - Copy.h|USER/GLCD/GLCD - Copy.c|USER/TouchPanel/TouchPanel - Copy.c|USER/TouchPanel/TouchPanel (2).c|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_4.c|FreeRTOS/FreeRTOS/Source/portable/GCC/TriCore_1782|FreeRTOS/FreeRTOS/Source/portable/GCC/STR75x|FreeRTOS/FreeRTOS/Source/portable/GCC/RX600|FreeRTOS/FreeRTOS/Source/portable/GCC/PPC440_Xilinx|FreeRTOS/FreeRTOS/Source/portable/GCC/PPC405_Xilinx|FreeRTOS/FreeRTOS/Source/portable/GCC/NiosII|FreeRTOS/FreeRTOS/Source/portable/GCC/MSP430F449|FreeRTOS/FreeRTOS/Source/portable/GCC/MicroBlazeV8|FreeRTOS/FreeRTOS/Source/portable/GCC/MicroBlaze|FreeRTOS/FreeRTOS/Source/portable/GCC/MCF5235|FreeRTOS/FreeRTOS/Source/portable/GCC/HCS12|FreeRTOS/FreeRTOS/Source/portable/GCC/H8S2329|FreeRTOS/FreeRTOS/Source/portable/GCC/CORTUS_APS3|FreeRTOS/FreeRTOS/Source/portable/GCC/ColdFire_V2|FreeRTOS/FreeRTOS/Source/portable/GCC/AVR32_UC3|FreeRTOS/FreeRTOS/Source/portable/GCC/ATMega323|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_LPC23xx|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_LPC2000|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM7_AT91FR40008|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM3_MPU|FreeRTOS/FreeRTOS/Source/portable/GCC/ARM_CM0|FreeRTOS/FreeRTOS/Source/portable/RVDS|FatFS/example|FatFS/option/unicode.c|FatFS/diskio.c|FatFS/option/syscall.c|FatFS/option/cc950.c|FatFS/option/cc949.c|FatFS/option/cc936.c|FatFS/option/cc932.c|FreeRTOS/FreeRTOS/Demo|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_2.c|FreeRTOS/FreeRTOS/Source/portable/MemMang/heap_1.c|FreeRTOS/FreeRTOS/Source/croutine.c|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM7_LPC21xx|FreeRTOS/FreeRTOS/Source/portable/RVDS/ARM_CM4F|FreeRTOS/FreeRTOS/Source/portable/readme.txt|FreeRTOS/FreeRTOS/Source/portable/WizC|FreeRTOS/FreeRTOS/Source/portable/Tasking|FreeRTOS/FreeRTOS/Source/portable/Softune|FreeRTOS/FreeRTOS/Source/portable/SDCC|FreeRTOS/FreeRTOS/Source/portable/Rowley|FreeRTOS/FreeRTOS/Source/portable/Renesas|FreeRTOS/FreeRTOS/Source/portable/Paradigm|FreeRTOS/FreeRTOS/Source/portable/oWatcom|FreeRTOS/FreeRTOS/Source/portable/MSVC-MingW|FreeRTOS/FreeRTOS/Source/portable/MPLAB|FreeRTOS/FreeRTOS/Source/portable/Keil|FreeRTOS/FreeRTOS/Source/portable/IAR|FreeRTOS/FreeRTOS/Source/portable/CodeWarrior|FreeRTOS/FreeRTOS/Source/portable/CCS|FreeRTOS/FreeRTOS/Source/portable/BCC|FreeRTOS/FreeRTOS-Plus|MIDIParser/main.c|PetitFS|MIDIAdd|Menu|BMPDraw" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Applications"/>
 						<entry excluding="WavePlayer|VUMeter|UI_LCD|UI_GLCD|UI|SSD1289|SD_MMC|MAX7300|LEDArray|CardReader" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="External"/>
 						<entry excluding="CMSIS|STM32F4xx_StdPeriph_Driver|STM32_USB_OTG_Driver|STM32_USB_HOST_Library|STM32_USB_Device_Library|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_xl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_md_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_ld_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_hd_vl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/arm/startup_stm32f10x_cl.s|CMSIS/Device/ST/STM32F10x/Source/Templates/TrueSTUDIO|CMSIS/Device/ST/STM32F10x/Source/Templates/TASKING|CMSIS/Device/ST/STM32F10x/Source/Templates/iar|CMSIS/Device/ST/STM32L1xx|CMSIS/Device/ST/STM32F37x|CMSIS/Device/ST/STM32F30x|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_xl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_ld_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_hd_vl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_cl.s|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/iar|CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO|STM32_USB-FS-Device_Driver/inc/otgd_fs_regs.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_pcd.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_int.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_dev.h|STM32_USB-FS-Device_Driver/inc/otgd_fs_cal.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
-						<entry excluding="usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
+						<entry excluding="voidbuffer/voidbuffer_test.c|usbdrv|TimerCallbacks|SoftTimer|RingBuffer|mmculib|LUFA|flashmem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
 						<entry excluding="MSB2LSB|Delay|Bitfields" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
 				</configuration>
@@ -530,26 +585,26 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Release">
-			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
-		</configuration>
-		<configuration configurationName="GCC_DBG">
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC_DBG"/>
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC"/>
-			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
-		</configuration>
-		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
-		</configuration>
 		<configuration configurationName="GCC">
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC"/>
+		</configuration>
+		<configuration configurationName="GCC_DBG">
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC"/>
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
+			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/GCC_DBG"/>
 		</configuration>
 		<configuration configurationName="ARM">
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM"/>
 		</configuration>
 		<configuration configurationName="ARM_DBG">
 			<resource resourceType="FOLDER" workspacePath="/MIDIPiano/ARM_DBG"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/STM32TouchPanel"/>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
@@ -559,17 +614,23 @@
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191;cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191.;cdt.managedbuild.tool.gnu.cross.c.compiler.1864912978;cdt.managedbuild.tool.gnu.c.compiler.input.88949737">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.124298648;cdt.managedbuild.config.gnu.cross.exe.release.124298648.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843;cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1134165173;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.634583133">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843;cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.849916350;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.1079985062">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191;cdt.managedbuild.config.gnu.cross.exe.release.927612988.1263142191.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.860269100;cdt.managedbuild.tool.gnu.cpp.compiler.input.2038596168">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;cdt.managedbuild.tool.gnu.cross.c.compiler.1089196536;cdt.managedbuild.tool.gnu.c.compiler.input.198740861">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.927612988;cdt.managedbuild.config.gnu.cross.exe.release.927612988.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843;cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.124298648;cdt.managedbuild.config.gnu.cross.exe.release.124298648.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1587436843;cdt.managedbuild.tool.gnu.cpp.compiler.input.672895357">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>

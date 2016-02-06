@@ -65,7 +65,7 @@
 #define  APP_TASK_SYSTEMMONITOR_STK_SIZE                    256u
 
 
-#define APP_TASK_COUNT	(10)
+#define APP_TASK_COUNT	(7)
 
 //Application list
 void App_TouchScreenTaskCreate   		(void);

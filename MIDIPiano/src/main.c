@@ -90,9 +90,7 @@ void FlashLEDs(uint16_t abit)
 int main(void)
 {
 	uint8_t ret;
-
 	InitInterTaskComms();
-
 	USART_Configuration();
 	GPIO_Configuration();
 	NVIC_Configuration();

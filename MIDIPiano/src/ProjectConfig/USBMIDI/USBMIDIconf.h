@@ -28,7 +28,7 @@ THE SOFTWARE.
 #define		_USB_MIDI_CONF
 
 #define USB_CONNECT_TIMEOUT (1500)
-#define USB_MIDI_CABLE_COUNT (2)
+#define USB_MIDI_CABLE_COUNT (1)
 
 
 #endif
