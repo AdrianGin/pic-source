@@ -190,8 +190,8 @@ applicable agreement for further details.
 	(port
 		(pt 0 48)
 		(input)
-		(text "bin[15..0]" (rect 0 0 46 12)(font "Arial" ))
-		(text "bin[15..0]" (rect 21 43 67 55)(font "Arial" ))
+		(text "bin[31..0]" (rect 0 0 46 12)(font "Arial" ))
+		(text "bin[31..0]" (rect 21 43 67 55)(font "Arial" ))
 		(line (pt 0 48)(pt 16 48)(line_width 3))
 	)
 	(port
@@ -219,62 +219,6 @@ applicable agreement for further details.
 	(annotation_block (parameter)(rect 1520 88 1704 120))
 )
 (symbol
-	(rect 1120 304 1232 352)
-	(text "lpm_constant2" (rect 15 0 115 16)(font "Arial" (font_size 10)))
-	(text "inst5" (rect 8 32 31 44)(font "Arial" ))
-	(port
-		(pt 112 24)
-		(output)
-		(text "result[15..0]" (rect 0 0 67 14)(font "Arial" (font_size 8)))
-		(text "24" (rect 81 17 95 31)(font "Arial" (font_size 8)))
-		(line (pt 112 24)(pt 96 24)(line_width 3))
-	)
-	(drawing
-		(text "16" (rect 94 26 105 38)(font "Arial" ))
-		(line (pt 106 20)(pt 98 28))
-		(line (pt 16 16)(pt 16 32))
-		(line (pt 16 16)(pt 96 16))
-		(line (pt 16 32)(pt 96 32))
-		(line (pt 96 16)(pt 96 32))
-		(line (pt 0 0)(pt 114 0))
-		(line (pt 114 0)(pt 114 50))
-		(line (pt 0 50)(pt 114 50))
-		(line (pt 0 0)(pt 0 50))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
-	)
-)
-(symbol
-	(rect 1056 136 1240 216)
-	(text "counter" (rect 5 0 41 12)(font "Arial" ))
-	(text "inst" (rect 8 64 25 76)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 27 35 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 184 32)
-		(output)
-		(text "qout[bit_depth-1..0]" (rect 0 0 95 12)(font "Arial" ))
-		(text "qout[bit_depth-1..0]" (rect 83 27 163 39)(font "Arial" ))
-		(line (pt 184 32)(pt 168 32)(line_width 3))
-	)
-	(parameter
-		"bit_depth"
-		"16"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 168 64))
-	)
-	(annotation_block (parameter)(rect 1048 216 1230 244))
-)
-(symbol
 	(rect 496 216 608 264)
 	(text "lpm_constant0" (rect 15 0 115 16)(font "Arial" (font_size 10)))
 	(text "inst7" (rect 8 32 31 44)(font "Arial" ))
@@ -282,7 +226,7 @@ applicable agreement for further details.
 		(pt 112 24)
 		(output)
 		(text "result[15..0]" (rect 0 0 67 14)(font "Arial" (font_size 8)))
-		(text "500" (rect 75 17 96 31)(font "Arial" (font_size 8)))
+		(text "1000" (rect 69 17 97 31)(font "Arial" (font_size 8)))
 		(line (pt 112 24)(pt 96 24)(line_width 3))
 	)
 	(drawing
@@ -310,7 +254,7 @@ applicable agreement for further details.
 		(pt 112 24)
 		(output)
 		(text "result[15..0]" (rect 0 0 67 14)(font "Arial" (font_size 8)))
-		(text "50" (rect 81 17 95 31)(font "Arial" (font_size 8)))
+		(text "25" (rect 81 17 95 31)(font "Arial" (font_size 8)))
 		(line (pt 112 24)(pt 96 24)(line_width 3))
 	)
 	(drawing
@@ -329,6 +273,72 @@ applicable agreement for further details.
 		(line (pt 0 0)(pt 0 0))
 		(line (pt 0 0)(pt 0 0))
 	)
+)
+(symbol
+	(rect 1064 136 1248 216)
+	(text "counter" (rect 5 0 41 12)(font "Arial" ))
+	(text "inst" (rect 8 64 25 76)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 14 12)(font "Arial" ))
+		(text "clk" (rect 21 27 35 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 184 32)
+		(output)
+		(text "qout[bit_depth-1..0]" (rect 0 0 95 12)(font "Arial" ))
+		(text "qout[bit_depth-1..0]" (rect 83 27 163 39)(font "Arial" ))
+		(line (pt 184 32)(pt 168 32)(line_width 3))
+	)
+	(parameter
+		"bit_depth"
+		"32"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"init_val"
+		"0"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 168 64))
+	)
+	(annotation_block (parameter)(rect 1064 232 1248 288))
+)
+(symbol
+	(rect 1160 392 1344 472)
+	(text "counter_down" (rect 5 0 72 12)(font "Arial" ))
+	(text "inst4" (rect 8 64 31 76)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 14 12)(font "Arial" ))
+		(text "clk" (rect 21 27 35 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 184 32)
+		(output)
+		(text "qout[bit_depth-1..0]" (rect 0 0 95 12)(font "Arial" ))
+		(text "qout[bit_depth-1..0]" (rect 83 27 178 39)(font "Arial" ))
+		(line (pt 184 32)(pt 168 32)(line_width 3))
+	)
+	(parameter
+		"bit_depth"
+		"32"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"init_val"
+		"99999999"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 168 64))
+	)
+	(annotation_block (parameter)(rect 1136 472 1335 514))
 )
 (connector
 	(pt 56 168)
@@ -373,10 +383,6 @@ applicable agreement for further details.
 	(pt 880 168)
 )
 (connector
-	(pt 1040 168)
-	(pt 1056 168)
-)
-(connector
 	(pt 1528 152)
 	(pt 1520 152)
 	(bus)
@@ -403,13 +409,12 @@ applicable agreement for further details.
 	(pt 856 168)
 )
 (connector
-	(pt 1232 328)
-	(pt 1272 328)
+	(pt 1304 168)
+	(pt 1248 168)
 	(bus)
 )
 (connector
-	(pt 1240 168)
-	(pt 1304 168)
-	(bus)
+	(pt 1040 168)
+	(pt 1064 168)
 )
 (junction (pt 856 168))

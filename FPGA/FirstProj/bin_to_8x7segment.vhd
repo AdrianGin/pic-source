@@ -9,7 +9,7 @@ ENTITY bin_to_8x7segment IS
 	GENERIC( ndigit : INTEGER := 8 );
 	
 	PORT( strobe_clk : IN STD_LOGIC;
-			bin		  : IN UNSIGNED(15 downto 0);
+			bin		  : IN UNSIGNED(31 downto 0);
 			sel_out 			: OUT STD_LOGIC_VECTOR(7 downto 0);
 			segment_out 	: OUT STD_LOGIC_VECTOR(7 downto 0));
 
@@ -28,10 +28,10 @@ GENERIC (bit_depth : INTEGER
 END COMPONENT;
 
 COMPONENT bin2bcd_ndigit
-GENERIC (bit_depth : INTEGER;
-			N : INTEGER
+	GENERIC (N : INTEGER;
+		   bit_depth : INTEGER
 			);
-	PORT(bin : IN UNSIGNED(15 DOWNTO 0);
+	PORT(bin : IN UNSIGNED(31 DOWNTO 0);
 		 digit : OUT bcdDigit(7 DOWNTO 0)
 	);
 END COMPONENT;
@@ -90,8 +90,7 @@ BEGIN
 
 
 b2v_inst11 : bin2bcd_Ndigit
-GENERIC MAP(bit_depth => 16,
-			N => 8
+GENERIC MAP(N => 8, bit_depth => 32
 			)
 PORT MAP(bin => bin,
 		 digit => SYNTHESIZED_WIRE_3);

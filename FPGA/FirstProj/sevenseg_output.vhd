@@ -104,6 +104,6 @@ BEGIN
 										data7x => sub_dout(7),
 										sel => mux_in,
 										result => sub_bcd_in);
-	SEG7_1: BCD_to_7Seg PORT MAP (d => sub_bcd_in, q => SEG7_OUTPUT );
+	SEG7_1: BCD_to_7Seg PORT MAP (d => bcd_in, q => SEG7_OUTPUT );
 	
 END;

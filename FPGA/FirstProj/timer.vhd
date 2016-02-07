@@ -10,6 +10,7 @@ PORT ( clk : IN STD_LOGIC;
 		 
 END;
 
+
 ARCHITECTURE behaviour OF timer IS
 	SIGNAL cmp : UNSIGNED(15 downto 0) := X"0000";
 	SIGNAL usdiv : UNSIGNED(15 downto 0) := X"0000";
