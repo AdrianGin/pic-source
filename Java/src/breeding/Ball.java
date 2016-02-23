@@ -97,17 +97,9 @@ public class Ball {
 	
 	void draw()
 	{
-		
-		PVector oldLoc = getLoc();
-		this.updateBall();
-		PVector newLoc = getLoc();
-		
 		p.fill(colour);
 		p.stroke(colour);
 		//p.line(oldLoc.x, oldLoc.y, newLoc.x, newLoc.y);
-		
-		
-				
 		p.ellipse( (int)location.x, (int)location.y, radius*2, radius*2);
 	}
 	

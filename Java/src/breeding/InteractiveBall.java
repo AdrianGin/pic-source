@@ -12,41 +12,39 @@ public class InteractiveBall extends Ball {
 	boolean selected;
 	boolean updateFlag;
 	boolean isDragged;
-	PVector selLoc;
+	PVector[] selLoc;
 	PVector deselLoc;
 	PVector selOffset;
 	
-	int dragDelay; //number of frames used to determine new velocity;
+	
 	int frameCount;
 	
 	boolean isBounce;
 	boolean isCollision;
 	
-	int index;
 	public final float bounceLoss = 1.0f;
+	public final int dragDelay = 5; //number of frames used to determine new velocity;
 	
 	LinkedList<InteractiveBall> CollisionList = new LinkedList();
 
-	public InteractiveBall(PApplet _p, int i, PVector iLoc, PVector iVel, float m, int r, boolean bounces) {
+	public InteractiveBall(PApplet _p, PVector iLoc, PVector iVel, float m, int r, boolean bounces) {
 		super(_p, iLoc, iVel, m, r);
 		p = _p;
 		selected = false;
 		updateFlag = false;
 		isDragged = false;
-		selLoc = new PVector(0, 0);
+		
+		
+		frameCount = 0;
+		
+		selLoc = new PVector[dragDelay];
 		deselLoc = new PVector(0, 0);
 		selOffset = new PVector(0, 0);
 		
-		dragDelay = 5;
-		frameCount = 0;
+
 		
 		isCollision = false;
 		isBounce = bounces;
-		
-		
-		index = i;
-		
-	
 	}
 
 	boolean overEvent() {
@@ -63,7 +61,7 @@ public class InteractiveBall extends Ball {
 	
 	void onMouseClick(int mb)
 	{
-		if( overEvent() && mb == PConstants.LEFT)
+		if( (overEvent() && mb == PConstants.LEFT) )
 		{
 			selected = true;
 			
@@ -72,11 +70,14 @@ public class InteractiveBall extends Ball {
 			frameCount = 0;
 			selOffset = mouseVector.copy();
 			selOffset = selOffset.sub(getLoc());
-			selLoc = getLoc();
-			System.out.printf("SEL[%d] X:%f, Y:%f\n", index, selLoc.x, selLoc.y);
 			
+			for( int i = 0; i < selLoc.length; i++)
+			{
+				selLoc[i] = getLoc();
+			}
 		}
 	}
+	
 	
 	void onMouseRelease(int mb)
 	{
@@ -86,17 +87,17 @@ public class InteractiveBall extends Ball {
 			isDragged = true;
 			selected = false;
 			deselLoc = getLoc();
-			System.out.printf("DEL X:%f, Y:%f\n", deselLoc.x, deselLoc.y);
 		}
 	}
 
 	boolean updateStates() {
 
+		
 		if (selected) 
 		{			
 			if(frameCount >= dragDelay )
 			{
-				selLoc = getLoc();
+				selLoc[frameCount % dragDelay] = getLoc();
 			}
 			
 			frameCount++;
@@ -169,12 +170,12 @@ public class InteractiveBall extends Ball {
 
 		}
 		
-		if( updateFlag && isDragged )
+		if( updateFlag )
 		{
 			updateFlag = false;
 			isDragged = false;
 			newVel = deselLoc.copy();
-			newVel.sub(selLoc);
+			newVel.sub(selLoc[frameCount % dragDelay]);
 			newVel.div( Math.min(frameCount+1, dragDelay) );
 			super.setVel( newVel );
 		}
@@ -201,23 +202,42 @@ public class InteractiveBall extends Ball {
 			super.setLoc(curMouseLoc.sub(selOffset));
 		}
 	}
-		
-	void update()
+	
+	
+	
+	void preCollisionUpdate()
+	{
+		updateLocation();
+	}
+	
+	void postCollisionUpdate()
 	{
 		updateStates();
 		updateVelocity();
-		applyGravity();
+		super.updateBall();
 		
+		//resolveCollisions();
 	}
 	
+	void resolveCollisions()
+	{
+		Iterator<InteractiveBall> listIterator = CollisionList.iterator();
+        while (listIterator.hasNext()) {
+            
+        	InteractiveBall target = listIterator.next();
+        	//if( )
+        	while( isCollision(target) )
+        	{
+        		super.updateBall();
+        	}
+        	
+        }
+	}
+	
+	
+		
 	boolean isCollision(InteractiveBall target)
 	{
-		
-		if( CollisionList.contains(target) )
-		{
-			return true;
-		}
-		
 		float   fDist;
 		PVector iDist = getLoc();
 		iDist = iDist.sub(target.getLoc());
@@ -231,6 +251,15 @@ public class InteractiveBall extends Ball {
 		}
 		else
 		{
+		}
+		return false;
+	}
+	
+	boolean isNewCollision(InteractiveBall target)
+	{
+		if( CollisionList.contains(target) )
+		{
+			return true;
 		}
 		
 		return false;
@@ -328,20 +357,6 @@ public class InteractiveBall extends Ball {
 		target.setVel(v2);		
 	}
 	
-//	boolean isCollision()
-//	{
-//		return isCollision;
-//	}
-//	
-//	void setCollision()
-//	{
-//		isCollision = true;
-//	}
-//	
-//	void clearCollision()
-//	{
-//		isCollision = false;
-//	}
 	
 	boolean updateCollision(InteractiveBall target)
 	{
@@ -350,8 +365,6 @@ public class InteractiveBall extends Ball {
 
 	void draw()
 	{
-		updateLocation();
-		//update();
 		super.draw();
 	}
 

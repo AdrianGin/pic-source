@@ -16,7 +16,7 @@ public class Breeding extends PApplet {
 	
 	public final int ballMass = 10;
 	public final int ballRadius = 20;
-	public final int ballCount = 27;
+	public final int ballCount = 1;
 	
 
 	
@@ -50,12 +50,12 @@ public class Breeding extends PApplet {
 			int radius = rn.nextInt(20) + 8;
 			float mass =  radius*radius * 0.5f;
 			
-			balls[i] = new InteractiveBall(this, i, v1, v2, mass, radius, true);
+			balls[i] = new InteractiveBall(this,v1, v2, mass, radius, true);
 		}
 		
 		
 		scroll = new Scrollbar(this, 50, 200, 100, 20, 0, 2, 2, 60.0f, 600.0f, Colours.GREEN, Colours.BLUE);
-		h1 = new Human(this, 0, Human.Sex.MALE, 0, 0);
+		//h1 = new Human(this, 0, Human.Sex.MALE, 0, 0);
 		
 		
 		textSize(20);
@@ -73,6 +73,7 @@ public class Breeding extends PApplet {
 		
 	}
 	
+		
 	public void mouseReleased()
 	{
 		for( int i=0; i<ballCount; i++ )
@@ -99,7 +100,7 @@ public class Breeding extends PApplet {
 		for( int i=0; i<ballCount; i++ )
 		{
 			balls[i].clearCollisions();
-			balls[i].update();
+			balls[i].preCollisionUpdate();
 		}
 		
 		
@@ -109,7 +110,7 @@ public class Breeding extends PApplet {
 			{
 				if( j != i )
 				{
-					if(balls[i].updateCollision(balls[j]) )
+					if(balls[i].updateCollision(balls[j]) && balls[i].isNewCollision(balls[j]))
 					{						
 						balls[i].doCollision(balls[j]);
 						//balls[j].doCollision(balls[i]);
@@ -129,6 +130,7 @@ public class Breeding extends PApplet {
 			
 			if( balls[i].isInteracting() )
 			{
+				balls[i].setColour(Colours.WHITE);
 				cursor(MOVE);
 			}
 			else if( balls[i].canInteract() )
@@ -142,7 +144,7 @@ public class Breeding extends PApplet {
 			}
 			
 			
-			
+			balls[i].postCollisionUpdate();
 			balls[i].draw();
 			
 			netKe += balls[i].getEnergy();
