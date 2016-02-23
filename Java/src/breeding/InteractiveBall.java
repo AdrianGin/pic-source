@@ -1,0 +1,358 @@
+package breeding;
+
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PVector;
+import java.util.*;
+
+public class InteractiveBall extends Ball {
+
+	private PApplet p;
+
+	boolean selected;
+	boolean updateFlag;
+	boolean isDragged;
+	PVector selLoc;
+	PVector deselLoc;
+	PVector selOffset;
+	
+	int dragDelay; //number of frames used to determine new velocity;
+	int frameCount;
+	
+	boolean isBounce;
+	boolean isCollision;
+	
+	int index;
+	public final float bounceLoss = 1.0f;
+	
+	LinkedList<InteractiveBall> CollisionList = new LinkedList();
+
+	public InteractiveBall(PApplet _p, int i, PVector iLoc, PVector iVel, float m, int r, boolean bounces) {
+		super(_p, iLoc, iVel, m, r);
+		p = _p;
+		selected = false;
+		updateFlag = false;
+		isDragged = false;
+		selLoc = new PVector(0, 0);
+		deselLoc = new PVector(0, 0);
+		selOffset = new PVector(0, 0);
+		
+		dragDelay = 5;
+		frameCount = 0;
+		
+		isCollision = false;
+		isBounce = bounces;
+		
+		
+		index = i;
+		
+	
+	}
+
+	boolean overEvent() {
+
+		int x_diff2 = (p.mouseX - (int) getLoc().x) * (p.mouseX - (int) getLoc().x);
+		int y_diff2 = (p.mouseY - (int) getLoc().y) * (p.mouseY - (int) getLoc().y);
+
+		if ((x_diff2 + y_diff2) < (radius * radius)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	void onMouseClick(int mb)
+	{
+		if( overEvent() && mb == PConstants.LEFT)
+		{
+			selected = true;
+			
+			PVector mouseVector = new PVector(p.mouseX , p.mouseY);
+			
+			frameCount = 0;
+			selOffset = mouseVector.copy();
+			selOffset = selOffset.sub(getLoc());
+			selLoc = getLoc();
+			System.out.printf("SEL[%d] X:%f, Y:%f\n", index, selLoc.x, selLoc.y);
+			
+		}
+	}
+	
+	void onMouseRelease(int mb)
+	{
+		if(selected)
+		{
+			updateFlag = true;
+			isDragged = true;
+			selected = false;
+			deselLoc = getLoc();
+			System.out.printf("DEL X:%f, Y:%f\n", deselLoc.x, deselLoc.y);
+		}
+	}
+
+	boolean updateStates() {
+
+		if (selected) 
+		{			
+			if(frameCount >= dragDelay )
+			{
+				selLoc = getLoc();
+			}
+			
+			frameCount++;
+			
+			return true;
+		}
+
+		return false;
+	}
+	
+	void applyGravity()
+	{
+		PVector gravVel = new PVector(0.0f, +0.2f);
+		PVector newVel;
+		
+		newVel = getVel();
+		newVel.add(gravVel);
+		setVel( newVel );
+		
+	}
+	
+	void updateVelocity()
+	{
+		boolean doBounce = false;
+		PVector newVel = new PVector(0 , 0);
+		
+		if(isBounce)
+		{
+			//Check detection with out of bounds.
+			{
+				PVector newLoc = getLoc();
+				newVel = getVel().copy();	
+				if( (getLoc().x + radius) >= p.width) 
+				{
+					doBounce = true;
+					newLoc.x = p.width - radius;
+					newVel.x = -newVel.x;
+				}
+				
+				if( (getLoc().x - radius) < 0 )
+				{
+					doBounce = true;
+					newLoc.x = radius;
+					newVel.x = -newVel.x;
+				}
+				
+				
+				if( (getLoc().y + radius) >= p.height) 
+				{
+					doBounce = true;
+					newLoc.y = p.height - radius;
+					newVel.y = -newVel.y;
+				}
+				
+				if( (getLoc().y - radius) < 0 )
+				{
+					
+					doBounce = true;
+					newLoc.y = radius;
+					newVel.y = -newVel.y;
+				}
+				
+				if( doBounce )
+				{
+					setLoc(newLoc);
+					newVel.mult(bounceLoss);
+					super.setVel( newVel );
+				}
+			}
+
+		}
+		
+		if( updateFlag && isDragged )
+		{
+			updateFlag = false;
+			isDragged = false;
+			newVel = deselLoc.copy();
+			newVel.sub(selLoc);
+			newVel.div( Math.min(frameCount+1, dragDelay) );
+			super.setVel( newVel );
+		}
+		
+		
+		
+	}
+	
+	boolean isInteracting()
+	{
+		return selected;
+	}
+	
+	boolean canInteract()
+	{
+		return overEvent();
+	}
+	
+	void updateLocation()
+	{
+		PVector curMouseLoc = new PVector( p.mouseX, p.mouseY);
+		if( selected )
+		{
+			super.setLoc(curMouseLoc.sub(selOffset));
+		}
+	}
+		
+	void update()
+	{
+		updateStates();
+		updateVelocity();
+		applyGravity();
+		
+	}
+	
+	boolean isCollision(InteractiveBall target)
+	{
+		
+		if( CollisionList.contains(target) )
+		{
+			return true;
+		}
+		
+		float   fDist;
+		PVector iDist = getLoc();
+		iDist = iDist.sub(target.getLoc());
+		fDist = iDist.mag() + 0.5f;
+		
+		if(fDist <= (radius + target.radius) )
+		{
+			CollisionList.add(target);
+			target.CollisionList.add(this);
+			return true;
+		}
+		else
+		{
+		}
+		
+		return false;
+	}
+	
+	
+	boolean isCollision()
+	{
+		if ( CollisionList.isEmpty() )
+		{
+			return false;
+		}
+		
+		return true;
+	}
+		
+	
+	void clearCollisions()
+	{
+		CollisionList.clear();
+	}
+	
+	// V[1] = u[1] (m[2] - m[2]) / ( m[1] + m[2] )
+	// V[2] = 2 * m[1] * u[1]   /  ( m[1] + m[2] )
+	// assume offset u[2] to create u[2] = 0, and add it back in later.
+	void doCollision(InteractiveBall target)
+	{
+		PVector u1 = getVel();
+		PVector u2 = target.getVel();
+	
+		if( u1.mag() == 0 && u2.mag() == 0)
+		{
+			return;
+		}
+		
+	
+		PVector v1n = new PVector();
+		PVector v2n = new PVector();
+		
+		PVector v1t = new PVector();
+		PVector v2t = new PVector();
+		
+		PVector v1 = new PVector();
+		PVector v2 = new PVector();
+		
+		PVector tempv = new PVector();
+		PVector tempv2 = new PVector();
+		
+		PVector normalVect = new PVector( getLoc().x - target.getLoc().x, getLoc().y - target.getLoc().y );
+		PVector tangentVect;
+		normalVect = normalVect.normalize();
+		
+		
+		
+		tangentVect = normalVect.copy();
+		tangentVect = tangentVect.rotate( (float) (Math.PI /2));
+		
+		float m1 = (float)getMass();
+		float m2 = (float)target.getMass();		
+		
+		//V1
+		PVector.mult(normalVect, u1.dot(normalVect)*(m1 - m2) / (m1 + m2), tempv);
+		PVector.mult(normalVect, u2.dot(normalVect) * (2*m2) /(m1+m2) , tempv2);
+		PVector.add(tempv, tempv2, v1n);
+		
+		PVector.mult(tangentVect, u1.dot(tangentVect), v1t);
+		PVector.add(v1t,  v1n, v1);		
+		
+		
+		//V2
+		PVector.mult(normalVect, u2.dot(normalVect)*(m2 - m1) / (m1 + m2), tempv);
+		PVector.mult(normalVect, u1.dot(normalVect) * (2*m1) /(m1+m2) , tempv2);
+		PVector.add(tempv, tempv2, v2n);
+		
+		PVector.mult(tangentVect, u2.dot(tangentVect), v2t);
+		PVector.add(v2t,  v2n, v2);		
+		
+		if ( u2.mag() == 0 )
+		{
+			System.out.printf("X1:%f, Y1:%f\n", getLoc().x, getLoc().y);
+			System.out.printf("X2 X:%f, Y2:%f\n", target.getLoc().x, target.getLoc().y);
+			
+			System.out.printf("NormVect X:%f, Y:%f\n", normalVect.x, normalVect.y);
+			System.out.printf("tangentVect X:%f, Y:%f\n", tangentVect.x, tangentVect.y);
+			System.out.printf("u1 X:%f, Y:%f\n", u1.x, u1.y);
+			System.out.printf("u2 X:%f, Y:%f\n", u2.x, u2.y);
+			System.out.printf("Dot N:%f\n", u1.dot(normalVect));
+			System.out.printf("Dot T:%f\n", u1.dot(tangentVect));
+			System.out.printf("v1n X:%f, Y:%f\n", v1n.x, v1n.y);
+			System.out.printf("v1t X:%f, Y:%f\n", v1t.x, v1t.y);
+			System.out.printf("v1 X:%f, Y:%f\n", v1.x, v1.y);
+		}
+		
+		setVel(v1);		
+		target.setVel(v2);		
+	}
+	
+//	boolean isCollision()
+//	{
+//		return isCollision;
+//	}
+//	
+//	void setCollision()
+//	{
+//		isCollision = true;
+//	}
+//	
+//	void clearCollision()
+//	{
+//		isCollision = false;
+//	}
+	
+	boolean updateCollision(InteractiveBall target)
+	{
+		return isCollision(target);
+	}
+
+	void draw()
+	{
+		updateLocation();
+		//update();
+		super.draw();
+	}
+
+}
