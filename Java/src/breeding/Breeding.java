@@ -2,7 +2,12 @@ package breeding;
 
 import java.util.Random;
 
+
 import processing.core.*;
+
+
+
+
 
 public class Breeding extends PApplet {
 
@@ -16,14 +21,14 @@ public class Breeding extends PApplet {
 	
 	public final int ballMass = 10;
 	public final int ballRadius = 20;
-	public final int ballCount = 1;
+	public final int ballCount = 5;
 	
 
 	
-	public final int dispWidth = 1440;
-	public final int dispHeight = 900;
+	public final int dispWidth = 128;
+	public final int dispHeight = 128;
 	
-	public final int borderOffset = 100;
+	public final int borderOffset = Math.min(dispWidth, dispHeight) / 20;
 	
 	public final float velocityScaler = 80.0f * frameRate / tickRate;
 	public final float velocityOffset = 0.5f;
@@ -43,7 +48,7 @@ public class Breeding extends PApplet {
 		
 		for( int i=0; i<ballCount; i++ )
 		{
-			PVector v1 = new PVector( (rn.nextInt(dispWidth- (2*borderOffset)) + borderOffset ), rn.nextInt(dispHeight-(2*borderOffset)) + borderOffset);
+			PVector v1 = new PVector( Math.max(0, (rn.nextInt(dispWidth- (2*borderOffset)) + borderOffset )), Math.max(0, rn.nextInt(dispHeight-(2*borderOffset)) + borderOffset));
 			//PVector v1 = new PVector( 100 , 100);
 			PVector v2 = new PVector(rn.nextFloat()*velocityScaler - velocityOffset , rn.nextFloat()*velocityScaler - velocityOffset);
 			
@@ -121,7 +126,7 @@ public class Breeding extends PApplet {
 			
 			if( balls[i].isCollision() )
 			{
-				balls[i].setColour(Colours.BLACK);
+				//balls[i].setColour(Colours.BLACK);
 			}
 			else
 			{
@@ -166,6 +171,6 @@ public class Breeding extends PApplet {
 	}
 
 	public static void main(String args[]) {
-		PApplet.main(new String[] { breeding.Breeding.class.getName() });
+		PApplet.main(new String[] { "breeding.Breeding" });
 	}
 }

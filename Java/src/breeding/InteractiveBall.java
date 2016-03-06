@@ -21,8 +21,11 @@ public class InteractiveBall extends Ball {
 	
 	boolean isBounce;
 	boolean isCollision;
+	boolean updateLocation;
 	
-	public final float bounceLoss = 1.0f;
+	public final float Gravity = 0.2f;
+	public final float MinBounceSpeed = Gravity*3.5f;
+	public final float bounceLoss = 0.7f;
 	public final int dragDelay = 5; //number of frames used to determine new velocity;
 	
 	LinkedList<InteractiveBall> CollisionList = new LinkedList();
@@ -33,6 +36,7 @@ public class InteractiveBall extends Ball {
 		selected = false;
 		updateFlag = false;
 		isDragged = false;
+		updateLocation = true;
 		
 		
 		frameCount = 0;
@@ -110,7 +114,7 @@ public class InteractiveBall extends Ball {
 	
 	void applyGravity()
 	{
-		PVector gravVel = new PVector(0.0f, +0.2f);
+		PVector gravVel = new PVector(0.0f, Gravity);
 		PVector newVel;
 		
 		newVel = getVel();
@@ -119,54 +123,70 @@ public class InteractiveBall extends Ball {
 		
 	}
 	
-	void updateVelocity()
+	
+	boolean isOutOfBounds()
 	{
 		boolean doBounce = false;
+		PVector newVel = new PVector(0 , 0);
+		PVector newLoc = getLoc();
+		newVel = getVel().copy();	
+		if( (getLoc().x + radius) >= p.width) 
+		{
+			doBounce = true;
+			newLoc.x = p.width - radius;
+			newVel.x = -newVel.x;
+		}
+		
+		if( (getLoc().x - radius) < 0 )
+		{
+			doBounce = true;
+			newLoc.x = radius;
+			newVel.x = -newVel.x;
+		}
+		
+		
+		if( (getLoc().y + radius) >= p.height) 
+		{
+			doBounce = true;
+			newLoc.y = p.height - radius;
+			newVel.y = -newVel.y;
+		}
+		
+		if( (getLoc().y - radius) < 0 )
+		{
+			
+			doBounce = true;
+			newLoc.y = radius;
+			newVel.y = -newVel.y;
+		}
+		
+		if( doBounce )
+		{
+			setLoc(newLoc);
+			newVel.mult(bounceLoss);
+			if( newVel.mag() < MinBounceSpeed )
+			{
+				newVel.mult(0);
+			}
+			super.setVel( newVel );
+		}
+		else
+		{
+			applyGravity();
+		}
+		
+		return doBounce;
+	}
+	
+	void updateVelocity()
+	{
+		
 		PVector newVel = new PVector(0 , 0);
 		
 		if(isBounce)
 		{
 			//Check detection with out of bounds.
-			{
-				PVector newLoc = getLoc();
-				newVel = getVel().copy();	
-				if( (getLoc().x + radius) >= p.width) 
-				{
-					doBounce = true;
-					newLoc.x = p.width - radius;
-					newVel.x = -newVel.x;
-				}
-				
-				if( (getLoc().x - radius) < 0 )
-				{
-					doBounce = true;
-					newLoc.x = radius;
-					newVel.x = -newVel.x;
-				}
-				
-				
-				if( (getLoc().y + radius) >= p.height) 
-				{
-					doBounce = true;
-					newLoc.y = p.height - radius;
-					newVel.y = -newVel.y;
-				}
-				
-				if( (getLoc().y - radius) < 0 )
-				{
-					
-					doBounce = true;
-					newLoc.y = radius;
-					newVel.y = -newVel.y;
-				}
-				
-				if( doBounce )
-				{
-					setLoc(newLoc);
-					newVel.mult(bounceLoss);
-					super.setVel( newVel );
-				}
-			}
+			isOutOfBounds();
 
 		}
 		
@@ -214,12 +234,17 @@ public class InteractiveBall extends Ball {
 	{
 		updateStates();
 		updateVelocity();
-		super.updateBall();
-		
-		//resolveCollisions();
+		if( updateLocation )
+		{
+			super.updateBall();
+		}
+		else
+		{
+			updateLocation = true;
+		}
 	}
 	
-	void resolveCollisions()
+	void resolveCollisionsA()
 	{
 		Iterator<InteractiveBall> listIterator = CollisionList.iterator();
         while (listIterator.hasNext()) {
@@ -228,7 +253,14 @@ public class InteractiveBall extends Ball {
         	//if( )
         	while( isCollision(target) )
         	{
-        		super.updateBall();
+        		if( updateLocation )
+        		{
+        			super.updateBall();
+        		}
+        		else
+        		{
+        			updateLocation = true;
+        		}
         	}
         	
         }
@@ -337,24 +369,45 @@ public class InteractiveBall extends Ball {
 		PVector.mult(tangentVect, u2.dot(tangentVect), v2t);
 		PVector.add(v2t,  v2n, v2);		
 		
-		if ( u2.mag() == 0 )
+		setVel(v1);		
+		target.setVel(v2);	
+		
+		
+
+		PVector newLocation1 = getLoc();
+		newLocation1.add(v1);
+		PVector newLocation2 = target.getLoc();
+		newLocation2.add(v2);
+		
+		PVector diffLoc = newLocation1.copy();
+		diffLoc.sub(newLocation2);
+		
+		
+		float fDist = diffLoc.mag();
+		float minDistance = radius + target.radius;
+		
+		v1.mult(0.05f);
+		v2.mult(0.05f);
+		
+		while(fDist <= (minDistance) && v1.mag() >= 0.05f && v2.mag() >= 0.05f )
 		{
-			System.out.printf("X1:%f, Y1:%f\n", getLoc().x, getLoc().y);
-			System.out.printf("X2 X:%f, Y2:%f\n", target.getLoc().x, target.getLoc().y);
+
+			//v1.normalize();
+			newLocation1.add(v1);
 			
-			System.out.printf("NormVect X:%f, Y:%f\n", normalVect.x, normalVect.y);
-			System.out.printf("tangentVect X:%f, Y:%f\n", tangentVect.x, tangentVect.y);
-			System.out.printf("u1 X:%f, Y:%f\n", u1.x, u1.y);
-			System.out.printf("u2 X:%f, Y:%f\n", u2.x, u2.y);
-			System.out.printf("Dot N:%f\n", u1.dot(normalVect));
-			System.out.printf("Dot T:%f\n", u1.dot(tangentVect));
-			System.out.printf("v1n X:%f, Y:%f\n", v1n.x, v1n.y);
-			System.out.printf("v1t X:%f, Y:%f\n", v1t.x, v1t.y);
-			System.out.printf("v1 X:%f, Y:%f\n", v1.x, v1.y);
+			//v2.normalize();
+			newLocation2.add(v2);			
+			//updateLocation = false;
+			//target.updateLocation = false;
+			
+			diffLoc = newLocation1.copy();
+			diffLoc.sub(newLocation2);
+			fDist = diffLoc.mag();
 		}
 		
-		setVel(v1);		
-		target.setVel(v2);		
+		setLoc(newLocation1);
+		target.setLoc(newLocation2);
+		
 	}
 	
 	
