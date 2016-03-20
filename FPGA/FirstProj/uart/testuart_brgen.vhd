@@ -10,12 +10,12 @@ use ieee.numeric_std.all;
 
 --! Use Global Definitions package
  
-ENTITY testBaud_generator IS
-END testBaud_generator;
+ENTITY testuart_brgen IS
+END testuart_brgen;
  
 --! @brief Test baud_generator module
 --! @details Exercise the baud generator with 50Mhz clock and dividing by 434, finally checking for period of 8.68 us
-ARCHITECTURE behavior OF testBaud_generator IS 
+ARCHITECTURE behavior OF testuart_brgen IS 
       
     COMPONENT uart_brgen
 	 
@@ -33,7 +33,6 @@ ARCHITECTURE behavior OF testBaud_generator IS
 	
 	signal rst : std_logic := '0';																		--! Signal to connect with UUT
   signal clk : std_logic := '0';																		--! Signal to connect with UUT
-  signal udiv : integer;
   
   signal div : std_logic_vector(15 downto 0);
   
@@ -72,10 +71,13 @@ BEGIN
 	VARIABLE period : time;	
 	
 	BEGIN
-		rst <= '0';
-		div <= conv_std_logic_vector(5208, 16); -- 50000000/9600
-      wait for clk_period * 60;
+	  
+	  
 		rst <= '1';
+		div <= conv_std_logic_vector(5208, 16); -- 50000000/9600
+    wait for clk_period * 60;
+		rst <= '0';
+		wait for clk_period * 60;
 		
 		wait until baud = '1';
 		t1 := now;
@@ -98,10 +100,10 @@ BEGIN
 		
 		
 		
-		rst <= '0';
+		rst <= '1';
 		div <= conv_std_logic_vector(434, 16); -- 50000000/115200
       wait for clk_period * 60;
-		rst <= '1';
+		rst <= '0';
 		
 		wait until baud = '1';
 		t1 := now;

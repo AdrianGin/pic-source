@@ -7,9 +7,9 @@ use ieee.numeric_std.all;
 ENTITY uart_brgen IS
 
 PORT ( 
-	    rst 			 : IN STD_LOGIC;
-		 clk 			 : IN STD_LOGIC;
-		 div 			 : IN STD_LOGIC_VECTOR(15 downto 0);
+	    rst 			 : IN STD_LOGIC := '0';
+		 clk 			 : IN STD_LOGIC := '0';
+		 div 			 : IN STD_LOGIC_VECTOR(15 downto 0) := (others => '0');
 		 baudrate_8x : OUT STD_LOGIC := '0';
 		 baudrate 	 : OUT STD_LOGIC := '0');
 		 
@@ -26,7 +26,7 @@ BEGIN
 	VARIABLE half_cycle : STD_LOGIC_VECTOR(15 downto 0); 
 	BEGIN
 		half_cycle := '0' & div(15 downto 1);
-		IF rst = '0' THEN
+		IF rst = '1' THEN
 			cnt := (others => '0');
 			baudrate <= '0';
 		ELSIF clk'EVENT AND clk = '1' THEN
@@ -53,7 +53,7 @@ BEGIN
 		half_cycle := "0000" & div(15 downto 4);
 		full_cycle := "000"  & div(15 downto 3);
 		
-		IF rst = '0' THEN
+		IF rst = '1' THEN
 			cnt := (others => '0');
 			baudrate_8x <= '0';
 		ELSIF clk'EVENT AND clk = '1' THEN
