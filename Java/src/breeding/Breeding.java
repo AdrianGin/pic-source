@@ -21,12 +21,12 @@ public class Breeding extends PApplet {
 	
 	public final int ballMass = 10;
 	public final int ballRadius = 20;
-	public final int ballCount = 5;
+	public final int ballCount = 25;
 	
 
 	
-	public final int dispWidth = 128;
-	public final int dispHeight = 128;
+	public final int dispWidth = 1024;
+	public final int dispHeight = 1024;
 	
 	public final int borderOffset = Math.min(dispWidth, dispHeight) / 20;
 	

@@ -23,9 +23,9 @@ public class InteractiveBall extends Ball {
 	boolean isCollision;
 	boolean updateLocation;
 	
-	public final float Gravity = 0.2f;
+	public final float Gravity = 0.0f;
 	public final float MinBounceSpeed = Gravity*3.5f;
-	public final float bounceLoss = 0.7f;
+	public final float bounceLoss = 1.0f;
 	public final int dragDelay = 5; //number of frames used to determine new velocity;
 	
 	LinkedList<InteractiveBall> CollisionList = new LinkedList();
