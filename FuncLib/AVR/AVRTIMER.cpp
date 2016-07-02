@@ -23,15 +23,65 @@ THE SOFTWARE.
 */
 
 
-#include <stdint.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
+
+#include <avr/io.h>
+#include "AVRTIMER.h"
 #include "Log.h"
 
+namespace AVR
+{
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
+TIMER16::TIMER16() noexcept
+{
 
-uint8_t DebugLevel = API::Log::DBG;
+}
 
 
+void TIMER16::Init(eWaveformGenerationModes mode)
+{
+	TCCR1A &= ~(0x03<<WGM10);
+	TCCR1B &= ~(0x03<<WGM12);
+
+	TCCR1A |=  ((mode & 0x03) << WGM10);
+	TCCR1B |=  (((mode & 0x0C)>>2) << WGM12);
+
+	TCNT1 = 0;
+}
+
+void TIMER16::SetPrescale(eClockSelect clockSelect)
+{
+	TCCR1B &= ~(0x07<<CS10);
+	TCCR1B |= (clockSelect<<CS10);
+}
+
+void TIMER16::SetOutputMode(eChannels ch, eOutputModes mode)
+{
+	uint8_t bitIndex;
+
+	if( ch == CHANNEL_A )
+	{
+		bitIndex = COM1A0;
+	}
+	else
+	{
+		bitIndex = COM1B0;
+	}
+
+	TCCR1A &= ~(0x03 << bitIndex);
+	TCCR1A |= (mode << bitIndex);
+}
+
+void TIMER16::SetCompare(eChannels ch, uint16_t compare)
+{
+	if( ch == CHANNEL_A )
+	{
+		SetOCRA(compare);
+	}
+	else
+	{
+		SetOCRB(compare);
+	}
+
+}
+
+}

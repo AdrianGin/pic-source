@@ -23,15 +23,56 @@ THE SOFTWARE.
 */
 
 
+#ifndef	_DEVICES_PWM_H
+#define	_DEVICES_PWM_H
+
 #include <stdint.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-#include "Log.h"
+
+namespace Devices
+{
+
+class PWM
+{
+
+public:
+
+	enum ActiveState {
+		DISABLED,
+		ENABLED,
+	};
+
+	virtual void Init(uint16_t top, uint16_t compare, uint16_t prescaler) = 0;
+	virtual void SetCompare(uint16_t compare) = 0;
+
+	virtual void enable(void) = 0;
+	virtual void disable(void) = 0;
+
+private:
+
+};
 
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
 
-uint8_t DebugLevel = API::Log::DBG;
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
+
+
 
 

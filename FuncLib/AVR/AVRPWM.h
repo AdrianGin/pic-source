@@ -22,16 +22,39 @@ THE SOFTWARE.
 
 */
 
+#ifndef _AVR_PWM_H
+#define _AVR_PWM_H
 
+
+#include "PWM.h"
+#include "AVRGPIO.h"
+#include "AVRTIMER.h"
 #include <stdint.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-#include "Log.h"
+
+using Devices::PWM;
+
+namespace AVR
+{
+
+class PWM : public Devices::PWM
+{
+public:
+	PWM(GPIO& pin, TIMER16& timer, TIMER16::eChannels ch) noexcept;
+
+	void Init(uint16_t top, uint16_t compare, uint16_t prescaler);
+	void SetCompare(uint16_t compare);
+
+	void enable(void);
+	void disable(void);
+
+private:
+	GPIO& pin;
+	TIMER16& timer;
+	TIMER16::eChannels ch;
+
+	uint16_t Prescaler;
+};
 
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
-
-uint8_t DebugLevel = API::Log::DBG;
-
-
+}
+#endif

@@ -31,7 +31,6 @@
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1665165259" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
-									<listOptionValue builtIn="false" value="xNDEBUG"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1394726085" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
@@ -49,7 +48,6 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.163234670" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
-									<listOptionValue builtIn="false" value="xNDEBUG"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections -fno-exceptions -fno-rtti" valueType="string"/>
@@ -76,11 +74,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.444601731" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.130116362" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<option id="gnu.both.asm.option.include.paths.2027606496" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/Devices"/>
-									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/AVR"/>
-									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/Util"/>
-									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2"/>
-									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/API"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
@@ -90,9 +83,113 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="bootloader.c|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="API"/>
 						<entry excluding="USARTn_example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+		<cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761" moduleId="org.eclipse.cdt.core.settings" name="Bootloader">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="elf" artifactName="${ProjName}_${ConfigName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="Serial Bootloader" id="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761" name="Bootloader" parent="cdt.managedbuild.config.gnu.cross.exe.release" postbuildStep="postbuild_arduino ${ProjName}_${ConfigName}">
+					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.release.1830991192" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.release">
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.45663994" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="avr-" valueType="string"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.149639815" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="C:\Dev\AVR\bin" valueType="string"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1717450773" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
+							<builder buildPath="${workspace_loc:/AM2302}/Release" id="cdt.managedbuild.builder.gnu.cross.902028384" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross">
+								<outputEntries>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
+								</outputEntries>
+							</builder>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.640695505" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1441663527" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.size" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.level.1225065720" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.241431658" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
+									<listOptionValue builtIn="false" value="WATCHDOG_MODS"/>
+									<listOptionValue builtIn="false" value="NUM_LED_FLASHES=0"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
+									<listOptionValue builtIn="false" value="xNDEBUG"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="MAX_TIME_COUNT=F_CPU&gt;&gt;2"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.1577358249" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
+								<option id="gnu.c.compiler.option.include.paths.1771069538" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+								</option>
+								<option id="gnu.c.compiler.option.dialect.std.1567056628" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1799759882" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1903563284" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
+								<option id="gnu.cpp.compiler.option.optimization.level.1764630323" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.size" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.debugging.level.1163063716" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1784244684" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
+									<listOptionValue builtIn="false" value="xNDEBUG"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.other.other.1888399074" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections -fno-exceptions -fno-rtti" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1977872751" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.dialect.std.711523996" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.126768546" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.838674014" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1702750297" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
+								<option id="gnu.cpp.link.option.flags.538988985" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-mmcu=atmega328p" valueType="string"/>
+								<option id="gnu.cpp.link.option.other.777429265" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
+									<listOptionValue builtIn="false" value="--Map=${ProjName}.map"/>
+									<listOptionValue builtIn="false" value="--section-start=.text=0x7800"/>
+									<listOptionValue builtIn="false" value="--gc-sections"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2096130912" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.673022717" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.2024622259" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
+								<option id="gnu.both.asm.option.include.paths.1360976658" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/Devices"/>
+									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/AVR"/>
+									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2/Util"/>
+									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/MoDaL2"/>
+									<listOptionValue builtIn="false" value="F:/Robotics/pic-source/MoDaL2/MoDaL2/API"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1476574208" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="Bootloader|main.cpp|hw_config.cpp|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="API"/>
+						<entry excluding="USARTn_example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Bootloader"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
 					</sourceEntries>
 				</configuration>
@@ -104,20 +201,28 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="AM2302.cdt.managedbuild.target.gnu.cross.exe.550797167" name="Executable" projectType="cdt.managedbuild.target.gnu.cross.exe"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Bootloader"/>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/AM2302"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761;cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761.;cdt.managedbuild.tool.gnu.cross.c.compiler.640695505;cdt.managedbuild.tool.gnu.c.compiler.input.1799759882">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.205259029;cdt.managedbuild.config.gnu.cross.exe.release.205259029.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.403617063;cdt.managedbuild.tool.gnu.cpp.compiler.input.688917285">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.205259029;cdt.managedbuild.config.gnu.cross.exe.release.205259029.;cdt.managedbuild.tool.gnu.cross.c.compiler.1948358451;cdt.managedbuild.tool.gnu.c.compiler.input.1109652088">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761;cdt.managedbuild.config.gnu.cross.exe.release.205259029.1341839761.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1903563284;cdt.managedbuild.tool.gnu.cpp.compiler.input.126768546">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Release">
-			<resource resourceType="PROJECT" workspacePath="/AM2302"/>
-		</configuration>
-	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

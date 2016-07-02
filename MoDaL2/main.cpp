@@ -24,12 +24,17 @@ THE SOFTWARE.
 
 
 #include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
+#include "AVRUSARTn.h"
 #include "AVRGPIO.h"
 #include "AVRSPI.h"
+#include "AVRTWI.h"
+#include "AVRTIMER.h"
+#include "AVRPWM.h"
 
 #include "AM2302.h"
 #include "nRF24L01.h"
+#include "TSL2561.h"
+#include "BMP180.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -61,17 +66,30 @@ AVR::GPIO nSS = AVR::GPIO(DDRB, PORTB, PINB, PB2);
 
 AVR::SPI SPI1 = AVR::SPI(SCK, MISO, MOSI, nSS);
 
+//Motor drives
+AVR::GPIO PWM_PIN0 = AVR::GPIO(DDRB, PORTB, PINB, PB1);
+AVR::GPIO PWM_PIN1 = AVR::GPIO(DDRB, PORTB, PINB, PB2);
+
+AVR::TIMER16 TIM1 = AVR::TIMER16();
+
+AVR::PWM  PWM0 = AVR::PWM(PWM_PIN0, TIM1, AVR::TIMER16::CHANNEL_A );
+AVR::PWM  PWM1 = AVR::PWM(PWM_PIN1, TIM1, AVR::TIMER16::CHANNEL_B );
+
 
 Devices::AM2302   ThermSensor = Devices::AM2302(AM2302IO, Delay_us);
 Devices::nRF24L01 WirelessDev = Devices::nRF24L01(1, SPI1, nRF24CE, nRF24CSN, nRF24IRQ);
 
+AVR::AVRTWI TWI = AVR::AVRTWI();
+
+Devices::TSL2561  LightSensor = Devices::TSL2561(TWI, 0x72);
+Devices::BMP180   Barometer = Devices::BMP180(TWI, Delay_us);
 
 volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
 
 int main(void)
 {
-	char outputString[5];
+	char outputString[20];
 
 	clock_prescale_set(clock_div_1);
 	DebugLED.Init( Devices::GPIO::OUTPUT );
@@ -84,29 +102,52 @@ int main(void)
 	_delay_ms(100);
 
 	SPI1.Init();
+	TWI.Init( Devices::I2C::CLK_400KHZ );
+
+	PWM0.Init( 13333, 3000, AVR::TIMER16::CLK_DIV1);
+	PWM1.Init( 13333, 9000, AVR::TIMER16::CLK_DIV1);
 
 	WirelessDev.Init();
 	WirelessDev.SetAckState(1);
 
+	Barometer.Init( Devices::BMP180::X1);
+	LightSensor.Init();
+
 	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
+	uint16_t lux;
+
+	char header[] = ("Lux\tHumidity\tTemp1\tTemp2\tPressure");
+
+	USART0.tx( header );
+	WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, strlen(header)+1);
+	WirelessDev.TransferSync();
+
+	header[0] = '\r';
+	header[1] = '\n';
+	header[2] = '\0';
 
 	while(1)
 	{
+
+
+		USART0.tx( header );
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, 3);
+		WirelessDev.TransferSync();
+
 		WirelessDev.MainService();
 		//Perform a double blink to indicate it is working
 
 		uint8_t err = ThermSensor.RequestData();
-		if( rxFlag )
-		{
-			WirelessDev.Transmit(&dest_Address[0], (uint8_t*)&rxChar, 1);
-			WirelessDev.TransferSync();
-			rxFlag = 0;
-		}
 
-		DebugLED.SetOutput( Devices::GPIO::HIGH );
-		_delay_ms(1000);
-		DebugLED.SetOutput( Devices::GPIO::LOW);
-		_delay_ms(1000);
+		DebugLED.SetOutput( Devices::GPIO::LOW );
+		_delay_ms(100);
+
+
+		itoa(  LightSensor.GetLuxLevel(), &outputString[0], 10);
+		USART0.tx(outputString);
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
 
 		switch( err )
 		{
@@ -122,34 +163,52 @@ int main(void)
 
 			default:
 				{
-					char humidityStr[25] = "The humidity is: ";
-					char tempStr[25] = "The temperature is: ";
-
-					USART0.tx((humidityStr));
-					itoa( ThermSensor.GetHumidity(), &outputString[0], 10);
+					outputString[0] = '\t';
+					itoa( ThermSensor.GetRawHumidity(), &outputString[1], 10);
 					USART0.tx(outputString);
-					USART0.tx_newline();
-
-					strcat(humidityStr, outputString);
-					strncat(humidityStr, "\n", 2);
-					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)humidityStr, strlen(humidityStr)+1);
+					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
 					WirelessDev.TransferSync();
 
-					USART0.tx((tempStr));
-					itoa( ThermSensor.GetTemperature(), &outputString[0], 10);
+					itoa( ThermSensor.GetRawTemperature(), &outputString[1], 10);
 					USART0.tx(outputString);
-
-					USART0.tx_newline();;
-					USART0.tx_newline();
-
-					strcat(tempStr, outputString);
-					strncat(tempStr, "\n", 2);
-					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)tempStr, strlen(tempStr)+1);
+					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
 					WirelessDev.TransferSync();
 
 					break;
 				}
 		}
+
+
+
+		utoa(  Barometer.GetTemperature(), &outputString[1], 10);
+		USART0.tx(outputString);
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
+		ltoa(  Barometer.GetPressure(), &outputString[1], 10);
+		USART0.tx(outputString);
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
+
+
+		if( WirelessDev.GetState() != Devices::nRF24L01::TRANSMIT_ERROR )
+		{
+			DebugLED.SetOutput( Devices::GPIO::HIGH);
+			_delay_ms(1900);
+		}
+		else
+		{
+			DebugLED.SetOutput( Devices::GPIO::LOW);
+			_delay_ms(500);
+			DebugLED.SetOutput( Devices::GPIO::HIGH );
+			_delay_ms(1400);
+
+			WirelessDev.Init();
+			WirelessDev.SetAckState(1);
+
+		}
+
 	}
 
 

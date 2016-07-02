@@ -23,15 +23,57 @@ THE SOFTWARE.
 */
 
 
-#include <stdint.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
+
+#include <avr/io.h>
+#include "AVRPWM.h"
+#include "AVRGPIO.h"
+#include "AVRTIMER.h"
+#include "GPIO.h"
+
 #include "Log.h"
 
+using Devices::PWM;
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
+namespace AVR
+{
 
-uint8_t DebugLevel = API::Log::DBG;
+PWM::PWM(GPIO& pin, TIMER16& timer, TIMER16::eChannels ch) noexcept : pin(pin), timer(timer), ch(ch)
+{
+
+}
+
+void PWM::Init(uint16_t top, uint16_t compare, uint16_t prescaler)
+{
+	pin.Init( Devices::GPIO::OUTPUT );
+	pin.SetOutput(Devices::GPIO::LOW);
+
+	timer.Init( TIMER16::FAST_PWM_ICR1_TOP);
+	timer.SetOutputMode(ch, TIMER16::CLEAR_ON_MATCH);
 
 
+	timer.SetPrescale((TIMER16::eClockSelect)prescaler);
+	timer.SetICR(top);
+	timer.SetCompare(ch, compare);
+
+	Prescaler = prescaler;
+}
+
+void PWM::SetCompare(uint16_t compare)
+{
+	timer.SetCompare(ch, compare);
+}
+
+void PWM::enable(void)
+{
+	timer.SetPrescale( (TIMER16::eClockSelect)Prescaler);
+	timer.Init( TIMER16::FAST_PWM_ICR1_TOP);
+}
+
+void PWM::disable(void)
+{
+	timer.SetPrescale(TIMER16::eClockSelect::NONE);
+	timer.Init( TIMER16::NORMAL);
+}
+
+
+}
