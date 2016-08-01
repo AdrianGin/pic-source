@@ -45,7 +45,10 @@ public:
 	void SetCompare(uint16_t compare);
 
 	void enable(void);
-	void disable(void);
+	void disable(uint8_t logiclevel);
+
+	void SetNonInverting(void);
+	void SetInverting(void);
 
 private:
 	GPIO& pin;

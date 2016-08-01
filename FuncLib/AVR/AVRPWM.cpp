@@ -55,11 +55,24 @@ void PWM::Init(uint16_t top, uint16_t compare, uint16_t prescaler)
 	timer.SetICR(top);
 	timer.SetCompare(ch, compare);
 
+	SetNonInverting();
+
 	Prescaler = prescaler;
+}
+
+void PWM::SetNonInverting(void)
+{
+	timer.SetOutputMode(ch, TIMER16::CLEAR_ON_MATCH);
+}
+
+void PWM::SetInverting(void)
+{
+	timer.SetOutputMode(ch, TIMER16::SET_ON_MATCH);
 }
 
 void PWM::SetCompare(uint16_t compare)
 {
+	timer.ResetCount();
 	timer.SetCompare(ch, compare);
 }
 
@@ -69,10 +82,13 @@ void PWM::enable(void)
 	timer.Init( TIMER16::FAST_PWM_ICR1_TOP);
 }
 
-void PWM::disable(void)
+void PWM::disable(uint8_t logiclevel)
 {
 	timer.SetPrescale(TIMER16::eClockSelect::NONE);
 	timer.Init( TIMER16::NORMAL);
+
+	pin.SetOutput( (Devices::GPIO::LogicLevel)(logiclevel));
+
 }
 
 

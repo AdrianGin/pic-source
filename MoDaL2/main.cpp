@@ -36,6 +36,8 @@ THE SOFTWARE.
 #include "TSL2561.h"
 #include "BMP180.h"
 
+#include "L293D.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -70,11 +72,18 @@ AVR::SPI SPI1 = AVR::SPI(SCK, MISO, MOSI, nSS);
 AVR::GPIO PWM_PIN0 = AVR::GPIO(DDRB, PORTB, PINB, PB1);
 AVR::GPIO PWM_PIN1 = AVR::GPIO(DDRB, PORTB, PINB, PB2);
 
+AVR::GPIO MOTOR1_LEG1 = AVR::GPIO(DDRC, PORTC, PINC, PC0);
+AVR::GPIO MOTOR2_LEG1 = AVR::GPIO(DDRC, PORTC, PINC, PC1);
+
+
+
 AVR::TIMER16 TIM1 = AVR::TIMER16();
 
 AVR::PWM  PWM0 = AVR::PWM(PWM_PIN0, TIM1, AVR::TIMER16::CHANNEL_A );
 AVR::PWM  PWM1 = AVR::PWM(PWM_PIN1, TIM1, AVR::TIMER16::CHANNEL_B );
 
+
+Devices::L293D Motor1 = Devices::L293D(MOTOR1_LEG1, PWM0);
 
 Devices::AM2302   ThermSensor = Devices::AM2302(AM2302IO, Delay_us);
 Devices::nRF24L01 WirelessDev = Devices::nRF24L01(1, SPI1, nRF24CE, nRF24CSN, nRF24IRQ);
@@ -86,6 +95,7 @@ Devices::BMP180   Barometer = Devices::BMP180(TWI, Delay_us);
 
 volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
+volatile uint8_t M1Speed;
 
 int main(void)
 {
@@ -104,8 +114,7 @@ int main(void)
 	SPI1.Init();
 	TWI.Init( Devices::I2C::CLK_400KHZ );
 
-	PWM0.Init( 13333, 3000, AVR::TIMER16::CLK_DIV1);
-	PWM1.Init( 13333, 9000, AVR::TIMER16::CLK_DIV1);
+	Motor1.Init();
 
 	WirelessDev.Init();
 	WirelessDev.SetAckState(1);
@@ -126,14 +135,26 @@ int main(void)
 	header[1] = '\n';
 	header[2] = '\0';
 
+	uint8_t speed;
+
 	while(1)
 	{
 
+		Motor1.Freewheel();
+		_delay_ms(10);
+
+		Motor1.SetBackwards(Devices::L293D::MAX_SPEED);
+		_delay_ms(1000);
+
+		Motor1.Freewheel();
+		_delay_ms(10);
+
+		Motor1.SetForwards(Devices::L293D::MAX_SPEED);
+		_delay_ms(1000);
 
 		USART0.tx( header );
 		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, 3);
 		WirelessDev.TransferSync();
-
 		WirelessDev.MainService();
 		//Perform a double blink to indicate it is working
 
@@ -194,6 +215,7 @@ int main(void)
 
 		if( WirelessDev.GetState() != Devices::nRF24L01::TRANSMIT_ERROR )
 		{
+
 			DebugLED.SetOutput( Devices::GPIO::HIGH);
 			_delay_ms(1900);
 		}
@@ -201,6 +223,7 @@ int main(void)
 		{
 			DebugLED.SetOutput( Devices::GPIO::LOW);
 			_delay_ms(500);
+
 			DebugLED.SetOutput( Devices::GPIO::HIGH );
 			_delay_ms(1400);
 
@@ -208,6 +231,8 @@ int main(void)
 			WirelessDev.SetAckState(1);
 
 		}
+
+
 
 	}
 
@@ -223,6 +248,12 @@ ISR(USART_RX_vect)
 	rxFlag = 1;
 	//uartTxString("Rcvd its working");
 	USART0.tx(rxChar);
+
+	if( rxChar == '+' )
+	{
+		M1Speed++;
+	}
+
 }
 
 

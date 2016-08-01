@@ -90,6 +90,7 @@ public:
 
 	void SetCompare(eChannels ch, uint16_t compare);
 
+	inline void ResetCount(void) {TCNT1 = 0;}
 	inline void SetOCRA(uint16_t val) {OCR1A = val;}
 	inline void SetOCRB(uint16_t val) {OCR1B = val;}
 	inline void SetICR(uint16_t val) {ICR1 = val;}

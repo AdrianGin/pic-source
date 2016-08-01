@@ -44,8 +44,11 @@ public:
 	virtual void Init(uint16_t top, uint16_t compare, uint16_t prescaler) = 0;
 	virtual void SetCompare(uint16_t compare) = 0;
 
+	virtual void SetInverting(void) = 0;
+	virtual void SetNonInverting(void) = 0;
+
 	virtual void enable(void) = 0;
-	virtual void disable(void) = 0;
+	virtual void disable(uint8_t logiclevel) = 0;
 
 private:
 
