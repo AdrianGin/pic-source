@@ -89,6 +89,7 @@ AVR::AVRTWI TWI = AVR::AVRTWI();
 Devices::TSL2561  LightSensor = Devices::TSL2561(TWI, 0x72);
 Devices::BMP180   Barometer = Devices::BMP180(TWI, Delay_us);
 
+
 volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
 volatile uint8_t M1Speed;
@@ -134,6 +135,11 @@ int main(void)
 
 	while(1)
 	{
+	   DebugLED.SetOutput( Devices::GPIO::HIGH );
+	   _delay_ms(1000);
+	   DebugLED.SetOutput( Devices::GPIO::LOW );
+	   _delay_ms(1000);
+	   USART0.tx( PSTR("hello\n"));
 
 	}
 
