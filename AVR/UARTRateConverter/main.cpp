@@ -89,8 +89,10 @@ int main(void)
    SoftUART_GPIO.Init(Devices::GPIO::INPUT);
 
    SoftUART_GPIO.SetOutput( Devices::GPIO::HIGH ); //Enable Pullup
-   SoftUART_GPIO.EnableInterrupt( (Devices::GPIO::IntCallback)&testme, 0);
+   //SoftUART_GPIO.EnableInterrupt( (Devices::GPIO::IntCallback)&testme, 0);
 
+   EICRA |= (1<<ISC01);
+   EIMSK |= (1<<INT0);
 
 	/*Enable interrupts*/
 	sei();
@@ -103,15 +105,9 @@ int main(void)
 	{
 	   if( readPtr != writePtr )
 	   {
-	      if( rxBuffer[readPtr] != 0xFF )
-	      {
-	         USART0.tx(rxBuffer[readPtr++]);
-	      }
-	      else
-	      {
-	         readPtr++;
-	      }
+	      USART0.rawTx(rxBuffer[readPtr++]);
 	   }
+
 	}
 
 	return 0;
@@ -133,7 +129,7 @@ ISR(USART_RX_vect)
 
 }
 
-ISR(USART_UDRE_vect)
+ISR(USART_UDRE_vect, ISR_NOBLOCK)
 {
    USART0.DataEmptyISR();
 }
@@ -151,9 +147,66 @@ ISR(PCINT1_vect)
 }
 
 
+ISR(INT0_vect)
+{
+   rxByte = 0;
+
+   //about 19 cycles here
+   //__builtin_avr_delay_cycles(37);
+
+   //add 37 cyles
+
+
+   for( uint8_t i = 0; i < 8; ++i)
+   {
+      rxByte = rxByte >> 1;
+      rxByte |= ( (PIND & (1<<PIN2) ) ? 0x80 : 0x00);
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+
+
+   }
+
+
+   //Stop bit.
+
+   rxBuffer[writePtr++] = rxByte;
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+
+
+   EIFR |= (1<<INTF0);
+
+  // __builtin_avr_delay_cycles(25);
+
+
+
+
+}
+
+
+
+
+
 ISR(PCINT2_vect)
 {
-
    rxByte = 0;
 
    //about 19 cycles here
@@ -192,11 +245,9 @@ ISR(PCINT2_vect)
   // __builtin_avr_delay_cycles(25);
 
    rxBuffer[writePtr++] = rxByte;
+   while( !(PIND & (1<<PIN2)) )
+   {}
 
 
 }
-
-
-
-
 
