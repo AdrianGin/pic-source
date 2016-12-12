@@ -155,7 +155,16 @@ ISR(INT0_vect)
    //__builtin_avr_delay_cycles(37);
 
    //add 37 cyles
-
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
 
    for( uint8_t i = 0; i < 8; ++i)
    {
@@ -177,27 +186,19 @@ ISR(INT0_vect)
       asm volatile ("nop");
       asm volatile ("nop");
       asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
+      //asm volatile ("nop");
+      //asm volatile ("nop");
 
 
    }
 
-
    //Stop bit.
+   //UDR0 = rxByte;
 
    rxBuffer[writePtr++] = rxByte;
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-
-
    EIFR |= (1<<INTF0);
 
   // __builtin_avr_delay_cycles(25);
-
-
-
 
 }
 
@@ -245,8 +246,8 @@ ISR(PCINT2_vect)
   // __builtin_avr_delay_cycles(25);
 
    rxBuffer[writePtr++] = rxByte;
-   while( !(PIND & (1<<PIN2)) )
-   {}
+
+   PCIFR |= (1<<PCIF2);
 
 
 }
