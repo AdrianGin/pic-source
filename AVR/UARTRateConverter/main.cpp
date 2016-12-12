@@ -103,7 +103,14 @@ int main(void)
 	{
 	   if( readPtr != writePtr )
 	   {
-	      USART0.tx(rxBuffer[readPtr++]);
+	      if( rxBuffer[readPtr] != 0xFF )
+	      {
+	         USART0.tx(rxBuffer[readPtr++]);
+	      }
+	      else
+	      {
+	         readPtr++;
+	      }
 	   }
 	}
 
@@ -146,44 +153,14 @@ ISR(PCINT1_vect)
 
 ISR(PCINT2_vect)
 {
+
    rxByte = 0;
 
    //about 19 cycles here
    //__builtin_avr_delay_cycles(37);
 
    //add 37 cyles
-   /*
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");*/
 
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
-   asm volatile ("nop");
 
    for( uint8_t i = 0; i < 8; ++i)
    {
@@ -210,10 +187,12 @@ ISR(PCINT2_vect)
 
    }
 
+
    //Stop bit.
   // __builtin_avr_delay_cycles(25);
 
    rxBuffer[writePtr++] = rxByte;
+
 
 }
 
