@@ -76,6 +76,7 @@ THE SOFTWARE.
 #define 	BAUD14400	(68)
 #define  BAUD19200	(51)
 #define 	BAUD28800	(34)
+#define  BAUD31250   (31)
 #define	BAUD38400	(25)
 #define	BAUD57600	(16)
 #define	BAUD76800	(12)

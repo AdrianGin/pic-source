@@ -84,7 +84,7 @@ int main(void)
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
-	USART0.Init(4);
+	USART0.Init(BAUD31250);
 
    SoftUART_GPIO.Init(Devices::GPIO::INPUT);
 
@@ -186,10 +186,6 @@ ISR(INT0_vect)
       asm volatile ("nop");
       asm volatile ("nop");
       asm volatile ("nop");
-      //asm volatile ("nop");
-      //asm volatile ("nop");
-
-
    }
 
    //Stop bit.
@@ -203,52 +199,4 @@ ISR(INT0_vect)
 }
 
 
-
-
-
-ISR(PCINT2_vect)
-{
-   rxByte = 0;
-
-   //about 19 cycles here
-   //__builtin_avr_delay_cycles(37);
-
-   //add 37 cyles
-
-
-   for( uint8_t i = 0; i < 8; ++i)
-   {
-      rxByte = rxByte >> 1;
-      rxByte |= ( (PIND & (1<<PIN2) ) ? 0x80 : 0x00);
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-
-   }
-
-
-   //Stop bit.
-  // __builtin_avr_delay_cycles(25);
-
-   rxBuffer[writePtr++] = rxByte;
-
-   PCIFR |= (1<<PCIF2);
-
-
-}
 
