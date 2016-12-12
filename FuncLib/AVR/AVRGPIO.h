@@ -25,7 +25,7 @@ THE SOFTWARE.
 #ifndef _AVR_GPIO_H
 #define _AVR_GPIO_H
 
-
+#include "AVRPCINT.h"
 #include "GPIO.h"
 #include <stdint.h>
 
@@ -37,11 +37,15 @@ namespace AVR
 class GPIO : public Devices::GPIO
 {
 public:
-	GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn) noexcept;
+	GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn, PCINT* interrupt = 0) noexcept;
 
 	void Init( Direction state );
 	void SetOutput( LogicLevel level);
 	uint8_t ReadInput();
+
+	void EnableInterrupt(IntCallback cb, void* context);
+   void DisableInterrupt(void);
+   uint8_t IsInterruptTriggered(void);
 
 private:
 	volatile uint8_t &DDR;
@@ -49,6 +53,8 @@ private:
 	volatile uint8_t &PIN;
 
 	const uint8_t pinNumber;
+
+	PCINT* interrupt;
 
 };
 

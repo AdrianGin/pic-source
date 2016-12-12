@@ -33,8 +33,8 @@ using Devices::GPIO;
 namespace AVR
 {
 
-GPIO::GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn) noexcept:
-		DDR(DDR), PORT(PORT), PIN(PIN), pinNumber(pn)
+GPIO::GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn, PCINT* interrupt) noexcept:
+		DDR(DDR), PORT(PORT), PIN(PIN), pinNumber(pn), interrupt(interrupt)
 {
 
 }
@@ -66,8 +66,30 @@ void GPIO::SetOutput( LogicLevel level)
 
 uint8_t GPIO::ReadInput(void)
 {
-
 	return (PIN & (1<<pinNumber)) ? 1 : 0;
+}
+
+void AVR::GPIO::EnableInterrupt(IntCallback cb, void* context)
+{
+   this->interrupt->EnableInterrupt( ReadInput() );
+   Devices::GPIO::EnableInterrupt(cb, context);
+}
+
+void AVR::GPIO::DisableInterrupt(void)
+{
+   this->interrupt->DisableInterrupt();
+   Devices::GPIO::DisableInterrupt();
+}
+
+uint8_t AVR::GPIO::IsInterruptTriggered(void)
+{
+   uint8_t inputVal = ReadInput();
+   if( this->interrupt->lastState != inputVal )
+   {
+      this->interrupt->lastState = inputVal;
+      return true;
+   }
+   return false;
 }
 
 }

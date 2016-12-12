@@ -29,12 +29,10 @@ THE SOFTWARE.
 #include "AVRSPI.h"
 #include "AVRTWI.h"
 #include "AVRTIMER.h"
+#include "AVRTIMER2.h"
 #include "AVRPWM.h"
+#include "AVRPCINT.h"
 
-#include "AM2302.h"
-#include "nRF24L01.h"
-#include "TSL2561.h"
-#include "BMP180.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -50,86 +48,46 @@ THE SOFTWARE.
 #define INPUT_SWITCH_PIN (1<<2)
 #define INPUT_SWITCH_PIN2 (1<<3)
 
+
+AVR::PCINT SoftUART_PCINT = AVR::PCINT(PCMSK2, PCIE2, PCINT18);
+
+AVR::GPIO SoftUART_GPIO = AVR::GPIO(DDRD, PORTD, PIND, 2, &SoftUART_PCINT);
+
 AVR::GPIO DebugLED = AVR::GPIO(DDRB, PORTB, PINB, 0);
 
-AVR::GPIO nRF24CE = AVR::GPIO(DDRD, PORTD, PIND, 7);
-AVR::GPIO nRF24CSN = AVR::GPIO(DDRD, PORTD, PIND, 6);
-AVR::GPIO nRF24IRQ = AVR::GPIO(DDRD, PORTD, PIND, 5);
-
-AVR::GPIO AM2302IO = AVR::GPIO(DDRC, PORTC, PINC, PC2);
-
-AVR::GPIO SCK = AVR::GPIO(DDRB, PORTB, PINB, PB5);
-AVR::GPIO MISO = AVR::GPIO(DDRB, PORTB, PINB, PB4);
-AVR::GPIO MOSI = AVR::GPIO(DDRB, PORTB, PINB, PB3);
-AVR::GPIO nSS = AVR::GPIO(DDRB, PORTB, PINB, PB2);
-
-
-AVR::SPI SPI1 = AVR::SPI(SCK, MISO, MOSI, nSS);
-
-//Motor drives
-AVR::GPIO PWM_PIN0 = AVR::GPIO(DDRB, PORTB, PINB, PB1);
-AVR::GPIO PWM_PIN1 = AVR::GPIO(DDRB, PORTB, PINB, PB2);
-
-AVR::GPIO MOTOR1_LEG1 = AVR::GPIO(DDRC, PORTC, PINC, PC0);
-AVR::GPIO MOTOR2_LEG1 = AVR::GPIO(DDRC, PORTC, PINC, PC1);
-
-
-
-AVR::TIMER16 TIM1 = AVR::TIMER16();
-
-AVR::PWM  PWM0 = AVR::PWM(PWM_PIN0, TIM1, AVR::TIMER16::CHANNEL_A );
-AVR::PWM  PWM1 = AVR::PWM(PWM_PIN1, TIM1, AVR::TIMER16::CHANNEL_B );
-
-
-Devices::AM2302   ThermSensor = Devices::AM2302(AM2302IO, Delay_us);
-Devices::nRF24L01 WirelessDev = Devices::nRF24L01(1, SPI1, nRF24CE, nRF24CSN, nRF24IRQ);
-
-AVR::AVRTWI TWI = AVR::AVRTWI();
-
-Devices::TSL2561  LightSensor = Devices::TSL2561(TWI, 0x72);
-Devices::BMP180   Barometer = Devices::BMP180(TWI, Delay_us);
-
+AVR::TIMER2 TIM2 = AVR::TIMER2();
 
 volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
 volatile uint8_t M1Speed;
+
+void testme(void* context)
+{
+   USART0.tx( PSTR("IntCallback\n"));
+   return;
+}
 
 int main(void)
 {
 	char outputString[20];
 
 	clock_prescale_set(clock_div_1);
+
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
 	USART0.Init(BAUD19200);
+
+   SoftUART_GPIO.Init(Devices::GPIO::INPUT);
+
+   SoftUART_GPIO.SetOutput( Devices::GPIO::HIGH ); //Enable Pullup
+   SoftUART_GPIO.EnableInterrupt( (Devices::GPIO::IntCallback)&testme, 0);
+
+
 	/*Enable interrupts*/
 	sei();
 
 	_delay_ms(100);
-
-	SPI1.Init();
-	TWI.Init( Devices::I2C::CLK_400KHZ );
-
-
-	WirelessDev.Init();
-	WirelessDev.SetAckState(1);
-
-	Barometer.Init( Devices::BMP180::X1);
-	LightSensor.Init();
-
-	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
-	uint16_t lux;
-
-	char header[] = ("Lux\tHumidity\tTemp1\tTemp2\tPressure");
-
-	USART0.tx( header );
-	WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, strlen(header)+1);
-	WirelessDev.TransferSync();
-
-	header[0] = '\r';
-	header[1] = '\n';
-	header[2] = '\0';
 
 	uint8_t speed;
 
@@ -163,5 +121,23 @@ ISR(USART_RX_vect)
 }
 
 
+ISR(PCINT0_vect)
+{
+   USART0.tx( PSTR("PC0\n"));
+}
 
 
+ISR(PCINT1_vect)
+{
+   USART0.tx( PSTR("PC1\n"));
+}
+
+
+ISR(PCINT2_vect)
+{
+   USART0.tx( PSTR("PC2\n"));
+   if( SoftUART_GPIO.IsInterruptTriggered() )
+   {
+      SoftUART_GPIO.callback( SoftUART_GPIO.context );
+   }
+}

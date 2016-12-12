@@ -22,22 +22,35 @@ THE SOFTWARE.
 
 */
 
-#include "GPIO.h"
 
 
-namespace Devices
+#include <avr/io.h>
+#include "AVRPCINT.h"
+
+
+namespace AVR
 {
 
-
-void GPIO::EnableInterrupt(IntCallback cb, void* context)
+PCINT::PCINT(volatile uint8_t& PCMSK, uint8_t pcie, uint8_t pcint) noexcept : PCMSK(PCMSK), pcie(pcie), pcint(pcint)
 {
-   this->callback = cb;
-   this->context = context;
 }
 
-void GPIO::DisableInterrupt(void)
+
+void PCINT::EnableInterrupt(uint8_t currentState)
 {
-   this->callback = 0;
+   PCICR |= (1<<pcie);
+   PCMSK |= (1<<pcint);
+
+   lastState = currentState;
 }
+
+void PCINT::DisableInterrupt(void)
+{
+   PCMSK &= ~(1<<pcint);
+}
+
+
+
+
 
 }

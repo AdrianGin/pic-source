@@ -44,6 +44,8 @@ public:
 		HIGH
 	};
 
+	typedef void (*IntCallback)(void* context);
+
 	LogicLevel currentlevel;
 	Direction  currentDirection;
 
@@ -51,6 +53,18 @@ public:
 	virtual void Init( Direction state ) = 0;
 	virtual void SetOutput( LogicLevel level) = 0;
 	virtual uint8_t ReadInput() = 0;
+
+	virtual uint8_t IsInterruptTriggered(void) = 0;
+
+	virtual void EnableInterrupt(IntCallback cb, void* context);
+	virtual void DisableInterrupt(void);
+
+   IntCallback callback;
+   void* context;
+
+private:
+
+
 
 };
 
