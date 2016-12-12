@@ -128,7 +128,10 @@ void USARTn::rawTx(uint8_t outbyte)
  */
 void USARTn::tx(uint8_t outbyte)
 {
-   ringbuffer_put(&ringbuffer, outbyte);
+   while(ringbuffer_put(&ringbuffer, outbyte) == BUFFER_OVERFLOW)
+   {
+      EnableTXInterrupt();
+   }
    EnableTXInterrupt();
 }
 
@@ -159,10 +162,24 @@ void USARTn::EnableTXInterrupt(void)
 
 void USARTn::DisableTXInterrupt(void)
 {
-   //Enable interrupt.
+   //Disable Tx UDR interrupt.
    UCSRnB &= ~(1<<UDRIEn);
 }
 
+/**
+ * Call this inside the UDRE ISR
+ */
+void USARTn::DataEmptyISR(void)
+{
+   if( !ringbuffer_isEmpty( &ringbuffer) )
+   {
+      rawTx(ringbuffer_get(&ringbuffer));
+   }
+   else
+   {
+      DisableTXInterrupt();
+   }
+}
 
 /* To echo the receiver buffer, write this code in the main.c file */
 /*

@@ -63,6 +63,12 @@ volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
 volatile uint8_t M1Speed;
 
+volatile uint8_t rxByte = 0;
+volatile uint8_t writePtr = 0;
+uint8_t readPtr;
+
+volatile uint8_t rxBuffer[256];
+
 void testme(void* context)
 {
    USART0.tx( PSTR("IntCallback\n"));
@@ -78,7 +84,7 @@ int main(void)
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
-	USART0.Init(BAUD19200);
+	USART0.Init(4);
 
    SoftUART_GPIO.Init(Devices::GPIO::INPUT);
 
@@ -95,12 +101,10 @@ int main(void)
 
 	while(1)
 	{
-	   DebugLED.SetOutput( Devices::GPIO::HIGH );
-	   _delay_ms(1000);
-	   DebugLED.SetOutput( Devices::GPIO::LOW );
-	   _delay_ms(1000);
-	   USART0.tx( PSTR("hello\n"));
-
+	   if( readPtr != writePtr )
+	   {
+	      USART0.tx(rxBuffer[readPtr++]);
+	   }
 	}
 
 	return 0;
@@ -124,14 +128,7 @@ ISR(USART_RX_vect)
 
 ISR(USART_UDRE_vect)
 {
-   if( !ringbuffer_isEmpty( &USART0.ringbuffer) )
-   {
-      USART0.rawTx(ringbuffer_get(&USART0.ringbuffer));
-   }
-   else
-   {
-      USART0.DisableTXInterrupt();
-   }
+   USART0.DataEmptyISR();
 }
 
 
@@ -149,9 +146,78 @@ ISR(PCINT1_vect)
 
 ISR(PCINT2_vect)
 {
-   USART0.tx( PSTR("PC2\n"));
-   if( SoftUART_GPIO.IsInterruptTriggered() )
+   rxByte = 0;
+
+   //about 19 cycles here
+   //__builtin_avr_delay_cycles(37);
+
+   //add 37 cyles
+   /*
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");*/
+
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+   asm volatile ("nop");
+
+   for( uint8_t i = 0; i < 8; ++i)
    {
-      SoftUART_GPIO.callback( SoftUART_GPIO.context );
+      rxByte = rxByte >> 1;
+      rxByte |= ( (PIND & (1<<PIN2) ) ? 0x80 : 0x00);
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+      asm volatile ("nop");
+
    }
+
+   //Stop bit.
+  // __builtin_avr_delay_cycles(25);
+
+   rxBuffer[writePtr++] = rxByte;
+
 }
+
+
+
+
+

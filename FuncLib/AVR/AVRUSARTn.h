@@ -214,6 +214,8 @@ public:
 
 	void DisableTXInterrupt(void);
 
+	void DataEmptyISR(void);
+
 	/* ISR(SIG_UART_RECV)
 	 *
 	 * The interrupt routine for when a receive is complete
