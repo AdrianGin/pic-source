@@ -40,5 +40,10 @@
 			<type>2</type>
 			<location>F:/Robotics/pic-source/FuncLib/Devices</location>
 		</link>
+		<link>
+			<name>Other</name>
+			<type>2</type>
+			<locationURI>PARENT-2-PROJECT_LOC/FuncLib/Other</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

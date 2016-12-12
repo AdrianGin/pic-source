@@ -35,9 +35,10 @@
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1394726085" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.642447162" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.dialect.std.1863966525" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.c11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1109652088" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -52,9 +53,10 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections -fno-exceptions -fno-rtti" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1303174898" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1020448317" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.688917285" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -74,19 +76,21 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.444601731" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.130116362" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<option id="gnu.both.asm.option.include.paths.2027606496" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/API}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1875553008" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="bootloader.c|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Other|bootloader.c|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="API"/>
 						<entry excluding="USARTn_example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
+						<entry excluding="voidbuffer|USBMIDI|usbdrv|TimerCallbacks|stack|SoftTimer|mmculib|MIDIPlayback|MIDICodes|linkedlist|InertiaTouch|FluidTouch|flashmem|Coordinate|AudioBuffer" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -134,6 +138,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.dialect.std.1567056628" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1799759882" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -152,6 +157,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.711523996" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.126768546" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -180,13 +186,14 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/API}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/Devices}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MoDaL2/AVR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Other}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1476574208" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Bootloader|main.cpp|hw_config.cpp|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="Other/voidbuffer|Other/USBMIDI|Other/usbdrv|Other/TimerCallbacks|Other/stack|Other/SoftTimer|Other/mmculib|Other/MIDIPlayback|Other/MIDICodes|Other/linkedlist|Other/InertiaTouch|Other/FluidTouch|Other/flashmem|Other/Coordinate|Other/AudioBuffer|Bootloader|main.cpp|hw_config.cpp|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="API"/>
 						<entry excluding="USARTn_example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Bootloader"/>

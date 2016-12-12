@@ -22,7 +22,9 @@ THE SOFTWARE.
 
 */
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifndef MSPGCC_RINGBUFFER_H
 #define MSPGCC_RINGBUFFER_H
@@ -114,3 +116,8 @@ unsigned int atomic_ringbuffer_isEmpty(RINGBUFFER_T *buffer);
 
 
 #endif //MSPGCC_RINGBUFFER_H
+
+
+#ifdef __cplusplus
+}
+#endif

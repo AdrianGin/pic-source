@@ -62,7 +62,7 @@ THE SOFTWARE.
 #include <avr/interrupt.h>
 
 #include "UART.h"
-
+#include "RingBuffer/ringbuffer.h"
 
 #define	DEFAULT_SPD		8
 #define	U2X_BIT_STATUS	1
@@ -208,11 +208,19 @@ public:
 
 	inline void tx(char* string){ UART::tx(string); }
 
+	void rawTx(uint8_t outbyte);
+
+	void EnableTXInterrupt(void);
+
+	void DisableTXInterrupt(void);
+
 	/* ISR(SIG_UART_RECV)
 	 *
 	 * The interrupt routine for when a receive is complete
 	 */
 	//ISR(SIG_UART_RECV);
+   char buffer[64];
+   RINGBUFFER_T ringbuffer = {&buffer[0], sizeof(buffer)};
 
 
 

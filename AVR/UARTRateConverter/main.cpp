@@ -40,6 +40,8 @@ THE SOFTWARE.
 #include "hardwareSpecific.h"
 #include "hw_config.h"
 
+#include "RingBuffer/ringbuffer.h"
+
 
 #define DEBUG_LED_DDR (DDRB)
 #define DEBUG_LED (PORTB)
@@ -118,6 +120,18 @@ ISR(USART_RX_vect)
 		M1Speed++;
 	}
 
+}
+
+ISR(USART_UDRE_vect)
+{
+   if( !ringbuffer_isEmpty( &USART0.ringbuffer) )
+   {
+      USART0.rawTx(ringbuffer_get(&USART0.ringbuffer));
+   }
+   else
+   {
+      USART0.DisableTXInterrupt();
+   }
 }
 
 

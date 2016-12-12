@@ -40,6 +40,7 @@ THE SOFTWARE.
 #include "AVRUSARTn.h"
 
 #include "UART.h"
+#include "RingBuffer/ringbuffer.h"
 
 /* uartInit:
  * Initialises the baudrate, parity, stop bit generation and 8bit mode
@@ -110,6 +111,16 @@ void USARTn::Disable()
 	
 }
 
+
+void USARTn::rawTx(uint8_t outbyte)
+{
+   /*Wait until output shift register is empty*/
+   while( ((UCSRnA) & (1<<UDREn)) == 0 );
+
+   /*Send byte to output buffer*/
+   UDRn  = outbyte;
+}
+
 /* uartTx:
  * blocking transmits
  * Transmits the passed byte to the Uart.Tx pin.
@@ -117,11 +128,8 @@ void USARTn::Disable()
  */
 void USARTn::tx(uint8_t outbyte)
 {
-	/*Wait until output shift register is empty*/	
-	while( ((UCSRnA) & (1<<UDREn)) == 0 );
-		
-	/*Send byte to output buffer*/
-	UDRn	= outbyte;
+   ringbuffer_put(&ringbuffer, outbyte);
+   EnableTXInterrupt();
 }
 
 
@@ -140,6 +148,19 @@ void USARTn::tx(const char* outString_P)
    {
 	   tx(c);
    }
+}
+
+
+void USARTn::EnableTXInterrupt(void)
+{
+   //Enable interrupt.
+   UCSRnB |= (1<<UDRIEn);
+}
+
+void USARTn::DisableTXInterrupt(void)
+{
+   //Enable interrupt.
+   UCSRnB &= ~(1<<UDRIEn);
 }
 
 
