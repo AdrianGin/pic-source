@@ -53,6 +53,9 @@ THE SOFTWARE.
 
 AVR::PCINT SoftUART_PCINT = AVR::PCINT(PCMSK2, PCIE2, PCINT18);
 
+AVR::GPIO UART_RxPin = AVR::GPIO(DDRD, PORTD, PIND, 0, 0);
+AVR::GPIO UART_TxPin = AVR::GPIO(DDRD, PORTD, PIND, 1, 0);
+
 AVR::GPIO SoftUART_GPIO = AVR::GPIO(DDRD, PORTD, PIND, 2, &SoftUART_PCINT);
 
 AVR::GPIO DebugLED = AVR::GPIO(DDRB, PORTB, PINB, 0);
@@ -65,7 +68,7 @@ volatile uint8_t M1Speed;
 
 volatile uint8_t rxByte = 0;
 volatile uint8_t writePtr = 0;
-uint8_t readPtr;
+uint8_t readPtr = 0;
 
 volatile uint8_t rxBuffer[256];
 
@@ -84,6 +87,12 @@ int main(void)
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
+	UART_RxPin.Init( Devices::GPIO::INPUT );
+   UART_RxPin.SetOutput( Devices::GPIO::HIGH );
+
+   UART_TxPin.Init( Devices::GPIO::OUTPUT );
+   UART_TxPin.SetOutput( Devices::GPIO::HIGH );
+
 	USART0.Init(BAUD31250);
 
    SoftUART_GPIO.Init(Devices::GPIO::INPUT);
@@ -91,8 +100,11 @@ int main(void)
    SoftUART_GPIO.SetOutput( Devices::GPIO::HIGH ); //Enable Pullup
    //SoftUART_GPIO.EnableInterrupt( (Devices::GPIO::IntCallback)&testme, 0);
 
-   EICRA |= (1<<ISC01);
-   EIMSK |= (1<<INT0);
+   EICRA = (1<<ISC01);
+   EIMSK = (1<<INT0);
+
+   //Disable UART rx interrupt
+   UCSR0B &= ~(1<<RXCIEn);
 
 	/*Enable interrupts*/
 	sei();
@@ -129,25 +141,13 @@ ISR(USART_RX_vect)
 
 }
 
-ISR(USART_UDRE_vect, ISR_NOBLOCK)
+ISR(USART_UDRE_vect)
 {
    USART0.DataEmptyISR();
 }
 
 
-ISR(PCINT0_vect)
-{
-   USART0.tx( PSTR("PC0\n"));
-}
-
-
-ISR(PCINT1_vect)
-{
-   USART0.tx( PSTR("PC1\n"));
-}
-
-
-ISR(INT0_vect)
+ISR(INT0_vect, ISR_BLOCK)
 {
    rxByte = 0;
 
@@ -186,13 +186,15 @@ ISR(INT0_vect)
       asm volatile ("nop");
       asm volatile ("nop");
       asm volatile ("nop");
+      asm volatile ("nop");
    }
 
    //Stop bit.
    //UDR0 = rxByte;
 
+
    rxBuffer[writePtr++] = rxByte;
-   EIFR |= (1<<INTF0);
+   EIFR = (1<<INTF0);
 
   // __builtin_avr_delay_cycles(25);
 

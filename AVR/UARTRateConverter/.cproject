@@ -127,12 +127,9 @@
 								<option id="gnu.c.compiler.option.debugging.level.1225065720" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.241431658" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
-									<listOptionValue builtIn="false" value="WATCHDOG_MODS"/>
 									<listOptionValue builtIn="false" value="NUM_LED_FLASHES=0"/>
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
-									<listOptionValue builtIn="false" value="xNDEBUG"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
-									<listOptionValue builtIn="false" value="MAX_TIME_COUNT=F_CPU&gt;&gt;2"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1577358249" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.1771069538" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
@@ -194,11 +191,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Other/voidbuffer|Other/USBMIDI|Other/usbdrv|Other/TimerCallbacks|Other/stack|Other/SoftTimer|Other/mmculib|Other/MIDIPlayback|Other/MIDICodes|Other/linkedlist|Other/InertiaTouch|Other/FluidTouch|Other/flashmem|Other/Coordinate|Other/AudioBuffer|Bootloader|main.cpp|hw_config.cpp|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="API"/>
-						<entry excluding="USARTn_example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
+						<entry excluding="Other|Other/voidbuffer|Other/USBMIDI|Other/usbdrv|Other/TimerCallbacks|Other/stack|Other/SoftTimer|Other/mmculib|Other/MIDIPlayback|Other/MIDICodes|Other/linkedlist|Other/InertiaTouch|Other/FluidTouch|Other/flashmem|Other/Coordinate|Other/AudioBuffer|Bootloader|main.cpp|hw_config.cpp|API|AVR|Devices|Util" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Bootloader"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

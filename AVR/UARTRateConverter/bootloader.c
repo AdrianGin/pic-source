@@ -75,12 +75,13 @@
 #endif
 
 /* Use the F_CPU defined in Makefile */
+#define WATCHDOG_MODS
 
 /* 20060803: hacked by DojoCorp */
 /* 20070626: hacked by David A. Mellis to decrease waiting time for auto-reset */
 /* set the waiting time for the bootloader */
 /* get this from the Makefile instead */
-/* #define MAX_TIME_COUNT (F_CPU>>4) */
+ #define MAX_TIME_COUNT (F_CPU>>2)
 
 /* 20070707: hacked by David A. Mellis - after this many errors give up and launch application */
 #define MAX_ERROR_COUNT 5
@@ -276,7 +277,7 @@ int main(void)
     WDTCSR |= _BV(WDCE) | _BV(WDE);
     WDTCSR = _BV(WDCE) | WDT_TIMEOUT | _BV(WDE);
 
-    // Check if the WDT was used to reset, in which case we dont bootload and skip straight to the code. woot.
+    // Check if the WDT was used to reset, in which case we dont bootload and skip straight to the code.
     if ((ch &  _BV(WDRF))) // if its a not an external reset...
     {
         WDTCSR |= _BV(WDCE) | _BV(WDE);
