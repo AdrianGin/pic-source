@@ -34,21 +34,16 @@ all: STMF4_Template_USB.elf
 STMF4_Template_USB.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross GCC Linker'
-	arm-none-eabi-g++ -fmessage-length=0 -mcpu=cortex-m3 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=soft -ffunction-sections -fdata-sections -Xlinker -Map=STMF4_Template_USB.map -Xlinker -T"../STM32F407IG_FLASH.ld" -Xlinker --gc-sections -o "STMF4_Template_USB.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -fmessage-length=0 -mcpu=cortex-m3 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=soft -ffunction-sections -fdata-sections -Xlinker -Map=STMF4_Template_USB.map -Xlinker -T"../stm32f4xx_flash.ld" -Xlinker --gc-sections -o "STMF4_Template_USB.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
-	$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) STMF4_Template_USB.elf
-	-@echo ' '
-
-post-build:
-	-postbuild STMF4_Template_USB
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) STMF4_Template_USB.elf
 	-@echo ' '
 
 .PHONY: all clean dependents
-.SECONDARY: post-build
+.SECONDARY:
 
 -include ../makefile.targets

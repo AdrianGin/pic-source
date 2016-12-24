@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file      startup_stm32f40_41xxx.s
   * @author    MCD Application Team
-  * @version   V1.2.1
-  * @date      19-September-2013
+  * @version   V1.7.0
+  * @date      22-April-2016
   * @brief     STM32F40xxx/41xxx Devices vector table for Atollic TrueSTUDIO toolchain.   
   *            This module performs:
   *                - Set the initial SP
@@ -19,7 +19,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
   */
     
   .syntax unified
-  .cpu cortex-m3
+  .cpu cortex-m4
   .fpu softvfp
   .thumb
 
