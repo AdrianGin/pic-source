@@ -173,7 +173,7 @@ uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] =
 /**
   * @}
   */ 
-
+__ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;
 
 /** @defgroup USBD_DESC_Private_FunctionPrototypes
   * @{

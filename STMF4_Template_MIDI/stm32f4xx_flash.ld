@@ -7,6 +7,10 @@ Default linker script for STM32F4xx_1024K_192K
 /* Common part of the linker scripts for STM32F devices*/
 
 
+/* Generate a link error if heap and stack don't fit into RAM */
+_Min_Heap_Size = 0x2000;      /* required amount of heap  */
+
+
 /* default stack sizes. 
 
 These are used by the startup in order to allocate stacks for the different modes.
@@ -35,7 +39,7 @@ Linker subscript for STM32F4xx definitions with 1024 Flash and 192 Onchip SRAM *
 
 MEMORY
 {
-  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
+  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 192K
   CCMRAM (xrw) : ORIGIN = 0x10000000, LENGTH = 64K
   FLASH (rx) : ORIGIN = 0x8000000, LENGTH = 1024K
   FLASHB1 (rx) : ORIGIN = 0x00000000, LENGTH = 0
@@ -85,6 +89,9 @@ SECTIONS
         *(.rodata*)
         *(.glue_7)
         *(.glue_7t)
+
+    KEEP (*(.init))
+    KEEP (*(.fini))
 
 	    . = ALIGN(4);
    	 _etext = .;
@@ -144,6 +151,11 @@ SECTIONS
     ._usrstack :
     {
 	    . = ALIGN(4);
+	    
+	    __heap_start = .;
+    	. = . + _Min_Heap_Size;
+    	__heap_limit = .;
+	    
         _susrstack = . ;
         
         . = . + _Minimum_Stack_Size ;

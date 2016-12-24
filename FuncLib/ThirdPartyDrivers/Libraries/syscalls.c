@@ -92,7 +92,7 @@ caddr_t _sbrk(int incr)
 	{
 		//write(1, "Heap and stack collision\n", 25);
 
-		xprintf("Heap and Stack Collision!\n");
+		//xprintf("Heap and Stack Collision!\n");
 //		abort();
 		errno = ENOMEM;
 		return (caddr_t) -1;
