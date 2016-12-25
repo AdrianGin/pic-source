@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    usb_conf.h
   * @author  MCD Application Team
-  * @version V2.1.0
+  * @version V1.1.0
   * @date    19-March-2012
   * @brief   General low level driver configuration
   ******************************************************************************
@@ -30,7 +30,7 @@
 #define __USB_CONF__H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx.h"
+#include "hw_config.h"
 
 /** @addtogroup USB_OTG_DRIVER
   * @{
@@ -82,7 +82,7 @@
 *     STM32 device datasheet.
 *******************************************************************************/
 #ifndef USE_USB_OTG_HS
-//#define USE_USB_OTG_HS
+// #define USE_USB_OTG_HS
 #endif /* USE_USB_OTG_HS */
 
 #ifndef USE_ULPI_PHY
@@ -90,7 +90,7 @@
 #endif /* USE_ULPI_PHY */
 
 #ifndef USE_EMBEDDED_PHY
-#define USE_EMBEDDED_PHY
+ #define USE_EMBEDDED_PHY
 #endif /* USE_EMBEDDED_PHY */
 
 #ifdef USE_USB_OTG_HS 
@@ -130,70 +130,47 @@
 *  (v) The FIFO is used optimally when used TxFIFOs are allocated in the top 
 *       of the FIFO.Ex: use EP1 and EP2 as IN instead of EP1 and EP3 as IN ones.
 *******************************************************************************/
-
-/*******************************************************************************
-*                     FIFO Size Configuration in Host mode
-*  
-*  (i) Receive data FIFO size = (Largest Packet Size / 4) + 1 or 
-*                             2x (Largest Packet Size / 4) + 1,  If a 
-*                             high-bandwidth channel or multiple isochronous 
-*                             channels are enabled
-*
-*  (ii) For the host nonperiodic Transmit FIFO is the largest maximum packet size 
-*      for all supported nonperiodic OUT channels. Typically, a space 
-*      corresponding to two Largest Packet Size is recommended.
-*
-*  (iii) The minimum amount of RAM required for Host periodic Transmit FIFO is 
-*        the largest maximum packet size for all supported periodic OUT channels.
-*        If there is at least one High Bandwidth Isochronous OUT endpoint, 
-*        then the space must be at least two times the maximum packet size for 
-*        that channel.
-*******************************************************************************/
- 
+  
 /****************** USB OTG HS CONFIGURATION **********************************/
 #ifdef USB_OTG_HS_CORE
- #define RX_FIFO_HS_SIZE                          512
- #define TX0_FIFO_HS_SIZE                         512
- #define TX1_FIFO_HS_SIZE                         512
- #define TX2_FIFO_HS_SIZE                          0
- #define TX3_FIFO_HS_SIZE                          0
- #define TX4_FIFO_HS_SIZE                          0
- #define TX5_FIFO_HS_SIZE                          0
- #define TXH_NP_HS_FIFOSIZ                         96
- #define TXH_P_HS_FIFOSIZ                          96
+ #define RX_FIFO_HS_SIZE                          64
+ #define TX0_FIFO_HS_SIZE                         64
+ #define TX1_FIFO_HS_SIZE                         64
+ #define TX2_FIFO_HS_SIZE                         64
+ #define TX3_FIFO_HS_SIZE                           0
+ #define TX4_FIFO_HS_SIZE                           0
+ #define TX5_FIFO_HS_SIZE                           0
 
-// #define USB_OTG_HS_LOW_PWR_MGMT_SUPPORT
 // #define USB_OTG_HS_SOF_OUTPUT_ENABLED
-
-// #define USB_OTG_INTERNAL_VBUS_ENABLED
- #define USB_OTG_EXTERNAL_VBUS_ENABLED
 
  #ifdef USE_ULPI_PHY
   #define USB_OTG_ULPI_PHY_ENABLED
  #endif
- #ifdef USE_EMBEDDED_PHY
+ #ifdef USE_EMBEDDED_PHY 
    #define USB_OTG_EMBEDDED_PHY_ENABLED
+   /* wakeup is working only when HS core is configured in FS mode */
+   #define USB_OTG_HS_LOW_PWR_MGMT_SUPPORT
  #endif
- #define USB_OTG_HS_INTERNAL_DMA_ENABLED
- #define USB_OTG_HS_DEDICATED_EP1_ENABLED
+ //#define USB_OTG_HS_INTERNAL_DMA_ENABLED
+ //#define USB_OTG_HS_DEDICATED_EP1_ENABLED
 #endif
 
 /****************** USB OTG FS CONFIGURATION **********************************/
 #ifdef USB_OTG_FS_CORE
- #define RX_FIFO_FS_SIZE                          128
+ #define RX_FIFO_FS_SIZE                           64
  #define TX0_FIFO_FS_SIZE                          64
- #define TX1_FIFO_FS_SIZE                         128
- #define TX2_FIFO_FS_SIZE                          0
+ #define TX1_FIFO_FS_SIZE                          64
+ #define TX2_FIFO_FS_SIZE                          48
  #define TX3_FIFO_FS_SIZE                          0
- #define TXH_NP_HS_FIFOSIZ                         96
- #define TXH_P_HS_FIFOSIZ                          96
 
 // #define USB_OTG_FS_LOW_PWR_MGMT_SUPPORT
 // #define USB_OTG_FS_SOF_OUTPUT_ENABLED
 #endif
 
 /****************** USB OTG MISC CONFIGURATION ********************************/
+//Disable BUS Sensing
 //#define VBUS_SENSING_ENABLED
+
 
 /****************** USB OTG MODE CONFIGURATION ********************************/
 //#define USE_HOST_MODE
@@ -251,8 +228,10 @@
   #define __packed    __packed
 #elif defined (__ICCARM__)     /* IAR Compiler */
   #define __packed    __packed
-#elif defined   ( __GNUC__ )   /* GNU Compiler */                        
+#elif defined   ( __GNUC__ )   /* GNU Compiler */
+#ifndef __packed
   #define __packed    __attribute__ ((__packed__))
+#endif
 #elif defined   (__TASKING__)  /* TASKING Compiler */
   #define __packed    __unaligned
 #endif /* __CC_ARM */
@@ -302,5 +281,6 @@
 /**
   * @}
   */ 
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

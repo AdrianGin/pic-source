@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_desc.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   header file for the usbd_desc.c file
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -33,6 +33,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_def.h"
 
+#define UNIT_PID (0x007F)
+
+#define USBD_VID                        0xFFFF
+#define USBD_PID                        0xFFFF
+
+
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
@@ -53,6 +59,12 @@
 #define USB_SIZ_DEVICE_DESC                     18
 #define USB_SIZ_STRING_LANGID                   4
 
+#define         DEVICE_ID1          (0x1FFF7A10)
+#define         DEVICE_ID2          (0x1FFF7A14)
+#define         DEVICE_ID3          (0x1FFF7A18)
+
+
+#define  USB_SIZ_STRING_SERIAL       0x1A
 /**
   * @}
   */ 
@@ -77,7 +89,7 @@
 /** @defgroup USBD_DESC_Exported_Variables
   * @{
   */ 
-extern  uint8_t USBD_DeviceDesc  [USB_SIZ_DEVICE_DESC];
+extern  const uint8_t USBD_DeviceDesc  [USB_SIZ_DEVICE_DESC];
 extern  uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ];
 extern  uint8_t USBD_OtherSpeedCfgDesc[USB_LEN_CFG_DESC]; 
 extern  uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC];

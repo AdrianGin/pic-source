@@ -32,7 +32,7 @@
 #include "usbd_usr.h"
 #include "usb_conf.h"
 
-
+#include "USBMIDI.h"
 
 
 /** @addtogroup Template_Project
@@ -86,6 +86,7 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
+     USBMIDI_Poll(&USBMIDIPort);
   }
 }
 

@@ -153,15 +153,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief  This function handles USB-On-The-Go FS global interrupt request.
+  * @brief  This function handles OTG_HS Handler.
   * @param  None
   * @retval None
   */
+
 void OTG_FS_IRQHandler(void)
 {
-  USBD_OTG_ISR_Handler(&USB_OTG_dev);
+   USBD_OTG_ISR_Handler(&USB_OTG_dev);
 }
 
+void OTG_HS_IRQHandler(void)
+{
+   USBD_OTG_ISR_Handler(&USB_OTG_dev);
+}
 
 /**
   * @brief  This function handles PPP interrupt request.
