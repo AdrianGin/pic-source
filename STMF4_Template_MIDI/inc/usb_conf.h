@@ -57,7 +57,7 @@
 *  when FS core is used.
 *******************************************************************************/
 #ifndef USE_USB_OTG_FS
- //#define USE_USB_OTG_FS
+#define USE_USB_OTG_FS
 #endif /* USE_USB_OTG_FS */
 
 #ifdef USE_USB_OTG_FS 
@@ -82,7 +82,7 @@
 *     STM32 device datasheet.
 *******************************************************************************/
 #ifndef USE_USB_OTG_HS
-// #define USE_USB_OTG_HS
+ #define USE_USB_OTG_HS
 #endif /* USE_USB_OTG_HS */
 
 #ifndef USE_ULPI_PHY

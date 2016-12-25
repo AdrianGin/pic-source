@@ -155,6 +155,10 @@ uint8_t* IsocOutRdPtr = IsocOutBuff;
 uint8_t USBMIDI_InBuff[USB_MIDI_IN_BUF_SIZE];
 uint8_t USBMIDI_OutBuff[USB_MIDI_OUT_BUF_SIZE];
 
+uint8_t USBMIDI_InBuff_HS[USB_MIDI_IN_BUF_SIZE];
+uint8_t USBMIDI_OutBuff_HS[USB_MIDI_OUT_BUF_SIZE];
+
+
 uint8_t USBMIDI_InLen = 0;
 uint8_t USBMIDI_InPtr = 0;
 
@@ -168,6 +172,7 @@ USBMIDI_Port_t USBMIDI_Tx =
             .bufSize = USB_MIDI_IN_BUF_SIZE,
             .epnum = MIDI_IN_EP,
             .state = USBMIDI_READY,
+            .pdev = &USB_OTG_dev,
       };
 
 USBMIDI_Port_t USBMIDI_Rx =
@@ -176,7 +181,27 @@ USBMIDI_Port_t USBMIDI_Rx =
             .bufSize = USB_MIDI_OUT_BUF_SIZE,
             .epnum = MIDI_OUT_EP,
             .state = USBMIDI_READY,
+            .pdev = &USB_OTG_dev,
       };
+
+USBMIDI_Port_t USBMIDI_Tx_HS =
+      {
+      .buf = USBMIDI_InBuff_HS,
+            .bufSize = USB_MIDI_IN_BUF_SIZE,
+            .epnum = MIDI_IN_EP,
+            .state = USBMIDI_READY,
+            .pdev = &USB_OTG_dev_HS,
+      };
+
+USBMIDI_Port_t USBMIDI_Rx_HS =
+      {
+      .buf = USBMIDI_OutBuff_HS,
+            .bufSize = USB_MIDI_OUT_BUF_SIZE,
+            .epnum = MIDI_OUT_EP,
+            .state = USBMIDI_READY,
+            .pdev = &USB_OTG_dev_HS,
+      };
+
 //uint8_t*  USBMIDI_OutBuff = &MIDIToDev[0].Fifo;
 
 /* Main Buffer for Audio Control Rrequests transfers and its relative variables */
@@ -489,15 +514,30 @@ static uint8_t usbd_audio_Init(void *pdev, uint8_t cfgidx)
    USB_MIDI_OUT_BUF_SIZE,
    USB_OTG_EP_BULK);
 
-   USDB_audio_MIDI_Port_FlushBuffers(&USBMIDI_Tx);
-   USDB_audio_MIDI_Port_FlushBuffers(&USBMIDI_Rx);
+   USBMIDI_Port_t* rxdev;
+   USBMIDI_Port_t* txdev;
 
-   USBD_audio_SetState(&USBMIDI_Rx, USBMIDI_READY);
-   USBD_audio_SetState(&USBMIDI_Tx, USBMIDI_READY);
+   if( pdev == &USB_OTG_dev )
+   {
+      txdev = &USBMIDI_Tx;
+      rxdev = &USBMIDI_Rx;
+   }
+   else
+   {
+      txdev = &USBMIDI_Tx_HS;
+      rxdev = &USBMIDI_Rx_HS;
+   }
+
+
+   USDB_audio_MIDI_Port_FlushBuffers(txdev);
+   USDB_audio_MIDI_Port_FlushBuffers(rxdev);
+
+   USBD_audio_SetState(rxdev, USBMIDI_READY);
+   USBD_audio_SetState(txdev, USBMIDI_READY);
 
    /* Prepare Out endpoint to receive audio data */
    DCD_EP_PrepareRx(pdev,
-   MIDI_OUT_EP, (uint8_t*) USBMIDI_OutBuff,
+   MIDI_OUT_EP, (uint8_t*) rxdev->buf,
    USB_MIDI_OUT_BUF_SIZE);
 
    return USBD_OK;
@@ -630,15 +670,26 @@ static uint8_t usbd_audio_EP0_RxReady(void *pdev)
 static uint8_t usbd_audio_DataIn(void *pdev, uint8_t epnum)
 {
 
+   USBMIDI_Port_t* dev;
+
+   if( pdev == &USB_OTG_dev )
+   {
+      dev = &USBMIDI_Tx;
+   }
+   else
+   {
+      dev = &USBMIDI_Tx_HS;
+   }
+
    switch (epnum)
    {
       case MIDI_IN_EP & 0x1F:
          {
-         USBD_audio_MIDI_Port_SetReadPtr(&USBMIDI_Tx, USBD_audio_MIDI_Port_GetReadPtr(&USBMIDI_Tx) + USB_OTG_dev.dev.in_ep[epnum].xfer_count);
-         if (USBD_audio_MIDI_Port_byteCount(&USBMIDI_Tx) == 0)
+         USBD_audio_MIDI_Port_SetReadPtr(dev, USBD_audio_MIDI_Port_GetReadPtr(dev) + ((USB_OTG_CORE_HANDLE*)pdev)->dev.in_ep[epnum].xfer_count);
+         if (USBD_audio_MIDI_Port_byteCount(dev) == 0)
          {
-            USBD_audio_MIDI_Port_SetReadPtr(&USBMIDI_Tx, 0);
-            USBD_audio_SetState(&USBMIDI_Tx, USBMIDI_READY);
+            USBD_audio_MIDI_Port_SetReadPtr(dev, 0);
+            USBD_audio_SetState(dev, USBMIDI_READY);
          }
       }
          break;
@@ -664,10 +715,22 @@ static uint8_t usbd_audio_DataOut(void *pdev, uint8_t epnum)
    /* Get the received data buffer and update the counter */
    USB_Rx_Cnt = ((USB_OTG_CORE_HANDLE*) pdev)->dev.out_ep[epnum].xfer_count;
 
+   USBMIDI_Port_t* dev;
+
+   if( pdev == &USB_OTG_dev )
+   {
+      dev = &USBMIDI_Rx;
+   }
+   else
+   {
+      dev = &USBMIDI_Rx_HS;
+   }
+
+
    switch (epnum)
    {
       case MIDI_OUT_EP:
-         USBD_audio_MIDI_Port_SetWritePtr(&USBMIDI_Rx, USBD_audio_MIDI_Port_GetWritePtr(&USBMIDI_Rx) + USB_Rx_Cnt);
+         USBD_audio_MIDI_Port_SetWritePtr(dev, USBD_audio_MIDI_Port_GetWritePtr(dev) + USB_Rx_Cnt);
          //USBD_audio_SetState(&USBMIDI_Rx, USBMIDI_TRANSMITING);
          /* Prepare Out endpoint to receive next audio packet */
          /*DCD_EP_PrepareRx(pdev,
@@ -774,25 +837,25 @@ void USBD_audio_Disconnect(void)
  * @}
  */
 
-uint8_t USBD_audio_RxEPReady(uint8_t epnum)
+uint8_t USBD_audio_RxEPReady(USBMIDI_Port_t* port)
 {
 
-   uint32_t status = DCD_GetEPStatus(&USB_OTG_dev, epnum);
+   uint32_t status = DCD_GetEPStatus(port->pdev, port->epnum);
 
    if ((status != USB_OTG_EP_RX_VALID))
    {
 
-      switch (epnum)
+      switch (port->epnum)
       {
          case MIDI_OUT_EP:
 
-            USBD_audio_MIDI_Port_SetWritePtr(&USBMIDI_Rx, 0);
-            USBD_audio_MIDI_Port_SetReadPtr(&USBMIDI_Rx, 0);
+            USBD_audio_MIDI_Port_SetWritePtr(port, 0);
+            USBD_audio_MIDI_Port_SetReadPtr(port, 0);
 
             /* Prepare Out endpoint to receive next audio packet */
-            DCD_EP_PrepareRx(&USB_OTG_dev,
-                  epnum,
-                  (uint8_t*) (USBMIDI_Rx.buf),
+            DCD_EP_PrepareRx(port->pdev,
+                  port->epnum,
+                  (uint8_t*) (port->buf),
                   USB_MIDI_OUT_BUF_SIZE);
 
             return 0;

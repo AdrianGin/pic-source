@@ -33,6 +33,8 @@ typedef struct
 } USBDevice_t;
 
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;
+extern USB_OTG_CORE_HANDLE USB_OTG_dev_HS;
+
 extern USBDevice_t USB_User_Dev;
 
 void USB_Init(void);

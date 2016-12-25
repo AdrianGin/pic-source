@@ -73,7 +73,6 @@
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.1976268420" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
-									<listOptionValue builtIn="false" value="USE_USB_OTG_FS"/>
 									<listOptionValue builtIn="false" value="HSE_VALUE=8000000UL"/>
 									<listOptionValue builtIn="false" value="STM32F4XX"/>
 									<listOptionValue builtIn="false" value="STM32F40_41xxx"/>

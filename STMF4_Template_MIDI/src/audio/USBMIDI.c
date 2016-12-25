@@ -32,15 +32,20 @@ enum
 uint8_t USBMIDI_TxFIFO[MIDI_TX_FIFO_SIZE];
 uint8_t USBMIDI_RxFIFO[MIDI_RX_FIFO_SIZE];
 
+uint8_t USBMIDI_TxFIFO_HS[MIDI_TX_FIFO_SIZE];
+uint8_t USBMIDI_RxFIFO_HS[MIDI_RX_FIFO_SIZE];
+
 
 Ringbuffer_t FIFO_USB_ToHost[TO_HST_ENDPOINTS] =
 {
       {&USBMIDI_TxFIFO[0], MIDI_TX_FIFO_SIZE, 0,0 },
+      {&USBMIDI_TxFIFO_HS[0], MIDI_TX_FIFO_SIZE, 0,0 },
 };
 
 Ringbuffer_t FIFO_USB_ToDevice[TO_DEV_ENDPOINTS] =
 {
       {&USBMIDI_RxFIFO[0], MIDI_RX_FIFO_SIZE, 0,0 },
+      {&USBMIDI_RxFIFO_HS[0], MIDI_RX_FIFO_SIZE, 0,0 },
 };
 
 
@@ -54,6 +59,19 @@ USBMIDI_t USBMIDIPort = {
 
       .MsgReceivedCallback = USBMIDI_DefaultRxCallback,
 };
+
+
+USBMIDI_t USBMIDIPort_HS = {
+      .refcableIndex = 0,
+      .USBMIDI_TxPort =  &USBMIDI_Tx_HS,
+      .USBMIDI_RxPort =  &USBMIDI_Rx_HS,
+
+      .TxFIFO = &FIFO_USB_ToHost[1],
+      .RxFIFO = &FIFO_USB_ToDevice[1],
+
+      .MsgReceivedCallback = USBMIDI_DefaultRxCallback,
+};
+
 
 
 void USBMIDI_DefaultRxCallback(USBMIDI_t* Context, Ringbuffer_t* rb)
@@ -75,7 +93,7 @@ void USBMIDI_DefaultRxCallback(USBMIDI_t* Context, Ringbuffer_t* rb)
       msg.data[2] = d2;
 
       //Do a simple echo here
-      USBMIDI_TxBuffer(&USBMIDIPort, &msg, sizeof(USBMIDI_Packet_t) );
+      USBMIDI_TxBuffer(Context, (uint8_t*)&msg, sizeof(USBMIDI_Packet_t) );
 
    }
 }
@@ -121,7 +139,7 @@ void USBMIDI_Poll(USBMIDI_t* Context)     // send any messages
          (USBD_audio_MIDI_Port_byteCount(Context->USBMIDI_RxPort) == 0) )
    {
       USBD_audio_SetState(Context->USBMIDI_RxPort, USBMIDI_READY);
-      USBD_audio_RxEPReady(Context->USBMIDI_RxPort->epnum);
+      USBD_audio_RxEPReady(Context->USBMIDI_RxPort);
    }
 
 }
@@ -206,7 +224,7 @@ uint16_t USBMIDI_TxPoll(USBMIDI_t* Context)
 
       USBD_audio_SetState(usbmiditx, USBMIDI_TRANSMITING);
       USBD_audio_MIDI_Port_SetWritePtr(usbmiditx, packetCount * sizeof(USBMIDI_Packet_t));
-      USBD_audio_TxEP(&USB_OTG_dev, usbmiditx->epnum, &buf[0], packetCount * sizeof(USBMIDI_Packet_t));
+      USBD_audio_TxEP(usbmiditx, usbmiditx->epnum, &buf[0], packetCount * sizeof(USBMIDI_Packet_t));
    }
 
    return dataBytes;

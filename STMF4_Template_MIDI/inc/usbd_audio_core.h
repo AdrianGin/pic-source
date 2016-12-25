@@ -273,6 +273,8 @@ typedef struct
 	uint8_t  epnum;
 
 	volatile USBMIDI_State  state;
+	USB_OTG_CORE_HANDLE* pdev;
+
 } USBMIDI_Port_t;
 
 
@@ -313,19 +315,23 @@ extern uint32_t  APP_Rx_ptr_in;
 extern USBMIDI_Port_t USBMIDI_Tx;
 extern USBMIDI_Port_t USBMIDI_Rx;
 
+extern USBMIDI_Port_t USBMIDI_Tx_HS;
+extern USBMIDI_Port_t USBMIDI_Rx_HS;
+
+
 uint16_t USBD_audio_TxFIFO_WordsAvailable(uint8_t ep_addr);
 uint8_t USB_audio_RxData(uint8_t  *pbuf, uint32_t buf_len);
 
 
-static inline void USBD_audio_TxEP(void *pdev, uint8_t ep_addr, uint8_t *pbuf, uint32_t buf_len)
+static inline void USBD_audio_TxEP(USBMIDI_Port_t* port, uint8_t ep_addr, uint8_t *pbuf, uint32_t buf_len)
 {
-	DCD_EP_Tx( (USB_OTG_CORE_HANDLE*)pdev, ep_addr, pbuf, buf_len);
+	DCD_EP_Tx( (USB_OTG_CORE_HANDLE*)port->pdev, ep_addr, pbuf, buf_len);
 }
 
 
 void USBD_audio_Disconnect(void);
 
-uint8_t USBD_audio_RxEPReady(uint8_t epnum);
+uint8_t USBD_audio_RxEPReady(USBMIDI_Port_t* port);
 
 uint32_t USBD_audio_TxEPStatus(uint8_t epnum);
 

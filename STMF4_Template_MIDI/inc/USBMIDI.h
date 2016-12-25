@@ -13,8 +13,8 @@ extern "C"
 #include "Ringbuffer.h"
 
 
-#define TO_HST_ENDPOINTS (1)
-#define TO_DEV_ENDPOINTS (1)
+#define TO_HST_ENDPOINTS (2)
+#define TO_DEV_ENDPOINTS (2)
 
 #define MIDI_TICK       (0xF8)
 #define MIDI_START      (0xFA)
@@ -57,6 +57,7 @@ extern Ringbuffer_t FIFO_USB_ToHost[];
 extern Ringbuffer_t FIFO_USB_ToDevice[];
 
 extern USBMIDI_t USBMIDIPort;
+extern USBMIDI_t USBMIDIPort_HS;
 
 /**
  * @brief Called within the main loop, this function checks to see if there are any pending messages

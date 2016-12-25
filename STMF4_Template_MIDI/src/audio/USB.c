@@ -16,6 +16,7 @@ enum
 };
 
 USB_OTG_CORE_HANDLE           USB_OTG_dev;
+USB_OTG_CORE_HANDLE           USB_OTG_dev_HS;
 
 USBDevice_t	USB_User_Dev =
 {
@@ -25,9 +26,18 @@ USBDevice_t	USB_User_Dev =
 
 void USB_Init(void)
 {
-    USBD_Init(&USB_OTG_dev,
-              USB_CORE_ID,
-              &USR_desc,
+   USBD_Init(&USB_OTG_dev,
+             USB_OTG_FS_CORE_ID,
+             &USR_desc,
+             &AUDIO_cb,
+             &USR_cb);
+
+
+   USBD_Init(&USB_OTG_dev_HS,
+              USB_OTG_HS_CORE_ID,
+              &USR_desc_HS,
               &AUDIO_cb,
               &USR_cb);
+
+
 }

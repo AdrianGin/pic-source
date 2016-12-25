@@ -32,6 +32,7 @@
 #include "usbd_usr.h"
 #include "usb_conf.h"
 
+#include "USB.h"
 #include "USBMIDI.h"
 
 
@@ -57,8 +58,6 @@ static void Delay(__IO uint32_t nTime);
   * @retval None
   */
 
-USB_OTG_CORE_HANDLE           USB_OTG_dev;
-
 
 int main(void)
 {
@@ -77,16 +76,14 @@ int main(void)
   /* Insert 50 ms delay */
   Delay(5);
 
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID,
-            &USR_desc,
-            &AUDIO_cb,
-            &USR_cb);
+  USB_Init();
 
       
   /* Infinite loop */
   while (1)
   {
      USBMIDI_Poll(&USBMIDIPort);
+     USBMIDI_Poll(&USBMIDIPort_HS);
   }
 }
 

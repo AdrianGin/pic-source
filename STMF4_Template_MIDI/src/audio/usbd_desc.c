@@ -64,7 +64,7 @@
 #define USBD_MANUFACTURER_STRING        "Test Manufacturer"
 
 #define USBD_PRODUCT_FS_STRING          "MIDI TEST"
-#define USBD_PRODUCT_HS_STRING          "MIDI TEST"
+#define USBD_PRODUCT_HS_STRING          "MIDI TEST HS"
 
 #define USBD_SERIALNUMBER_FS_STRING     "V1.00"
 #define USBD_SERIALNUMBER_HS_STRING     "V1.00"
@@ -117,6 +117,18 @@ USBD_DEVICE USR_desc =
   USBD_USR_InterfaceStrDescriptor,
 };
 
+USBD_DEVICE USR_desc_HS =
+{
+  USBD_USR_DeviceDescriptor_HS,
+  USBD_USR_LangIDStrDescriptor,
+  USBD_USR_ManufacturerStrDescriptor,
+  USBD_USR_ProductStrDescriptor_HS,
+  USBD_USR_SerialStrDescriptor,
+  USBD_USR_ConfigStrDescriptor,
+  USBD_USR_InterfaceStrDescriptor,
+};
+
+
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
 #if defined   (__CC_ARM) /*!< ARM Compiler */
@@ -152,8 +164,31 @@ const uint8_t USBD_DeviceDesc[USB_SIZ_DEVICE_DESC] =
   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
   USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
   USBD_CFG_MAX_NUM            /*bNumConfigurations*/
-}
-; /* USB_DeviceDescriptor */
+}; /* USB_DeviceDescriptor */
+
+
+/* USB Standard Device Descriptor */
+const uint8_t USBD_DeviceDesc_HS[USB_SIZ_DEVICE_DESC] =
+{
+  0x12,                       /*bLength */
+  USB_DEVICE_DESCRIPTOR_TYPE, /*bDescriptorType*/
+  0x00,                       /*bcdUSB */
+  0x02,
+  0x00,                       /*bDeviceClass*/
+  0x00,                       /*bDeviceSubClass*/
+  0x00,                       /*bDeviceProtocol*/
+  USB_OTG_MAX_EP0_SIZE,      /*bMaxPacketSize*/
+  LOBYTE(USBD_VID),           /*idVendor*/
+  HIBYTE(USBD_VID),           /*idVendor*/
+  LOBYTE(USBD_PID_HS),           /*idVendor*/
+  HIBYTE(USBD_PID_HS),           /*idVendor*/
+  0x00,                       /*bcdDevice rel. 2.00*/
+  0x02,
+  USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
+  USBD_IDX_PRODUCT_STR,       /*Index of product string*/
+  USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
+  USBD_CFG_MAX_NUM            /*bNumConfigurations*/
+}; /* USB_DeviceDescriptor */
 
 
 /* USB Standard Device Descriptor */
@@ -211,6 +246,29 @@ __ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;
 static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
 static void Get_SerialNum(void);
 
+
+/**
+* @brief  USBD_USR_DeviceDescriptor
+*         return the device descriptor
+* @param  speed : current device speed
+* @param  length : pointer to data length variable
+* @retval pointer to descriptor buffer
+*/
+uint8_t *  USBD_USR_DeviceDescriptor_HS( uint8_t speed , uint16_t *length)
+{
+   if( speed == USB_OTG_SPEED_HIGH )
+   {
+      *length = sizeof(USBD_DeviceDesc_HS);
+      return (uint8_t*)USBD_DeviceDesc_HS;
+   }
+   else
+   {
+      *length = sizeof(USBD_DeviceDesc_HS);
+      return (uint8_t*)USBD_DeviceDesc_HS;
+   }
+
+}
+
 /**
 * @brief  USBD_USR_DeviceDescriptor 
 *         return the device descriptor
@@ -220,8 +278,17 @@ static void Get_SerialNum(void);
 */
 uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 {
-  *length = sizeof(USBD_DeviceDesc);
-  return (uint8_t*)USBD_DeviceDesc;
+   if( speed == USB_OTG_SPEED_HIGH )
+   {
+      *length = sizeof(USBD_DeviceDesc_HS);
+      return (uint8_t*)USBD_DeviceDesc_HS;
+   }
+   else
+   {
+      *length = sizeof(USBD_DeviceDesc);
+      return (uint8_t*)USBD_DeviceDesc;
+   }
+
 }
 
 /**
@@ -247,7 +314,7 @@ uint8_t *  USBD_USR_LangIDStrDescriptor( uint8_t speed , uint16_t *length)
 */
 uint8_t *  USBD_USR_ProductStrDescriptor( uint8_t speed , uint16_t *length)
 {
-  if(speed == 0)
+  if(speed == USB_OTG_SPEED_HIGH)
   {   
     USBD_GetString((uint8_t *)(uint8_t *)USBD_PRODUCT_HS_STRING, USBD_StrDesc, length);
   }
@@ -257,6 +324,27 @@ uint8_t *  USBD_USR_ProductStrDescriptor( uint8_t speed , uint16_t *length)
   }
   return USBD_StrDesc;
 }
+
+/**
+* @brief  USBD_USR_ProductStrDescriptor
+*         return the product string descriptor
+* @param  speed : current device speed
+* @param  length : pointer to data length variable
+* @retval pointer to descriptor buffer
+*/
+uint8_t *  USBD_USR_ProductStrDescriptor_HS( uint8_t speed , uint16_t *length)
+{
+  if(speed == USB_OTG_SPEED_HIGH)
+  {
+    USBD_GetString((uint8_t *)(uint8_t *)USBD_PRODUCT_HS_STRING, USBD_StrDesc, length);
+  }
+  else
+  {
+    USBD_GetString((uint8_t *)(uint8_t *)USBD_PRODUCT_HS_STRING, USBD_StrDesc, length);
+  }
+  return USBD_StrDesc;
+}
+
 
 /**
 * @brief  USBD_USR_ManufacturerStrDescriptor 

@@ -88,7 +88,6 @@
 
 void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
 {
-#ifdef ISDEVBOARD
 
    //USB Configure
    GPIO_InitTypeDef GPIO_InitStructure;
@@ -96,6 +95,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
 
    RCC_AHB1PeriphClockLPModeCmd( RCC_AHB1Periph_OTG_HS_ULPI, DISABLE);
    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_OTG_HS, ENABLE);
+   RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOB, ENABLE);
 
    /*Set PA11,12 as IN - USB_DM,DP*/
    /* Configure SOF ID DM DP Pins */
@@ -111,8 +111,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
    GPIO_PinAFConfig(USB_GPIO_PORT, GPIO_PinSource15, GPIO_AF_OTG_HS_FS);
 
 
-#else
-   GPIO_InitTypeDef GPIO_InitStructure;
+
    GPIO_StructInit(&GPIO_InitStructure);
 
    RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_OTG_FS, ENABLE);
@@ -128,7 +127,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
 
    GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_OTG1_FS);
    GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_OTG1_FS);
-#endif
+
 
 }
 /**
@@ -140,14 +139,13 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
 void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
-#ifdef ISDEVBOARD
     /* Enable and configure the priority of the USB_OTG IRQ Channel*/
     NVIC_InitStructure.NVIC_IRQChannel = OTG_HS_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
-#else
+
 
     NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
@@ -155,7 +153,6 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-#endif
 
 
 }

@@ -31,6 +31,7 @@
 #include "stm32f4xx_it.h"
 #include "usb_dcd_int.h"
 #include "main.h"
+#include "USB.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -165,7 +166,7 @@ void OTG_FS_IRQHandler(void)
 
 void OTG_HS_IRQHandler(void)
 {
-   USBD_OTG_ISR_Handler(&USB_OTG_dev);
+   USBD_OTG_ISR_Handler(&USB_OTG_dev_HS);
 }
 
 /**
