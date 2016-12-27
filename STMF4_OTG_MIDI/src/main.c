@@ -36,6 +36,8 @@
 #include "USBMIDI.h"
 
 
+#include "usbh_core.h"
+
 /** @addtogroup Template_Project
   * @{
   */ 
@@ -83,7 +85,10 @@ int main(void)
   while (1)
   {
      USBMIDI_Poll(&USBMIDIPort);
-     USBMIDI_Poll(&USBMIDIPort_HS);
+     //USBMIDI_Poll(&USBMIDIPort_HS);
+
+     USBH_Process(&USB_OTG_dev_HS, &USB_Host);
+
   }
 }
 

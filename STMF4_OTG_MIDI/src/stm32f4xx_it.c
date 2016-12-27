@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 #include "usb_dcd_int.h"
+#include "usb_hcd_int.h"
 #include "main.h"
 #include "USB.h"
 
@@ -166,7 +167,15 @@ void OTG_FS_IRQHandler(void)
 
 void OTG_HS_IRQHandler(void)
 {
-   USBD_OTG_ISR_Handler(&USB_OTG_dev_HS);
+
+   if (USB_OTG_IsHostMode(&USB_OTG_dev_HS)) /* ensure that we are in device mode */
+   {
+     USBH_OTG_ISR_Handler(&USB_OTG_dev_HS);
+   }
+   else
+   {
+     USBD_OTG_ISR_Handler(&USB_OTG_dev_HS);
+   }
 }
 
 /**

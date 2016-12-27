@@ -9,6 +9,7 @@ extern "C"
 #include <stdint.h>
 #include "usb_core.h"
 #include "usb_dcd.h"
+#include "usbh_core.h"
 
 //Does not correspond to Official USB states,
 //but allows user applications to know if
@@ -36,6 +37,8 @@ extern USB_OTG_CORE_HANDLE USB_OTG_dev;
 extern USB_OTG_CORE_HANDLE USB_OTG_dev_HS;
 
 extern USBDevice_t USB_User_Dev;
+extern USBH_HOST USB_Host;
+
 
 void USB_Init(void);
 

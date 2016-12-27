@@ -5,6 +5,10 @@
 #include "usbd_desc.h"
 #include "usbd_usr.h"
 
+#include "usbh_conf.h"
+#include "usbh_core.h"
+#include "usbh_usr.h"
+#include "usbh_audio_core.h"
 
 enum
 {
@@ -17,6 +21,8 @@ enum
 
 USB_OTG_CORE_HANDLE           USB_OTG_dev;
 USB_OTG_CORE_HANDLE           USB_OTG_dev_HS;
+
+USBH_HOST USB_Host;
 
 USBDevice_t	USB_User_Dev =
 {
@@ -33,11 +39,17 @@ void USB_Init(void)
              &USR_cb);
 
 
-   USBD_Init(&USB_OTG_dev_HS,
+   /*USBD_Init(&USB_OTG_dev_HS,
               USB_OTG_HS_CORE_ID,
               &USR_desc_HS,
               &AUDIO_cb,
-              &USR_cb);
+              &USR_cb);*/
+
+   USBH_Init(&USB_OTG_dev_HS,
+             USB_OTG_HS_CORE_ID,
+             &USB_Host,
+             &CDC_cb,
+             &USR_Callbacks);
 
 
 }

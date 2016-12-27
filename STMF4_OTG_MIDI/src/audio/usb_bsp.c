@@ -27,6 +27,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
+#include "hw_config.h"
 #include "usb_bsp.h"
 #include "usbd_conf.h"
 
@@ -156,36 +157,123 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
 
 
 }
+
+
+
 /**
- * @brief  USB_OTG_BSP_uDelay
- *         This function provides delay time in micro sec
- * @param  usec : Value of delay required in micro sec
- * @retval None
- */
-void USB_OTG_BSP_uDelay(const uint32_t usec)
+  * @brief  BSP_Drive_VBUS
+  *         Drives the Vbus signal through IO
+  * @param  state : VBUS states
+  * @retval None
+  */
+
+void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev, uint8_t state)
 {
-    uint32_t count = 0;
-    const uint32_t utime = ((SystemCoreClock / 1000000) * usec / 7);
-    do
-    {
-        if (++count > utime)
-        {
-            return;
-        }
-    }
-    while (1);
+   if( state )
+   {
+      GPIO_ResetBits(GPIOC, GPIO_Pin_4);
+   }
+   else
+   {
+      GPIO_SetBits(GPIOC, GPIO_Pin_4);
+   }
 }
 
 /**
- * @brief  USB_OTG_BSP_mDelay
- *          This function provides delay time in milli sec
- * @param  msec : Value of delay required in milli sec
- * @retval None
- */
-void USB_OTG_BSP_mDelay(const uint32_t msec)
+  * @brief  USB_OTG_BSP_ConfigVBUS
+  *         Configures the IO for the Vbus and OverCurrent
+  * @param  None
+  * @retval None
+  */
+
+void  USB_OTG_BSP_ConfigVBUS(USB_OTG_CORE_HANDLE *pdev)
 {
-    USB_OTG_BSP_uDelay(msec * 1000);
+   GPIO_InitTypeDef GPIO_InitStructure;
+   GPIO_StructInit(&GPIO_InitStructure);
+
+   RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOC, ENABLE);
+
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+
+   GPIO_InitStructure.GPIO_Speed = GPIO_Fast_Speed;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
+
+/**
+  * @brief  USB_OTG_BSP_TimeInit
+  *         Initializes delay unit using Timer2
+  * @param  None
+  * @retval None
+  */
+static void USB_OTG_BSP_TimeInit ( void )
+{
+#ifdef USE_ACCURATE_TIME
+  NVIC_InitTypeDef NVIC_InitStructure;
+
+  /* Set the Vector Table base address at 0x08000000 */
+  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x00);
+
+  /* Configure the Priority Group to 2 bits */
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+
+  /* Enable the TIM2 global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+
+  NVIC_Init(&NVIC_InitStructure);
+
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+#endif
+}
+
+/**
+  * @brief  USB_OTG_BSP_uDelay
+  *         This function provides delay time in micro sec
+  * @param  usec : Value of delay required in micro sec
+  * @retval None
+  */
+void USB_OTG_BSP_uDelay (const uint32_t usec)
+{
+
+#ifdef USE_ACCURATE_TIME
+  BSP_Delay(usec,TIM_USEC_DELAY);
+#else
+  __IO uint32_t count = 0;
+  const uint32_t utime = (120 * usec / 7);
+  do
+  {
+    if ( ++count > utime )
+    {
+      return ;
+    }
+  }
+  while (1);
+#endif
+
+}
+
+
+/**
+  * @brief  USB_OTG_BSP_mDelay
+  *          This function provides delay time in milli sec
+  * @param  msec : Value of delay required in milli sec
+  * @retval None
+  */
+void USB_OTG_BSP_mDelay (const uint32_t msec)
+{
+#ifdef USE_ACCURATE_TIME
+    BSP_Delay(msec,TIM_MSEC_DELAY);
+#else
+    USB_OTG_BSP_uDelay(msec * 1000);
+#endif
+
+}
+
 /**
  * @}
  */

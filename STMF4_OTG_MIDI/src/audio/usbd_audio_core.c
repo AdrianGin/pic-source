@@ -282,7 +282,7 @@ static const uint8_t usbd_audio_CfgDesc[USBDESC_CONFIG_SIZE] =
             // B.4.2 Class-specific MS Interface Descriptor
             /* MS Class-Specific descriptor */
             USBDESC_MIDI_STREAMING_SIZE, /* length of descriptor in bytes */
-            AUDIO_INTERFACE_DESCRIPTOR_TYPE, /* descriptor type */
+            MIDI_STREAMING_INTERFACE_HEADER, /* descriptor type */
             1, /* header functional descriptor */
             0x0,
             0x01, /* bcdADC */
@@ -604,7 +604,8 @@ static uint8_t usbd_audio_Setup(void *pdev, USB_SETUP_REQ *req)
                if ((req->wValue >> 8) == AUDIO_DESCRIPTOR_TYPE)
                {
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-                  pbuf = usbd_audio_Desc;
+                  //pbuf = usbd_audio_Desc;
+                  pbuf = (uint8_t*) (usbd_audio_CfgDesc) + 18;
 #else
                   pbuf = (uint8_t*) (usbd_audio_CfgDesc) + 18;
 #endif 
