@@ -35,7 +35,7 @@
 #include "USB.h"
 #include "USBMIDI.h"
 
-
+#include "usbh_audio_core.h"
 #include "usbh_core.h"
 
 /** @addtogroup Template_Project
@@ -59,8 +59,6 @@ static void Delay(__IO uint32_t nTime);
   * @param  None
   * @retval None
   */
-
-
 int main(void)
 {
   /*!< At this stage the microcontroller clock setting is already configured, 
@@ -80,6 +78,9 @@ int main(void)
 
   USB_Init();
 
+
+
+  uint8_t buf[4] = {0x09, 0x90, 0x40, 0x7F};
       
   /* Infinite loop */
   while (1)
@@ -88,6 +89,14 @@ int main(void)
      //USBMIDI_Poll(&USBMIDIPort_HS);
 
      USBH_Process(&USB_OTG_dev_HS, &USB_Host);
+
+     if( IsDelayFinished() )
+     {
+        SetDelay(10);
+        MS_SendData(buf, 4);
+     }
+
+
 
   }
 }
@@ -102,6 +111,16 @@ void Delay(__IO uint32_t nTime)
   uwTimingDelay = nTime;
 
   while(uwTimingDelay != 0);
+}
+
+void SetDelay(__IO uint32_t nTime)
+{
+   uwTimingDelay = nTime;
+}
+
+uint8_t IsDelayFinished(void)
+{
+   return (uwTimingDelay == 0);
 }
 
 /**

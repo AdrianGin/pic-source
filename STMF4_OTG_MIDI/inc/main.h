@@ -39,6 +39,8 @@ extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void TimingDelay_Decrement(void);
+uint8_t IsDelayFinished(void);
+void SetDelay(__IO uint32_t nTime);
 
 #endif /* __MAIN_H */
 

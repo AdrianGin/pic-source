@@ -36,6 +36,8 @@
 #include "usbh_ioreq.h"
 #include "usbh_hcs.h"
 
+
+
 /** @addtogroup USBH_LIB
 * @{
 */
@@ -77,18 +79,69 @@ Offset|  field              | Size  |    Value   |   Description
 5        wTotalLength        2         Number
 ------|---------------------|-------|------------|------------------------------
 */
-typedef struct _MSFunctionalDescriptorHeader
+
+
+
+
+typedef struct _MSStandardInterfaceDescriptor
 {
-  USBH_InterfaceDesc_TypeDef        Itf_Desc; /* MS Interface */
-  uint8_t     bLength;            /*Size of this descriptor.*/
-  uint8_t     bDescriptorType;    /*CS_INTERFACE (0x24)*/
-  uint8_t     bDescriptorSubType; /* Header functional descriptor subtype as*/
-  uint16_t    bcdADC;             /* USB Class Definitions for Communication
-                                    Devices Specification release number in
-                                  binary-coded decimal. */
-  uint16_t     wTotalLength;       /*Size of class specific header */
+  uint8_t bLength;
+  uint8_t bDescriptorType;
+  uint8_t bInterfaceNumber;
+  uint8_t bAlternateSetting;    /* Value used to select alternative setting */
+  uint8_t bNumEndpoints;        /* Number of Endpoints used for this interface */
+  uint8_t bInterfaceClass;      /* Class Code (Assigned by USB Org) */
+  uint8_t bInterfaceSubClass;   /* Subclass Code (Assigned by USB Org) */
+  uint8_t bInterfaceProtocol;   /* Protocol Code */
+  uint8_t iInterface;           /* Index of String Descriptor Describing this interface */
 }
-MS_HeaderFuncDesc_t;
+MS_StandardInterfaceDesc_t;
+
+typedef struct _MSDescriptorType
+{
+   uint8_t bLength; //USBDESC_MIDI_STREAMING_SIZE
+   uint8_t bDescriptorType;   //AUDIO_INTERFACE_DESCRIPTOR_TYPE
+   uint8_t bDescriptorSubtype; //MIDI_STREAMING_INTERFACE_HEADER
+} MS_InterfaceDescType_t;
+
+/* Class Specific Interface Header  Desc */
+typedef struct _MSCSInterfaceHeaderDescriptor
+{
+  MS_InterfaceDescType_t descType;
+  uint16_t bcdMSC; //Currently 01.00
+  uint16_t wTotalLength;
+} __attribute__((packed)) MS_CSInterfaceHeaderDesc_t;
+
+typedef struct _MSInterfaceDesc
+{
+   MS_StandardInterfaceDesc_t  standard;
+   MS_CSInterfaceHeaderDesc_t  header;
+} __attribute__((packed)) MSInterfaceDesc_t;
+
+typedef struct _MS_MIDI_IN_JACK
+{
+  MS_InterfaceDescType_t descType;
+  uint8_t bJackType; //MIDI_EMBEDDED_JACK or MIDI_EXTERNAL_JACK
+  uint8_t bJackID; //MIDI In within the USB MIDI
+  uint8_t iJack; //Index of a string descriptor
+} __attribute__((packed)) MS_MIDI_IN_JACK_t;
+
+
+typedef struct _MS_MIDI_OUT_JACK
+{
+   MS_InterfaceDescType_t descType;
+  uint8_t bJackType; //MIDI_EMBEDDED_JACK or MIDI_EXTERNAL_JACK
+  uint8_t bJackID; //MIDI ID within the USB MIDI
+  uint8_t bNrInputPins; //Number of input pins of this Jack (p)
+
+  uint8_t baSourceID; //ID of the entity that this jack is connected to
+  uint8_t baSourcePin; //Output Pin number of the entity to which it is connected
+
+  uint8_t iJack; //Index of a string descriptor
+} __attribute__((packed)) MS_MIDI_OUT_JACK_t;
+
+
+
 
 
 /** @defgroup USBH_CDC_FUNCT_Exported_Defines
@@ -350,7 +403,7 @@ CDC_InterfaceDesc_Typedef;
 * @{
 */ 
 
-USBH_Status MS_GetClassSpecificInterfaceHeader(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost);
+USBH_Status MS_GetClassSpecificInterfaceHeader(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost, MSInterfaceDesc_t* itfdesc);
 
 USBH_Status CDC_GETLineCoding(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost);
 USBH_Status CDC_SETLineCoding(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost);

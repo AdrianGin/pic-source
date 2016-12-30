@@ -32,7 +32,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usb_audio_enums.h"
 #include "usbh_audio_funct.h"
-
+#include "Ringbuffer.h"
 
 /** @addtogroup USBH_LIB
 * @{
@@ -78,7 +78,7 @@
 #define VENDOR_SPECIFIC                                         0xFF
 
 
-#define CS_INTERFACE                                            0x24
+//#define CS_INTERFACE                                            0x24
 #define CDC_PAGE_SIZE_64                                        0x40
 
 
@@ -91,6 +91,30 @@
 
 
 
+/* States for MS State Machine */
+typedef enum
+{
+  MS_IDLE= 0,
+  MS_READ_DATA,
+  MS_SEND_DATA,
+  MS_DATA_SENT,
+  MS_BUSY,
+  MS_GET_DATA,
+  MS_POLL,
+  MS_CTRL_STATE
+}
+MS_State;
+
+/* MS Transfer State */
+typedef struct _MSXfer
+{
+  volatile MS_State State;
+  uint8_t* pRxTxBuff;
+  uint8_t* pFillBuff;
+  uint8_t* pEmptyBuff;
+  uint32_t BufferLen;
+  uint16_t DataLength;
+} MS_Xfer_TypeDef;
 
 
 /* States for CDC State Machine */
@@ -160,6 +184,9 @@ typedef struct _CDC_Process
 CDC_Machine_TypeDef;
 
 
+
+
+
 typedef struct
 {
    uint8_t hc_num_in;
@@ -171,8 +198,9 @@ typedef struct
    uint8_t inEpType;
    uint8_t outEpType;
 
-   uint16_t length;
+   uint16_t itflength;
    uint8_t ep_addr;
+   uint8_t interface_index;
 
    uint8_t state;
 
@@ -211,6 +239,9 @@ extern USBH_Class_cb_TypeDef  CDC_cb;
 /** @defgroup USBH_CDC_CORE_Exported_FunctionsPrototype
 * @{
 */ 
+
+void  MS_SendData(uint8_t *data, uint16_t length);
+
 void  CDC_SendData(uint8_t *data, uint16_t length);
 void  CDC_StartReception( USB_OTG_CORE_HANDLE *pdev);
 void  CDC_StopReception( USB_OTG_CORE_HANDLE *pdev);

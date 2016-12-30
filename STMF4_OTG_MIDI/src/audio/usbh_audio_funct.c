@@ -77,8 +77,6 @@ CDC_LineCodingTypeDef             CDC_GetLineCode;
 CDC_LineCodingTypeDef             CDC_SetLineCode;
 
 
-MS_HeaderFuncDesc_t MS_CSHeader;
-
 extern CDC_Requests               CDC_ReqState;
 /**
 * @}
@@ -92,15 +90,39 @@ extern CDC_Requests               CDC_ReqState;
 /**
 * @}
 */ 
+/* Pass in a USB Descriptor, and this will return the pointer to the
+ * Interface Descriptor of the given index;
+ */
+uint8_t* MS_FindInterfaceIndex(uint8_t* buf, uint16_t bufSize, uint8_t itfIndex )
+{
+   MS_StandardInterfaceDesc_t* itf = (MS_StandardInterfaceDesc_t*)buf;
+   uint16_t bufIndex = 0;
+
+   while( bufIndex < bufSize )
+   {
+      if( itf->bDescriptorType == USB_DESC_TYPE_INTERFACE && itf->bInterfaceNumber == itfIndex)
+      {
+         return (uint8_t*)itf;
+      }
+      bufIndex += itf->bLength;
+      itf = (MS_StandardInterfaceDesc_t*)(&buf[bufIndex]);
+   }
+
+   return 0;
+}
 
 
-USBH_Status MS_GetClassSpecificInterfaceHeader(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost)
+
+USBH_Status MS_GetClassSpecificInterfaceHeader(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost, MSInterfaceDesc_t* itfdesc)
 {
 
-return USBH_GetDescriptor(pdev, phost, USB_REQ_RECIPIENT_DEVICE | USB_REQ_TYPE_STANDARD,
-      USB_DESC_INTERFACE,
-      &MS_CSHeader, USB_CONFIGURATION_DESC_SIZE);
 
+
+   if( itfdesc->header.descType.bLength == USBDESC_MIDI_STREAMING_SIZE &&
+         itfdesc->header.descType.bDescriptorSubtype == MIDI_STREAMING_INTERFACE_HEADER )
+   {
+      return USBH_OK;
+   }
 }
 
 

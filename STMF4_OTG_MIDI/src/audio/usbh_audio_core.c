@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbh_audio_core.h"
-
+#include <string.h>
 /** @addtogroup USBH_LIB
 * @{
 */
@@ -56,7 +56,8 @@
 /** @defgroup CDC_CORE_Private_Defines
 * @{
 */ 
-#define CDC_BUFFER_SIZE                 1024
+#define USB_MS_BUFFER_SIZE     (1024)
+#define APP_MS_BUFFER_SIZE     (256)
 /**
 * @}
 */ 
@@ -92,19 +93,24 @@ CDC_Requests                        CDC_ReqState;
 CDC_Xfer_TypeDef                    CDC_TxParam;
 CDC_Xfer_TypeDef                    CDC_RxParam;
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
-#pragma data_alignment=4   
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t               TxBuf [CDC_BUFFER_SIZE] __ALIGN_END ;
+MS_Xfer_TypeDef   MS_TxParam;
+MS_Xfer_TypeDef   MS_RxParam;
+
+
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
 #if defined ( __ICCARM__ ) /*!< IAR Compiler */
 #pragma data_alignment=4   
 #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t               RxBuf [CDC_BUFFER_SIZE] __ALIGN_END ;
+__ALIGN_BEGIN uint8_t               TxBuf [USB_MS_BUFFER_SIZE] __ALIGN_END ;
+
+#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+#if defined ( __ICCARM__ ) /*!< IAR Compiler */
+#pragma data_alignment=4   
+#endif
+#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+__ALIGN_BEGIN uint8_t               RxBuf [USB_MS_BUFFER_SIZE] __ALIGN_END ;
 
 CDC_Usercb_TypeDef                  UserCb;
 uint8_t                             RX_Enabled = 0;
@@ -112,11 +118,17 @@ uint8_t                             RX_Enabled = 0;
 * @}
 */ 
 
+uint8_t MS_RxBuffer[APP_MS_BUFFER_SIZE];
+uint8_t MS_TxBuffer[APP_MS_BUFFER_SIZE];
+
+Ringbuffer_t MS_TxBuf = {&MS_TxBuffer[0], APP_MS_BUFFER_SIZE, 0, 0};
+Ringbuffer_t MS_RxBuf = {&MS_RxBuffer[0], APP_MS_BUFFER_SIZE, 0, 0};
+
 
 /** @defgroup CDC_CORE_Private_FunctionPrototypes
 * @{
 */ 
-static void CDC_InitTxRxParam(void);
+void MS_InitTxRxParam(void);
 
 static void CDC_ReceiveData(CDC_Xfer_TypeDef *cdc_Data);
 
@@ -169,13 +181,16 @@ static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void
       if( ((pphost->device_prop.Itf_Desc[i].bInterfaceClass  == USB_DEVICE_CLASS_AUDIO) || \
           (pphost->device_prop.Itf_Desc[i].bInterfaceClass  == VENDOR_SPECIFIC_INTERFACE_CLASS)) )
       {
+
+         MS_Machine.interface_index = i;
+
          /* Assume a MIDI port here */
          if( (pphost->device_prop.Itf_Desc[i].bNumEndpoints  == 2) )
          {
 
             /*Collect the notification endpoint address and length*/
             MS_Machine.ep_addr = pphost->device_prop.Ep_Desc[i][0].bEndpointAddress;
-            MS_Machine.length  = pphost->device_prop.Ep_Desc[i][0].wMaxPacketSize;
+            MS_Machine.itflength  = pphost->device_prop.Ep_Desc[i][0].wMaxPacketSize;
 
             if(pphost->device_prop.Ep_Desc[i][0].bEndpointAddress & 0x80)
             {
@@ -201,15 +216,13 @@ static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void
             MS_Machine.hc_num_out = USBH_Alloc_Channel(pdev, MS_Machine.outEp );
 
 
-
-
             /* Open channel for OUT endpoint */
             USBH_Open_Channel  (pdev,
                                 MS_Machine.hc_num_out,
                                 pphost->device_prop.address,
                                 pphost->device_prop.speed,
                                 MS_Machine.outEpType,
-                                MS_Machine.length);
+                                MS_Machine.itflength);
 
             /* Open channel for IN endpoint */
             USBH_Open_Channel  (pdev,
@@ -217,8 +230,10 @@ static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void
                                 pphost->device_prop.address,
                                 pphost->device_prop.speed,
                                 MS_Machine.inEpType,
-                                MS_Machine.length);
+                                MS_Machine.itflength);
 
+
+            MS_InitTxRxParam();
 
             status = USBH_OK;
             MS_ReqState = MS_GET_CLASS_FUNCTIONAL_DESC;
@@ -338,7 +353,7 @@ static USBH_Status CDC_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev,
                         CDC_Machine.CDC_DataItf.length);
     
     /*Initilise the Tx/Rx Params*/
-    CDC_InitTxRxParam();
+    MS_InitTxRxParam();
     
     
     /*Initialize the class specific request with "GET_LINE_CODING"*/
@@ -403,21 +418,34 @@ static USBH_Status CDC_ClassRequest(USB_OTG_CORE_HANDLE *pdev ,
   USBH_Status status         = USBH_BUSY;
   USBH_Status ClassReqStatus = USBH_BUSY;
   
+  MSInterfaceDesc_t itfdesc;
+
   switch(MS_ReqState)
   {
     
   case MS_GET_CLASS_FUNCTIONAL_DESC:
     /*Issue the get line coding request*/
-     /*status = USBH_GetDescriptor(pdev,
-                                       phost,
-                                       USB_REQ_RECIPIENT_DEVICE | USB_REQ_TYPE_STANDARD,
-                                       USB_DESC_CONFIGURATION,
-                                       pdev->host.Rx_Buffer, 16);*/
+     status = USBH_GetDescriptor(pdev,
+                                 phost,
+                                 USB_REQ_RECIPIENT_DEVICE | USB_REQ_TYPE_STANDARD,
+                                 USB_DESC_CONFIGURATION,
+                                 pdev->host.Rx_Buffer, pphost->device_prop.Cfg_Desc.wTotalLength);
 
 
-     if( (USBH_Get_DevDesc(pdev , phost, 8) == USBH_OK) )
+
+
+
+     if( status == USBH_OK )
      {
-        ClassReqStatus = MS_GetClassSpecificInterfaceHeader(pdev, phost);
+
+        MSInterfaceDesc_t* desc = MS_FindInterfaceIndex(pdev->host.Rx_Buffer, pphost->device_prop.Cfg_Desc.wTotalLength, MS_Machine.interface_index);
+        if( desc )
+        {
+           memcpy(&itfdesc, desc, sizeof(MSInterfaceDesc_t) );
+        }
+
+        status = USBH_OK;
+        //ClassReqStatus = MS_GetClassSpecificInterfaceHeader(pdev, phost, &itfdesc);
      }
 
 
@@ -515,70 +543,57 @@ void CDC_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
   static uint32_t len ;
   URB_STATE URB_StatusTx = URB_IDLE;
   
-  URB_StatusTx =   HCD_GetURB_State(pdev , CDC_Machine.CDC_DataItf.hc_num_out);
+  URB_StatusTx =   HCD_GetURB_State(pdev , MS_Machine.hc_num_out);
   
-  switch(CDC_TxParam.CDCState)
+  switch(MS_TxParam.State)
   {
-  case CDC_IDLE:
-    break;
+  case MS_IDLE:
+     if( RingBuffer_GetSpaceUsed(&MS_TxBuf) )
+     {
+        //Fall through ti MS_SEND_DATA;
+     }
+     else
+     {
+        break;
+     }
     
-  case CDC_SEND_DATA:
+  case MS_SEND_DATA:
     
     if(( URB_StatusTx == URB_DONE ) || (URB_StatusTx == URB_IDLE))
     {
-      /*Check the data length is more then the CDC_Machine.CDC_DataItf.CDC_DataItf.length */
-      if(CDC_TxParam.DataLength > CDC_Machine.CDC_DataItf.length)
-      {
-        
-        len = CDC_Machine.CDC_DataItf.length ;
-        /*Send the data */
-        USBH_BulkSendData (pdev,
-                           CDC_TxParam.pRxTxBuff, 
-                           len , 
-                           CDC_Machine.CDC_DataItf.hc_num_out);    
-      }
-      else
-      {
-        len = CDC_TxParam.DataLength ;
-        /*Send the remaining data */
-        USBH_BulkSendData (pdev,
-                           CDC_TxParam.pRxTxBuff, 
-                           len, 
-                           CDC_Machine.CDC_DataItf.hc_num_out);
-        
-      }
-      CDC_TxParam.CDCState = CDC_DATA_SENT;
+       len = RingBuffer_GetSpaceUsed(&MS_TxBuf);
+       if( len > MS_Machine.itflength)
+       {
+          len = MS_Machine.itflength;
+       }
+
+       RingBuffer_ReadBuffer(&MS_TxBuf, MS_TxParam.pRxTxBuff, len);
+
+       /*Send the data */
+       USBH_BulkSendData (pdev,
+                          MS_TxParam.pRxTxBuff,
+                          len ,
+                          MS_Machine.hc_num_out);
+
+      MS_TxParam.State = MS_DATA_SENT;
       
     }
     
     break;
     
-  case CDC_DATA_SENT:
+  case MS_DATA_SENT:
     /*Check the status done for transmssion*/
     if(URB_StatusTx == URB_DONE )
     {         
-      /*Point to next chunc of data*/
-      CDC_TxParam.pRxTxBuff += len ;
-      
-      /*decrease the data length*/
-      CDC_TxParam.DataLength -= len;    
-      
-      if(CDC_TxParam.DataLength == 0)
-      {
-        CDC_TxParam.CDCState = CDC_IDLE;
-      }
-      else
-      {
-        CDC_TxParam.CDCState = CDC_SEND_DATA; 
-      }
+       MS_TxParam.State = MS_IDLE;
     }
     else if( URB_StatusTx == URB_NOTREADY )
     {
       /*Send the same data */
       USBH_BulkSendData (pdev,
-                         (CDC_TxParam.pRxTxBuff), 
+                         (MS_TxParam.pRxTxBuff),
                          len, 
-                         CDC_Machine.CDC_DataItf.hc_num_out);
+                         MS_Machine.hc_num_out);
     }
     
     break;
@@ -644,19 +659,19 @@ static void CDC_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
   * @param  None
   * @retval None
   */
-static void CDC_InitTxRxParam(void)
+void MS_InitTxRxParam(void)
 {
   /*Initialize the Transmit buffer and its parameter*/
-  CDC_TxParam.CDCState = CDC_IDLE;
-  CDC_TxParam.DataLength = 0;
-  CDC_TxParam.pRxTxBuff = TxBuf;
+  MS_TxParam.State = MS_IDLE;
+  MS_TxParam.DataLength = 0;
+  MS_TxParam.pRxTxBuff = TxBuf;
   
   /*Initialize the Receive buffer and its parameter*/
-  CDC_RxParam.CDCState = CDC_IDLE;
-  CDC_RxParam.DataLength = 0;
-  CDC_RxParam.pFillBuff = RxBuf;  
-  CDC_RxParam.pEmptyBuff = RxBuf;
-  CDC_RxParam.BufferLen = sizeof(RxBuf);      
+  MS_RxParam.State = MS_IDLE;
+  MS_RxParam.DataLength = 0;
+  MS_RxParam.pFillBuff = RxBuf;
+  MS_RxParam.pEmptyBuff = RxBuf;
+  MS_RxParam.BufferLen = sizeof(RxBuf);
 }
 
 /**
@@ -681,6 +696,13 @@ static void CDC_ReceiveData(CDC_Xfer_TypeDef *cdc_Data)
     cdc_Data->DataLength = 0;    /*Reset the data length to zero*/
   }
 }
+
+
+void  MS_SendData(uint8_t *data, uint16_t length)
+{
+   RingBuffer_WriteBuffer(&MS_TxBuf, data, length);
+}
+
 
 /**
   * @brief  This function send data to the device.
