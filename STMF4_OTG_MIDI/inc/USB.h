@@ -39,7 +39,7 @@ extern USB_OTG_CORE_HANDLE USB_OTG_dev_HS;
 extern USBDevice_t USB_User_Dev;
 extern USBH_HOST USB_Host;
 
-
+void USBHostInit(void);
 void USB_Init(void);
 
 static inline uint32_t USBD_GetEPStatus(uint8_t epnum)

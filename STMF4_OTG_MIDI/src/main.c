@@ -93,7 +93,7 @@ int main(void)
      if( IsDelayFinished() )
      {
         SetDelay(10);
-        MS_SendData(buf, 4);
+        //MS_SendData(buf, 4);
      }
 
 

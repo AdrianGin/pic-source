@@ -51,5 +51,14 @@ void USB_Init(void)
              &CDC_cb,
              &USR_Callbacks);
 
+}
 
+
+void USBHostInit(void)
+{
+   USBH_Init(&USB_OTG_dev_HS,
+             USB_OTG_HS_CORE_ID,
+             &USB_Host,
+             &CDC_cb,
+             &USR_Callbacks);
 }

@@ -28,6 +28,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbh_audio_core.h"
 #include <string.h>
+
+#include "USB.h"
+
 /** @addtogroup USBH_LIB
 * @{
 */
@@ -130,17 +133,14 @@ Ringbuffer_t MS_RxBuf = {&MS_RxBuffer[0], APP_MS_BUFFER_SIZE, 0, 0};
 */ 
 void MS_InitTxRxParam(void);
 
-static void CDC_ReceiveData(CDC_Xfer_TypeDef *cdc_Data);
+static void MS_ReceiveData(Ringbuffer_t* buf);
 
-static void CDC_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST  *phost);
+void MS_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost);
 
-static void CDC_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost);
+static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost);
 
 static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void *phost);
 
-
-static USBH_Status CDC_InterfaceInit  (USB_OTG_CORE_HANDLE *pdev , 
-                                       void *phost);
 
 void CDC_InterfaceDeInit  (USB_OTG_CORE_HANDLE *pdev , 
                                   void *phost);
@@ -237,12 +237,12 @@ static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void
 
             status = USBH_OK;
             MS_ReqState = MS_GET_CLASS_FUNCTIONAL_DESC;
+            MS_Machine.state = MS_CONNECTED;
 
          }
 
       }
    }
-
 
    if( status == USBH_NOT_SUPPORTED )
    {
@@ -252,120 +252,8 @@ static USBH_Status AudioMIDIHost_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, void
    return status;
 
 
-
 }
 
-
-
-/**
-  * @brief  CDC_InterfaceInit 
-  *         The function init the CDC class.
-  * @param  pdev: Selected device
-  * @param  hdev: Selected device property
-  * @retval  USBH_Status :Response for USB CDC driver intialization
-  */
-static USBH_Status CDC_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev, 
-                                      void *phost)
-{	
-  USBH_HOST *pphost = phost;
-  USBH_Status status = USBH_OK ;
-  
-
-  /* Communication Interface */
-  if((pphost->device_prop.Itf_Desc[0].bInterfaceClass  == COMMUNICATION_DEVICE_CLASS_CODE)&& \
-    (pphost->device_prop.Itf_Desc[0].bInterfaceSubClass  == ABSTRACT_CONTROL_MODEL) && \
-      (pphost->device_prop.Itf_Desc[0].bInterfaceProtocol == COMMON_AT_COMMAND))
-  {
-    /*Collect the notification endpoint address and length*/
-    CDC_Machine.CDC_CommItf.ep_addr = pphost->device_prop.Ep_Desc[0][0].bEndpointAddress;
-    CDC_Machine.CDC_CommItf.length  = pphost->device_prop.Ep_Desc[0][0].wMaxPacketSize;
-    
-    if(pphost->device_prop.Ep_Desc[0][0].bEndpointAddress & 0x80)
-    {
-      CDC_Machine.CDC_CommItf.notificationEp =\
-        (pphost->device_prop.Ep_Desc[0][0].bEndpointAddress);
-    }
-    /*Allocate the length for host channel number in*/
-    CDC_Machine.CDC_CommItf.hc_num_in = USBH_Alloc_Channel(pdev, 
-                                                           CDC_Machine.CDC_CommItf.notificationEp );
-    
-    /* Open channel for IN endpoint */
-    USBH_Open_Channel  (pdev,
-                        CDC_Machine.CDC_CommItf.hc_num_in,
-                        pphost->device_prop.address,
-                        pphost->device_prop.speed,
-                        EP_TYPE_INTR,
-                        CDC_Machine.CDC_CommItf.length); 
-  }
-  else
-  {
-    pphost->usr_cb->DeviceNotSupported();   
-  }
-  
-  
-  /* Data Interface */
-  if((pphost->device_prop.Itf_Desc[1].bInterfaceClass  == DATA_INTERFACE_CLASS_CODE)&& \
-    (pphost->device_prop.Itf_Desc[1].bInterfaceSubClass  == RESERVED) && \
-      (pphost->device_prop.Itf_Desc[1].bInterfaceProtocol == NO_CLASS_SPECIFIC_PROTOCOL_CODE))
-  {
-    /*Collect the class specific endpoint address and length*/
-    CDC_Machine.CDC_DataItf.ep_addr = pphost->device_prop.Ep_Desc[1][0].bEndpointAddress;
-    CDC_Machine.CDC_DataItf.length  = pphost->device_prop.Ep_Desc[1][0].wMaxPacketSize;
-    
-    if(pphost->device_prop.Ep_Desc[1][0].bEndpointAddress & 0x80)
-    {      
-      CDC_Machine.CDC_DataItf.cdcInEp = (pphost->device_prop.Ep_Desc[1][0].bEndpointAddress);
-    }
-    else
-    {
-      CDC_Machine.CDC_DataItf.cdcOutEp = (pphost->device_prop.Ep_Desc[1][0].bEndpointAddress);
-    }
-    
-    if(pphost->device_prop.Ep_Desc[1][1].bEndpointAddress & 0x80)
-    {
-      CDC_Machine.CDC_DataItf.cdcInEp = (pphost->device_prop.Ep_Desc[1][1].bEndpointAddress);
-    }
-    else
-    {
-      CDC_Machine.CDC_DataItf.cdcOutEp = (pphost->device_prop.Ep_Desc[1][1].bEndpointAddress);
-    }
-    
-    /*Allocate the length for host channel number out*/
-    CDC_Machine.CDC_DataItf.hc_num_out = USBH_Alloc_Channel(pdev, 
-                                                            CDC_Machine.CDC_DataItf.cdcOutEp);
-    /*Allocate the length for host channel number in*/
-    CDC_Machine.CDC_DataItf.hc_num_in = USBH_Alloc_Channel(pdev, 
-                                                           CDC_Machine.CDC_DataItf.cdcInEp);  
-    
-    /* Open channel for OUT endpoint */
-    USBH_Open_Channel  (pdev,
-                        CDC_Machine.CDC_DataItf.hc_num_out,
-                        pphost->device_prop.address,
-                        pphost->device_prop.speed,
-                        EP_TYPE_BULK,
-                        CDC_Machine.CDC_DataItf.length);  
-    /* Open channel for IN endpoint */
-    USBH_Open_Channel  (pdev,
-                        CDC_Machine.CDC_DataItf.hc_num_in,
-                        pphost->device_prop.address,
-                        pphost->device_prop.speed,
-                        EP_TYPE_BULK,
-                        CDC_Machine.CDC_DataItf.length);
-    
-    /*Initilise the Tx/Rx Params*/
-    MS_InitTxRxParam();
-    
-    
-    /*Initialize the class specific request with "GET_LINE_CODING"*/
-    CDC_ReqState = CDC_GET_LINE_CODING_RQUEST ;
-  }
-  else
-  {
-    pphost->usr_cb->DeviceNotSupported();   
-  }  
-  return status;
-  
-}
 
 
 
@@ -379,26 +267,25 @@ static USBH_Status CDC_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev,
 void CDC_InterfaceDeInit ( USB_OTG_CORE_HANDLE *pdev,
                           void *phost)
 {
-  if ( CDC_Machine.CDC_CommItf.hc_num_in)
+  if ( MS_Machine.hc_num_in)
   {
-    USB_OTG_HC_Halt(pdev, CDC_Machine.CDC_CommItf.hc_num_in);
-    USBH_Free_Channel  (pdev,CDC_Machine.CDC_CommItf.hc_num_in);
-    CDC_Machine.CDC_CommItf.hc_num_in = 0;     /* Reset the Channel as Free */
+    USB_OTG_HC_Halt(pdev, MS_Machine.hc_num_in);
+    USBH_Free_Channel  (pdev,MS_Machine.hc_num_in);
+    MS_Machine.hc_num_in = 0;     /* Reset the Channel as Free */
   }
   
-  if ( CDC_Machine.CDC_DataItf.hc_num_out)
+  if ( MS_Machine.hc_num_out)
   {
-    USB_OTG_HC_Halt(pdev, CDC_Machine.CDC_DataItf.hc_num_out);
-    USBH_Free_Channel  (pdev,CDC_Machine.CDC_DataItf.hc_num_out);
-    CDC_Machine.CDC_DataItf.hc_num_out = 0;     /* Reset the Channel as Free */
+    USB_OTG_HC_Halt(pdev, MS_Machine.hc_num_out);
+    USBH_Free_Channel  (pdev, MS_Machine.hc_num_out);
+    MS_Machine.hc_num_out = 0;     /* Reset the Channel as Free */
   }
   
-  if ( CDC_Machine.CDC_DataItf.hc_num_in)
-  {
-    USB_OTG_HC_Halt(pdev, CDC_Machine.CDC_DataItf.hc_num_in);
-    USBH_Free_Channel  (pdev,CDC_Machine.CDC_DataItf.hc_num_in);
-    CDC_Machine.CDC_DataItf.hc_num_in = 0;     /* Reset the Channel as Free */
-  } 
+  MS_Machine.state = MS_DISCONNECTED;
+
+  USBHostInit();
+
+
 //  return USBH_OK;
 }
 
@@ -524,10 +411,10 @@ static USBH_Status CDC_Handle(USB_OTG_CORE_HANDLE *pdev ,
   pphost->usr_cb->UserApplication();  
   
   /*Handle the transmission */
-  CDC_ProcessTransmission(pdev, pphost);
+  MS_ProcessTransmission(pdev, pphost);
   
   /*Always send in packet to device*/    
-  CDC_ProcessReception(pdev, pphost);
+  MS_ProcessReception(pdev, pphost);
   
   return status;
 }
@@ -538,7 +425,7 @@ static USBH_Status CDC_Handle(USB_OTG_CORE_HANDLE *pdev ,
   * @param  pdev: Selected device
   * @retval None
   */
-void CDC_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
+void MS_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
 {
   static uint32_t len ;
   URB_STATE URB_StatusTx = URB_IDLE;
@@ -550,7 +437,7 @@ void CDC_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
   case MS_IDLE:
      if( RingBuffer_GetSpaceUsed(&MS_TxBuf) )
      {
-        //Fall through ti MS_SEND_DATA;
+        //Fall through to MS_SEND_DATA;
      }
      else
      {
@@ -605,53 +492,44 @@ void CDC_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
   * @param  pdev: Selected device
   * @retval None
   */
-static void CDC_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
+static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
 {
-  
-  if(RX_Enabled == 1)
-  {
-    URB_STATE URB_StatusRx =   HCD_GetURB_State(pdev , CDC_Machine.CDC_DataItf.hc_num_in);  
-    
-    switch(CDC_RxParam.CDCState)
-    {
-      
-    case CDC_IDLE:
-      
-      
-      /*check the received length lesser then the remaining space available in the 
-      buffer */
-      if(CDC_RxParam.DataLength < (CDC_RxParam.BufferLen - CDC_Machine.CDC_DataItf.length))
-      {
-        /*Receive the data */
-        USBH_BulkReceiveData(pdev,
-                             CDC_RxParam.pFillBuff,
-                             CDC_Machine.CDC_DataItf.length, 
-                             CDC_Machine.CDC_DataItf.hc_num_in);
-        
-        /*change the cdc state to USBH_CDC_GET_DATA*/
-        CDC_RxParam.CDCState = CDC_GET_DATA;
-      }
-      break;
-      
-    case CDC_GET_DATA:
-      /*Check the last state of the device is URB_DONE */
-      if(URB_StatusRx == URB_DONE)
-      {
-        /* Move the pointer as well as datalength */
-        CDC_RxParam.DataLength += pdev->host.hc[CDC_Machine.CDC_DataItf.hc_num_in].xfer_count ;
-        CDC_RxParam.pFillBuff += pdev->host.hc[CDC_Machine.CDC_DataItf.hc_num_in].xfer_count ;
-        
-        
-        /* Process the recived data */
-        CDC_ReceiveData(&CDC_RxParam);
-        
-        /*change the state od the CDC state*/
-        CDC_RxParam.CDCState = CDC_IDLE;
-        
-      }
-      break;
-    }
-  }
+
+   URB_STATE URB_StatusRx =   HCD_GetURB_State(pdev , MS_Machine.hc_num_in);
+   switch(MS_RxParam.State)
+   {
+   case MS_IDLE:
+   /*check the received length lesser then the remaining space available in the
+   buffer */
+   if(RingBuffer_GetSpaceAvailable(&MS_RxBuf) >= MS_Machine.itflength)
+   {
+     /*Receive the data */
+     USBH_BulkReceiveData(pdev,
+                          MS_RxParam.pRxTxBuff,
+                          MS_Machine.itflength,
+                          MS_Machine.hc_num_in);
+
+     /*change the MS state to USBH_MS_GET_DATA*/
+     MS_RxParam.State = MS_GET_DATA;
+   }
+   break;
+
+   case MS_GET_DATA:
+   /*Check the last state of the device is URB_DONE */
+   if(URB_StatusRx == URB_DONE)
+   {
+     /* Move the pointer as well as datalength */
+     RingBuffer_WriteBuffer(&MS_RxBuf, MS_RxParam.pRxTxBuff, pdev->host.hc[MS_Machine.hc_num_in].xfer_count);
+
+     /* Process the recived data */
+     MS_ReceiveData(&MS_RxBuf);
+
+     /*change the state od the MS state*/
+     MS_RxParam.State = MS_IDLE;
+
+   }
+   break;
+   }
 }
 
 /**
@@ -669,6 +547,7 @@ void MS_InitTxRxParam(void)
   /*Initialize the Receive buffer and its parameter*/
   MS_RxParam.State = MS_IDLE;
   MS_RxParam.DataLength = 0;
+  MS_RxParam.pRxTxBuff = RxBuf;
   MS_RxParam.pFillBuff = RxBuf;
   MS_RxParam.pEmptyBuff = RxBuf;
   MS_RxParam.BufferLen = sizeof(RxBuf);
@@ -680,45 +559,26 @@ void MS_InitTxRxParam(void)
   * @param  cdc_Data: type of USBH_CDCXfer_TypeDef
   * @retval None
   */
-static void CDC_ReceiveData(CDC_Xfer_TypeDef *cdc_Data)
+static void MS_ReceiveData(Ringbuffer_t* buf)
 {
-  uint8_t *ptr; 
-  
-  if(cdc_Data->pEmptyBuff < cdc_Data->pFillBuff)
-  {
-    ptr = cdc_Data->pFillBuff;
-    *ptr = 0x00;
-    
-    /* redirect the received data on the user out put system */
-    UserCb.Receive(cdc_Data->pEmptyBuff);
-    
-    cdc_Data->pFillBuff  = cdc_Data->pEmptyBuff ; 
-    cdc_Data->DataLength = 0;    /*Reset the data length to zero*/
-  }
+   uint8_t byte;
+  /* Process actual data */
+   while( RingBuffer_Read(buf, &byte ))
+   {
+      RingBuffer_Write(&MS_TxBuf , byte);
+   }
+
+
+
 }
 
 
 void  MS_SendData(uint8_t *data, uint16_t length)
 {
-   RingBuffer_WriteBuffer(&MS_TxBuf, data, length);
-}
-
-
-/**
-  * @brief  This function send data to the device.
-  * @param  fileName : name of the file 
-  * @retval the filestate will be returned 
-  * FS_SUCCESS : returned to the parent function when the file length become to zero
-  */
-void  CDC_SendData(uint8_t *data, uint16_t length)
-{
-  
-  if(CDC_TxParam.CDCState == CDC_IDLE)
-  {
-    CDC_TxParam.pRxTxBuff = data; 
-    CDC_TxParam.DataLength = length;
-    CDC_TxParam.CDCState = CDC_SEND_DATA;  
-  }    
+   if( MS_Machine.state == MS_CONNECTED)
+   {
+      RingBuffer_WriteBuffer(&MS_TxBuf, data, length);
+   }
 }
 
 /**

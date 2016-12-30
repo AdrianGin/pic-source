@@ -427,13 +427,13 @@ void USBH_Process(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost)
     phost->gState = HOST_IDLE;
    
     /* Re-Initialize Host for new Enumeration */
-    HCD_Init(pdev, 
+    /*HCD_Init(pdev,
 #ifdef USE_USB_OTG_FS
             USB_OTG_FS_CORE_ID
 #else
             USB_OTG_HS_CORE_ID
 #endif
-);
+);*/
     
     break;
     

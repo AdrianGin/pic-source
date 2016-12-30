@@ -101,7 +101,9 @@ typedef enum
   MS_BUSY,
   MS_GET_DATA,
   MS_POLL,
-  MS_CTRL_STATE
+  MS_CTRL_STATE,
+  MS_DISCONNECTED,
+  MS_CONNECTED,
 }
 MS_State;
 
