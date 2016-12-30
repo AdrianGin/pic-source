@@ -319,75 +319,16 @@ static USBH_Status CDC_ClassRequest(USB_OTG_CORE_HANDLE *pdev ,
                                  pdev->host.Rx_Buffer, pphost->device_prop.Cfg_Desc.wTotalLength);
 
 
-
-
-
      if( status == USBH_OK )
      {
-
         MSInterfaceDesc_t* desc = MS_FindInterfaceIndex(pdev->host.Rx_Buffer, pphost->device_prop.Cfg_Desc.wTotalLength, MS_Machine.interface_index);
         if( desc )
         {
            memcpy(&itfdesc, desc, sizeof(MSInterfaceDesc_t) );
         }
-
         status = USBH_OK;
         //ClassReqStatus = MS_GetClassSpecificInterfaceHeader(pdev, phost, &itfdesc);
      }
-
-
-
-
-    if( ClassReqStatus == USBH_OK )
-    {          /*Change the state */
-      CDC_ReqState = CDC_SET_CONTROL_LINE_STATE_REQUEST;
-    }
-    break;
-#if 0
-  case CDC_SET_LINE_CODING_RQUEST: 
-    
-    /*Issue the set line coding request*/
-    ClassReqStatus = CDC_SETLineCoding(pdev, phost);
-    if( ClassReqStatus == USBH_OK )
-    {
-      /*Change the state */
-      CDC_ReqState = CDC_GET_LINE_CODING_RQUEST ;
-    }
-    if(ClassReqStatus == USBH_NOT_SUPPORTED )
-    {
-      /* a Clear Feature should be issued here */
-      CDC_ReqState = CDC_ERROR_STATE;
-    }
-    break;
-    
-  case CDC_SET_CONTROL_LINE_STATE_REQUEST:
-    /*Issue the set control line coding */
-    ClassReqStatus = CDC_SETControlLineState(pdev, phost);
-    if( ClassReqStatus == USBH_OK )
-    {
-      /*Change the state */
-      CDC_ReqState = CDC_SET_CONTROL_LINE_STATE_REQUEST;
-      /*Also set the state of receive CDCRxParam to IDLE*/
-      CDC_RxParam.CDCState = CDC_IDLE; 
-      
-      status = USBH_OK; /*This return from class specific routinues request*/
-    }
-    break;
-    
-  case CDC_ERROR_STATE:
-    
-    ClassReqStatus = USBH_ClrFeature(pdev,
-                                     phost,
-                                     0x00,
-                                     pphost->Control.hc_num_out);
-    
-    if(ClassReqStatus == USBH_OK )
-    {        
-      /*Change the state to waiting*/
-      CDC_ReqState = CDC_GET_LINE_CODING_RQUEST ;
-    }
-    break;
-#endif
   }
   
   return status; 
@@ -581,29 +522,8 @@ void  MS_SendData(uint8_t *data, uint16_t length)
    }
 }
 
-/**
-  * @brief  This function send data to the device.
-  * @param  fileName : name of the file 
-  * @retval the filestate will be returned 
-  * FS_SUCCESS : returned to the parent function when the file length become to zero
-  */
-void  CDC_StartReception( USB_OTG_CORE_HANDLE *pdev)
-{
-  RX_Enabled = 1;
-}
 
-/**
-  * @brief  This function send data to the device.
-  * @param  fileName : name of the file 
-  * @retval the filestate will be returned 
-  * FS_SUCCESS : returned to the parent function when the file length become to zero
-  */
-void  CDC_StopReception( USB_OTG_CORE_HANDLE *pdev)
-{
-  RX_Enabled = 0; 
-  USB_OTG_HC_Halt(pdev, CDC_Machine.CDC_DataItf.hc_num_in);
-  USBH_Free_Channel  (pdev,CDC_Machine.CDC_DataItf.hc_num_in);
-}
+
 
 /**
 * @}
