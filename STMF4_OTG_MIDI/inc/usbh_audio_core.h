@@ -114,6 +114,7 @@ typedef struct _MSXfer
   uint8_t* pRxTxBuff;
   uint32_t BufferLen;
   uint16_t DataLength;
+  uint32_t  intTimer;
 } MS_Xfer_TypeDef;
 
 
@@ -142,7 +143,6 @@ typedef struct
    Ringbuffer_t* TxBuf;
    Ringbuffer_t* RxBuf;
 
-   uint32_t intTimer;
    USB_OTG_CORE_HANDLE* dev;
 
 } MS_Machine_t;

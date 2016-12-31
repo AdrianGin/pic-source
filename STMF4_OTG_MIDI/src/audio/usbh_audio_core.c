@@ -356,21 +356,25 @@ void MS_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
 
    URB_StatusTx = HCD_GetURB_State(pdev, ms->hc_num_out);
 
+   if( (HCD_GetCurrentFrame(pdev) - ms->TxParam.intTimer) < 1)
+   {
+      return;
+   }
+
+   ms->TxParam.intTimer = HCD_GetCurrentFrame(pdev);
    switch (ms->TxParam.State)
    {
    case MS_IDLE:
       if (RingBuffer_GetSpaceUsed(ms->TxBuf) >= 4)
       {
-         //Fall through to MS_SEND_DATA;
+         ms->TxParam.State = MS_SEND_DATA;
       }
-      else
-      {
-         break;
-      }
+      break;
 
    case MS_SEND_DATA:
 
       if ((URB_StatusTx == URB_DONE) || (URB_StatusTx == URB_IDLE))
+      //if ((URB_StatusTx == URB_IDLE))
       {
          len = RingBuffer_GetSpaceUsed(ms->TxBuf);
          if (len > ms->itflength)
@@ -438,18 +442,12 @@ static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
          /*Receive the data */
          if( ms->inEpType == EP_TYPE_INTR)
          {
-            if( ( HCD_GetCurrentFrame(pdev) - ms->intTimer) >= 1)
+            if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) >= 1)
             {
                /* Interrupts we have to keep polling */
-               ms->intTimer = HCD_GetCurrentFrame(pdev);
-               if (URB_StatusRx == URB_DONE)
-               {
-                  ms->RxParam.State = MS_GET_DATA;
-               }
-               else
-               {
-                  USBH_InterruptReceiveData(pdev, ms->RxParam.pRxTxBuff, ms->itflength, ms->hc_num_in);
-               }
+               ms->RxParam.intTimer = HCD_GetCurrentFrame(pdev);
+               USBH_InterruptReceiveData(pdev, ms->RxParam.pRxTxBuff, ms->itflength, ms->hc_num_in);
+               ms->RxParam.State = MS_POLL;
             }
          }
          else
@@ -457,6 +455,24 @@ static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
             /*change the MS state to USBH_MS_GET_DATA*/
             USBH_BulkReceiveData(pdev, ms->RxParam.pRxTxBuff, ms->itflength, ms->hc_num_in);
             ms->RxParam.State = MS_GET_DATA;
+         }
+      }
+      break;
+
+      //Only for Interrupts
+   case MS_POLL:
+      if( ms->inEpType == EP_TYPE_INTR)
+      {
+         if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) >= 10)
+         {
+            if (URB_StatusRx == URB_DONE)
+            {
+               ms->RxParam.State = MS_GET_DATA;
+            }
+            else
+            {
+               ms->RxParam.State = MS_IDLE;
+            }
          }
       }
       break;
@@ -477,7 +493,13 @@ static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
 
       }
       break;
+
+
+   default:
+      break;
    }
+
+
 }
 
 /**

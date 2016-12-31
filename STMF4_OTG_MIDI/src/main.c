@@ -87,6 +87,8 @@ int main(void)
 
 
   uint8_t buf[4] = {0x09, 0x90, 0x40, 0x7F};
+  uint8_t buf2[4] = {0x09, 0x90, 0x20, 0x7F};
+  uint8_t buf3[4] = {0x09, 0x90, 0x30, 0x7F};
       
   /* Infinite loop */
   while (1)
@@ -95,13 +97,12 @@ int main(void)
      //USBMIDI_Poll(&USBMIDIPort_HS);
 
      USBH_Process(&USB_OTG_dev_HS, &USB_Host[USB_OTG_HS_CORE_ID]);
-     //USBH_Process(&USB_OTG_dev, &USB_Host[USB_OTG_FS_CORE_ID]);
+     USBH_Process(&USB_OTG_dev, &USB_Host[USB_OTG_FS_CORE_ID]);
 
      if( IsDelayFinished() )
      {
-        SetDelay(100);
+        SetDelay(500);
         //MS_SendData(&USB_OTG_dev_HS, buf, 4);
-       // MS_SendData(&USB_OTG_dev, buf, 4);
      }
 
 
