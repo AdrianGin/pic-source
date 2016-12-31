@@ -187,31 +187,31 @@ static USBH_Status AudioMIDIHost_InterfaceInit(USB_OTG_CORE_HANDLE *pdev, void *
 
          ms->interface_index = i;
 
+
+
          /* Assume a MIDI port here */
          if ((pphost->device_prop.Itf_Desc[i].bNumEndpoints == 2))
          {
-
             /*Collect the notification endpoint address and length*/
             ms->itflength = pphost->device_prop.Ep_Desc[i][0].wMaxPacketSize;
 
+            USBH_EpDesc_TypeDef* inEp = &pphost->device_prop.Ep_Desc[i][1];
+            USBH_EpDesc_TypeDef* outEp = &pphost->device_prop.Ep_Desc[i][0];
+
             if (pphost->device_prop.Ep_Desc[i][0].bEndpointAddress & 0x80)
             {
-               ms->inEp = pphost->device_prop.Ep_Desc[i][0].bEndpointAddress;
-               ms->outEp = pphost->device_prop.Ep_Desc[i][1].bEndpointAddress;
-
-               ms->inEpType = pphost->device_prop.Ep_Desc[i][0].bmAttributes & EP_TYPE_MSK;
-               ms->outEpType = pphost->device_prop.Ep_Desc[i][1].bmAttributes & EP_TYPE_MSK;
-
+               inEp = &pphost->device_prop.Ep_Desc[i][0];
+               outEp = &pphost->device_prop.Ep_Desc[i][1];
             }
 
-            if (pphost->device_prop.Ep_Desc[i][1].bEndpointAddress & 0x80)
-            {
-               ms->inEp = pphost->device_prop.Ep_Desc[i][1].bEndpointAddress;
-               ms->outEp = pphost->device_prop.Ep_Desc[i][0].bEndpointAddress;
+            ms->inEp = inEp->bEndpointAddress;
+            ms->outEp = outEp->bEndpointAddress;
 
-               ms->inEpType = pphost->device_prop.Ep_Desc[i][1].bmAttributes & EP_TYPE_MSK;
-               ms->outEpType = pphost->device_prop.Ep_Desc[i][0].bmAttributes & EP_TYPE_MSK;
-            }
+            ms->inEpType = inEp->bmAttributes & EP_TYPE_MSK;
+            ms->outEpType = outEp->bmAttributes & EP_TYPE_MSK;
+
+            ms->RxParam.bInterval = inEp->bInterval;
+            ms->TxParam.bInterval = outEp->bInterval;
 
             /*Allocate the length for host channel number in*/
             ms->hc_num_in = USBH_Alloc_Channel(pdev, ms->inEp);
@@ -356,6 +356,7 @@ void MS_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
 
    URB_StatusTx = HCD_GetURB_State(pdev, ms->hc_num_out);
 
+   /* Max Poll rate is 1ms */
    if( (HCD_GetCurrentFrame(pdev) - ms->TxParam.intTimer) < 1)
    {
       return;
@@ -374,7 +375,6 @@ void MS_ProcessTransmission(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
    case MS_SEND_DATA:
 
       if ((URB_StatusTx == URB_DONE) || (URB_StatusTx == URB_IDLE))
-      //if ((URB_StatusTx == URB_IDLE))
       {
          len = RingBuffer_GetSpaceUsed(ms->TxBuf);
          if (len > ms->itflength)
@@ -442,7 +442,7 @@ static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
          /*Receive the data */
          if( ms->inEpType == EP_TYPE_INTR)
          {
-            if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) >= 1)
+            if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) > ms->RxParam.bInterval)
             {
                /* Interrupts we have to keep polling */
                ms->RxParam.intTimer = HCD_GetCurrentFrame(pdev);
@@ -463,7 +463,7 @@ static void MS_ProcessReception(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost)
    case MS_POLL:
       if( ms->inEpType == EP_TYPE_INTR)
       {
-         if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) >= 10)
+         if( ( HCD_GetCurrentFrame(pdev) - ms->RxParam.intTimer) > ms->RxParam.bInterval)
          {
             if (URB_StatusRx == URB_DONE)
             {
@@ -532,6 +532,8 @@ void MS_InitTxRxParam(USB_OTG_CORE_HANDLE *pdev)
    RingBuffer_Clear(ms->RxBuf);
 }
 
+
+
 /**
  * @brief  This is a call back function from cdc core layer to redirect the
  *         received data on the user out put system
@@ -547,6 +549,13 @@ static void MS_ReceiveData(USB_OTG_CORE_HANDLE *pdev, Ringbuffer_t* buf)
 
    /* Process actual data */
    RingBuffer_ReadBuffer(buf, &byte[0], length);
+   uint8_t CIN = byte[0] & 0x0F;
+
+   /* Ignore invalid data */
+   if( (CIN == 0x00) || CIN == 0x01 )
+   {
+      return;
+   }
    MS_SendData(ms->dev, &byte[0], length);
 
 }

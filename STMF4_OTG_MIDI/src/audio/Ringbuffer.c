@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <string.h>
 #include "Ringbuffer.h"
 
 
@@ -27,6 +28,9 @@ uint8_t RingBuffer_Clear(Ringbuffer_t* rb)
 {
    rb->writePos = 0;
    rb->readPos = 0;
+
+   memset(rb->buf, 0, rb->size);
+
    return RINGBUFFER_SUCCESS;
 }
 

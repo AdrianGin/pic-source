@@ -114,7 +114,8 @@ typedef struct _MSXfer
   uint8_t* pRxTxBuff;
   uint32_t BufferLen;
   uint16_t DataLength;
-  uint32_t  intTimer;
+  uint32_t intTimer;
+  uint8_t  bInterval;
 } MS_Xfer_TypeDef;
 
 
