@@ -162,7 +162,17 @@ void SysTick_Handler(void)
 
 void OTG_FS_IRQHandler(void)
 {
-   USBD_OTG_ISR_Handler(&USB_OTG_dev);
+
+
+   if (USB_OTG_IsHostMode(&USB_OTG_dev)) /* ensure that we are in device mode */
+   {
+     USBH_OTG_ISR_Handler(&USB_OTG_dev);
+   }
+   else
+   {
+      USBD_OTG_ISR_Handler(&USB_OTG_dev);
+   }
+
 }
 
 void OTG_HS_IRQHandler(void)

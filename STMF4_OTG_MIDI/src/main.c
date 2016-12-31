@@ -76,7 +76,13 @@ int main(void)
   /* Insert 50 ms delay */
   Delay(5);
 
-  USB_Init();
+  MS_InitTxRxParam(&USB_OTG_dev);
+  MS_InitTxRxParam(&USB_OTG_dev_HS);
+
+  //USB_Init();
+  USBHostInit(&USB_OTG_dev);
+  USBHostInit(&USB_OTG_dev_HS);
+
 
 
 
@@ -85,15 +91,17 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-     USBMIDI_Poll(&USBMIDIPort);
+     //USBMIDI_Poll(&USBMIDIPort);
      //USBMIDI_Poll(&USBMIDIPort_HS);
 
-     USBH_Process(&USB_OTG_dev_HS, &USB_Host);
+     USBH_Process(&USB_OTG_dev_HS, &USB_Host[USB_OTG_HS_CORE_ID]);
+     //USBH_Process(&USB_OTG_dev, &USB_Host[USB_OTG_FS_CORE_ID]);
 
      if( IsDelayFinished() )
      {
-        SetDelay(10);
-        //MS_SendData(buf, 4);
+        SetDelay(100);
+        //MS_SendData(&USB_OTG_dev_HS, buf, 4);
+       // MS_SendData(&USB_OTG_dev, buf, 4);
      }
 
 

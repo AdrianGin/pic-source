@@ -22,7 +22,7 @@ enum
 USB_OTG_CORE_HANDLE           USB_OTG_dev;
 USB_OTG_CORE_HANDLE           USB_OTG_dev_HS;
 
-USBH_HOST USB_Host;
+USBH_HOST USB_Host[2];
 
 USBDevice_t	USB_User_Dev =
 {
@@ -47,18 +47,24 @@ void USB_Init(void)
 
    USBH_Init(&USB_OTG_dev_HS,
              USB_OTG_HS_CORE_ID,
-             &USB_Host,
-             &CDC_cb,
+             &USB_Host[USB_OTG_HS_CORE_ID],
+             &MS_cb,
              &USR_Callbacks);
 
 }
 
 
-void USBHostInit(void)
+void USBHostInit(USB_OTG_CORE_HANDLE *pdev)
 {
-   USBH_Init(&USB_OTG_dev_HS,
-             USB_OTG_HS_CORE_ID,
-             &USB_Host,
-             &CDC_cb,
+   uint8_t id = USB_OTG_FS_CORE_ID;
+   if( pdev == &USB_OTG_dev_HS)
+   {
+      id = USB_OTG_HS_CORE_ID;
+   }
+
+   USBH_Init(pdev,
+             id,
+             &USB_Host[id],
+             &MS_cb,
              &USR_Callbacks);
 }

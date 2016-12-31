@@ -112,79 +112,9 @@ typedef struct _MSXfer
 {
   volatile MS_State State;
   uint8_t* pRxTxBuff;
-  uint8_t* pFillBuff;
-  uint8_t* pEmptyBuff;
   uint32_t BufferLen;
   uint16_t DataLength;
 } MS_Xfer_TypeDef;
-
-
-/* States for CDC State Machine */
-typedef enum
-{
-  CDC_IDLE= 0,
-  CDC_READ_DATA,
-  CDC_SEND_DATA,
-  CDC_DATA_SENT,
-  CDC_BUSY,
-  CDC_GET_DATA,   
-  CDC_POLL,
-  CDC_CTRL_STATE
-}
-CDC_State;
-
-/* CDC Transfer State */
-typedef struct _CDCXfer
-{
-  volatile CDC_State CDCState;
-  uint8_t* pRxTxBuff;
-  uint8_t* pFillBuff;
-  uint8_t* pEmptyBuff;
-  uint32_t BufferLen;
-  uint16_t DataLength;
-} CDC_Xfer_TypeDef;
-
-typedef struct CDC_UserCb
-{
-  void  (*Send)       (uint8_t  *);             
-  void  (*Receive)    (uint8_t *);       
-  
-} CDC_Usercb_TypeDef;
-
-/* Structure for CDC process */
-typedef struct _CDC_CommInterface
-{
-  uint8_t              hc_num_in; 
-  uint8_t              hc_num_out;
-  uint8_t              notificationEp;
-  CDC_State            state; 
-  uint8_t              buff[8];
-  uint16_t             length;
-  uint8_t              ep_addr;  
-}
-CDC_CommInterface_Typedef ;
-
-typedef struct _CDC_DataInterface
-{
-  uint8_t              hc_num_in; 
-  uint8_t              hc_num_out;
-  uint8_t              cdcOutEp;
-  uint8_t              cdcInEp;
-  CDC_State            state; 
-  uint8_t              buff[8];
-  uint16_t             length;
-  uint8_t              ep_addr;
-}
-CDC_DataInterface_Typedef ;
-
-/* Structure for CDC process */
-typedef struct _CDC_Process
-{
-  CDC_CommInterface_Typedef CDC_CommItf;
-  CDC_DataInterface_Typedef CDC_DataItf;
-}
-CDC_Machine_TypeDef;
-
 
 
 
@@ -201,12 +131,21 @@ typedef struct
    uint8_t outEpType;
 
    uint16_t itflength;
-   uint8_t ep_addr;
    uint8_t interface_index;
 
+   MS_Requests ReqState;
    uint8_t state;
 
-} MIDI_Machine_t;
+   MS_Xfer_TypeDef TxParam;
+   MS_Xfer_TypeDef RxParam;
+
+   Ringbuffer_t* TxBuf;
+   Ringbuffer_t* RxBuf;
+
+   uint32_t intTimer;
+   USB_OTG_CORE_HANDLE* dev;
+
+} MS_Machine_t;
 
 
 
@@ -232,7 +171,7 @@ typedef struct
 /** @defgroup USBH_CDC_CORE_Exported_Variables
 * @{
 */ 
-extern USBH_Class_cb_TypeDef  CDC_cb;
+extern USBH_Class_cb_TypeDef  MS_cb;
 
 /**
 * @}
@@ -241,12 +180,9 @@ extern USBH_Class_cb_TypeDef  CDC_cb;
 /** @defgroup USBH_CDC_CORE_Exported_FunctionsPrototype
 * @{
 */ 
+void MS_InitTxRxParam(USB_OTG_CORE_HANDLE *pdev);
+void MS_SendData(USB_OTG_CORE_HANDLE* pdev, uint8_t *data, uint16_t length);
 
-void  MS_SendData(uint8_t *data, uint16_t length);
-
-void  CDC_SendData(uint8_t *data, uint16_t length);
-void  CDC_StartReception( USB_OTG_CORE_HANDLE *pdev);
-void  CDC_StopReception( USB_OTG_CORE_HANDLE *pdev);
 /**
 * @}
 */ 

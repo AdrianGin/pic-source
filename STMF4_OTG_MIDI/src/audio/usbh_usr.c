@@ -89,7 +89,7 @@ extern USB_OTG_CORE_HANDLE           USB_OTG_Core;
 extern USBH_HOST                     USB_Host; 
 extern CDC_LineCodingTypeDef         CDC_GetLineCode;
 extern CDC_LineCodingTypeDef         CDC_SetLineCode;
-extern CDC_Usercb_TypeDef            UserCb;
+//extern CDC_Usercb_TypeDef            UserCb;
 
 uint8_t                              prev_select = 0;
 uint8_t                              enable_display_received_data = 0;
