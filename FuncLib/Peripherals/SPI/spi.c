@@ -87,9 +87,9 @@ uint8_t SPI_TxByte(uint8_t data)
 
 /* Transmits the first 'n' bytes of 'data' along the SPI bus
  * Return values are ignored. */
-void SPI_TxBlock(uint8_t* data, uint8_t n)
+void SPI_TxBlock(uint8_t* data, uint16_t n)
 {
-   uint8_t i;
+   uint16_t i;
    
    for( i = 0 ; i < n ; i++ )
    {
@@ -100,13 +100,20 @@ void SPI_TxBlock(uint8_t* data, uint8_t n)
 
 /* Reads 'n' bytes from the SPI bus and places them into data
  * data must be of correct lenght. */
-void SPI_RxBlock(uint8_t* data, uint8_t n)
+void SPI_RxBlock(uint8_t* data, uint16_t n)
 {
-   uint8_t i;
+   uint16_t i;
    
    for( i = 0 ; i < n ; i++ )
    {
-      data[i] = SPI_RxByte();      
+      if( data )
+      {
+         data[i] = SPI_RxByte();
+      }
+      else
+      {
+         SPI_RxByte();
+      }
    }
 }
 

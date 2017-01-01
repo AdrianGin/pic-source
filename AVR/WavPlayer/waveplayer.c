@@ -24,16 +24,16 @@ uint8_t waveIsPlaying(void)
 /* Using Timer2 */
 void waveAudioOn(void)
 {
-   TCCR2A |= ((1 << WGM21) | (1 << CS21) | (1 << CS20));
-   TCCR2A &= ~((1 << WGM20) | (1 << COM2A1) | (1 << COM2A0));
-   TIMSK2 |= (1 << OCF2A);
+   TCCR2 |= ((1 << WGM21) | (1 << CS21) | (1 << CS20));
+   TCCR2 &= ~((1 << WGM20) | (1 << COM21) | (1 << COM20));
+   TIMSK |= (1 << OCIE2);
    audioState = WAVE_OUTPUT_ON;
 }
 
 void waveAudioOff(void)
 {
    /* Simply turn off the timer */
-   TIMSK2 &= ~(1 << OCF2A);
+   TIMSK &= ~(1 << OCIE2);
    OCR1A = 128;
    OCR1B = 128;
    audioState = WAVE_OUTPUT_OFF;
@@ -233,7 +233,7 @@ uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename)
 
             /* Set interval timer (sampling period) */
             /* Use OCR2 */
-            OCR2A = (F_CPU/32/wavefile->sampleRate) - 1;
+            OCR2 = (F_CPU/32/wavefile->sampleRate) - 1;		
 			   break;
 
 		   case FCC('d','a','t','a') :		/* 'data' chunk (start to play) */

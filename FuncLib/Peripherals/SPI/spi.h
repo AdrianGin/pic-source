@@ -75,8 +75,8 @@ uint8_t SPI_RxByte(void);
 
 
 
-void SPI_RxBlock(uint8_t* data, uint8_t n);
+void SPI_RxBlock(uint8_t* data, uint16_t n);
 
-void SPI_TxBlock(uint8_t* data, uint8_t n);
+void SPI_TxBlock(uint8_t* data, uint16_t n);
 
 #endif

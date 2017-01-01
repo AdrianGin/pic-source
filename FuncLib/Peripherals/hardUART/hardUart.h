@@ -200,8 +200,8 @@ THE SOFTWARE.
 #define FAST 1
 #define SLOW 0
 
-#define  TXBUFFER_SIZE   (16)
-#define  RXBUFFER_SIZE   (16)
+#define  TXBUFFER_SIZE   (32)
+#define  RXBUFFER_SIZE   (32)
 
 
 extern volatile RINGBUFFER_T ReceiveBuffer;

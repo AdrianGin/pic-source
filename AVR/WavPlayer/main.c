@@ -27,24 +27,67 @@ AVR_USART_t PrimaryUART = {
    &TransmitBuffer
 };
 
+
+void SD_Startup(void)
+{
+   SD_CS_PORT |= (1 << SD_CS_PIN);
+   _delay_ms(100);
+}
+
+void SD_SetMaxSpeed(void)
+{
+   SPSR |= (1<<SPI2X);
+}
+
 int main(void) 
 {  
    uint8_t ret;
+   clock_prescale_set(clock_div_1);
 
-   uartInit(&PrimaryUART, 0);
-   uartSetBaud(&PrimaryUART, 0,10);
+   uartInit(&PrimaryUART, 1);
+   uartSetBaud(&PrimaryUART, 0, BAUD115200);
    sei(); 
 
    SPI_Init();
 
    DDRC |= (1 << 4);
 
-   /* Initialise SD Card */
-   if( SD_Init() == SD_SUCCESS )
+   DDRD |= (1 << PD7);
+
+   DDRB |= (1 << 1);
+   DDRB |= (1 << 2);
+
+
+   SD_CS_DDR |= (1 << SD_CS_PIN);
+
+   uartTxString_P(&PrimaryUART,  PSTR("Welcome"));
+
+
+   waveAudioSetup();
+   //waveAudioOn();
+
+   uint8_t outputString[20];
+
+   while(1)
    {
-      ret = pf_mount(&filesys);
+      uint16toa( TCNT2, outputString, 0 );
+      uartTxString(&PrimaryUART, outputString);
+      //uint16toa( OCR1B, outputString, 0 );
+      //uartTxString(&PrimaryUART, outputString);
+      _delay_ms(500);
+      PORTD ^= (1<<7);
    }
 
+   ret = pf_mount(&filesys);
+
+   if( ret )
+   {
+      uartTx(&PrimaryUART,  ret + '0');
+      uartTxString_P(&PrimaryUART,  PSTR("PFS failed"));
+      while(1);
+   }
+
+   uartTxString_P(&PrimaryUART,  PSTR("PFS Success!"));
 
    for( ;; )
    {
@@ -91,6 +134,8 @@ int main(void)
 
          newSongFlag = 0;
       }
+
+
    }
    
    if( pf_mount(0) == FR_OK )
@@ -104,21 +149,21 @@ int main(void)
 
 
 
-ISR(TIMER1_COMPA_vect, ISR_NOBLOCK)
+ISR(TIMER1_OVF_vect)
 {
-   PORTC &= ~(1 << 4);
+   PORTC ^= (1 << 4);
    /* We need to put this here to increase the speed */
    /* Left is first */
-   OCR1A = Buff[(audioReadptr)];
+   //OCR1A = Buff[(audioReadptr)];
    /* Right is second */
    /* This will not do anything if WAVE_STEREO_ENABLED is not set to 1 */
-   OCR1B = Buff[(audioReadptr + isStereo)];
+   //OCR1B = Buff[(audioReadptr + isStereo)];
    audioReadptr = (audioReadptr + 1 + isStereo) & WAVE_OUTMASK;
-   
-   if( OCR1A > 220 || OCR1A < 30 )
-   {
-      PORTC |= (1 << 4); 
-   }
+
+   OCR1A = 121;
+   OCR1B = 121;
+   //PORTB ^= (1<<1);
+
 
    /*if( fastMode )
    {
@@ -132,6 +177,16 @@ ISR(TIMER1_COMPA_vect, ISR_NOBLOCK)
    }*/
 }
 
+
+
+ISR(USART_TX_vect)
+{
+   // Tx the next byte if there are still bytes in the buffer
+   if( !ringbuffer_isEmpty((RINGBUFFER_T*)PrimaryUART.TransmitBuffer) )
+   {
+      *PrimaryUART.UDRx = ringbuffer_get((RINGBUFFER_T*)PrimaryUART.TransmitBuffer);
+   }
+}
 
 ISR(USART_RX_vect)
 {

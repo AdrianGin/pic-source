@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.release.1260489315">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.release.1260489315" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cross.exe.release.1260489315" name="Release" parent="cdt.managedbuild.config.gnu.cross.exe.release" postbuildStep="postbuild_arduino.bat ${ProjName}">
+					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.1260489315." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.release.866481139" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.release">
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.33811798" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="avr-" valueType="string"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.2068622140" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="C:\Dev\AVR\bin" valueType="string"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1084450732" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
+							<builder buildPath="${workspace_loc:/WavPlayer}/Release" id="cdt.managedbuild.builder.gnu.cross.1477157293" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1416923883" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.193816150" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.size" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.level.1165216432" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.other.1079766426" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1284192023" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="F_CPU=8000000"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
+								</option>
+								<option id="gnu.c.compiler.option.include.paths.2112170211" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Peripherals}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Applications}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/External}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Util}&quot;"/>
+								</option>
+								<option id="gnu.c.compiler.option.dialect.std.1167197767" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1603036606" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.710855274" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
+								<option id="gnu.cpp.compiler.option.optimization.level.1673590864" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.debugging.level.1322699095" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.1250068772" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.497987624" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="F_CPU=8000000"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.include.paths.365347936" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Peripherals}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Applications}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/External}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Util}&quot;"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1970660037" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.562742427" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.878605367" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
+								<option id="gnu.cpp.link.option.flags.158594937" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-mmcu=atmega328p  -Wl,--gc-sections" valueType="string"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2095462329" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1028650889" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.1757995834" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
+								<option id="gnu.both.asm.option.include.paths.1995716898" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Peripherals}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Applications}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/External}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/WavPlayer/Util}&quot;"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1358669281" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="Util|waveplayer.c|mmc.c|External|Applications|Other|Peripherals" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="PetitFS/diskio.c|TinyFS|RTC|MIDIUtils|MIDIParser|MIDIAdd|Menu|LightSys|LEDArrayBMP|GraphicsMenu|Graphics|FreeRTOS|FatFS|BMPDraw" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Applications"/>
+						<entry excluding="WavePlayer|VUMeter|UI_LCD|UI_GLCD|UI|TV|TMP123|SSD1289|Serial_EE|MAX7300|LPD8806|LEDArray|HY32D_LCD|DS1624|DS1307|DS1305|diskio|CardReader|ADS1213" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="External"/>
+						<entry excluding="mmculib/root.c|voidbuffer|USBMIDI|usbdrv|TimerCallbacks|stack|SoftTimer|MIDIPlayback|MIDICodes|linkedlist|InertiaTouch|FluidTouch|flashmem|Coordinate|AudioBuffer" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Other"/>
+						<entry excluding="USCI|UART|SoftI2C|PWM|I2C|avrADC|ARMUSB|ARM|ADC10|ADC|hardUART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Peripherals"/>
+						<entry excluding="Alphasort|rgbUtils|ReplaceChar|printf|MSB2LSB|FSUtils|Delay" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="WavPlayer.cdt.managedbuild.target.gnu.cross.exe.821652294" name="Executable" projectType="cdt.managedbuild.target.gnu.cross.exe"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.1260489315;cdt.managedbuild.config.gnu.cross.exe.release.1260489315.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.710855274;cdt.managedbuild.tool.gnu.cpp.compiler.input.1970660037">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.1260489315;cdt.managedbuild.config.gnu.cross.exe.release.1260489315.;cdt.managedbuild.tool.gnu.cross.c.compiler.1416923883;cdt.managedbuild.tool.gnu.c.compiler.input.1603036606">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/WavPlayer"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+</cproject>

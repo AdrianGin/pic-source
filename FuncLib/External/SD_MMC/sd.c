@@ -4,8 +4,8 @@
 #include "hardwareSpecific.h"
 #include "sd.h"
 #include "SPI/spi.h"
-#include "dmaSPI/dmaSPI.h"
-//#include "mmculib/uint8toa.h"
+//#include "dmaSPI/dmaSPI.h"
+#include "mmculib/uint8toa.h"
 #include "Bitfields/Bitfields.h"
 //include "waveplayer.h"
 
@@ -306,7 +306,7 @@ uint8_t SD_Command(uint8_t cmd, uint32_t arg)
     // return the received 0xFF
     while ((r1 = SD_RXBYTE()) & 0x80)
     {
-        if (retry++ > 10)
+        if (retry++ > 122)
         {
             break;
         }
@@ -628,7 +628,7 @@ DWORD get_fattime (void)
 
 
 
-#ifdef _PETITFATFS
+#ifdef _PFFCONF
 
 /* START OF PETIT FAT FS
  *
@@ -656,12 +656,7 @@ DSTATUS disk_initialize(void)
 
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_readp(
-        BYTE *buffer, /* Pointer to the read buffer (NULL:Read bytes are forwarded to the stream) */
-        DWORD sector, /* Sector number (LBA) */
-        WORD offset, /* Byte offset to read from (0..511) */
-        WORD byteCount /* Number of bytes to read (offset + byteCount mus be <= 512) */
-        )
+DRESULT disk_readp (BYTE* buffer, DWORD sector, UINT offset, UINT byteCount)
 {
 
     uint16_t bytesRemaining = 514;
@@ -716,7 +711,7 @@ DRESULT disk_readp(
     }
 
     // wait until card not busy
-    //while(!SD_RXBYTE());
+    while(!SD_RXBYTE());
 
     /* Release and return clock phase and speed back to default */
     SD_RELEASE();

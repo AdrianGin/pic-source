@@ -1,6 +1,6 @@
 #include "PetitFS/pff.h"
 #include "hardwareSpecific.h"
-#include "waveplayer.h"
+#include "waveplayer328p.h"
 #include <string.h>
 
 uint8_t Buff[WAVE_OUTBUFFER_SIZE];		/* Audio output FIFO */
@@ -16,44 +16,84 @@ uint8_t len;
 uint8_t is16Bit;
 uint8_t isStereo;
 
+enum
+{
+   MAX_RES = 181,
+   CENTRE_LEVEL = MAX_RES / 2,
+};
+
 uint8_t waveIsPlaying(void)
 {
    return audioState;
 }
 
-/* Using Timer2 */
+/* Using Timer1 */
 void waveAudioOn(void)
 {
-   TCCR2A |= ((1 << WGM21) | (1 << CS21) | (1 << CS20));
-   TCCR2A &= ~((1 << WGM20) | (1 << COM2A1) | (1 << COM2A0));
-   TIMSK2 |= (1 << OCF2A);
+   TIMSK1 |= (1 << TOIE1);
    audioState = WAVE_OUTPUT_ON;
 }
 
 void waveAudioOff(void)
 {
    /* Simply turn off the timer */
-   TIMSK2 &= ~(1 << OCF2A);
-   OCR1A = 128;
-   OCR1B = 128;
+   TIMSK1 &= ~(1 << TOIE1);
+   OCR1A = CENTRE_LEVEL;
+   OCR1B = CENTRE_LEVEL;
    audioState = WAVE_OUTPUT_OFF;
 }
 
 /* AudioSetup must be called at the start of a new wave file */
 void waveAudioSetup(void)
 {
-   TCCR1A |= (1 << COM1A0) | (1 << COM1A1) | (1 << WGM10);
-   TCCR1B |= (1 << CS10) | (1 << WGM12);
 
-#if WAVE_STEREO_ENABLED
-   DDRB |= (1 << 2);
-   TCCR1A |= (1 << COM1B0) | (1 << COM1B1);
+   TCCR0A = 0x00;
+   TCCR0B = 0x00;
+
+   DDRD |= (1 << 6);
+   DDRD |= (1 << 5);
+
+   DDRD |= (1 << 3);
+
+
+   ICR1 = MAX_RES;
+#if 0
+   TCCR1A |= ((1 << WGM11)  | (1 << COM1A0) | (1 << COM1B0));
+   TCCR1A &= ~((1 << WGM10) | (1 << COM1A1) | (1 << COM1B1));
+   TCCR1B |= (1 << CS10) | (1 << WGM12) | (1<<WGM13);
+   TCCR1B &= ~((1 << CS11) | (1 << CS12));
 #endif
 
-   DDRB |= (1 << 1);
+#if 1
+   TCCR0A |= ((1 << WGM01) | (1 << WGM00) | (1 << COM0A1) | (1 << COM0B1));
+   TCCR0A &= ~((1 << COM0A0) | (1 << COM0B0) );
+   TCCR0B |= ((1 << CS00) );
+   TCCR0B &= ~((1 << CS01) | (1 << CS02) | (1 << WGM02) );
+   TCNT0 = 0x00;
+#endif
+
+#if 1
+   TCCR2A |= ((1 << WGM21) | (1 << WGM20)  | (1 << COM2B1));
+   TCCR2A &= ~((1 << COM2B0) );
+   TCCR2B |= ((1 << CS20) );
+   TCCR2B &= ~((1 << CS21) | (1 << CS22) | (1 << WGM22) );
+   TCNT2 = 0x00;
+#endif
+
+
+
+#if WAVE_STEREO_ENABLED
+   DDRD |= (1 << 5);
+   //TCCR1A |= (1 << COM1B0) | (1 << COM1B1);
+#endif
+
+   DDRD |= (1 << 6);
    /* Set levels back to centre */
-   OCR1A = 128;
-   OCR1B = 128;
+   OCR0A = 50;
+   OCR0B = 128;
+
+   OCR2B = 50;
+
    audioReadptr = 0;
    audioWriteptr = 0;
 }
@@ -72,13 +112,17 @@ uint8_t wavePlayFile(waveHeader_t* wavefile, uint8_t* filename)
       ret = waveParseHeader(wavefile, filename);
       if( ret > WAVE_MINIMUM_SAMPLES )
       {
+
+         uartTxString_P(&PrimaryUART,  PSTR("Wave Parsed"));
+
          waveAudioSetup();
          waveAudioOn();
          return WAVE_SUCCESS;
       }
       else
       {
-         //uartTxString_P( PSTR("File too small!"));
+         uartTx(&PrimaryUART, ret);
+         uartTxString_P(&PrimaryUART,  PSTR("File too small!"));
       }
    }
    
@@ -103,10 +147,18 @@ void wavePutByte(uint8_t byte)
    /* Forward data to Audio Fifo */
    while( (( (uint8_t)(audioWriteptr + 1)) == audioReadptr) && (audioState) )
    {
+      PORTD ^= (1<<7);
+      //PORTC ^= (1<<4);
    }
 
    /* Do the signed 16bit -128 -> 127 to unsigned 8bit 0 - >255here */
-   Buff[audioWriteptr++] = byte + (is16Bit << 7);
+   Buff[audioWriteptr] = byte + (is16Bit << 7);
+
+   //Scale to max res
+   uint16_t temp = (Buff[audioWriteptr] * MAX_RES) / 255;
+   Buff[audioWriteptr] = (uint8_t)temp;
+   audioWriteptr++;
+
    //audioWriteptr &= WAVE_OUTMASK;
 }
 
@@ -175,6 +227,8 @@ uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename)
    memset(wavefile, 0, sizeof(waveHeader_t));
    is16Bit = 0;
    isStereo = 0;
+
+
 
    if(pf_open((const char*)filename) != FR_OK) return WAVE_IO_ERROR+1;
    if(pf_lseek(0) != FR_OK) return WAVE_IO_ERROR+2;
