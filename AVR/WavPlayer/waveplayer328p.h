@@ -57,6 +57,7 @@ extern FATFS filesys;
 extern uint8_t Buff[];
 extern uint8_t fastMode;
 extern uint8_t isStereo;
+extern uint8_t is16Bit;
 
 void waveAudioSetup(void);
 void waveAudioOn(void);

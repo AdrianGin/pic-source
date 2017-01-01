@@ -13,7 +13,7 @@ uint8_t fastMode;
 
 uint8_t len;
 
-uint8_t is16Bit;
+uint8_t is16Bit = 0;
 uint8_t isStereo;
 
 enum
@@ -55,11 +55,14 @@ void waveAudioSetup(void)
 
    DDRD |= (1 << 3);
 
+   DDRB |= (1<<PB1);
+   DDRB |= (1<<PB2);
+
 
    ICR1 = MAX_RES;
-#if 0
-   TCCR1A |= ((1 << WGM11)  | (1 << COM1A0) | (1 << COM1B0));
-   TCCR1A &= ~((1 << WGM10) | (1 << COM1A1) | (1 << COM1B1));
+#if 1
+   TCCR1A |= ((1 << WGM11)  | (1 << COM1A1) | (1 << COM1B1));
+   TCCR1A &= ~((1 << WGM10) | (1 << COM1A0) | (1 << COM1B0));
    TCCR1B |= (1 << CS10) | (1 << WGM12) | (1<<WGM13);
    TCCR1B &= ~((1 << CS11) | (1 << CS12));
 #endif
@@ -93,6 +96,9 @@ void waveAudioSetup(void)
    OCR0B = 128;
 
    OCR2B = 50;
+
+   OCR1A = CENTRE_LEVEL;
+   OCR1B = CENTRE_LEVEL;
 
    audioReadptr = 0;
    audioWriteptr = 0;
@@ -147,7 +153,6 @@ void wavePutByte(uint8_t byte)
    /* Forward data to Audio Fifo */
    while( (( (uint8_t)(audioWriteptr + 1)) == audioReadptr) && (audioState) )
    {
-      PORTD ^= (1<<7);
       //PORTC ^= (1<<4);
    }
 
@@ -155,7 +160,7 @@ void wavePutByte(uint8_t byte)
    Buff[audioWriteptr] = byte + (is16Bit << 7);
 
    //Scale to max res
-   uint16_t temp = (Buff[audioWriteptr] * MAX_RES) / 255;
+   uint16_t temp = (Buff[audioWriteptr] * MAX_RES) / 256;
    Buff[audioWriteptr] = (uint8_t)temp;
    audioWriteptr++;
 

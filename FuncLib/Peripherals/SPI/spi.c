@@ -61,7 +61,7 @@ void SPI_Init(void)
    SPCR |= ((1 << SPE) | (1 << MSTR));
    
    /* set CLK speed to fclk/32 */
-   SPCR |= ((1 << SPR0) | (1 << SPR1));
+   //SPCR |= ((1 << SPR0) | (1 << SPR1));
    //SPSR |= (1<<SPI2X);
    /*
    SPSR;

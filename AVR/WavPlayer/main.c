@@ -4,7 +4,7 @@
 #include "PetitFS/pff.h"
 #include "SPI/spi.h"
 #include "mmculib/uint16toa.h"
-#include "waveplayer.h"
+#include "waveplayer328p.h"
 
 
 
@@ -12,7 +12,7 @@ volatile waveHeader_t wavefile;
 volatile uint8_t newSongFlag = 1;
 volatile uint8_t ProcessBufferFlag;
 
-uint8_t outputString[20] = "4416s.wav";
+uint8_t outputString[20] = "228m.wav";
 
 
 AVR_USART_t PrimaryUART = {
@@ -61,22 +61,6 @@ int main(void)
    SD_CS_DDR |= (1 << SD_CS_PIN);
 
    uartTxString_P(&PrimaryUART,  PSTR("Welcome"));
-
-
-   waveAudioSetup();
-   //waveAudioOn();
-
-   uint8_t outputString[20];
-
-   while(1)
-   {
-      uint16toa( TCNT2, outputString, 0 );
-      uartTxString(&PrimaryUART, outputString);
-      //uint16toa( OCR1B, outputString, 0 );
-      //uartTxString(&PrimaryUART, outputString);
-      _delay_ms(500);
-      PORTD ^= (1<<7);
-   }
 
    ret = pf_mount(&filesys);
 
@@ -151,17 +135,27 @@ int main(void)
 
 ISR(TIMER1_OVF_vect)
 {
-   PORTC ^= (1 << 4);
+
+   volatile static oversampling = 0;
+
+   //PORTC ^= (1 << 4);
    /* We need to put this here to increase the speed */
    /* Left is first */
-   //OCR1A = Buff[(audioReadptr)];
+   OCR1A = Buff[(audioReadptr)];
    /* Right is second */
    /* This will not do anything if WAVE_STEREO_ENABLED is not set to 1 */
-   //OCR1B = Buff[(audioReadptr + isStereo)];
-   audioReadptr = (audioReadptr + 1 + isStereo) & WAVE_OUTMASK;
+   OCR1B = Buff[(audioReadptr + isStereo)];
 
-   OCR1A = 121;
-   OCR1B = 121;
+   if( oversampling )
+   {
+      audioReadptr = (audioReadptr + 1 + isStereo);
+
+   }
+
+   oversampling ^= 1;
+
+   //OCR1A = 121;
+   //OCR1B = 121;
    //PORTB ^= (1<<1);
 
 
