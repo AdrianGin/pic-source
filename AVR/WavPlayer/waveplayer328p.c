@@ -3,11 +3,25 @@
 #include "waveplayer328p.h"
 #include <string.h>
 
-uint8_t Buff[WAVE_OUTBUFFER_SIZE];		/* Audio output FIFO */
+enum
+{
+   BLOCK_READ_SIZE = 512,
+};
+
+uint8_t Buff[BLOCK_READ_SIZE];		/* Audio output FIFO */
+
+uint8_t AudioBuffer[2][WAVE_OUTBUFFER_SIZE];
+
+
 FATFS filesys;
 
-volatile uint8_t audioReadptr;
-volatile uint8_t audioWriteptr;
+volatile uint8_t bufPtr;
+uint8_t NextBuffer = 0;
+volatile uint8_t CurrentBuffer = 0;
+
+
+volatile uint16_t audioReadptr;
+uint16_t audioWriteptr;
 volatile uint8_t audioState;
 uint8_t fastMode;
 
@@ -67,7 +81,7 @@ void waveAudioSetup(void)
    TCCR1B &= ~((1 << CS11) | (1 << CS12));
 #endif
 
-#if 1
+#if 0
    TCCR0A |= ((1 << WGM01) | (1 << WGM00) | (1 << COM0A1) | (1 << COM0B1));
    TCCR0A &= ~((1 << COM0A0) | (1 << COM0B0) );
    TCCR0B |= ((1 << CS00) );
@@ -75,7 +89,7 @@ void waveAudioSetup(void)
    TCNT0 = 0x00;
 #endif
 
-#if 1
+#if 0
    TCCR2A |= ((1 << WGM21) | (1 << WGM20)  | (1 << COM2B1));
    TCCR2A &= ~((1 << COM2B0) );
    TCCR2B |= ((1 << CS20) );
@@ -102,6 +116,9 @@ void waveAudioSetup(void)
 
    audioReadptr = 0;
    audioWriteptr = 0;
+
+   NextBuffer = 1;
+   CurrentBuffer = 0;
 }
 
 
@@ -122,7 +139,7 @@ uint8_t wavePlayFile(waveHeader_t* wavefile, uint8_t* filename)
          uartTxString_P(&PrimaryUART,  PSTR("Wave Parsed"));
 
          waveAudioSetup();
-         waveAudioOn();
+         audioState = WAVE_OUTPUT_ON;
          return WAVE_SUCCESS;
       }
       else
@@ -136,8 +153,9 @@ uint8_t wavePlayFile(waveHeader_t* wavefile, uint8_t* filename)
 }
 
 
-void wavePutByte(uint8_t byte)
+static inline void wavePutByte(uint8_t byte)
 {
+#if 0
    static uint8_t highByte = 1;
 
    /* Throw away every other byte, due to the Little Endianness */
@@ -151,20 +169,17 @@ void wavePutByte(uint8_t byte)
 
    /* Wait for a bit */
    /* Forward data to Audio Fifo */
-   while( (( (uint8_t)(audioWriteptr + 1)) == audioReadptr) && (audioState) )
+   //while( (( (uint8_t)(audioWriteptr + 1)) == audioReadptr) && (audioState) )
    {
-      //PORTC ^= (1<<4);
    }
-
+#endif
    /* Do the signed 16bit -128 -> 127 to unsigned 8bit 0 - >255here */
-   Buff[audioWriteptr] = byte + (is16Bit << 7);
-
    //Scale to max res
-   uint16_t temp = (Buff[audioWriteptr] * MAX_RES) / 256;
-   Buff[audioWriteptr] = (uint8_t)temp;
-   audioWriteptr++;
 
-   //audioWriteptr &= WAVE_OUTMASK;
+   AudioBuffer[NextBuffer][audioWriteptr] = (byte + (is16Bit << 7));
+   uint16_t temp = (AudioBuffer[NextBuffer][audioWriteptr] * MAX_RES) / 256;
+   AudioBuffer[NextBuffer][audioWriteptr] = (uint8_t)temp;
+   audioWriteptr = (audioWriteptr + 1) & WAVE_OUTMASK;
 }
 
 
@@ -179,17 +194,22 @@ uint8_t waveContinuePlaying(waveHeader_t* wavefile)
       return 0;
    }
 
-   if( wavefile->dataSize > WAVE_OUTBLOCK_SIZE)
+   if( wavefile->dataSize > BLOCK_READ_SIZE)
    {
-      bytesToPlay = WAVE_OUTBLOCK_SIZE;
+      bytesToPlay = BLOCK_READ_SIZE;
    }
    else
    {
       bytesToPlay = wavefile->dataSize;
    }   
 
-   pf_read(0, bytesToPlay, &bytesWritten);
-   wavefile->dataSize = wavefile->dataSize - bytesToPlay;
+   //pf_read( 0, bytesToPlay, &bytesWritten);
+   pf_read( &Buff[0], bytesToPlay, &bytesWritten);
+
+   waveProcessBuffer(wavefile, &Buff[0], bytesWritten);
+   NextBuffer = NextBuffer ^ 1;
+
+   wavefile->dataSize = wavefile->dataSize - bytesWritten;
 
    if( bytesWritten != bytesToPlay )
    {
@@ -199,10 +219,12 @@ uint8_t waveContinuePlaying(waveHeader_t* wavefile)
    
    if( wavefile->dataSize )
    {
+      waveAudioOn();
       return 1;
    }
    else
    {
+
       return 0;
    }
 
@@ -210,15 +232,14 @@ uint8_t waveContinuePlaying(waveHeader_t* wavefile)
 }
 
 
-void waveProcessBuffer(waveHeader_t* wavefile)
+void waveProcessBuffer(waveHeader_t* wavefile, uint8_t* buf, uint16_t nBytes)
 {
-   /* Left is first */
-   OCR1A = Buff[(audioReadptr)];
-   /* Right is second */
-   /* This will not do anything if WAVE_STEREO_ENABLED is not set to 1 */
-   OCR1B = Buff[(audioReadptr + isStereo)];
-   audioReadptr = (audioReadptr + 1 + isStereo) & WAVE_OUTMASK;
-   //audioReadptr = (audioReadptr + 1 + isStereo);
+
+   uint16_t i;
+   for(i = 0; i < nBytes; ++i )
+   {
+      wavePutByte( buf[i] );
+   }
 }
 
 

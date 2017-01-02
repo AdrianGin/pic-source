@@ -28,7 +28,7 @@
 
 #define WAVE_OUTBLOCK_SIZE   (WAVE_MINIMUM_SAMPLES)
 
-#define WAVE_OUTBUFFER_SIZE   (256)
+#define WAVE_OUTBUFFER_SIZE   (512)
 #define WAVE_OUTMASK         (WAVE_OUTBUFFER_SIZE-1)
 
 typedef struct waveHeader
@@ -48,8 +48,11 @@ typedef struct waveHeader
 } waveHeader_t;
 
 
-volatile uint8_t audioReadptr;
-volatile uint8_t audioWriteptr;
+extern volatile uint16_t audioReadptr;
+extern uint16_t audioWriteptr;
+
+extern uint8_t NextBuffer;
+extern volatile uint8_t CurrentBuffer;
 
 uint8_t len;
 
@@ -59,17 +62,19 @@ extern uint8_t fastMode;
 extern uint8_t isStereo;
 extern uint8_t is16Bit;
 
+extern uint8_t AudioBuffer[2][WAVE_OUTBUFFER_SIZE];
+
 void waveAudioSetup(void);
 void waveAudioOn(void);
 void waveAudioOff(void);
 uint8_t waveIsPlaying(void);
 
 /* Puts the byte on the buffer */
-void wavePutByte(uint8_t byte);
+//void wavePutByte(uint8_t byte);
 
 uint8_t wavePlayFile(waveHeader_t* wavefile, uint8_t* filename);
 uint32_t waveParseHeader(waveHeader_t* wavefile, uint8_t* filename);
-void waveProcessBuffer(waveHeader_t* wavefile);
+void waveProcessBuffer(waveHeader_t* wavefile, uint8_t* buf, uint16_t nBytes);
 uint8_t waveContinuePlaying(waveHeader_t* wavefile);
 
 #endif

@@ -10,9 +10,14 @@
 
 volatile waveHeader_t wavefile;
 volatile uint8_t newSongFlag = 1;
-volatile uint8_t ProcessBufferFlag;
 
-uint8_t outputString[20] = "228m.wav";
+volatile uint8_t ChangeBufferFlagServiceCount = 0;
+volatile uint8_t ChangeBufferFlag = 0;
+
+volatile uint8_t GetNextBufferFlagCount = 0;
+volatile uint8_t GetNextBufferFlag = 1;
+
+uint8_t outputString[20] = "A228m.wav";
 
 
 AVR_USART_t PrimaryUART = {
@@ -45,7 +50,7 @@ int main(void)
    clock_prescale_set(clock_div_1);
 
    uartInit(&PrimaryUART, 1);
-   uartSetBaud(&PrimaryUART, 0, BAUD115200);
+   uartSetBaud(&PrimaryUART, 0, BAUD38400);
    sei(); 
 
    SPI_Init();
@@ -79,13 +84,6 @@ int main(void)
       //uartTx(OCR2);
       /* Is a mutliple of WAVE_OUTBLOCK_SIZE */
       /* If we are ready to receive the next bytes then do it */
-      
-      if( (waveIsPlaying()) && (waveContinuePlaying((waveHeader_t*)&wavefile) == 0) )
-      {     
-         waveAudioOff();
-         uartTxString_P(&PrimaryUART,  PSTR("Wave Finished!"));
-      }
-
       if( newSongFlag )
       {
          uartTxString_P(&PrimaryUART,  PSTR("Playing\n"));
@@ -120,6 +118,28 @@ int main(void)
       }
 
 
+
+
+      if(waveIsPlaying())
+      {
+         if( CurrentBuffer != NextBuffer )
+         {
+            if(waveContinuePlaying((waveHeader_t*)&wavefile) == 0)
+            {
+               waveAudioOff();
+               uartTxString_P(&PrimaryUART,  PSTR("Wave Finished!"));
+            }
+            //GetNextBufferFlagCount++;
+         }
+      }
+
+      /*
+      if( ChangeBufferFlag != ChangeBufferFlagServiceCount)
+      {
+         //CurrentBuffer ^= 1;
+         ChangeBufferFlagServiceCount++;
+      }*/
+
    }
    
    if( pf_mount(0) == FR_OK )
@@ -136,23 +156,35 @@ int main(void)
 ISR(TIMER1_OVF_vect)
 {
 
-   volatile static oversampling = 0;
+   static uint8_t oversampling = 0;
 
    //PORTC ^= (1 << 4);
    /* We need to put this here to increase the speed */
    /* Left is first */
-   OCR1A = Buff[(audioReadptr)];
+   OCR1A = AudioBuffer[CurrentBuffer][(audioReadptr)];
    /* Right is second */
    /* This will not do anything if WAVE_STEREO_ENABLED is not set to 1 */
-   OCR1B = Buff[(audioReadptr + isStereo)];
+   OCR1B = AudioBuffer[CurrentBuffer][(audioReadptr + isStereo)];
 
-   if( oversampling )
+   oversampling++;
+
+   if( oversampling == 2 )
    {
-      audioReadptr = (audioReadptr + 1 + isStereo);
+      audioReadptr = (audioReadptr + 1 + isStereo) & WAVE_OUTMASK;
+      /*if( audioReadptr == (2) )
+      {
+         GetNextBufferFlag++;
+      }*/
+
+      if( audioReadptr == 0 )
+      {
+         CurrentBuffer ^= 1;
+         //ChangeBufferFlag++;
+      }
+
+      oversampling = 0;
 
    }
-
-   oversampling ^= 1;
 
    //OCR1A = 121;
    //OCR1B = 121;

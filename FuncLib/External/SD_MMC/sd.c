@@ -701,7 +701,7 @@ DRESULT disk_readp (BYTE* buffer, DWORD sector, UINT offset, UINT byteCount)
                 while (byteCount--)
                 {
                     uint8_t byte = SD_RXBYTE();
-                    FORWARD(byte);
+                    //FORWARD(byte);
                 }
                 /* Skip CRCs, and remaining bytes */
                 SD_RXBLOCK(0, bytesRemaining);

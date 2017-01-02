@@ -28,7 +28,7 @@
 
 #define WAVE_OUTBLOCK_SIZE   (WAVE_MINIMUM_SAMPLES)
 
-#define WAVE_OUTBUFFER_SIZE   (256)
+#define WAVE_OUTBUFFER_SIZE   (512)
 #define WAVE_OUTMASK         (WAVE_OUTBUFFER_SIZE-1)
 
 typedef struct waveHeader
@@ -48,8 +48,8 @@ typedef struct waveHeader
 } waveHeader_t;
 
 
-volatile uint8_t audioReadptr;
-volatile uint8_t audioWriteptr;
+volatile uint16_t audioReadptr;
+volatile uint16_t audioWriteptr;
 
 uint8_t len;
 
