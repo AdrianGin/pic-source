@@ -1,0 +1,8 @@
+22kHz 8bit only just works at 8MHz.
+Although it was working very good before, the SD card was being streamed so power consumption was high.
+The latest change buffers the entire read allowing the SD card to be released.
+
+However double buffering the scheme requires a bit more code and hence, 22kHz only just comes in working at 8MHz
+
+Going to 20MHz, helps two fold, first the Code runs faster, but the SPI transfer speed also runs at a higher speed.
+
