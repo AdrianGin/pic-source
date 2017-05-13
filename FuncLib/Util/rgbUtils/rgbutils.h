@@ -20,10 +20,10 @@
 #define RGB(r,g,b)		((r << 16) | (g << 8) | (b))
 
 
-#define SCALE(number, factor, divisor)	((number * factor) / divisor )
-#define SCALE_COLOUR(colour, factor, divisor)	RGB( SCALE(LPD_RED(colour), factor, divisor), \
-													 SCALE(LPD_GREEN(colour), factor, divisor), \
-													 SCALE(LPD_BLUE(colour), factor, divisor))
+#define SCALE(number, factor, divisor)	(((number) * (factor) ) / (divisor) )
+#define SCALE_COLOUR(colour, factor, divisor)	RGB( SCALE(R_RGB(colour), factor, divisor), \
+													 SCALE(G_RGB(colour), factor, divisor), \
+													 SCALE(B_RGB(colour), factor, divisor))
 
 
 

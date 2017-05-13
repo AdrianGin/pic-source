@@ -20,6 +20,10 @@
 **
 *********************************************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #ifndef _LPD8806_H_
 #define _LPD8806_H_
 
@@ -27,7 +31,16 @@
 #include "stm32f10x.h"
 #include "rgbUtils/rgbutils.h"
 /* Private define ------------------------------------------------------------*/
-#define LED_COUNT (48*5)
+
+typedef struct
+{
+   uint16_t ledCount; //Number of LEDs in the string
+   uint8_t* DMAbuffer;
+
+
+} LPD8806_t;
+
+#define LED_COUNT ((48*5) - 4)
 #define MAX_LED_BRIGHTNESS (255)
 
 #define LPD8806_MAX_RES		(0x7F)
@@ -45,7 +58,7 @@
 
 #define LPD8806_USE_DMA
 #define LPD8806_USE_SPI1
-#define LPD_USE_ALTERNATE_SPI1
+//#define LPD_USE_ALTERNATE_SPI1
 //#define LPD8806_USE SPI2
 
 #ifdef  LPD8806_USE_SPI1
@@ -114,4 +127,6 @@ void LPD8806_DMA_Init(void);
       END FILE
 *********************************************************************************************************/
 
-
+#ifdef __cplusplus
+ }
+#endif

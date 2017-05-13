@@ -175,7 +175,7 @@ void LPD8806_Clear(void)
 void LPD8806_Test(void)
 {
 	LPD8806_SetBrightness(MAX_LED_BRIGHTNESS);
-	memset(LPD8806_GFXRAM, 0xFF , (LED_COUNT*3));
+	memset(LPD8806_GFXRAM, 0x05 | 0x80 , (LED_COUNT*3));
 }
 
 

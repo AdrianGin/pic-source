@@ -75,8 +75,8 @@ void waveAudioSetup(void)
 
    ICR1 = MAX_RES;
 #if 1
-   TCCR1A |= ((1 << WGM11)  | (1 << COM1A1) | (1 << COM1B1));
-   TCCR1A &= ~((1 << WGM10) | (1 << COM1A0) | (1 << COM1B0));
+   TCCR1A |= ((1 << WGM11)  | (1 << COM1A1) | (1 << COM1B1) | (1 << COM1B0));
+   TCCR1A &= ~((1 << WGM10) | (1 << COM1A0) );
    TCCR1B |= (1 << CS10) | (1 << WGM12) | (1<<WGM13);
    TCCR1B &= ~((1 << CS11) | (1 << CS12));
 #endif
