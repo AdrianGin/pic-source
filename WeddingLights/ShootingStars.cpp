@@ -1,13 +1,17 @@
+
+
 #include "ShootingStars.h"
 #include <stdlib.h>
 #include <string.h>
 
 ShootingStar::ShootingStar(int16_t position, uint16_t length, uint32_t colour, uint16_t prescaler, uint8_t fadeSpeed, eDirections fadeDirection, eDirections direction)
-noexcept : position(position), length(length), colour(colour), prescaler(prescaler), fadeSpeed(fadeSpeed), fadeDirection(fadeDirection), direction(direction)
+noexcept :
+Pattern(position, length, colour, prescaler), fadeSpeed(fadeSpeed), fadeDirection(fadeDirection), direction(direction)
 
 {
+   initDirection = direction;
+   initFadeDirection = fadeDirection;
 
-   colourBuffer = (uint32_t*)malloc(length * 4);
 }
 
 ShootingStar::~ShootingStar()
@@ -17,19 +21,13 @@ ShootingStar::~ShootingStar()
 
 void ShootingStar::init(void)
 {
-   delayCounter = 0;
-   position = 0;
-   memset(colourBuffer, 0x00, length * 4);
+
 }
 
 void ShootingStar::update(void)
 {
 
-   if( ++delayCounter == prescaler )
-   {
-      delayCounter = 0;
-   }
-   else
+   if( !Pattern::doDelay() )
    {
       return;
    }
@@ -53,7 +51,7 @@ void ShootingStar::update(void)
 
 bool ShootingStar::isFinished(void)
 {
-   if( (position == (length-1) && (direction == FORWARD)) || ((position == 0) && (direction == REVERSE))  )
+   if( (position >= (length-1) && (direction == FORWARD)) || ((position == 0) && (direction == REVERSE))  )
    {
       return true;
    }
@@ -62,7 +60,7 @@ bool ShootingStar::isFinished(void)
 }
 
 
-void ShootingStar::reverseDir(void)
+void ShootingStar::reset(void)
 {
    if(direction == FORWARD)
    {
@@ -74,9 +72,6 @@ void ShootingStar::reverseDir(void)
    }
 }
 
-uint32_t* ShootingStar::getBuffer(void)
-{
-   return &colourBuffer[0];
-}
+
 
 

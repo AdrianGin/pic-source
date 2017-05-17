@@ -1,8 +1,12 @@
+#ifndef SHOOTING_STAR_CLASS
+#define SHOOTING_STAR_CLASS
+
 #include <stdint.h>
 
+#include "Pattern.h"
 #include "rgbUtils/rgbutils.h"
 
-class ShootingStar
+class ShootingStar : public Pattern
 {
 
 
@@ -18,13 +22,9 @@ public:
    };
 
    ShootingStar(int16_t position, uint16_t length, uint32_t colour, uint16_t prescaler, uint8_t fadeSpeed, eDirections fadeDirection, eDirections direction) noexcept;
-   ~ShootingStar();
+   virtual ~ShootingStar();
 
 
-   uint16_t length;
-   uint32_t colour;
-
-   uint16_t prescaler;
    uint8_t fadeSpeed;
 
    eDirections fadeDirection;
@@ -34,23 +34,16 @@ public:
    void init();
 
    //Updates the colours in the colour buffer based off the parameters
-   void update();
+   virtual void update();
 
-   uint32_t* getBuffer();
+   virtual void reset(void);
+   virtual bool isFinished();
 
-   void reverseDir(void);
-   bool isFinished();
-
-private:
-
-   int16_t delayCounter;
-   int16_t position;
-   uint32_t* colourBuffer;
-
-
-
+protected:
+   eDirections initFadeDirection;
+   eDirections initDirection;
 
 
 };
 
-
+#endif
