@@ -7,8 +7,11 @@
 #include "ShootingStars.h"
 #include "FadingStar.h"
 #include "Strobe.h"
+#include "XmasTwinkle.h"
 
 #include "Modulator.h"
+
+#include <math.h>
 
 #define STROBE_FADE_OUT (230)
 #define STROBE_FADE_LENGTH (10)
@@ -533,12 +536,25 @@ const int8_t coswave[] =
       127,
       127,
       127,
-
 };
 
+int8_t randomWave[256];
+
+void InitRandomWave()
+{
+	for( int i = 0; i < 256; i++)
+	{
+		int val = rand() % 216;
+		randomWave[i] = val;
+	}
+}
 
 int main(void)
 {
+
+	LPD8806_Init();
+
+	InitRandomWave();
 
    FadingStar* red = new FadingStar(0, 40, RGB(255,0,0), 9, 250, ShootingStar::FORWARD, ShootingStar::FORWARD);
    FadingStar* red2 = new FadingStar(39, 40, RGB(64,255,64), 15, 245, ShootingStar::FORWARD, ShootingStar::REVERSE);
@@ -553,29 +569,35 @@ int main(void)
    Strobe* strobe4 = new Strobe(0, 20, RGB(255,0,220), 20, STROBE_FADE_LENGTH, 50, STROBE_FADE_OUT, 3*(Strobe::MAX_FADE_PROGRESS / 100));
    Strobe* strobe5 = new Strobe(0, 20, RGB(255,150,0), 20, STROBE_FADE_LENGTH, 50, STROBE_FADE_OUT, 4*(Strobe::MAX_FADE_PROGRESS / 100));
 
+   XmasTwinkle* xmas1 = new XmasTwinkle(0, 3, RGB(255,255,255), 2, 512);
+
 
    PatternManager* sm = new PatternManager(20, LED_COUNT);
 
    Modulator* mod1 = new Modulator( (int16_t*)&sm->startPositions[0], 0, 216, (int8_t*)coswave, 256, 0, 217, 255, 127, 30 );
-   Modulator* mod2 = new Modulator( (int16_t*)&sm->startPositions[1], 0, 216, (int8_t*)coswave, 256, 32, 217, 255, 127, 30 );
-   Modulator* mod3 = new Modulator( (int16_t*)&sm->startPositions[2], 0, 216, (int8_t*)coswave, 256, 64, 217, 255, 127, 30 );
-   Modulator* mod4 = new Modulator( (int16_t*)&sm->startPositions[3], 0, 216, (int8_t*)coswave, 256, 127, 217, 255, 127, 30 );
-   Modulator* mod5 = new Modulator( (int16_t*)&sm->startPositions[4], 0, 216, (int8_t*)coswave, 256, 192, 217, 255, 127, 30 );
 
-   sm->addPattern(strobe1, 0);
-   sm->addPattern(strobe2, 20);
-   sm->addPattern(strobe3, 40);
-   sm->addPattern(strobe4, 60);
-   sm->addPattern(strobe5, 80);
+   Modulator* modRand = new Modulator( (int16_t*)&sm->startPositions[0], 0, 216, (int8_t*)randomWave, 256, 0, 1, 1, 127, 1024 );
 
-   sm->addPattern(red, LED_COUNT/2 - 10);
-   sm->addPattern(red2, LED_COUNT/2 + 10);
+  // Modulator* mod2 = new Modulator( (int16_t*)&sm->startPositions[1], 0, 216, (int8_t*)coswave, 256, 32, 217, 255, 127, 30 );
+  // Modulator* mod3 = new Modulator( (int16_t*)&sm->startPositions[2], 0, 216, (int8_t*)coswave, 256, 64, 217, 255, 127, 30 );
+  /// Modulator* mod4 = new Modulator( (int16_t*)&sm->startPositions[3], 0, 216, (int8_t*)coswave, 256, 127, 217, 255, 127, 30 );
+  // Modulator* mod5 = new Modulator( (int16_t*)&sm->startPositions[4], 0, 216, (int8_t*)coswave, 256, 192, 217, 255, 127, 30 );
+
+
+
+ //  sm->addPattern(strobe1, 0);
+ //  sm->addPattern(strobe2, 20);
+ //  sm->addPattern(strobe3, 40);
+ //  sm->addPattern(strobe4, 60);
+ //  sm->addPattern(strobe5, 80);
+
+   //sm->addPattern(red, LED_COUNT/2 - 10);
+   sm->addPattern(xmas1, 0);
+
+   //sm->addPattern(red, 0);
+  // sm->addPattern(red2, LED_COUNT/2 + 10);
    sm->addPattern(green, 0);
-   sm->addPattern(blue, 0);
-
-
-
-
+  // sm->addPattern(blue, 0);
 
 
    sm->init();
@@ -600,11 +622,13 @@ int main(void)
       LPD8806_Update();
       delay_us(500);
 
-      mod1->update();
-      mod2->update();
-      mod3->update();
-      mod4->update();
-      mod5->update();
+      modRand->update();
+
+    //  mod1->update();
+     // mod2->update();
+     // mod3->update();
+     // mod4->update();
+     // mod5->update();
 
    }
    return 0;

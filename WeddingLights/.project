@@ -28,12 +28,12 @@
 		<link>
 			<name>LPD8806</name>
 			<type>2</type>
-			<location>F:/Robotics/pic-source/FuncLib/External/LPD8806</location>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/FuncLib/External/LPD8806</locationURI>
 		</link>
 		<link>
 			<name>STM32F10x_StdPeriph_Driver</name>
 			<type>2</type>
-			<location>F:/Robotics/pic-source/FuncLib/ThirdPartyDrivers/Libraries/STM32F10x_StdPeriph_Driver</location>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/FuncLib/ThirdPartyDrivers/Libraries/STM32F10x_StdPeriph_Driver</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
