@@ -49,8 +49,16 @@ void PatternManager::mixColours(void)
 
       for( uint8_t i = 0; i < maxPatterns; ++i )
       {
-         if( (arrayOfPatterns[i] != (Pattern*)(0x00)) &&
-             ((startPositions[i] <= j) && (startPositions[i] + arrayOfPatterns[i]->length) > j))
+      		if( arrayOfPatterns[i] == nullptr ) {
+      			continue;
+      		}
+
+      		if( j < startPositions[i])
+      		{
+      			continue;
+      		}
+
+         if( j < (startPositions[i] + arrayOfPatterns[i]->length) )
          {
             uint32_t* memBuf = arrayOfPatterns[i]->getBuffer();
             r += R_RGB(memBuf[j - startPositions[i]]);

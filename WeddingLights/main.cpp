@@ -10,6 +10,7 @@
 #include "XmasTwinkle.h"
 
 #include "Modulator.h"
+#include "RandomModulator.h"
 
 #include <math.h>
 
@@ -540,6 +541,11 @@ const int8_t coswave[] =
 
 int8_t randomWave[256];
 
+const int kXmasCount = 10*3;
+
+RandomModulator** xmasMods;
+XmasTwinkle** xmasLights;
+
 void InitRandomWave()
 {
 	for( int i = 0; i < 256; i++)
@@ -569,14 +575,29 @@ int main(void)
    Strobe* strobe4 = new Strobe(0, 20, RGB(255,0,220), 20, STROBE_FADE_LENGTH, 50, STROBE_FADE_OUT, 3*(Strobe::MAX_FADE_PROGRESS / 100));
    Strobe* strobe5 = new Strobe(0, 20, RGB(255,150,0), 20, STROBE_FADE_LENGTH, 50, STROBE_FADE_OUT, 4*(Strobe::MAX_FADE_PROGRESS / 100));
 
-   XmasTwinkle* xmas1 = new XmasTwinkle(0, 3, RGB(255,255,255), 2, 512);
+   xmasLights = new XmasTwinkle*[kXmasCount];
 
 
-   PatternManager* sm = new PatternManager(20, LED_COUNT);
+   XmasTwinkle* xmasWhite = new XmasTwinkle(0, 3, RGB(255,255,255), 2, 512);
+   XmasTwinkle* xmasGreen = new XmasTwinkle(0, 3, RGB(0,255,0), 2, 512, 128);
+   XmasTwinkle* xmasRed = new XmasTwinkle(0, 3, RGB(255,0,0), 2, 512, 256);
+
+
+   PatternManager* sm = new PatternManager(50, LED_COUNT);
+
+   xmasMods = new RandomModulator*[kXmasCount];
+
+   uint32_t xmasLeds[3] = {RGB(255,255,255), RGB(0,255,0), RGB(255,0,0)};
+
+   for( int i = 0; i< kXmasCount; ++i )
+   {
+   		xmasLights[i] = new XmasTwinkle(0, 3, xmasLeds[i%3], 2, 512, i * (512 / kXmasCount));
+   		xmasMods[i] = new RandomModulator((int16_t*)&sm->startPositions[i], 0, LED_COUNT, 1024, i * (1024 / kXmasCount));
+   }
 
    Modulator* mod1 = new Modulator( (int16_t*)&sm->startPositions[0], 0, 216, (int8_t*)coswave, 256, 0, 217, 255, 127, 30 );
 
-   Modulator* modRand = new Modulator( (int16_t*)&sm->startPositions[0], 0, 216, (int8_t*)randomWave, 256, 0, 1, 1, 127, 1024 );
+   Modulator* modRand = new Modulator( (int16_t*)&sm->startPositions[0], 0, LED_COUNT, (int8_t*)randomWave, 256, 0, LED_COUNT, 255, 127, 1024 );
 
   // Modulator* mod2 = new Modulator( (int16_t*)&sm->startPositions[1], 0, 216, (int8_t*)coswave, 256, 32, 217, 255, 127, 30 );
   // Modulator* mod3 = new Modulator( (int16_t*)&sm->startPositions[2], 0, 216, (int8_t*)coswave, 256, 64, 217, 255, 127, 30 );
@@ -592,11 +613,15 @@ int main(void)
  //  sm->addPattern(strobe5, 80);
 
    //sm->addPattern(red, LED_COUNT/2 - 10);
-   sm->addPattern(xmas1, 0);
+   for( int i = 0; i< kXmasCount; ++i )
+   {
+      sm->addPattern(xmasLights[i], i*5);
+   }
+
 
    //sm->addPattern(red, 0);
   // sm->addPattern(red2, LED_COUNT/2 + 10);
-   sm->addPattern(green, 0);
+  // sm->addPattern(green, 0);
   // sm->addPattern(blue, 0);
 
 
@@ -622,7 +647,11 @@ int main(void)
       LPD8806_Update();
       delay_us(500);
 
-      modRand->update();
+      //modRand->update();
+      for( int i = 0; i< kXmasCount; ++i )
+      {
+      		xmasMods[i]->update();
+      }
 
     //  mod1->update();
      // mod2->update();

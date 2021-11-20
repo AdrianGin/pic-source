@@ -7,8 +7,8 @@
 
 #include <XmasTwinkle.h>
 
-XmasTwinkle::XmasTwinkle(int16_t position, uint16_t length, uint32_t colour, uint16_t prescaler, uint16_t endPhase)
-: Pattern(position, length, colour, prescaler), IsFadeIn(false), m_endPhase(endPhase)
+XmasTwinkle::XmasTwinkle(int16_t position, uint16_t length, uint32_t colour, uint16_t prescaler, uint16_t endPhase, uint16_t startPhase)
+: Pattern(position, length, colour, prescaler), IsFadeIn(false), m_endPhase(endPhase), phase(startPhase)
 {
 
 }
@@ -28,12 +28,13 @@ void XmasTwinkle::update()
 
    phase++;
 
-	if( phase == m_endPhase)
+	if( phase >= m_endPhase)
 	{
 		phase = 0;
 		IsFadeIn = !IsFadeIn;
 	}
 
+	//uint16_t scaleColour = phase >= (m_endPhase / 2) ? 255 - (phase - (m_endPhase / 2)) : phase;
 	uint16_t scaleColour = phase >= (m_endPhase / 2) ? 255 - (phase - (m_endPhase / 2)) : phase;
 
    //if( IsFadeIn )
